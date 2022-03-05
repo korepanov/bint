@@ -1,0 +1,38 @@
+print("Solving equation of the form ax^2 + bx + c = 0\n");
+#begin:
+print("Input a\n"); 
+float a; 
+string buf;
+input(buf); 
+a = float(buf);
+print("Input b\n"); 
+float b; 
+input(buf);
+b = float(buf);
+print("Input c\n");
+float c; 
+input(buf); 
+c = float(buf); 
+float d; 
+d = ((b^2) - ((4*a)*c));
+float x1; 
+float x2; 
+[print(""), (d >= 0), goto(#no_solution)];
+x1 = ((((-1)*b) - (d^0.5)) / (2*a));
+x2 = ((((-1)*b) + (d^0.5)) / (2*a));
+print("x1 = ");
+buf = str(x1); 
+print(buf); 
+print("\n");
+print("x2 = ");
+buf = str(x2);
+print(buf);
+print("\n");
+goto(#end_iter);
+#no_solution: 
+print("No solution\n");
+#end_iter:
+print("Exit? y/n\n");
+input(buf);
+[print(""), ("y" == buf), goto(#begin)];
+
