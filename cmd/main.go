@@ -22,10 +22,10 @@ func main() {
 
 	toTranslate := false
 
-	if toTranslate{
+	if toTranslate {
 		fmt.Println("Translating...")
 		filesListToExecute = []string{"benv/func.basm"}
-	}else{
+	} else {
 		filesListToExecute = []string{"program.basm"}
 	}
 
@@ -52,7 +52,7 @@ func main() {
 
 			if 0 != exprList[0][1] { // выражение содержит команды
 				_, infoListList, systemStack = parser.Parse(exprList, variables, systemStack, false)
-			} else{
+			} else {
 				continue
 			}
 
@@ -74,7 +74,7 @@ func main() {
 						}
 
 						newChunk, err = SetCommandCounter(f, COMMAND_COUNTER)
-						if nil != err{
+						if nil != err {
 							panic(err)
 						}
 
@@ -144,7 +144,7 @@ func main() {
 				}
 				var strRes string
 
-				if "print" == res[0]{
+				if "print" == res[0] {
 					strRes = strings.Replace(fmt.Sprintf("%v", ValueFoldInterface(res[1])), "\\n", "\n", -1)
 
 					if "" != strRes && "\"" == string(strRes[0]) && "\"" == string(strRes[len(strRes)-1]) {
@@ -158,7 +158,7 @@ func main() {
 		}
 		err = f.Close()
 
-		if nil != err{
+		if nil != err {
 			panic(err)
 		}
 	}
