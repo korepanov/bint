@@ -9,12 +9,18 @@ int sum(int a, int b){
 
 	return c;
 };
+print("");
+int sub(int a, int b){
+	int c;
+	c = (a - b);
+	
+	return c;
+};
 
 string buf;
-a = sum(1650, 17);
-int b; 
-b = sum(1, 1); 
-a = (a + b);
-buf = str(a); 
+a = sum(1, 2);
+int b;
+b = sub(a, 5);
+buf = str(b); 
 print(buf); 
 print("\n");

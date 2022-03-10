@@ -3,13 +3,22 @@ int i;
 int j;
 int right_border;
 int command_len;
+int call_number;
+string str_call_number; 
 string return_type;
 string buf;
 string buf2;
+string buf3; 
 int int_buf;
+int int_buf2;
+int int_buf3; 
 int type_len;
 int arg_type_len;
+int func_begin;
+int func_end; 
+int func_len;
 int number;
+int func_len;
 int br_number;
 string func_name;
 string arg_type;
@@ -17,12 +26,15 @@ string arg_name;
 int left_border;
 int comma_pos;
 stack buf_stack;
+stack buf_stack2;
+stack inside_vars_stack;
 
 SET_SOURCE("program.b");
 SET_DEST("program.basm");
 send_command("string $return_var");
 next_command(command);
-print(command);
+call_number = 0; 
+
 #begin:
 [goto(#end), ("end" == command), print("")];
 
@@ -47,12 +59,12 @@ number = index(buf, "string");
 [print(""), (-1 == number), goto(#end_type)];
 
 #end_type:
-print("");
-
-
 type_len = len(return_type);
 func_name = command[type_len:br_number];
 left_border = (br_number + 1);
+
+buf = (((return_type + " $") + func_name) + "_res");
+send_command(buf);
 
 #func_args:
 [goto(#func_end), ("{" == command[0]), print("")];
@@ -90,6 +102,8 @@ comma_pos = index(command, ")");
 arg_name = command[0:comma_pos];  
 push(arg_name);
 buf_stack.push(arg_name);
+buf_stack2.push(arg_name);
+buf_stack2.push(arg_type);
 left_border = (comma_pos + 1);
 command_len = len(command);
 command = command[left_border:command_len];
@@ -110,30 +124,91 @@ send_command(command);
 command = "#";
 command = (command + func_name);
 command = (command + ":\n");
-command = (command + buf);
+
+#args_to_pass:
+buf_stack2.pop(arg_type);
+buf_stack2.pop(arg_name);
+command = ((command + arg_type) + arg_name);
+[goto(#not_send_pass_args), ("end" == arg_type), print("")];
 send_command(command);
+#not_send_pass_args:
 command = "";
+[print(""), ("end" == arg_type), goto(#args_to_pass)];
+
+send_command(buf);
+command = "";
+arg_name = "";
 #pop_start:
-pop(arg_name);
 [goto(#pop_end), ("end" == arg_name), print("")];
+pop(arg_name);
 command = (command + "pop(");
 command = (command + arg_name);
 command = (command + ")");
+[goto(#not_send_pop), ("end" == arg_name), print("")];
 send_command(command);
+#not_send_pop:
 command = "";
 goto(#pop_start);
 #pop_end:
+
+left_border = 0;
+
+#inside_args:
+[goto(#inside_args_end), (buf == "}"), print("")];
+arg_type = "int";
+right_border = (left_border + 3);
+number = index(buf[left_border:right_border], "int");
+[print(""), (-1 == number), goto(#inside_arg_type_end)];
+arg_type = "bool";
+right_border = (left_border + 4);
+number = index(buf[left_border:right_border], "bool");
+[print(""), (-1 == number), goto(#inside_arg_type_end)];
+arg_type = "float";
+right_border = (left_border + 5);
+number = index(buf[left_border:right_border], "float");
+[print(""), (-1 == number), goto(#inside_arg_type_end)];
+arg_type = "stack";
+right_border = (left_border + 5);
+number = index(buf[left_border:right_border], "stack");
+[print(""), (-1 == number), goto(#inside_arg_type_end)];
+arg_type = "string";
+right_border = (left_border + 6);
+number = index(buf[left_border:right_border], "string");
+[print(""), (-1 == number), goto(#inside_arg_type_end)];
+arg_type = "no_args";
+
+#inside_arg_type_end:
+[goto(#no_args), ("no_args" == arg_type), print("")];
+type_len = len(arg_type); 
+command_len = len(buf);
+arg_name = buf[type_len:command_len];
+inside_vars_stack.push(arg_name);
+#no_args:
+command_len = len(buf);
+[print(""), (command_len > 6), goto(#not_send_return_end)];
+[goto(#not_send_return), ("return" == buf[0:6]), goto(#not_send_return_end)];
+#not_send_return:
+buf = buf[6:command_len];
+buf = ((("push(") + buf) + ")");
+send_command(buf);
+next_command(buf);
+goto(#inside_args);
+#not_send_return_end:
+send_command(buf);
+next_command(buf);
+goto(#inside_args);
+#inside_args_end:
 print("");
-#return_start:
-next_command(command);
-[goto(#return_end), ("return" == command[0:6]), print("")];
+
+#pop_args_start:
+[goto(#pop_args_end), ("end" == arg_name), print("")];
+inside_vars_stack.pop(arg_name);
+command = (("UNDEFINE(" + arg_name) + ")");
+[goto(#not_send), ("end" == arg_name), print("")];
 send_command(command);
-goto(#return_start);
-#return_end:
-command_len = len(command);
-command = command[6:command_len];
-command = (("push(" + command) + ")");
-send_command(command);
+#not_send:
+goto(#pop_args_start);
+#pop_args_end:
 
 arg_name = "";
 
@@ -141,7 +216,7 @@ arg_name = "";
 [goto(#undefine_end), ("end" == arg_name), print("")];
 buf_stack.pop(arg_name); 
 command = (("UNDEFINE(" + arg_name) + ")");
-[goto(#not_send), ("end" == arg_name), print("")];
+[goto(#undefine_end), ("end" == arg_name), print("")];
 send_command(command);
 #not_send:
 goto(#undefine_start);
@@ -149,7 +224,6 @@ goto(#undefine_start);
 
 command = "goto($return_var)";
 send_command(command); 
-next_command(command);
 next_command(command);
 command = ((("#" + (func_name + "_end:")) + "\n") + command);
 send_command(command);
@@ -162,8 +236,7 @@ func_name_len = len(func_name);
 number = index(command, func_name);
 [goto(#mod_end), (-1 == number), print("")];
 buf = command;
-command = (((return_type + " $") + func_name) + "_res");
-send_command(command);
+
 br_number = index(buf, "(");
 left_border = (br_number + 1);
 buf2 = buf;
@@ -178,19 +251,33 @@ arg_name = buf[left_border:comma_pos];
 command = (("push(" + arg_name) + ")");
 send_command(command);
 comma_pos = (comma_pos + 1);
-command_len = len(buffer);
+command_len = len(buf);
 buf = buf[comma_pos:command_len];
 left_border = 0;
 goto(#call_start);
 #call_end:
-buf = buf2; 
+buf = buf2;
+buf3 = buf; 
+func_begin = index(buf, func_name); 
+command_len = len(buf);
+buf2 = buf[func_begin:command_len];
+func_len = index(buf2, ")"); 
+func_end = ((func_begin + func_len) + 1); 
+buf = buf[0:func_begin];
+buf = (((buf + "$") + func_name) + "_res"); 
+buf2 = buf3[func_end:command_len];
+buf = (buf + buf2);
 
-command = (("#" + func_name) + "_res:\n");
-command = (((command + "goto(#") + func_name) + ")");
+str_call_number = str(call_number);
+command = (((("$return_var=\"#"+func_name)+"_res")+str_call_number)+"\"");
+send_command(command);
+command = (("goto(#" + func_name) + ")");
 send_command(command); 
-command = (("pop($" + func_name) + "_res)");
+command = (((("#" + func_name) + "_res") + str_call_number) + ":\n");
+command = (command + (("pop($" + func_name) + "_res)"));
 send_command(command); 
-
+command = buf; 
+call_number = (call_number + 1);
 
 #mod_end:
 send_command(command);
