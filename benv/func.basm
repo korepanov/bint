@@ -34,7 +34,7 @@ bool was_here;
 
 is_first = True;
 was_here = False; 
-SET_SOURCE("program.b");
+SET_SOURCE("benv/prep_func_program.b");
 SET_DEST("benv/program.basm");
 send_command("string $return_var");
 next_command(command);

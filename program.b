@@ -1,34 +1,18 @@
-int a;
-bool basm;
-
 int sum(int a, int b){
 	int c; 
 	c = (a + b);
-	float myvar;
-	bool my_bool_var;
-
-	return c;
+	return c; 
 };
-print("");
+
 int sub(int a, int b){
-	int c;
+	int c; 
 	c = (a - b);
-	
-	return c;
-};
-print("");
-int mul(int a, int b){
-	int c;
-	c = (a * b);
-	
-	return c;
+	return c; 
 };
 
-string buf;
+int a; 
 a = sum(1, 2);
-int b;
-b = sub(a, 5);
-b = mul(b, b);
-buf = str(b); 
-print(buf); 
-print("\n");
+a = sub(a, 1);
+string buf;
+buf = str(a);
+print(buf);

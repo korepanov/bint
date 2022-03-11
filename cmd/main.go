@@ -24,7 +24,7 @@ func main() {
 
 	if toTranslate {
 		fmt.Println("Translating...")
-		filesListToExecute = []string{"benv/func.basm"}
+		filesListToExecute = []string{"benv/prep_func.basm", "benv/func.basm"}
 	} else {
 		filesListToExecute = []string{"program.basm"}
 	}
