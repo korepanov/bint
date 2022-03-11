@@ -20,10 +20,9 @@ UNDEFINE(b);
 UNDEFINE(a);
 goto($return_var);
 #sum_end:print("");
-int $sub_res;
+int$sub_res;
 goto(#sub_end);
-#sub:
-intb;
+#sub:intb;
 inta;
 intc;
 pop(b);
@@ -35,7 +34,23 @@ UNDEFINE(c);
 UNDEFINE(b);
 UNDEFINE(a);
 goto($return_var);
-#sub_end:
+#sub_end:print("");
+int $mul_res;
+goto(#mul_end);
+#mul:
+intb;
+inta;
+intc;
+pop(b);
+pop(a);
+intc;
+c=(a*b);
+push(c);
+UNDEFINE(c);
+UNDEFINE(b);
+UNDEFINE(a);
+goto($return_var);
+#mul_end:
 stringbuf;
 push(1);
 push(2);
@@ -48,9 +63,15 @@ push(a);
 push(5);
 $return_var="#sub_res0";
 goto(#sub);
-#sub_res0:
-pop($sub_res);
+#sub_res0:pop($sub_res);
 b=$sub_res;
+push(b);
+push(b);
+$return_var="#mul_res0";
+goto(#mul);
+#mul_res0:
+pop($mul_res);
+b=$mul_res;
 buf=str(b);
 print(buf);
 print("

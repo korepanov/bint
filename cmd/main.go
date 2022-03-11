@@ -108,9 +108,37 @@ func main() {
 						continue
 					}
 					if "REROUTE" == fmt.Sprintf("%v", res[0]) {
+						//_, err = dest.Seek(0, 0)
+						//if nil != err{
+						//	panic(err)
+						//}
+						//_, err = source.Seek(0, 0)
+						//if nil != err{
+						//	panic(err)
+						//}
+						err = dest.Close()
+						if nil != err {
+							panic(err)
+						}
+						err = source.Close()
+						if nil != err {
+							panic(err)
+						}
 						temp := dest
 						dest = source
 						source = temp
+
+						source, err = os.Open(source.Name())
+						if nil != err {
+							panic(err)
+						}
+
+						dest, err = os.OpenFile(dest.Name(), os.O_WRONLY, 0666)
+						if nil != err {
+							panic(err)
+						}
+						sourceNewChunk = EachChunk(source)
+						continue
 					}
 					if "next_command" == fmt.Sprintf("%v", res[0]) {
 						varName := res[1].([]interface{})[0]

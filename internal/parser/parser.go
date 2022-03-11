@@ -587,8 +587,8 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 	maxNbraces = maxBraces(exprList)
 
 	if maxNbraces > 0 || wasCd || wasAssignment || wasNOT || wasGoto || wasSetSource ||
-		wasNextCommand || wasSendCommand || wasUndefine || wasPop || wasPush || wasSetDest ||
-		wasDelDest || wasSendDest || wasPoint || wasLen || wasIndex {
+		wasNextCommand || wasSendCommand || wasUndefine || wasPop || wasPush || wasSetDest || wasDelDest ||
+		wasSendDest || wasPoint || wasLen || wasIndex {
 		if !wasCd {
 			if !wasAssignment {
 				//if not was_NOT:

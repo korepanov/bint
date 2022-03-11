@@ -29,10 +29,13 @@ stack buf_stack;
 stack buf_stack2;
 stack inside_vars_stack;
 bool is_first;
+bool was_func;
+bool was_here; 
 
 is_first = True;
+was_here = False; 
 SET_SOURCE("program.b");
-SET_DEST("benv/program.b");
+SET_DEST("benv/program.basm");
 send_command("string $return_var");
 next_command(command);
 
@@ -63,6 +66,7 @@ arg_type = "";
 arg_name = "";
 left_border = 0;
 comma_pos = 0;
+was_func = False; 
 
 call_number = 0; 
 
@@ -95,6 +99,7 @@ goto(#command_end);
 type_len = len(return_type);
 func_name = command[type_len:br_number];
 left_border = (br_number + 1);
+was_func = True;
 
 buf = (((return_type + " $") + func_name) + "_res");
 send_command(buf);
@@ -327,13 +332,21 @@ goto(#begin);
 [print(""), (is_first), goto(#not_is_first)];
 UNSET_SOURCE();
 UNSET_DEST();
-SET_SOURCE("benv/program.b");
-SET_DEST("benv/program2.b");
+SET_SOURCE("benv/program.basm");
+SET_DEST("benv/program2.basm");
 is_first = False;
+was_func = False;
 next_command(command);
 goto(#again_begin);
 #not_is_first:
-goto(#end);
+[print(""), (was_func), goto(#del_file)];
+was_func = False;
+REROUTE();
+next_command(command);
+goto(#again_begin);
+#del_file:
+DEL_DEST("benv/program2.basm");
+SEND_DEST("benv/program.basm");
 #end:
 UNSET_SOURCE();
 UNSET_DEST();
