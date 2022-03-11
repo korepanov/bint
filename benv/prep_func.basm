@@ -1,0 +1,44 @@
+SET_SOURCE("program.b");
+SET_DEST("benv/prep_func_program.b");
+
+string command;
+int number;
+string left_part;
+string right_part;
+int command_len;
+
+next_command(command);
+#begin:
+[goto(#end), ("end" == command), print("")];
+number = index(command, "{");
+[goto(#add_nop_end), (-1 == number), print("")];
+
+#add_nop:
+number = (number + 1);
+left_part = command[0:number];
+command_len = len(command); 
+right_part = command[number:command_len];
+command=(left_part+"print(\"\")");
+send_command(command); 
+send_command(right_part);
+next_command(command);
+goto(#begin);
+#add_nop_end:
+
+number = index(command, "}");
+[goto(#add_nop_end2), (-1 == number), print("")];
+
+#add_nop2:
+send_command(command);
+command="print(\"\")";
+send_command(command);
+next_command(command);
+goto(#begin);
+#add_nop_end2:
+
+send_command(command);
+next_command(command);
+goto(#begin);
+#end:
+UNSET_SOURCE();
+UNSET_DEST();
