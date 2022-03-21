@@ -1,18 +1,11 @@
 int sum(int a, int b){
-	int c; 
+	int c;
 	c = (a + b);
-	return c; 
+	return c;
 };
 
-int sub(int a, int b){
-	int c; 
-	c = (a - b);
-	return c; 
-};
-
-int a; 
-a = sum(1, 2);
-a = sub(a, 1);
+int res;
+res = sum(1, 2);
 string buf;
-buf = str(a);
-print(buf);
+buf = str(res);
+print(buf); 

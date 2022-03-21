@@ -1,0 +1,33 @@
+string $return_var;
+stringcommand;
+int $init_res;
+goto(#init_end);
+#init:
+inta;
+print("");
+pop(a);
+print("");
+SET_SOURCE("benv/prep_func_program.b");
+SET_DEST("benv/long_function_program.b");
+next_command(command);
+push(0);
+UNDEFINE(a);
+goto($return_var);
+#init_end:
+print("");
+intres;
+push(5);
+$return_var="#init_res0";
+goto(#init);
+#init_res0:
+pop($init_res);
+res=$init_res;
+[print(""),(0==res),print("INIT ERROR
+")];
+#start:[goto(#end),("end"==command),print("")];
+send_command(command);
+next_command(command);
+goto(#start);
+#end:DEL_DEST("benv/prep_func_program.b");
+UNSET_SOURCE();
+UNSET_DEST();

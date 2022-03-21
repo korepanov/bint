@@ -4,7 +4,9 @@ import (
 	"bint.com/internal/executor"
 	. "bint.com/internal/lexer"
 	"bint.com/internal/parser"
+	"bint.com/options"
 	. "bint.com/pkg/serviceTools"
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -20,13 +22,25 @@ func main() {
 	var filesListToExecute []string
 	var sourceNewChunk func() string
 
-	toTranslate := false
+	toTranslate := options.No
+	var rootSource string
+	var rootDest string
 
-	if toTranslate {
+	if options.Internal == toTranslate {
 		fmt.Println("Translating...")
-		filesListToExecute = []string{"benv/prep_func.basm", "benv/func.basm"}
+		rootSource = "benv/long_function.b"
+		rootDest = "benv/long_function.basm"
+		filesListToExecute = []string{"benv/internal/prep_func.basm", "benv/internal/func.basm"}
+	} else if options.User == toTranslate {
+		rootSource = "program.b"
+		rootDest = "program.basm"
+		fmt.Println("Translating...")
+		filesListToExecute = []string{"benv/prep_func.basm", "benv/long_function.basm", "benv/func.basm"}
+	} else if options.No == toTranslate {
+		rootDest = "program.basm"
+		filesListToExecute = []string{rootDest}
 	} else {
-		filesListToExecute = []string{"program.basm"}
+		panic(errors.New("set option to translate"))
 	}
 
 	systemStack := []interface{}{"end"}
@@ -155,6 +169,26 @@ func main() {
 						sourceCommandCounter++
 						continue
 
+					}
+					if "get_root_source" == fmt.Sprintf("%v", res[0]) {
+						varName := res[1].([]interface{})[0]
+						newVariable := EachVariable(variables)
+						for v := newVariable(); "end" != v[0]; v = newVariable() {
+							if fmt.Sprintf("%v", varName) == fmt.Sprintf("%v", v[1]) {
+								v[2] = rootSource
+								break
+							}
+						}
+					}
+					if "get_root_dest" == fmt.Sprintf("%v", res[0]) {
+						varName := res[1].([]interface{})[0]
+						newVariable := EachVariable(variables)
+						for v := newVariable(); "end" != v[0]; v = newVariable() {
+							if fmt.Sprintf("%v", varName) == fmt.Sprintf("%v", v[1]) {
+								v[2] = rootDest
+								break
+							}
+						}
 					}
 					if "send_command" == fmt.Sprintf("%v", res[0]) {
 						result := ValueFoldInterface(res[1]).(string)

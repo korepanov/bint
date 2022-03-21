@@ -215,6 +215,8 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 	wasGoto := false
 	wasSetSource := false
 	wasNextCommand := false
+	wasGetRootSource := false
+	wasGetRootDest := false
 	wasSendCommand := false
 	wasUndefine := false
 	wasPush := false
@@ -261,6 +263,14 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 	if "next_command" == fmt.Sprintf("%v", exprList[0][1]) {
 		exprList = makeOperationBinary(exprList)
 		wasNextCommand = true
+	}
+	if "get_root_source" == fmt.Sprintf("%v", exprList[0][1]) {
+		exprList = makeOperationBinary(exprList)
+		wasGetRootSource = true
+	}
+	if "get_root_dest" == fmt.Sprintf("%v", exprList[0][1]) {
+		exprList = makeOperationBinary(exprList)
+		wasGetRootDest = true
 	}
 	if "send_command" == fmt.Sprintf("%v", exprList[0][1]) {
 		exprList = makeOperationBinary(exprList)
@@ -588,7 +598,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 
 	if maxNbraces > 0 || wasCd || wasAssignment || wasNOT || wasGoto || wasSetSource ||
 		wasNextCommand || wasSendCommand || wasUndefine || wasPop || wasPush || wasSetDest || wasDelDest ||
-		wasSendDest || wasPoint || wasLen || wasIndex {
+		wasSendDest || wasPoint || wasLen || wasIndex || wasGetRootSource || wasGetRootDest {
 		if !wasCd {
 			if !wasAssignment {
 				//if not was_NOT:

@@ -511,12 +511,12 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
 		}
-		fin, err := os.Open(fmt.Sprintf("%v", LO[0]))
+		fin, err := os.Open("benv/program.basm")
 		if nil != err {
 			return []interface{}{1}, systemStack, err
 		}
 
-		fout, err := os.Create("program.basm")
+		fout, err := os.Create(fmt.Sprintf("%v", LO[0]))
 
 		if nil != err {
 			return []interface{}{1}, systemStack, err
@@ -536,7 +536,7 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			return []interface{}{1}, systemStack, err
 		}
 
-		err = os.Remove(fmt.Sprintf("%v", LO[0]))
+		err = os.Remove("benv/program.basm")
 		if nil != err {
 			return []interface{}{1}, systemStack, err
 		}
@@ -568,6 +568,10 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		return []interface{}{"RESET_SOURCE", 0}, systemStack, nil
 	} else if "next_command" == OP {
 		return []interface{}{"next_command", LO}, systemStack, nil
+	} else if "get_root_source" == OP {
+		return []interface{}{"get_root_source", LO}, systemStack, nil
+	} else if "get_root_dest" == OP {
+		return []interface{}{"get_root_dest", LO}, systemStack, nil
 	} else if "send_command" == OP {
 		return []interface{}{"send_command", LO}, systemStack, nil
 	} else if "push" == OP {
@@ -664,7 +668,7 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 		}
 	}
 
-	if "next_command" == OP {
+	if "next_command" == OP || "get_root_source" == OP || "get_root_dest" == OP {
 		newVariable := EachVariable(variables)
 		for v := newVariable(); "end" != v[0]; v = newVariable() {
 			if fmt.Sprintf("%v", v[1]) == fmt.Sprintf("%v", LO[0]) {
