@@ -7,10 +7,17 @@ import (
 	"bint.com/options"
 	. "bint.com/pkg/serviceTools"
 	"errors"
+	"flag"
 	"fmt"
 	"os"
 	"strings"
 )
+
+var help = flag.Bool("help", false, "Show help")
+var iFlag = "-i"
+var oFlag = "-o"
+var sFlag = flag.Bool("s", false, "Use system options (for system debug only)")
+var eFlag = "-e"
 
 func main() {
 	COMMAND_COUNTER := 1
@@ -26,18 +33,52 @@ func main() {
 	var rootSource string
 	var rootDest string
 
+	flag.StringVar(&iFlag, "i", "", "-i input.b")
+	flag.StringVar(&oFlag, "o", "", "-o output.basm")
+	flag.StringVar(&eFlag, "e", "", "-e program.basm")
+	flag.Parse()
+
+	if *help {
+		flag.Usage()
+		return
+	} else if "" == iFlag && "" == oFlag && "" != eFlag {
+		toTranslate = options.No
+		rootDest = eFlag
+	} else if "" != iFlag && "" != oFlag && "" == eFlag {
+		toTranslate = options.User
+		rootSource = iFlag
+		rootDest = oFlag
+	} else if "" == iFlag && "" == oFlag && "" == eFlag && *sFlag {
+		toTranslate = options.Internal
+	} else {
+		flag.Usage()
+		return
+	}
+
 	if options.Internal == toTranslate {
-		fmt.Println("Translating...")
-		rootSource = "benv/long_function.b"
-		rootDest = "benv/long_function.basm"
-		filesListToExecute = []string{"benv/internal/prep_func.basm", "benv/internal/func.basm"}
+		toTranslate = options.No // эту опцию можно менять для системной отладки
+
+		if options.Internal == toTranslate {
+			fmt.Println("Translating...")
+			rootSource = "benv/long_function.b"
+			rootDest = "benv/long_function.basm"
+			filesListToExecute = []string{"benv/internal/prep_func.basm", "benv/internal/func.basm"}
+		} else if options.User == toTranslate {
+			fmt.Println("Translating...")
+			rootSource = "program.b"
+			rootDest = "program.basm"
+			filesListToExecute = []string{"benv/prep_func.basm", "benv/long_function.basm", "benv/func.basm"}
+		} else if options.No == toTranslate {
+			rootDest = "program.basm"
+			filesListToExecute = []string{rootDest}
+		} else {
+			panic(errors.New("set option to translate"))
+		}
+
 	} else if options.User == toTranslate {
-		rootSource = "program.b"
-		rootDest = "program.basm"
 		fmt.Println("Translating...")
 		filesListToExecute = []string{"benv/prep_func.basm", "benv/long_function.basm", "benv/func.basm"}
 	} else if options.No == toTranslate {
-		rootDest = "program.basm"
 		filesListToExecute = []string{rootDest}
 	} else {
 		panic(errors.New("set option to translate"))
