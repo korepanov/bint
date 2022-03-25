@@ -9,6 +9,7 @@ string return_type;
 string buf;
 string buf2;
 string buf3; 
+string buf4; 
 int int_buf;
 int int_buf2;
 int int_buf3; 
@@ -33,6 +34,7 @@ bool is_first;
 bool was_func;
 bool was_here; 
 bool void_flag;
+bool is_function_part;
 string root_dest;
 
 is_first = True;
@@ -297,6 +299,19 @@ func_name_len = len(func_name);
 #start_entry: 
 [goto(#again_end), ("end" == command), print("")];
 number = index(command, func_name);
+number = (number + 1);
+buf4 = command[number];
+number = (number - 1); 
+print(command);
+print("\n");
+print(buf4);
+print("\n");
+is_function_part = is_letter(buf4);
+[goto(#mod_end), (is_function_part), print("")];
+is_function_part = is_digit(buf4);
+[goto(#mod_end), (is_function_part), print("")];
+[goto(#mod_end), ("_" == buf4), print("")];
+
 [goto(#mod_end), (-1 == number), print("")];
 buf = command;
 

@@ -235,6 +235,8 @@
 	  <keyword>index</keyword>
 	  <keyword>get_root_source</keyword>
 	  <keyword>get_root_dest</keyword>
+	  <keyword>is_letter</keyword>
+	  <keyword>is_digit</keyword>
 	
       
     </context>

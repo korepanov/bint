@@ -47,7 +47,7 @@ func Insert(a [][]interface{}, index int, value []interface{}) [][]interface{} {
 func IsUnaryOperation(OP string) bool {
 	operations := []string{"print", "str", "input", "int", "float", "bool", "goto", "SET_SOURCE", "SET_DEST",
 		"next_command", "send_command", "UNDEFINE", "pop", "push", "DEL_DEST", "SEND_DEST", "len", "get_root_source",
-		"get_root_dest"}
+		"get_root_dest", "is_letter", "is_digit"}
 	return stringInSlice(OP, operations)
 }
 
@@ -243,7 +243,8 @@ func IsOp(s string) bool {
 		"<=", "==", ">", ">=", "=", "+", "-", "*", "/", "^", "int", "bool", "float",
 		"goto", "SET_SOURCE", "UNSET_SOURCE", "RESET_SOURCE",
 		"SET_DEST", "UNSET_DEST", "next_command", "send_command", "UNDEFINE", "pop", "push",
-		"DEL_DEST", "SEND_DEST", "REROUTE", ".", "len", "index", "get_root_source", "get_root_dest"}
+		"DEL_DEST", "SEND_DEST", "REROUTE", ".", "len", "index", "get_root_source", "get_root_dest",
+		"is_letter", "is_digit"}
 
 	if stringInSlice(s, ops) {
 		return true

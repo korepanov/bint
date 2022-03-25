@@ -70,6 +70,12 @@ func LexicalAnalyze(expr string, variables [][]interface{}) ([][]interface{}, []
 		} else if len(expr) > i+5 && "index" == expr[i:i+5] {
 			res = append(res, []interface{}{"OP", "index"})
 			i += 4
+		} else if len(expr) > i+9 && "is_letter" == expr[i:i+9] {
+			res = append(res, []interface{}{"OP", "is_letter"})
+			i += 8
+		} else if len(expr) > i+8 && "is_digit" == expr[i:i+8] {
+			res = append(res, []interface{}{"OP", "is_digit"})
+			i += 7
 		} else if len(expr) > i+3 && "pop" == expr[i:i+3] {
 			res = append(res, []interface{}{"OP", "pop"})
 			i += 2
