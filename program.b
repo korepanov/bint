@@ -1,11 +1,11 @@
-int sum(int a, int b){
+int sum(){
 	int c;
-	c = (a + b);
+	c = (1 + 2);
 	return c;
 };
 
 int res;
-res = sum(1, 2);
+res = sum();
 string buf;
 buf = str(res);
 print(buf); 

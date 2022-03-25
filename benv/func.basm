@@ -20,6 +20,7 @@ int func_len;
 int number;
 int func_len;
 int br_number;
+int fig_br_number;
 string func_name;
 string arg_type;
 string arg_name;
@@ -130,6 +131,7 @@ right_border = (left_border + 6);
 number = index(command[left_border:right_border], "string");
 [print(""), (-1 == number), goto(#arg_type_end)];
 arg_type = "no_args";
+goto(#func_end);
 
 #arg_type_end:
 arg_type_len = len(arg_type);
@@ -165,7 +167,11 @@ send_command(command);
 command = "#";
 command = (command + func_name);
 command = (command + ":\n");
-
+[print(""),("no_args" == arg_type), goto(#end_nop_command)];
+command=(command+"print(\"\")");
+send_command(command);
+#end_nop_command:
+print("");
 #args_to_pass:
 buf_stack2.pop(arg_type);
 buf_stack2.pop(arg_name);
@@ -176,7 +182,13 @@ send_command(command);
 command = "";
 [print(""), ("end" == arg_type), goto(#args_to_pass)];
 
+fig_br_number = index(buf, "{");
+[print(""), (-1 == fig_br_number), goto(#not_send_fig_br)];
 send_command(buf);
+goto(#not_send_fig_br_end);
+#not_send_fig_br:
+buf="print(\"\")";
+#not_send_fig_br_end:
 command = "";
 arg_name = "";
 #pop_start:
@@ -290,7 +302,9 @@ comma_pos = index(buf, ")");
 #comma_end:
 arg_name = buf[left_border:comma_pos];
 command = (("push(" + arg_name) + ")");
+[goto(#not_send_push), ("" == arg_name), print("")];
 send_command(command);
+#not_send_push:
 comma_pos = (comma_pos + 1);
 command_len = len(buf);
 buf = buf[comma_pos:command_len];

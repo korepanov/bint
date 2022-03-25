@@ -2,24 +2,16 @@ string $return_var;
 int $sum_res;
 goto(#sum_end);
 #sum:
-intb;
-inta;
 print("");
-pop(b);
-pop(a);
 print("");
 intc;
-c=(a+b);
+c=(1+2);
 push(c);
 UNDEFINE(c);
-UNDEFINE(b);
-UNDEFINE(a);
 goto($return_var);
 #sum_end:
 print("");
 intres;
-push(1);
-push(2);
 $return_var="#sum_res0";
 goto(#sum);
 #sum_res0:
