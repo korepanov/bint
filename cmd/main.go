@@ -3,8 +3,8 @@ package main
 import (
 	"bint.com/internal/executor"
 	. "bint.com/internal/lexer"
+	"bint.com/internal/options"
 	"bint.com/internal/parser"
-	"bint.com/options"
 	. "bint.com/pkg/serviceTools"
 	"errors"
 	"flag"
