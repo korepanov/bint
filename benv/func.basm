@@ -32,6 +32,7 @@ stack inside_vars_stack;
 bool is_first;
 bool was_func;
 bool was_here; 
+bool void_flag;
 string root_dest;
 
 is_first = True;
@@ -77,7 +78,7 @@ call_number = 0;
 #begin:
 [goto(#again_end), ("end" == command), print("")];
 
-
+void_flag = False; 
 br_number = index(command, "(");
 [goto(#command_end), (-1 == br_number), print("")];
 buf = command[0:br_number];
@@ -98,16 +99,24 @@ number = index(buf, "stack");
 return_type = "string";
 number = index(buf, "string");
 [print(""), (-1 == number), goto(#end_type)];
+return_type = "void";
+number = index(buf, "void");
+[print(""), (-1 == number), goto(#end_type)];
 goto(#command_end);
 #end_type:
+[print(""),("void" == return_type), goto(#set_void_flag_end)];
+void_flag = True;
+#set_void_flag_end:
 type_len = len(return_type);
 func_name = command[type_len:br_number];
 left_border = (br_number + 1);
 was_func = True;
 
 buf = (((return_type + " $") + func_name) + "_res");
+[goto(#not_define_void_end), (void_flag), print("")];
 send_command(buf);
-
+#not_define_void_end:
+print("");
 #func_args:
 [goto(#func_end), ("{" == command[0]), print("")];
 arg_type = "int";
@@ -284,6 +293,7 @@ next_command(command);
 i = 0; 
 command_len = len(command); 
 func_name_len = len(func_name);
+
 #start_entry: 
 [goto(#again_end), ("end" == command), print("")];
 number = index(command, func_name);
@@ -322,7 +332,9 @@ buf = buf[0:func_begin];
 buf = (((buf + "$") + func_name) + "_res"); 
 buf2 = buf3[func_end:command_len];
 buf = (buf + buf2);
-
+[print(""),(void_flag), goto(#set_buf_nop_end)];
+buf="print(\"\")";
+#set_buf_nop_end:
 str_call_number = str(call_number);
 command = (((("$return_var=\"#"+func_name)+"_res")+str_call_number)+"\"");
 send_command(command);
@@ -330,7 +342,14 @@ command = (("goto(#" + func_name) + ")");
 send_command(command); 
 command = (((("#" + func_name) + "_res") + str_call_number) + ":\n");
 command = (command + (("pop($" + func_name) + "_res)"));
+[goto(#not_send_void_pop_end), (void_flag), print("")];
+send_command(command);
+#not_send_void_pop_end: 
+[print(""), (void_flag), goto(#send_void_mark_end)];
+command = (((("#" + func_name) + "_res") + str_call_number) + ":\n");
+command=(command+"print(\"\")");
 send_command(command); 
+#send_void_mark_end:
 command = buf; 
 call_number = (call_number + 1);
 
