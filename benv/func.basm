@@ -18,6 +18,7 @@ int arg_type_len;
 int func_begin;
 int func_end; 
 int func_len;
+int limit_border;
 int number;
 int func_len;
 int func_name_len;
@@ -43,7 +44,6 @@ get_root_dest(root_dest);
  
 SET_SOURCE("benv/long_function_program.b");
 SET_DEST("benv/program.basm");
-send_command("string $return_var");
 next_command(command);
 
 #again_begin:
@@ -111,6 +111,8 @@ void_flag = True;
 #set_void_flag_end:
 type_len = len(return_type);
 func_name = command[type_len:br_number];
+buf = (("string $" + func_name) + "_return_var");
+send_command(buf);
 left_border = (br_number + 1);
 was_func = True;
 
@@ -218,25 +220,33 @@ goto(#pop_start);
 left_border = 0;
 
 #inside_args:
+limit_border = len(buf);
+limit_border = (limit_border - 1);
+
 [goto(#inside_args_end), (buf == "}"), print("")];
 arg_type = "int";
 right_border = (left_border + 3);
+[goto(#no_args), (right_border > limit_border), print("")];
 number = index(buf[left_border:right_border], "int");
 [print(""), (-1 == number), goto(#inside_arg_type_end)];
 arg_type = "bool";
 right_border = (left_border + 4);
+[goto(#no_args), (right_border > limit_border), print("")];
 number = index(buf[left_border:right_border], "bool");
 [print(""), (-1 == number), goto(#inside_arg_type_end)];
 arg_type = "float";
 right_border = (left_border + 5);
+[goto(#no_args), (right_border > limit_border), print("")];
 number = index(buf[left_border:right_border], "float");
 [print(""), (-1 == number), goto(#inside_arg_type_end)];
 arg_type = "stack";
 right_border = (left_border + 5);
+[goto(#no_args), (right_border > limit_border), print("")];
 number = index(buf[left_border:right_border], "stack");
 [print(""), (-1 == number), goto(#inside_arg_type_end)];
 arg_type = "string";
 right_border = (left_border + 6);
+[goto(#no_args), (right_border > limit_border), print("")];
 number = index(buf[left_border:right_border], "string");
 [print(""), (-1 == number), goto(#inside_arg_type_end)];
 arg_type = "no_args";
@@ -286,7 +296,7 @@ send_command(command);
 goto(#undefine_start);
 #undefine_end:
 
-command = "goto($return_var)";
+command = (("goto($" + func_name) + "_return_var)");
 send_command(command); 
 next_command(command);
 command = ((("#" + (func_name + "_end:")) + "\n") + command);
@@ -344,7 +354,7 @@ buf = (buf + buf2);
 buf="print(\"\")";
 #set_buf_nop_end:
 str_call_number = str(call_number);
-command = (((("$return_var=\"#"+func_name)+"_res")+str_call_number)+"\"");
+command = (((((("$" + func_name) + "_return_var=\"#")+func_name)+"_res")+str_call_number)+"\"");
 send_command(command);
 command = (("goto(#" + func_name) + ")");
 send_command(command); 

@@ -785,16 +785,22 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 					} else {
 						v[2] = append(v[2].([]interface{}), RO[1].([]interface{})[2])
 					}
+					break
 				} else if "pop" == fmt.Sprintf("%v", RO[0].([]string)[0]) {
 					newPopVariable := EachVariable(variables)
 					for popVar := newPopVariable(); "end" != fmt.Sprintf("%v", popVar[0]); popVar = newPopVariable() {
 						if popVar[1] == RO[0].([]string)[1] {
+							VFI := ValueFoldInterface(v[2])
+							if "string" == fmt.Sprintf("%T", VFI) {
+								VFI = []interface{}{VFI}
+							}
+							popVar[2] = VFI.([]interface{})[len(VFI.([]interface{}))-1]
+							v[2] = VFI
 
-							popVar[2] = v[2].([]interface{})[len(v[2].([]interface{}))-1]
-
-							if "end" != fmt.Sprintf("%v", (v[2].([]interface{})[len(v[2].([]interface{}))-1]).([]interface{})[0]) {
+							if "end" != fmt.Sprintf("%v", ValueFoldInterface(VFI.([]interface{})[len(VFI.([]interface{}))-1])) {
 								v[2] = v[2].([]interface{})[:len(v[2].([]interface{}))-1]
 							}
+
 							break
 						}
 					}
@@ -816,6 +822,9 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 	} else {
 		newVariable := EachVariable(variables)
 		for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
+			if 0 == len(LO) {
+				panic("CARAMBA")
+			}
 			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
 				if "print" == OP && "string" != v[0] {
 					panic(errors.New("sysExecuteTree: ERROR: print: dataTypeMismatch"))
