@@ -20,6 +20,7 @@ int func_end;
 int func_len;
 int number;
 int func_len;
+int func_name_len;
 int br_number;
 int fig_br_number;
 string func_name;
@@ -34,7 +35,6 @@ bool is_first;
 bool was_func;
 bool was_here; 
 bool void_flag;
-bool is_function_part;
 string root_dest;
 
 is_first = True;
@@ -299,20 +299,13 @@ func_name_len = len(func_name);
 #start_entry: 
 [goto(#again_end), ("end" == command), print("")];
 number = index(command, func_name);
-number = (number + 1);
-buf4 = command[number];
-number = (number - 1); 
-print(command);
-print("\n");
-print(buf4);
-print("\n");
-is_function_part = is_letter(buf4);
-[goto(#mod_end), (is_function_part), print("")];
-is_function_part = is_digit(buf4);
-[goto(#mod_end), (is_function_part), print("")];
-[goto(#mod_end), ("_" == buf4), print("")];
-
 [goto(#mod_end), (-1 == number), print("")];
+
+number = (number + func_name_len);
+buf4 = command[number];
+number = (number - func_name_len); 
+[print(""), ("(" == buf4), goto(#mod_end)];
+
 buf = command;
 
 br_number = index(buf, "(");

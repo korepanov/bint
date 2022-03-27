@@ -56,7 +56,7 @@ func main() {
 	}
 
 	if options.Internal == toTranslate {
-		toTranslate = options.User // эту опцию можно менять для системной отладки
+		toTranslate = options.No // эту опцию можно менять для системной отладки
 
 		if options.Internal == toTranslate {
 			fmt.Println("Translating...")

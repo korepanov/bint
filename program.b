@@ -4,7 +4,7 @@ float sum(float a, float b){
 	return res;
 };
 
-int res_hi(){
+int res_hello(){
 	print("Hello, world!\n");
 	return 0; 
 };
@@ -15,7 +15,7 @@ void hello(string user_name){
 	print(buf);
 };
 
-void world(){
+void hello_world(){
 	print("Hello, world!\n");
 };
 
@@ -32,6 +32,6 @@ buf = str(c);
 print(buf);
 print("\n");
 int res; 
-res = res_hi(); 
+res = res_hello(); 
 [print("OK\n"), (0 == res), print("ERROR\n")];
-world(); 
+hello_world(); 
