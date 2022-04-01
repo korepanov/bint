@@ -1,37 +1,7 @@
-string $sum_return_var;
-int $sum_res;
-goto(#sum_end);
-#sum:
-intb;
-inta;
+voidmy_print(strings){print("");
+print(s);
+print("
+");
+};
 print("");
-pop(b);
-pop(a);
-print("");
-intc;
-c=(a+b);
-push(c);
-goto($sum_return_var);
-c=(a-b);
-push(c);
-goto($sum_return_var);
-c=(a*b);
-push(c);
-goto($sum_return_var);
-UNDEFINE(c);
-UNDEFINE(b);
-UNDEFINE(a);
-goto($sum_return_var);
-#sum_end:
-print("");
-intres;
-push(1);
-push(2);
-$sum_return_var="#sum_res0";
-goto(#sum);
-#sum_res0:
-pop($sum_res);
-res=$sum_res;
-stringbuf;
-buf=str(res);
-print(buf);
+my_print("Hello world");

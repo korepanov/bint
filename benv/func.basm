@@ -9,7 +9,8 @@ string return_type;
 string buf;
 string buf2;
 string buf3; 
-string buf4; 
+string buf4;
+string symbol; 
 int int_buf;
 int int_buf2;
 int int_buf3; 
@@ -36,6 +37,7 @@ bool is_first;
 bool was_func;
 bool was_here; 
 bool void_flag;
+bool is_print;
 string root_dest;
 
 is_first = True;
@@ -86,7 +88,23 @@ br_number = index(command, "(");
 buf = command[0:br_number];
 return_type = "int";
 number = index(buf, "print");
-[print(""), (-1 == number), goto(#command_end)];
+[goto(#print_clause_end), (-1 == number), print("")];
+number = (number - 1);
+symbol = buf[number];
+[goto(#print_clause_end), ("_" == symbol), goto(#command_end)];
+
+is_print = is_digit(symbol);
+is_print = NOT(is_print);
+[goto(#command_end), (is_print), print("")];
+is_print = is_letter(symbol);
+is_print = NOT(is_print);
+[goto(#command_end), (is_print), print("")];
+print(buf);
+print("\n");
+print(symbol);
+print("\n");
+
+#print_clause_end:
 number = index(buf, "int");
 [print(""), (-1 == number), goto(#end_type)];
 return_type = "bool";
