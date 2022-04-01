@@ -198,7 +198,7 @@ func GetCommandCounterByMark(f *os.File, mark string) (int, *os.File, error) {
 	}
 	newChunk := EachChunk(f)
 	for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
-		expr := CodeInput(chunk)
+		expr := CodeInput(chunk, true)
 		if len(expr) > len(mark) && expr[0:len(mark)] == mark && ":" == string(expr[len(mark)]) {
 			return i, f, nil
 		}
@@ -297,7 +297,7 @@ func WhatsType(val string) string {
 	return "string"
 }
 
-func CodeInput(expr string) string {
+func CodeInput(expr string, lineIncrement bool) string {
 	var stringsInside []string
 	var poses []int
 	var pos int
@@ -332,7 +332,9 @@ func CodeInput(expr string) string {
 			startFlag = true
 		}
 	}
-	LineCounter += strings.Count(expr, "\n")
+	if lineIncrement {
+		LineCounter += strings.Count(expr, "\n")
+	}
 	expr = strings.Replace(expr, " ", "", -1)
 	expr = strings.Replace(expr, "\t", "", -1)
 	expr = strings.Replace(expr, "\n", "", -1)

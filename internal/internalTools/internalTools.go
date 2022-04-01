@@ -119,8 +119,8 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 		}
 		newChunk := EachChunk(f)
 		for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
-			exprList, variables, err = LexicalAnalyze(CodeInput(chunk), variables)
-
+			exprList, variables, err = LexicalAnalyze(CodeInput(chunk, true), variables)
+			fmt.Println(chunk + "| " + fmt.Sprintf("%v", LineCounter))
 			if nil != err {
 				panic(err)
 			}
@@ -208,7 +208,7 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 							if fmt.Sprintf("%v", varName) == fmt.Sprintf("%v", v[1]) {
 								var code string
 								code = sourceNewChunk()
-								v[2] = CodeInput(code)
+								v[2] = CodeInput(code, false)
 								break
 							}
 						}
