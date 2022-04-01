@@ -1,18 +1,15 @@
-int hello(){
-
-int a;
-a = 0;
-
-#start:
-[print(""), (a < 5), goto(#end)];
-a = (a + 1);
-print("Hello world!\n");
-goto(#start);
-#end:
-return 0;
+int sum(int a, int b){
+	int c;
+	c = (a + b);
+	return c;
+	c = (a - b);
+	return c; 
+	c = (a * b);
+	return c; 
 };
 
-
 int res;
-res = hello();
-[print(""), (0 == res), print("ERROR\n")];
+res = sum(1, 2);
+string buf;
+buf = str(res);
+print(buf);

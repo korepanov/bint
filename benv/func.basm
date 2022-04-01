@@ -265,6 +265,8 @@ command_len = len(buf);
 buf = buf[6:command_len];
 buf = ((("push(") + buf) + ")");
 send_command(buf);
+buf = (("goto($" + func_name) + "_return_var)");
+send_command(buf);
 next_command(buf);
 goto(#inside_args);
 #not_send_return_end:

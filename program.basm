@@ -1,29 +1,37 @@
-string $hello_return_var;
-int $hello_res;
-goto(#hello_end);
-#hello:
-print("");
-print("");
+string $sum_return_var;
+int $sum_res;
+goto(#sum_end);
+#sum:
+intb;
 inta;
-a=0;
-#start:print("");
-[print(""),(a<5),goto(#end)];
-a=(a+1);
-print("Hello world!
-");
 print("");
-goto(#start);
-#end:print("");
-push(0);
+pop(b);
+pop(a);
+print("");
+intc;
+c=(a+b);
+push(c);
+goto($sum_return_var);
+c=(a-b);
+push(c);
+goto($sum_return_var);
+c=(a*b);
+push(c);
+goto($sum_return_var);
+UNDEFINE(c);
+UNDEFINE(b);
 UNDEFINE(a);
-goto($hello_return_var);
-#hello_end:
+goto($sum_return_var);
+#sum_end:
 print("");
 intres;
-$hello_return_var="#hello_res0";
-goto(#hello);
-#hello_res0:
-pop($hello_res);
-res=$hello_res;
-[print(""),(0==res),print("ERROR
-")];
+push(1);
+push(2);
+$sum_return_var="#sum_res0";
+goto(#sum);
+#sum_res0:
+pop($sum_res);
+res=$sum_res;
+stringbuf;
+buf=str(res);
+print(buf);
