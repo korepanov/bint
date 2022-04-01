@@ -1,14 +1,26 @@
-print("Welcome to the program!\n");
-
-int a;
-string buf;
-a = 5;	
- 
-buf = str(a);
-print(buf);
-print("\n");
-
-buf = "Hello!\n";
-buf = buf[0:10];
-print(buf);
-
+string $hello_return_var;
+int $hello_res;
+goto(#hello_end);
+#hello:
+print("");
+print("");
+inta;
+a=0;
+#start:[print(""),(a<5),goto(#end)];
+a=(a+1);
+print("Hello world!
+");
+goto(#start);
+#end:return0;
+UNDEFINE(a);
+goto($hello_return_var);
+#hello_end:
+print("");
+intres;
+$hello_return_var="#hello_res0";
+goto(#hello);
+#hello_res0:
+pop($hello_res);
+res=$hello_res;
+[print(""),(0==res),print("ERROR
+")];

@@ -1,34 +1,18 @@
-float sum(float a, float b){
-	float res; 
-	res = (a + b);
-	return res; 
+int hello(){
+
+int a;
+a = 0;
+
+#start:
+[print(""), (a < 5), goto(#end)];
+a = (a + 1);
+print("Hello world!\n");
+goto(#start);
+#end:
+return 0;
 };
 
-float sub(){
-	float res;
-	float a; 
-	float b;
-	a = sum(1, 2);
-	b = sum(3, 4);
-	 
-	res = (a - b);
-	return res; 
-};
 
-float mul(){
-	float a; 
-	float b; 
-	a = sub();
-	b = 5; 
-	
-	res = (a * b);
-	return res; 
-
-};
-
-float res; 
-res = mul();
-string buf;
-buf = str(res);
-print(buf);  
-
+int res;
+res = hello();
+[print(""), (0 == res), print("ERROR\n")];

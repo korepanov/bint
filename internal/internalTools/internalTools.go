@@ -108,6 +108,7 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 	for _, fileToExecute = range filesListToExecute {
 		COMMAND_COUNTER = 1
 		sourceCommandCounter = 1
+		LineCounter = 1
 		variables = nil
 		systemStack = []interface{}{"end"}
 
