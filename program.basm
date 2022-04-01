@@ -6,12 +6,15 @@ print("");
 print("");
 inta;
 a=0;
-#start:[print(""),(a<5),goto(#end)];
+#start:print("");
+[print(""),(a<5),goto(#end)];
 a=(a+1);
 print("Hello world!
 ");
+print("");
 goto(#start);
-#end:return0;
+#end:print("");
+push(0);
 UNDEFINE(a);
 goto($hello_return_var);
 #hello_end:
