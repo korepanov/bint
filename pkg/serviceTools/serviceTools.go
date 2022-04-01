@@ -10,6 +10,8 @@ import (
 	"strings"
 )
 
+var LineCounter = 1
+
 func FindExprListEnd(exprList [][]interface{}, exprBegin int) int {
 	openedBraces := 1
 	closedBraces := 0
@@ -335,7 +337,7 @@ func CodeInput(expr string) string {
 			startFlag = true
 		}
 	}
-
+	LineCounter += strings.Count(expr, "\n")
 	expr = strings.Replace(expr, " ", "", -1)
 	expr = strings.Replace(expr, "\t", "", -1)
 	expr = strings.Replace(expr, "\n", "", -1)

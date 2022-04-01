@@ -96,8 +96,16 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 	var sourceNewChunk func() string
 	systemStack := []interface{}{"end"}
 	sourceCommandCounter := 1
+	var fileToExecute string
 
-	for _, fileToExecute := range filesListToExecute {
+	defer func() {
+		if r := recover(); nil != r {
+			fmt.Println("ERROR in " + fileToExecute + " at near line " + fmt.Sprintf("%v", LineCounter))
+			fmt.Println(r)
+		}
+	}()
+
+	for _, fileToExecute = range filesListToExecute {
 		COMMAND_COUNTER = 1
 		sourceCommandCounter = 1
 		variables = nil
@@ -111,6 +119,7 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 		newChunk := EachChunk(f)
 		for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
 			exprList, variables, err = LexicalAnalyze(CodeInput(chunk), variables)
+
 			if nil != err {
 				panic(err)
 			}
@@ -126,11 +135,6 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 				res, variables, systemStack = executor.ExecuteTree(infoList, variables, systemStack)
 				if "print" != res[0] {
 					if "goto" == fmt.Sprintf("%v", res[0]) {
-						//_, err = f.Seek(0, 0)
-
-						//if nil != err {
-						//	panic(err)
-						//}
 
 						COMMAND_COUNTER, f, err = GetCommandCounterByMark(f, fmt.Sprintf("%v", res[1]))
 
@@ -143,7 +147,6 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 							panic(err)
 						}
 
-						//COMMAND_COUNTER -= 1 // в конце цикла счетчик команд увеличивается на 1
 						continue
 					}
 					if "SET_SOURCE" == fmt.Sprintf("%v", res[0]) {
