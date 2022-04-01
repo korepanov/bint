@@ -120,7 +120,7 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 		newChunk := EachChunk(f)
 		for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
 			exprList, variables, err = LexicalAnalyze(CodeInput(chunk, true), variables)
-			fmt.Println(chunk + "| " + fmt.Sprintf("%v", LineCounter))
+
 			if nil != err {
 				panic(err)
 			}
