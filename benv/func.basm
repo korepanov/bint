@@ -37,7 +37,6 @@ bool is_first;
 bool was_func;
 bool was_here; 
 bool void_flag;
-bool is_print;
 string root_dest;
 
 is_first = True;
@@ -87,41 +86,23 @@ br_number = index(command, "(");
 [goto(#command_end), (-1 == br_number), print("")];
 buf = command[0:br_number];
 return_type = "int";
-number = index(buf, "print");
-[goto(#print_clause_end), (-1 == number), print("")];
-number = (number - 1);
-symbol = buf[number];
-[goto(#print_clause_end), ("_" == symbol), goto(#command_end)];
-
-is_print = is_digit(symbol);
-is_print = NOT(is_print);
-[goto(#command_end), (is_print), print("")];
-is_print = is_letter(symbol);
-is_print = NOT(is_print);
-[goto(#command_end), (is_print), print("")];
-print(buf);
-print("\n");
-print(symbol);
-print("\n");
-
-#print_clause_end:
 number = index(buf, "int");
-[print(""), (-1 == number), goto(#end_type)];
+[goto(#end_type), (0 == number), print("")];
 return_type = "bool";
 number = index(buf, "bool");
-[print(""), (-1 == number), goto(#end_type)];
+[goto(#end_type), (0 == number), print("")];
 return_type = "float";
 number = index(buf, "float");
-[print(""), (-1 == number), goto(#end_type)];
+[goto(#end_type), (0 == number), print("")];
 return_type = "stack";
 number = index(buf, "stack");
-[print(""), (-1 == number), goto(#end_type)];
+[goto(#end_type), (0 == number), print("")];
 return_type = "string";
 number = index(buf, "string");
-[print(""), (-1 == number), goto(#end_type)];
+[goto(#end_type), (0 == number), print("")];
 return_type = "void";
 number = index(buf, "void");
-[print(""), (-1 == number), goto(#end_type)];
+[goto(#end_type), (0 == number), print("")];
 goto(#command_end);
 #end_type:
 [print(""),("void" == return_type), goto(#set_void_flag_end)];
