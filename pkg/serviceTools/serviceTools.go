@@ -10,7 +10,8 @@ import (
 	"strings"
 )
 
-var LineCounter = 1
+var LineCounter = 0
+var CommandToExecute string
 
 func FindExprListEnd(exprList [][]interface{}, exprBegin int) int {
 	openedBraces := 1
@@ -77,6 +78,7 @@ func mySplit(buffer string, pattern *regexp.Regexp) [2]string {
 		len(trimRes) > 0 && ";" != string(trimRes[len(trimRes)-1]) {
 		resList[1] += ";"
 	}
+
 	return resList
 }
 
@@ -164,10 +166,17 @@ func EachChunk(file *os.File) func() string {
 			if "" != strings.TrimSpace(buffer) {
 				buffer += ";"
 			}
+			//if 0 == strings.Count(part, "\n"){
+			//	part += ";\n"
+			//} else {
 			part += ";"
+			//}
 			return part[:len(part)-1]
 		}
 
+		//if 0 == strings.Count(part, "\n"){
+		//	part += "\n"
+		//}
 		return part
 	}
 }
@@ -191,7 +200,7 @@ func SetCommandCounter(file *os.File, COMMAND_COUNTER int) (func() string, error
 
 func GetCommandCounterByMark(f *os.File, mark string) (int, *os.File, error) {
 	i := 1
-	LineCounter = 1
+	LineCounter = 0
 	_, err := f.Seek(0, 0)
 	if nil != err {
 		return i, f, err
@@ -333,7 +342,11 @@ func CodeInput(expr string, lineIncrement bool) string {
 		}
 	}
 	if lineIncrement {
-		LineCounter += strings.Count(expr, "\n")
+		if 0 == strings.Count(expr, "\n") {
+			LineCounter++
+		} else {
+			LineCounter += strings.Count(expr, "\n")
+		}
 	}
 	expr = strings.Replace(expr, " ", "", -1)
 	expr = strings.Replace(expr, "\t", "", -1)

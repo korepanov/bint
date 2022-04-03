@@ -1,7 +1,0 @@
-voidmy_print(strings){print("");
-print(s);
-print("
-");
-};
-print("");
-my_print("Hello world");

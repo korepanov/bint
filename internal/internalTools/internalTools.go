@@ -94,6 +94,7 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 	var source *os.File
 	var dest *os.File
 	var sourceNewChunk func() string
+	var wasGetCommandCounterByMark bool
 	systemStack := []interface{}{"end"}
 	sourceCommandCounter := 1
 	var fileToExecute string
@@ -101,6 +102,7 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 	defer func() {
 		if r := recover(); nil != r {
 			fmt.Println("ERROR in " + fileToExecute + " at near line " + fmt.Sprintf("%v", LineCounter))
+			fmt.Println(CommandToExecute)
 			fmt.Println(r)
 		}
 	}()
@@ -108,7 +110,7 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 	for _, fileToExecute = range filesListToExecute {
 		COMMAND_COUNTER = 1
 		sourceCommandCounter = 1
-		LineCounter = 1
+		LineCounter = 0
 		variables = nil
 		systemStack = []interface{}{"end"}
 
@@ -119,7 +121,9 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 		}
 		newChunk := EachChunk(f)
 		for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
-			exprList, variables, err = LexicalAnalyze(CodeInput(chunk, true), variables)
+			CommandToExecute = strings.TrimSpace(chunk)
+			exprList, variables, err = LexicalAnalyze(CodeInput(chunk, !wasGetCommandCounterByMark), variables)
+			wasGetCommandCounterByMark = false
 
 			if nil != err {
 				panic(err)
@@ -137,6 +141,7 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 				if "print" != res[0] {
 					if "goto" == fmt.Sprintf("%v", res[0]) {
 
+						wasGetCommandCounterByMark = true
 						COMMAND_COUNTER, f, err = GetCommandCounterByMark(f, fmt.Sprintf("%v", res[1]))
 
 						if nil != err {
