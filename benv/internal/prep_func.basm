@@ -12,6 +12,12 @@ int command_len;
 next_command(command);
 #begin:
 [goto(#end), ("end" == command), print("")];
+number = index(command, "#");
+[goto(#add_nop_after_mark_end), (-1 == number), print("")];
+number = index(command, ":");
+goto(#add_nop);
+#add_nop_after_mark_end:
+
 number = index(command, "{");
 [goto(#add_nop_end), (-1 == number), print("")];
 
