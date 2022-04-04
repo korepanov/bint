@@ -179,7 +179,7 @@ send_command(command);
 command = "#";
 command = (command + func_name);
 command = (command + ":\n");
-[print(""),("no_args" == arg_type), goto(#end_nop_command)];
+[print(""),(("no_args" == arg_type)OR("void" == return_type)), goto(#end_nop_command)];
 command=(command+"print(\"\")");
 send_command(command);
 #end_nop_command:
