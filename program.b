@@ -2,13 +2,8 @@ int sum(int a, int b){
 	return (a + b);
 };
 
-int sum2(){
-	return sum(2, 3);
-};
-
-
 int res;
-res = sum2();
+res = (sum(1, 2) + sum(2, 3));
 string buf;
 buf = str(res);
 print(buf);

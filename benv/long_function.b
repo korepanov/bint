@@ -35,7 +35,7 @@ res = init();
 [goto(#end), ("end" == command), print("")];
 send_command(command);
 bool_res = is_func(command);
-[print(command), (bool_res), print("\n")];
+[print(command), (bool_res), print("")];
 next_command(command);
 goto(#start);
 #end:
