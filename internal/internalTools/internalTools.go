@@ -66,7 +66,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 			fmt.Println("Translating...")
 			rootSource = "program.b"
 			rootDest = "program.basm"
-			filesListToExecute = []string{"benv/prep_func.basm", "benv/long_function.basm", "benv/func.basm"}
+			filesListToExecute = []string{"benv/prep_func.basm", "benv/long_function.basm"}
 		} else if options.No == toTranslate {
 			rootDest = "program.basm"
 			filesListToExecute = []string{rootDest}

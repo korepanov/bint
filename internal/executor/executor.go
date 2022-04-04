@@ -824,6 +824,9 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 		}
 	} else {
 		newVariable := EachVariable(variables)
+		wasLO := false
+		wasRO := false
+
 		for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
 			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
 				if "print" == OP && "string" != v[0] {
@@ -833,17 +836,21 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 					panic(errors.New("sysExecuteTree: ERROR: len: dataTypeMismatch"))
 				}
 
-				if "string" == fmt.Sprintf("%T", v[2]) {
+				if "string" == fmt.Sprintf("%T", v[2]) && !wasLO {
 					LO = []interface{}{v[2]}
-				} else {
+					wasLO = true
+				} else if !wasLO {
 					LO = v[2].([]interface{})
+					wasLO = true
 				}
 			}
 			if fmt.Sprintf("%v", RO[0]) == fmt.Sprintf("%v", v[1]) {
-				if "string" == fmt.Sprintf("%T", v[2]) {
+				if "string" == fmt.Sprintf("%T", v[2]) && !wasRO {
 					RO = []interface{}{v[2]}
-				} else {
+					wasRO = true
+				} else if !wasRO {
 					RO = v[2].([]interface{})
+					wasRO = true
 				}
 			}
 		}
