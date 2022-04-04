@@ -31,8 +31,10 @@ string arg_name;
 int left_border;
 int comma_pos;
 stack buf_stack;
+stack buf_stack_reserv;
 stack buf_stack2;
 stack inside_vars_stack;
+stack inside_vars_stack_reserv;
 bool is_first;
 bool was_func;
 bool was_here; 
@@ -179,11 +181,9 @@ send_command(command);
 command = "#";
 command = (command + func_name);
 command = (command + ":\n");
-[print(""),(("no_args" == arg_type)OR("void" == return_type)), goto(#end_nop_command)];
 command=(command+"print(\"\")");
 send_command(command);
-#end_nop_command:
-print("");
+command = "";
 #args_to_pass:
 buf_stack2.pop(arg_type);
 buf_stack2.pop(arg_name);
@@ -249,7 +249,6 @@ right_border = (left_border + 6);
 number = index(buf[left_border:right_border], "string");
 [print(""), (-1 == number), goto(#inside_arg_type_end)];
 arg_type = "no_args";
-
 #inside_arg_type_end:
 [goto(#no_args), ("no_args" == arg_type), print("")];
 type_len = len(arg_type); 
@@ -264,40 +263,75 @@ command_len = len(buf);
 buf = buf[6:command_len];
 buf = ((("push(") + buf) + ")");
 send_command(buf);
-buf = (("goto($" + func_name) + "_return_var)");
-send_command(buf);
+
 next_command(buf);
 goto(#inside_args);
 #not_send_return_end:
 send_command(buf);
 next_command(buf);
+
+
+#pop_args_start0:
+inside_vars_stack.pop(arg_name);
+[goto(#pop_args_end0), ("end" == arg_name), print("")];
+command = (("UNDEFINE(" + arg_name) + ")");
+[goto(#not_send0), ("end" == arg_name), print("")];
+send_command(command);
+inside_vars_stack_reserv.push(arg_name);
+#not_send0:
+goto(#pop_args_start0);
+#pop_args_end0:
+
+arg_name = "";
+#undefine_start0:
+[goto(#undefine_end0), ("end" == arg_name), print("")];
+buf_stack.pop(arg_name); 
+command = (("UNDEFINE(" + arg_name) + ")");
+[goto(#undefine_end0), ("end" == arg_name), print("")];
+send_command(command);
+buf_stack_reserv.push(arg_name);
+#not_send0:
+goto(#undefine_start0);
+#undefine_end0:
+inside_vars_stack = inside_vars_stack_reserv;
+buf_stack = buf_stack_reserv;
+arg_name = "";
+
+
+
 goto(#inside_args);
 #inside_args_end:
 print("");
 
 #pop_args_start:
-[goto(#pop_args_end), ("end" == arg_name), print("")];
 inside_vars_stack.pop(arg_name);
+print(arg_name);
+print("\n");
+[goto(#pop_args_end), ("end" == arg_name), print("")];
 command = (("UNDEFINE(" + arg_name) + ")");
 [goto(#not_send), ("end" == arg_name), print("")];
 send_command(command);
+inside_vars_stack_reserv.push(arg_name);
 #not_send:
 goto(#pop_args_start);
 #pop_args_end:
 
 arg_name = "";
-
 #undefine_start:
 [goto(#undefine_end), ("end" == arg_name), print("")];
 buf_stack.pop(arg_name); 
 command = (("UNDEFINE(" + arg_name) + ")");
 [goto(#undefine_end), ("end" == arg_name), print("")];
 send_command(command);
+buf_stack_reserv.push(arg_name);
 #not_send:
 goto(#undefine_start);
 #undefine_end:
-
+inside_vars_stack = inside_vars_stack_reserv;
+buf_stack = buf_stack_reserv;
+arg_name = "";
 command = (("goto($" + func_name) + "_return_var)");
+
 send_command(command); 
 next_command(command);
 command = ((("#" + (func_name + "_end:")) + "\n") + command);

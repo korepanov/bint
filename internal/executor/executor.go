@@ -790,6 +790,9 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 					newPopVariable := EachVariable(variables)
 					for popVar := newPopVariable(); "end" != fmt.Sprintf("%v", popVar[0]); popVar = newPopVariable() {
 						if popVar[1] == RO[0].([]string)[1] {
+							if "end" == fmt.Sprintf("%v", v[2].([]interface{})[0]) {
+								v[2].([]interface{})[0] = []interface{}{"end"}
+							}
 							VFI := ValueFoldInterface(v[2])
 							if "string" == fmt.Sprintf("%T", VFI) {
 								VFI = []interface{}{VFI}
@@ -822,9 +825,6 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 	} else {
 		newVariable := EachVariable(variables)
 		for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
-			if 0 == len(LO) {
-				panic("CARAMBA")
-			}
 			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
 				if "print" == OP && "string" != v[0] {
 					panic(errors.New("sysExecuteTree: ERROR: print: dataTypeMismatch"))

@@ -1,6 +1,15 @@
-void hello(string s){
-	print(s);
-	print("\n");
+int sum(int a, int b){
+	return (a + b);
 };
 
-hello("Hello world!");
+int sum2(){
+	return sum(2, 3);
+};
+
+
+int res;
+res = sum2();
+string buf;
+buf = str(res);
+print(buf);
+print("\n");
