@@ -200,7 +200,9 @@ func SetCommandCounter(file *os.File, COMMAND_COUNTER int) (func() string, error
 
 func GetCommandCounterByMark(f *os.File, mark string) (int, *os.File, error) {
 	i := 1
+	shadowLineCounter := LineCounter
 	LineCounter = 0
+
 	_, err := f.Seek(0, 0)
 	if nil != err {
 		return i, f, err
@@ -213,6 +215,7 @@ func GetCommandCounterByMark(f *os.File, mark string) (int, *os.File, error) {
 		}
 		i++
 	}
+	LineCounter = shadowLineCounter
 	err = errors.New("serviceTools: get_command_counter_by_mark: ERROR: no such mark: " + mark)
 	return i, f, err
 }

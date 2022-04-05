@@ -14,7 +14,7 @@ func main() {
 	}
 
 	// последнюю опцию можно менять для системной отладки
-	rootSource, rootDest, filesListToExecute = SetConf(toTranslate, rootSource, rootDest, options.User)
+	rootSource, rootDest, filesListToExecute = SetConf(toTranslate, rootSource, rootDest, options.No)
 
 	Start(filesListToExecute, rootSource, rootDest)
 }

@@ -44,7 +44,7 @@ func ParseArgs() (int, string, string, error) {
 		toTranslate = options.Internal
 	} else {
 		flag.Usage()
-		err := errors.New("ivalid arguments")
+		err := errors.New("invalid arguments")
 		return toTranslate, rootSource, rootDest, err
 	}
 
@@ -95,6 +95,7 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 	var dest *os.File
 	var sourceNewChunk func() string
 	var wasGetCommandCounterByMark bool
+
 	systemStack := []interface{}{"end"}
 	sourceCommandCounter := 1
 	var fileToExecute string
