@@ -166,17 +166,12 @@ func EachChunk(file *os.File) func() string {
 			if "" != strings.TrimSpace(buffer) {
 				buffer += ";"
 			}
-			//if 0 == strings.Count(part, "\n"){
-			//	part += ";\n"
-			//} else {
+
 			part += ";"
-			//}
+
 			return part[:len(part)-1]
 		}
 
-		//if 0 == strings.Count(part, "\n"){
-		//	part += "\n"
-		//}
 		return part
 	}
 }

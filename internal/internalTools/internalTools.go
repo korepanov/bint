@@ -66,6 +66,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 			fmt.Println("Translating...")
 			rootSource = "program.b"
 			rootDest = "program.basm"
+			// в конце временно убрал benv/func.basm с целью отладки
 			filesListToExecute = []string{"benv/prep_func.basm", "benv/long_function.basm"}
 		} else if options.No == toTranslate {
 			rootDest = "program.basm"
@@ -177,6 +178,11 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 					}
 					if "RESET_SOURCE" == fmt.Sprintf("%v", res[0]) {
 						sourceCommandCounter = 1
+						_, err := source.Seek(0, 0)
+						if nil != err {
+							panic(err)
+						}
+						sourceNewChunk = EachChunk(source)
 					}
 					if "SET_DEST" == fmt.Sprintf("%v", res[0]) {
 						dest = res[1].(*os.File)

@@ -35,6 +35,7 @@ stack buf_stack_reserv;
 stack buf_stack2;
 stack inside_vars_stack;
 stack inside_vars_stack_reserv;
+stack null;
 bool is_first;
 bool was_func;
 bool was_here; 
@@ -302,7 +303,44 @@ next_command(buf);
 
 goto(#inside_args);
 #inside_args_end:
+[print(""), ("void" == return_type), goto(#define_return_end)];
+
+
+
+#pop_args_start:
+inside_vars_stack.pop(arg_name);
+[goto(#pop_args_end), ("end" == arg_name), print("")];
+command = (("UNDEFINE(" + arg_name) + ")");
+[goto(#not_send), ("end" == arg_name), print("")];
+send_command(command);
+inside_vars_stack_reserv.push(arg_name);
+#not_send:
+goto(#pop_args_start);
+#pop_args_end:
+
+arg_name = "";
+#undefine_start:
+[goto(#undefine_end), ("end" == arg_name), print("")];
+buf_stack.pop(arg_name); 
+command = (("UNDEFINE(" + arg_name) + ")");
+[goto(#undefine_end), ("end" == arg_name), print("")];
+send_command(command);
+buf_stack_reserv.push(arg_name);
+#not_send:
+goto(#undefine_start);
+#undefine_end:
+inside_vars_stack = inside_vars_stack_reserv;
+buf_stack = buf_stack_reserv;
+arg_name = "";
+command = (("goto($" + func_name) + "_return_var)");
+send_command(command);
+
+
+#define_return_end:
 print("");
+inside_vars_stack = null;
+buf_stack = null; 
+
 next_command(command);
 command = ((("#" + (func_name + "_end:")) + "\n") + command);
 send_command(command);

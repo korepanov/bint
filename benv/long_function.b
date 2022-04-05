@@ -31,7 +31,6 @@ stack next_func(){
 	
 	#next_func_st:
 	next_command(command);
-	send_command(command);
 	[goto(#end_file), ("end" == command), print("")];
 	number = index(command, "{");
 	[goto(#end_clause), (-1 == number), print("")];
@@ -66,23 +65,84 @@ stack next_func(){
 	return func_stack;
 };
 
+stack get_funcs(){
+	stack res_stack;
+	string return_type;
+	string func_name;
+	
+	#get_funcs_s:
+	func_stack = next_func();
+	func_stack.pop(return_type);
+	func_stack.pop(func_name);
+	
+	[goto(#get_funcs_e), ("end" == func_name), print("")];
+	res_stack.push(func_name);
+	res_stack.push(return_type); 
+	goto(#get_funcs_s);
+	#get_funcs_e:
+	RESET_SOURCE();
+	return res_stack;
+		
+};
+
+void replace(){
+	string command;
+	int number;
+	bool change_flag;
+	int func_len;
+	string symbol;
+	
+	change_flag = False;
+	func_stack = get_funcs();
+	
+	#replace_s:
+	func_stack.pop(return_type);
+	func_stack.pop(func_name);
+	
+	[goto(#replace_e), ("end" == func_name), print("")];
+	
+	#next:
+	next_command(command);
+	[goto(#next_end), ("end" == command), print("")];
+	number = index(command, func_name);
+	[print(""), (-1 == number), goto(#not_send)];
+	send_command(command);
+	goto(#next);
+	#not_send:
+	
+	func_len = len(func_name);
+	number = (number + func_len);
+	symbol = command[number];
+	print(command);
+	print("\n");
+	print(symbol);
+	print("\n");
+	
+	send_command(command);
+	goto(#next);
+	#next_end:
+	UNSET_SOURCE();
+	UNSET_DEST();
+	[goto(#change), (change_flag), print("")];
+	change_flag = True;
+	SET_SOURCE("benv/long_function_program.b");
+	SET_DEST("benv/long_function_program2.b");
+	goto(#replace_s);
+	#change:
+	change_flag = False; 
+	SET_SOURCE("benv/long_function_program.b");
+	SET_DEST("benv/long_function_program2.b");
+	goto(#replace_s);
+
+	#replace_e:
+	print("");
+};
+
 int res; 
+
 res = init();
 
 [print(""), (0 == res), print("INIT ERROR\n")];
-func_stack = next_func();
-func_stack.pop(return_type);
-func_stack.pop(func_name);
-print(return_type);
-print(" ");
-print(func_name);
-print("\n");
-func_stack = next_func();
-func_stack.pop(return_type);
-func_stack.pop(func_name);
-print(return_type);
-print(" ");
-print(func_name);
-print("\n");
+replace();
 res = finish();
 [print(""), (0 == res), print("FINISH ERROR\n")];

@@ -4,6 +4,10 @@ int sum(int a, int b){
 
 int res;
 
+int sum2(){
+	return (2 + 3);
+};
+
 float subtitution(float first, float second){
 	return (first - second);
 };
