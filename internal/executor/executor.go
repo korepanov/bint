@@ -752,7 +752,11 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 
 	if "." == OP {
 		newVariable := EachVariable(variables)
+		breakFlag := false
 		for v := newVariable(); "end" != v[0]; v = newVariable() {
+			if breakFlag {
+				break
+			}
 			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
 				typeLO := fmt.Sprintf("%v", v[0])
 
@@ -803,8 +807,9 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 							if "end" != fmt.Sprintf("%v", ValueFoldInterface(VFI.([]interface{})[len(VFI.([]interface{}))-1])) {
 								v[2] = v[2].([]interface{})[:len(v[2].([]interface{}))-1]
 							}
-
+							breakFlag = true
 							break
+
 						}
 					}
 				} else {

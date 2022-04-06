@@ -85,8 +85,23 @@ stack get_funcs(){
 		
 };
 
+stack reverse(stack s){
+	string buf;
+	stack res; 
+	
+	s.pop(buf);
+	#reverse_s:
+	[goto(#reverse_e), ("end" == buf), print("")];
+	res.push(buf);
+	s.pop(buf);
+	goto(#reverse_s);
+	#reverse_e:
+	return res;
+};
+
 stack indexes(string s, string sub_s){
 	stack res;
+	
 	int i;
 	int pointer; 
 	int s_len;
@@ -103,14 +118,13 @@ stack indexes(string s, string sub_s){
 	i = (i + (s_len_old - s_len));
 	res.push(i);
 	pointer = (pointer + sub_len);
-	
 	s = s[pointer:s_len];
 	s_len = len(s);
 	i = index(s, sub_s);
 	pointer = i;
 	goto(#indexes_s);
 	#indexes_e:
-	
+	res = reverse(res);
 	return res;
 };
 
