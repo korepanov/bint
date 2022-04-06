@@ -85,13 +85,50 @@ stack get_funcs(){
 		
 };
 
+stack indexes(string s, string sub_s){
+	stack res;
+	int i;
+	int pointer; 
+	int s_len;
+	int s_len_old;
+	int sub_len;
+ 	
+	s_len = len(s);
+	sub_len = len(sub_s);
+	s_len_old = s_len;
+	i = index(s, sub_s);
+	pointer = i;
+	#indexes_s:
+	[goto(#indexes_e), (-1 == i), print("")];
+	i = (i + (s_len_old - s_len));
+	res.push(i);
+	pointer = (pointer + sub_len);
+	
+	s = s[pointer:s_len];
+	s_len = len(s);
+	i = index(s, sub_s);
+	pointer = i;
+	goto(#indexes_s);
+	#indexes_e:
+	
+	return res;
+};
+
 void replace(){
 	string command;
+	int command_len;
 	int number;
+	int func_pos;
+	stack func_pos_stack;
 	bool change_flag;
 	int func_len;
 	string symbol;
-	
+	string return_type;
+	int func_entry;
+	string str_func_entry;
+	string buf;
+
+	func_entry = 0;
 	change_flag = False;
 	func_stack = get_funcs();
 	
@@ -113,10 +150,46 @@ void replace(){
 	func_len = len(func_name);
 	number = (number + func_len);
 	symbol = command[number];
+	[print(""), ("(" == symbol), goto(#next)];
+
+	
+	arg_type = "int";
+	number = index(command, "int");
+	[goto(#next), (0 == number), print("")];
+	arg_type = "bool";
+	number = index(command, "bool");
+	[goto(#next), (0 == number), print("")];
+	arg_type = "float";
+	number = index(command, "float");
+	[goto(#next), (0 == number), print("")];
+	arg_type = "stack";
+	number = index(command, "stack");
+	[goto(#next), (0 == number), print("")];
+	arg_type = "string";
+	number = index(command, "string");
+	[goto(#next), (0 == number), print("")];
+	
+	
 	print(command);
 	print("\n");
-	print(symbol);
+	func_pos_stack = indexes(command, func_name);	
+	func_pos_stack.pop(buf);
+	#pop_func_pos_start:
+	[goto(#pop_func_pos_end), ("end" == buf), print("")];
+	print(buf);
 	print("\n");
+	func_pos_stack.pop(buf);
+	goto(#pop_func_pos_start);
+	#pop_func_pos_end:
+
+	str_func_entry = str(func_entry);
+	command = (((("$" + func_name) +  "_res") + str_func_entry) + "=");
+	func_entry = (func_entry + 1);
+	
+
+	print(command);
+	print("\n");
+	
 	
 	send_command(command);
 	goto(#next);
