@@ -257,6 +257,7 @@ func LexicalAnalyze(expr string, variables [][]interface{}) ([][]interface{}, []
 			} else if len(expr) > i && "\"" == string(expr[i]) {
 				// строка
 				var stringInside string
+
 				j := i + 1
 				offset := 1
 

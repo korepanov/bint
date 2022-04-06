@@ -304,9 +304,9 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 					if `"` == string(varVal[0]) && `"` == string(varVal[len(varVal)-1]) {
 						varVal = varVal[1 : len(varVal)-1]
 					}
-					if "\"" == string(varVal[0]) {
-						varVal = varVal[1 : len(varVal)-1]
-					}
+					//if "\"" == string(varVal[0]) {
+					//	varVal = varVal[1 : len(varVal)-1]
+					//}
 
 					break
 				}

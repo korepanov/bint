@@ -41,6 +41,7 @@ bool was_func;
 bool was_here; 
 bool void_flag;
 string root_dest;
+string temp;
 
 is_first = True;
 was_here = False;
