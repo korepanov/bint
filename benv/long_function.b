@@ -147,8 +147,6 @@ stack func_ends(string command, stack func_begins, int func_len){
 	[goto(#func_ends_e), ("end" == buf), print("")];
 	i = int(buf);
 	command_len = len(command);
-	print(command);
-	print("\n");
 	br_begin = (i + (func_len));
 	opened_braces = 1;
 	br_end = (br_begin + 1);
@@ -165,14 +163,11 @@ stack func_ends(string command, stack func_begins, int func_len){
 	
 	goto(#counter_s);	
 	#counter_e:
-	temp = str(br_end);
-	print(temp);
-	print("\n");
 	res.push(br_end);
 	func_begins.pop(buf);
 	goto(#func_ends_s);
 	#func_ends_e:
-	return res;
+	return reverse(res);
 };
 
 void replace(){
@@ -188,7 +183,8 @@ void replace(){
 	string return_type;
 	int func_entry;
 	string str_func_entry;
-	string buf;
+	string sleft_border;
+	string sright_border;
 
 	func_entry = 0;
 	change_flag = False;
@@ -236,11 +232,16 @@ void replace(){
 	print("\n");
 	func_pos_stack = indexes(command, func_name);	
 	func_ends_stack = func_ends(command, func_pos_stack, func_len);
-	#pop_func_pos_start:
-	[goto(#pop_func_pos_end), ("end" == buf), print("")];
-	
 
-	func_pos_stack.pop(buf);
+	func_pos_stack.pop(sleft_border);
+	func_ends_stack.pop(sright_border);
+	#pop_func_pos_start:
+	[goto(#pop_func_pos_end), ("end" == sleft_border), print("")];
+	print(sleft_border);
+	print("\n");
+
+	func_pos_stack.pop(sleft_border);
+	func_ends_stack.pop(sright_border);
 	goto(#pop_func_pos_start);
 	#pop_func_pos_end:
 
@@ -273,11 +274,19 @@ void replace(){
 	print("");
 };
 
-int res; 
+void main(){
 
-res = init();
+	int res; 
 
-[print(""), (0 == res), print("INIT ERROR\n")];
-replace();
-res = finish();
-[print(""), (0 == res), print("FINISH ERROR\n")];
+	res = init();
+
+	[print(""), (0 == res), print("INIT ERROR\n")];
+
+	replace();
+	res = finish();
+
+	[print(""), (0 == res), print("FINISH ERROR\n")];
+};
+
+main(); 
+
