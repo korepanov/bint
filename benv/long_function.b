@@ -128,12 +128,60 @@ stack indexes(string s, string sub_s){
 	return res;
 };
 
+stack func_ends(string command, stack func_begins, int func_len){
+	string buf;
+	string symbol;
+	int i;
+	int br_begin;
+	int br_end;
+	int command_len;
+	int opened_braces;
+	int closed_braces;
+	stack res;
+	string temp;
+	
+	
+	func_begins.pop(buf);
+	#func_ends_s:
+	closed_braces = 0;
+	[goto(#func_ends_e), ("end" == buf), print("")];
+	i = int(buf);
+	command_len = len(command);
+	print(command);
+	print("\n");
+	br_begin = (i + (func_len));
+	opened_braces = 1;
+	br_end = (br_begin + 1);
+	#counter_s:
+	[goto(#counter_e), (opened_braces == closed_braces), print("")];
+	symbol = command[br_end];
+	[print(""), ("(" == symbol), goto(#inc_o_end)];
+	opened_braces = (opened_braces + 1);
+	#inc_o_end:
+	[print(""), (")" == symbol), goto(#inc_c_end)];
+	closed_braces = (closed_braces + 1);
+	#inc_c_end:
+	br_end = (br_end + 1);
+	
+	goto(#counter_s);	
+	#counter_e:
+	temp = str(br_end);
+	print(temp);
+	print("\n");
+	res.push(br_end);
+	func_begins.pop(buf);
+	goto(#func_ends_s);
+	#func_ends_e:
+	return res;
+};
+
 void replace(){
 	string command;
 	int command_len;
 	int number;
 	int func_pos;
 	stack func_pos_stack;
+	stack func_ends_stack;
 	bool change_flag;
 	int func_len;
 	string symbol;
@@ -187,11 +235,11 @@ void replace(){
 	print(command);
 	print("\n");
 	func_pos_stack = indexes(command, func_name);	
-	func_pos_stack.pop(buf);
+	func_ends_stack = func_ends(command, func_pos_stack, func_len);
 	#pop_func_pos_start:
 	[goto(#pop_func_pos_end), ("end" == buf), print("")];
-	print(buf);
-	print("\n");
+	
+
 	func_pos_stack.pop(buf);
 	goto(#pop_func_pos_start);
 	#pop_func_pos_end:
