@@ -171,9 +171,14 @@ stack func_ends(string command, stack func_begins, int func_len){
 void replace(){
 	string command;
 	string command_to_send;
+	string replaced_command;
+	string left_part;
+	string right_part;
 	int command_len;
 	int number;
 	int func_pos;
+	int itemp;
+	int offset;
 	stack func_pos_stack;
 	stack func_ends_stack;
 	bool change_flag;
@@ -186,9 +191,14 @@ void replace(){
 	string sright_border;
 	int left_border;
 	int right_border;
+	int left_border_reserv;
+	int right_border_reserv;
 	string func_call;
+	string stemp;
+	int stemp_len;
 
 	func_entry = 0;
+	offset = 0;
 	change_flag = False;
 	func_stack = get_funcs();
 	
@@ -237,15 +247,33 @@ void replace(){
 
 	func_pos_stack.pop(sleft_border);
 	func_ends_stack.pop(sright_border);
+	replaced_command = command;
+	itemp = len(command);
+
 	#pop_func_pos_start:
 	[goto(#pop_func_pos_end), ("end" == sleft_border), print("")];
 	left_border = int(sleft_border);
 	right_border = int(sright_border);
+	left_border_reserv = left_border;
+	right_border_reserv = right_border;
+	left_border = (left_border + offset);
+	right_border = (right_border + offset);
 
 	str_func_entry = str(func_entry);
 	command_to_send = (((("$" + func_name) +  "_res") + str_func_entry) + "=");
 	func_entry = (func_entry + 1);
-	func_call = command[left_border:right_border];
+	func_call = command[left_border_reserv:right_border_reserv];
+	left_part = replaced_command[0:left_border];
+	right_part = replaced_command[right_border:itemp];
+	
+	replaced_command = (((((left_part + "$") + func_name) + "_res") + str_func_entry) + right_part); 
+	print(replaced_command);
+	print("\n");
+	stemp = ((("$" + func_name) + "_res") + str_func_entry);
+	stemp_len = len(stemp);
+	offset = (stemp_len - (right_border - left_border));
+
+	itemp = len(replaced_command);
 	command_to_send = (command_to_send + func_call);
 	send_command(command_to_send);
 		
@@ -253,6 +281,7 @@ void replace(){
 	func_ends_stack.pop(sright_border);
 	goto(#pop_func_pos_start);
 	#pop_func_pos_end:
+	send_command(replaced_command);
 	goto(#next);
 	#next_end:
 	UNSET_SOURCE();
