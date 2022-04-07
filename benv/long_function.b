@@ -13,8 +13,6 @@ int init(){
 
 int finish(){
 	DEL_DEST("benv/prep_func_program.b");
-	UNSET_SOURCE();
-	UNSET_DEST();
 
 	return 0;
 };
@@ -172,6 +170,7 @@ stack func_ends(string command, stack func_begins, int func_len){
 
 void replace(){
 	string command;
+	string command_to_send;
 	int command_len;
 	int number;
 	int func_pos;
@@ -185,6 +184,9 @@ void replace(){
 	string str_func_entry;
 	string sleft_border;
 	string sright_border;
+	int left_border;
+	int right_border;
+	string func_call;
 
 	func_entry = 0;
 	change_flag = False;
@@ -237,28 +239,27 @@ void replace(){
 	func_ends_stack.pop(sright_border);
 	#pop_func_pos_start:
 	[goto(#pop_func_pos_end), ("end" == sleft_border), print("")];
-	print(sleft_border);
-	print("\n");
+	left_border = int(sleft_border);
+	right_border = int(sright_border);
 
+	str_func_entry = str(func_entry);
+	command_to_send = (((("$" + func_name) +  "_res") + str_func_entry) + "=");
+	func_entry = (func_entry + 1);
+	func_call = command[left_border:right_border];
+	command_to_send = (command_to_send + func_call);
+	send_command(command_to_send);
+		
 	func_pos_stack.pop(sleft_border);
 	func_ends_stack.pop(sright_border);
 	goto(#pop_func_pos_start);
 	#pop_func_pos_end:
-
-	str_func_entry = str(func_entry);
-	command = (((("$" + func_name) +  "_res") + str_func_entry) + "=");
-	func_entry = (func_entry + 1);
-	
-
-	print(command);
-	print("\n");
-	
-	
-	send_command(command);
 	goto(#next);
 	#next_end:
 	UNSET_SOURCE();
 	UNSET_DEST();
+	func_stack.pop(func_name);
+	[goto(#replace_e), ("end" == func_name), print("")];
+	func_stack.push(func_name);
 	[goto(#change), (change_flag), print("")];
 	change_flag = True;
 	SET_SOURCE("benv/long_function_program.b");
