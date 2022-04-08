@@ -168,6 +168,20 @@ stack func_ends(string command, stack func_begins, int func_len){
 	return reverse(res);
 };
 
+void del_file(bool change_flag){
+	string command;
+	[print(""), (change_flag), goto(#copy_e)];
+	SET_SOURCE("benv/long_function_program2.b");
+	SET_DEST("benv/long_function_program.b");
+	#copy_s:
+	[goto(#copy_e), ("end" == command), print("")];
+	next_command(command);
+	send_command(command);
+	goto(#copy_s);
+	#copy_e:
+	DEL_DEST("benv/long_function_program2.b");
+};
+
 void replace(){
 	string command;
 	string command_to_send;
@@ -260,6 +274,9 @@ void replace(){
 	right_border = (right_border + offset);
 
 	str_func_entry = str(func_entry);
+	command_to_send = ((((return_type + "$") + func_name) + "_res") + str_func_entry);
+	send_command(command_to_send);
+
 	command_to_send = (((("$" + func_name) +  "_res") + str_func_entry) + "=");
 	func_entry = (func_entry + 1);
 	func_call = command[left_border_reserv:right_border_reserv];
@@ -301,8 +318,9 @@ void replace(){
 	goto(#replace_s);
 
 	#replace_e:
-	print("");
+	del_file(change_flag);
 };
+
 
 void main(){
 

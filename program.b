@@ -8,7 +8,7 @@ int summa2(){
 	return (2 + 3);
 };
 
-float subtitution(float first, float second){
+int subtitution(float first, float second){
 	return (first - second);
 };
 
