@@ -195,6 +195,7 @@ void replace(){
 	int right_border_reserv;
 	string func_call;
 	string stemp;
+	string temp;
 	int stemp_len;
 
 	func_entry = 0;
@@ -249,6 +250,7 @@ void replace(){
 	func_ends_stack.pop(sright_border);
 	replaced_command = command;
 	itemp = len(command);
+	stemp_len = 0;
 
 	#pop_func_pos_start:
 	[goto(#pop_func_pos_end), ("end" == sleft_border), print("")];
@@ -256,6 +258,7 @@ void replace(){
 	right_border = int(sright_border);
 	left_border_reserv = left_border;
 	right_border_reserv = right_border;
+
 	left_border = (left_border + offset);
 	right_border = (right_border + offset);
 
@@ -271,8 +274,8 @@ void replace(){
 	print("\n");
 	stemp = ((("$" + func_name) + "_res") + str_func_entry);
 	stemp_len = len(stemp);
-	offset = (stemp_len - (right_border - left_border));
-
+	offset = (offset + (stemp_len - (right_border - left_border)));
+	temp = str(offset);
 	itemp = len(replaced_command);
 	command_to_send = (command_to_send + func_call);
 	send_command(command_to_send);
@@ -287,6 +290,7 @@ void replace(){
 	UNSET_SOURCE();
 	UNSET_DEST();
 	func_stack.pop(func_name);
+	func_entry = 0;
 	[goto(#replace_e), ("end" == func_name), print("")];
 	func_stack.push(func_name);
 	[goto(#change), (change_flag), print("")];
