@@ -3,7 +3,7 @@ string root_source;
 void init(){
 	get_root_source(root_source);
 	SET_SOURCE(root_source);
-	SET_DEST("benv/if_program.b");
+	SET_DEST("benv/import_program.b");
 };
 
 void finish(){
