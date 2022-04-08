@@ -1,6 +1,7 @@
+#import "strings.b"
+
 void main(){
-	print("main");
-	print("\n");
+	println("lala!");
 };
 
 main();
