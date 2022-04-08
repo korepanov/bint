@@ -235,24 +235,29 @@ void replace(){
 	func_len = len(func_name);
 	number = (number + func_len);
 	symbol = command[number];
-	[print(""), ("(" == symbol), goto(#next)];
-
 	
+	[print(""), ("(" == symbol), goto(#to_next_start)];
+
 	arg_type = "int";
 	number = index(command, "int");
-	[goto(#next), (0 == number), print("")];
+	[goto(#to_next_start), (0 == number), print("")];
 	arg_type = "bool";
 	number = index(command, "bool");
-	[goto(#next), (0 == number), print("")];
+	[goto(#to_next_start), (0 == number), print("")];
 	arg_type = "float";
 	number = index(command, "float");
-	[goto(#next), (0 == number), print("")];
+	[goto(#to_next_start), (0 == number), print("")];
 	arg_type = "stack";
 	number = index(command, "stack");
-	[goto(#next), (0 == number), print("")];
+	[goto(#to_next_start), (0 == number), print("")];
 	arg_type = "string";
 	number = index(command, "string");
-	[goto(#next), (0 == number), print("")];
+	[goto(#to_next_start), (0 == number), goto(#to_next_end)];
+	
+	#to_next_start:
+	send_command(command);
+	goto(#next);
+	#to_next_end:
 	
 	func_pos_stack = indexes(command, func_name);	
 	func_ends_stack = func_ends(command, func_pos_stack, func_len);
