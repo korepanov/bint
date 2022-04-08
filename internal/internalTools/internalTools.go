@@ -55,18 +55,19 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 	var filesListToExecute []string
 
 	if options.Internal == toTranslate {
-		toTranslate = toTranslateInternal // эту опцию можно менять для системной отладки
+		toTranslate = toTranslateInternal
 
 		if options.Internal == toTranslate {
 			fmt.Println("Translating...")
-			rootSource = "benv/long_function.b"
-			rootDest = "benv/long_function.basm"
-			filesListToExecute = []string{"benv/internal/prep_func.basm", "benv/internal/func.basm"}
+			rootSource = "benv/if.b"
+			rootDest = "benv/if.basm"
+			filesListToExecute = []string{"benv/internal/prep_func.basm", "benv/internal/long_function.basm",
+				"benv/internal/func.basm"}
 		} else if options.User == toTranslate {
 			fmt.Println("Translating...")
 			rootSource = "program.b"
 			rootDest = "program.basm"
-			filesListToExecute = []string{"benv/prep_func.basm", "benv/long_function.basm", "benv/func.basm"}
+			filesListToExecute = []string{"benv/if.basm", "benv/prep_func.basm", "benv/long_function.basm", "benv/func.basm"}
 		} else if options.No == toTranslate {
 			rootDest = "program.basm"
 			filesListToExecute = []string{rootDest}
