@@ -17,3 +17,4 @@ string buf;
 buf = str(res);
 print(buf);
 print("\n");
+res = (subtitution(summa(1, 2), summa(2, 3)) + subtitution(3, 4));

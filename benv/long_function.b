@@ -240,9 +240,6 @@ void replace(){
 	number = index(command, "string");
 	[goto(#next), (0 == number), print("")];
 	
-	
-	print(command);
-	print("\n");
 	func_pos_stack = indexes(command, func_name);	
 	func_ends_stack = func_ends(command, func_pos_stack, func_len);
 
@@ -270,8 +267,6 @@ void replace(){
 	right_part = replaced_command[right_border:itemp];
 	
 	replaced_command = (((((left_part + "$") + func_name) + "_res") + str_func_entry) + right_part); 
-	print(replaced_command);
-	print("\n");
 	stemp = ((("$" + func_name) + "_res") + str_func_entry);
 	stemp_len = len(stemp);
 	offset = (offset + (stemp_len - (right_border - left_border)));
@@ -291,6 +286,7 @@ void replace(){
 	UNSET_DEST();
 	func_stack.pop(func_name);
 	func_entry = 0;
+	offset = 0;
 	[goto(#replace_e), ("end" == func_name), print("")];
 	func_stack.push(func_name);
 	[goto(#change), (change_flag), print("")];
@@ -300,8 +296,8 @@ void replace(){
 	goto(#replace_s);
 	#change:
 	change_flag = False; 
-	SET_SOURCE("benv/long_function_program.b");
-	SET_DEST("benv/long_function_program2.b");
+	SET_SOURCE("benv/long_function_program2.b");
+	SET_DEST("benv/long_function_program.b");
 	goto(#replace_s);
 
 	#replace_e:
