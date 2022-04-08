@@ -215,12 +215,15 @@ void replace(){
 	func_entry = 0;
 	offset = 0;
 	change_flag = False;
+	was_replace = False;
 	func_stack = get_funcs();
-	
+	func_stack.push("$temp");
+	func_stack.push("$temp");
+
 	#replace_s:
 	func_stack.pop(return_type);
 	func_stack.pop(func_name);
-	
+		
 	[goto(#replace_e), ("end" == func_name), print("")];
 	
 	#next:
@@ -295,6 +298,7 @@ void replace(){
 	temp = str(offset);
 	itemp = len(replaced_command);
 	command_to_send = (command_to_send + func_call);
+	
 	send_command(command_to_send);
 		
 	func_pos_stack.pop(sleft_border);

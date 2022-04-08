@@ -1,20 +1,10 @@
-int summa(int a, int b){
-	return (a + b);
+void println(string s){
+	print(s);
+	print("\n");
 };
 
-int res;
-
-int summa2(){
-	return (2 + 3);
+void main(){
+	println("Hello world!");
 };
 
-int subtitution(float first, float second){
-	return (first - second);
-};
-
-res = (((100 + (((4 + summa(1, 2)) + summa(2, 3)) + summa(4, 5))) + 200) + summa(300, 400));
-string buf;
-buf = str(res);
-print(buf);
-print("\n");
-res = (subtitution(summa(1, 2), summa(2, 3)) + subtitution(3, 4));
+main();
