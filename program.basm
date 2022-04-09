@@ -1,17 +1,8 @@
-int c;
-float b;
-stack s;
 string buf;
-string buf2;
 
-buf = "myval";
-s.push(buf);
-s.pop(buf2);
-
-goto(#mark);
-
-print("Hello world!\n");
-
-#mark:
-print(buf2);
+buf = "Hello world!";
+int ind;
+ind = index(buf, "world");
+buf = str(ind);
+print(buf);
 print("\n");

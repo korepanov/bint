@@ -755,7 +755,7 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 				if "" == typeRO {
 					typeRO = WhatsType(fmt.Sprintf("%v", RO[0]))
 				}
-				if typeLO == typeRO || ("float" == typeLO && "int" == typeRO) {
+				if typeLO == typeRO || ("float" == typeLO && "int" == typeRO) || toTranspile {
 					v[2] = RO
 					if toTranspile {
 						if nil == transpileVar {
@@ -812,6 +812,7 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 								RO = nil
 								RO = append(RO, []string{"push"})
 								RO = append(RO, rightVar)
+								transpileVar = rightVar[1]
 							}
 							break
 
@@ -822,16 +823,32 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 				if "push" == fmt.Sprintf("%v", RO[0].([]string)[0]) {
 					if 1 == len(RO) {
 						v[2] = append(v[2].([]interface{}), []interface{}{RO[0].([]string)[1]})
-						if toTranspile {
+						if toTranspile && nil != transpileVar {
 							_, err := transpileDest.WriteString("setVar(\"" +
 								fmt.Sprintf("%v", v[1]) + "\", append(getVar(\"" +
 								fmt.Sprintf("%v", v[1]) + "\").([]interface{}), " + "getVar(\"" + fmt.Sprintf("%v", transpileVar) + "\")))\n")
 							if nil != err {
 								panic(err)
 							}
+						} else if nil == transpileVar {
+							_, err := transpileDest.WriteString("setVar(\"" +
+								fmt.Sprintf("%v", v[1]) + "\", append(getVar(\"" +
+								fmt.Sprintf("%v", v[1]) + "\").([]interface{}), " + RO[0].([]string)[1] + "))\n")
+							if nil != err {
+								panic(err)
+							}
 						}
 					} else {
 						v[2] = append(v[2].([]interface{}), RO[1].([]interface{})[2])
+						if toTranspile {
+							goCommand := "setVar(\"" +
+								fmt.Sprintf("%v", v[1]) + "\", append(getVar(\"" +
+								fmt.Sprintf("%v", v[1]) + "\").([]interface{}), " + "getVar(\"" + fmt.Sprintf("%v", transpileVar) + "\")))\n"
+							_, err := transpileDest.WriteString(goCommand)
+							if nil != err {
+								panic(err)
+							}
+						}
 					}
 					break
 				} else if "pop" == fmt.Sprintf("%v", RO[0].([]string)[0]) {

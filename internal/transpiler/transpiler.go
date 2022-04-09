@@ -8,7 +8,6 @@ import (
 	"math"
 	"os"
 	"strconv"
-	"strings"
 	"unicode"
 )
 
@@ -17,14 +16,7 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 		return []interface{}{"print", LO}, systemStack, nil
 	} else if "index" == OP {
 
-		if `"` == string(fmt.Sprintf("%v", LO[0])[0]) && `"` == string(fmt.Sprintf("%v", LO[0])[len(fmt.Sprintf("%v", LO[0]))-1]) {
-			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
-		}
-		if `"` == string(fmt.Sprintf("%v", RO[0])[0]) && `"` == string(fmt.Sprintf("%v", RO[0])[len(fmt.Sprintf("%v", RO[0]))-1]) {
-			RO[0] = RO[0].(string)[1 : len(RO[0].(string))-1]
-		}
-
-		return []interface{}{strings.Index(fmt.Sprintf("%v", LO[0]), fmt.Sprintf("%v", RO[0]))}, systemStack, nil
+		return []interface{}{"strings.Index(fmt.Sprintf(\"%v\"," + fmt.Sprintf("%v", LO[0]) + "), fmt.Sprintf(\"%v\"," + fmt.Sprintf("%v", RO[0]) + "))"}, systemStack, nil
 	} else if "len" == OP {
 		if `"` == string(fmt.Sprintf("%v", LO[0])[0]) && `"` == string(fmt.Sprintf("%v", LO[0])[len(fmt.Sprintf("%v", LO[0]))-1]) {
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
@@ -437,7 +429,7 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 
 		return []interface{}{math.Pow(floatLO, floatRO)}, systemStack, nil
 	} else if "str" == OP {
-		return []interface{}{"\"" + fmt.Sprintf("%v", LO[0]) + "\""}, systemStack, nil
+		return []interface{}{fmt.Sprintf("%v", LO[0])}, systemStack, nil
 	} else if "=" == OP {
 		return []interface{}{0}, systemStack, nil // успех
 	} else if "." == OP {
