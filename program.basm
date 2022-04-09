@@ -1,10 +1,8 @@
-string buf;
-string buf2;
+bool b;
+bool a;
+string c;
+c = "Jopa\n";
+b = False;
+a = True;
 
-buf = "world";
-buf2 = "Hello world";
-int ind;
-ind = index(buf2, buf);
-buf = str(ind);
-print(buf);
-print("\n");
+[print("Left\n"), ((((a)AND(b))OR(a))AND(a)), print("Right\n")];

@@ -581,11 +581,34 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 			_, infoListList, _ = Parse(condition, variables, usersStack, showTree, toTranspile, transpileDest)
 			infoList := infoListList[0]
 			resCon, variables, usersStack = ExecuteTree(infoList, variables, usersStack, toTranspile, transpileDest)
+
+			if toTranspile {
+				_, err := transpileDest.WriteString("if " + fmt.Sprintf("%v", fmt.Sprintf("%v", resCon[0])) + "{\n")
+				if nil != err {
+					panic(err)
+				}
+			}
 		} else {
+			transpileVar := condition[0][1]
+			var wasVar bool
+
 			newVariable := EachVariable(variables)
 			for v := newVariable(); "end" != v[0]; v = newVariable() {
 				if v[1] == condition[0][1] {
 					condition[0][1] = v[2]
+					transpileVar = v[1]
+					wasVar = true
+					_, err := transpileDest.WriteString("if \"True\" == getVar(\"" + fmt.Sprintf("%v", transpileVar) + "\"){\n")
+					if nil != err {
+						panic(err)
+					}
+				}
+			}
+
+			if toTranspile && !wasVar {
+				_, err := transpileDest.WriteString("if " + fmt.Sprintf("%v", StrToBool(fmt.Sprintf("%v", transpileVar))) + "{\n")
+				if nil != err {
+					panic(err)
 				}
 			}
 
@@ -595,7 +618,11 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 			}
 		}
 
-		exprList = append(exprList, []interface{}{"OP", "L: " + fmt.Sprintf("%v", resCon[0])})
+		if !toTranspile {
+			exprList = append(exprList, []interface{}{"OP", "L: " + fmt.Sprintf("%v", resCon[0])})
+		} else {
+			exprList = append(exprList, []interface{}{"OP", "CD"})
+		}
 
 		if "print" == rightExpr[0][1] {
 			exprList = append(exprList, []interface{}{"BR", "("})

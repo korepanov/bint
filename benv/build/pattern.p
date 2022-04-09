@@ -27,6 +27,17 @@ func getVar(varName string) interface{}{
 return vars[varName][len(vars[varName]) - 1]
 }
 
+func toBool(s interface{}) bool{
+if "bool" == fmt.Sprintf("%T", s){
+	return s.(bool)
+}
+if "True" == s.(string){
+return true
+}else{
+return false
+}
+} 
+
 func main(){
 
 _ = strings.Index("", "")

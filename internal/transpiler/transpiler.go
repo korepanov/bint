@@ -11,30 +11,47 @@ import (
 	"unicode"
 )
 
-func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []interface{}) ([]interface{}, []interface{}, error) {
+func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []interface{},
+	transpileDest *os.File) ([]interface{}, []interface{}, error) {
 	if "print" == OP {
 		return []interface{}{"print", LO}, systemStack, nil
 	} else if "index" == OP {
 
 		return []interface{}{"strings.Index(fmt.Sprintf(\"%v\"," + fmt.Sprintf("%v", LO[0]) + "), fmt.Sprintf(\"%v\"," + fmt.Sprintf("%v", RO[0]) + "))"}, systemStack, nil
 	} else if "len" == OP {
-		if `"` == string(fmt.Sprintf("%v", LO[0])[0]) && `"` == string(fmt.Sprintf("%v", LO[0])[len(fmt.Sprintf("%v", LO[0]))-1]) {
-			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
+
+		return []interface{}{"len(" + "fmt.Sprintf(\"%v\"," + fmt.Sprintf("%v", LO[0]) + "))"}, systemStack, nil
+	} else if "CD" == OP {
+		_, err := transpileDest.WriteString(fmt.Sprintf("%v", LO[0]) + "(" + fmt.Sprintf("%v", LO[1].([]interface{})[0]) + ")\n" + "}else{\n" +
+			fmt.Sprintf("%v", RO[0]) + "(" + fmt.Sprintf("%v", RO[1].([]interface{})[0]) + ")" + "\n}\n")
+		return []interface{}{0}, systemStack, err
+	} else if "AND" == OP {
+		if "bool" == WhatsType(fmt.Sprintf("%v", LO[0])) {
+			LO[0] = StrToBool(fmt.Sprintf("%v", LO[0]))
+		} else {
+			LO[0] = "toBool(" + fmt.Sprintf("%v", LO[0]) + ")"
+		}
+		if "bool" == WhatsType(fmt.Sprintf("%v", RO[0])) {
+			RO[0] = StrToBool(fmt.Sprintf("%v", RO[0]))
+		} else {
+			RO[0] = "toBool(" + fmt.Sprintf("%v", RO[0]) + ")"
 		}
 
-		return []interface{}{len(fmt.Sprintf("%v", LO[0]))}, systemStack, nil
-	} else if "AND" == OP {
-		if "bool" == WhatsType(fmt.Sprintf("%v", LO[0])) && "bool" == WhatsType(fmt.Sprintf("%v", RO[0])) {
-			return []interface{}{StrToBool(fmt.Sprintf("%v", LO[0])) && StrToBool(fmt.Sprintf("%v", RO[0]))}, systemStack, nil
-		}
-		err := errors.New("executor: AND: error: data type mismatch")
-		return LO, systemStack, err
+		return []interface{}{fmt.Sprintf("%v", fmt.Sprintf("%v", LO[0])) + "&&" + fmt.Sprintf("%v", fmt.Sprintf("%v", RO[0]))}, systemStack, nil
 	} else if "OR" == OP {
-		if "bool" == WhatsType(fmt.Sprintf("%v", LO[0])) && "bool" == WhatsType(fmt.Sprintf("%v", RO[0])) {
-			return []interface{}{StrToBool(fmt.Sprintf("%v", LO[0])) || StrToBool(fmt.Sprintf("%v", RO[0]))}, systemStack, nil
+		if "bool" == WhatsType(fmt.Sprintf("%v", LO[0])) {
+			LO[0] = StrToBool(fmt.Sprintf("%v", LO[0]))
+		} else {
+			LO[0] = "toBool(" + fmt.Sprintf("%v", LO[0]) + ")"
 		}
-		err := errors.New("executor: OR: error: data type mismatch")
-		return LO, systemStack, err
+		if "bool" == WhatsType(fmt.Sprintf("%v", RO[0])) {
+			RO[0] = StrToBool(fmt.Sprintf("%v", RO[0]))
+		} else {
+			RO[0] = "toBool(" + fmt.Sprintf("%v", RO[0]) + ")"
+		}
+
+		return []interface{}{fmt.Sprintf("%v", fmt.Sprintf("%v", LO[0])) + "||" + fmt.Sprintf("%v", fmt.Sprintf("%v", RO[0]))}, systemStack, nil
+
 	} else if "XOR" == OP {
 		if "bool" == WhatsType(fmt.Sprintf("%v", LO[0])) && "bool" == WhatsType(fmt.Sprintf("%v", RO[0])) {
 			return []interface{}{StrToBool(fmt.Sprintf("%v", LO[0])) != StrToBool(fmt.Sprintf("%v", RO[0]))}, systemStack, nil

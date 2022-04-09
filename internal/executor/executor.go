@@ -760,9 +760,12 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 					if toTranspile {
 						if nil == transpileVar {
 							transpileVar = RO[0]
-
+							stranspileVar := fmt.Sprintf("%v", transpileVar)
+							if "\"" == string(stranspileVar[0]) && "\"" == string(stranspileVar[len(stranspileVar)-1]) {
+								stranspileVar = stranspileVar[1 : len(stranspileVar)-1]
+							}
 							_, err := transpileDest.WriteString("setVar(\"" + fmt.Sprintf("%v", LO[0]) +
-								"\"," + fmt.Sprintf("%v", transpileVar) + ")\n")
+								"\",\"" + stranspileVar + "\")\n")
 							if nil != err {
 								panic(err)
 							}
@@ -973,7 +976,7 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 				panic(err)
 			}
 		} else {
-			res, systemStack, err = Transpile(systemStack, OP, passLO, passRO)
+			res, systemStack, err = Transpile(systemStack, OP, passLO, passRO, transpileDest)
 			if nil != err {
 				panic(err)
 			}
