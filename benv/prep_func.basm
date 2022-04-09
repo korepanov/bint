@@ -1,13 +1,13 @@
-string root_source; 
-root_source = "benv/import_program.b";
-SET_SOURCE(root_source);
-SET_DEST("benv/prep_func_program.b");
-
+string root_source;
 string command;
 int number;
 string left_part;
 string right_part;
 int command_len;
+ 
+root_source = "benv/import_program.b";
+SET_SOURCE(root_source);
+SET_DEST("benv/prep_func_program.b");
 
 next_command(command);
 #begin:

@@ -1,16 +1,17 @@
-string $main_return_var;
-goto(#main_end);
-#main:
-print("");
-print("");
-print("main");
-print("
-");
-goto($main_return_var);
-#main_end:
-print("");
-$main_return_var="#main_res0";
-goto(#main);
-#main_res0:
-print("");
-print("");
+int c;
+float b;
+stack s;
+string buf;
+string buf2;
+
+buf = "myval";
+s.push(buf);
+s.pop(buf2);
+
+goto(#mark);
+
+print("Hello world!\n");
+
+#mark:
+print(buf2);
+print("\n");

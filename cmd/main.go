@@ -6,7 +6,11 @@ import (
 )
 
 func main() {
+	// эту опцию можно менять для системной отладки
+	sysMode := options.Transpile
+
 	var filesListToExecute []string
+
 	toTranslate, rootSource, rootDest, err := ParseArgs()
 
 	if nil != err {
@@ -14,7 +18,7 @@ func main() {
 	}
 
 	// последнюю опцию можно менять для системной отладки
-	rootSource, rootDest, filesListToExecute = SetConf(toTranslate, rootSource, rootDest, options.Internal)
+	rootSource, rootDest, filesListToExecute = SetConf(toTranslate, rootSource, rootDest, sysMode)
 
-	Start(filesListToExecute, rootSource, rootDest)
+	Start(filesListToExecute, rootSource, rootDest, sysMode)
 }

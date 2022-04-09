@@ -215,6 +215,20 @@ func GetCommandCounterByMark(f *os.File, mark string) (int, *os.File, error) {
 	return i, f, err
 }
 
+func GetMark(expr string) string {
+	var mark string
+
+	if "#" == string(expr[0]) {
+		mark = "#"
+		i := 1
+		for ":" != string(expr[i]) {
+			mark += string(expr[i])
+			i++
+		}
+	}
+	return mark
+}
+
 // Exists проверка существования файла
 func Exists(name string) bool {
 	if _, err := os.Stat(name); err != nil {

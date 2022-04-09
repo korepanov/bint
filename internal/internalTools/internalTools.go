@@ -9,6 +9,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 )
@@ -69,6 +70,33 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 			rootDest = "program.basm"
 			filesListToExecute = []string{"benv/import.basm"}
 			//filesListToExecute = []string{"benv/import.basm", "benv/prep_func.basm", "benv/long_function.basm", "benv/func.basm"}
+		} else if options.Transpile == toTranslate {
+			fmt.Println("Transpiling...")
+			rootSource = "program.basm"
+			rootDest = "benv/build/main.go"
+			source, err := os.Open("benv/build/pattern.p")
+			if nil != err {
+				panic(err)
+			}
+			dest, err := os.Create(rootDest)
+
+			if nil != err {
+				panic(err)
+			}
+			_, err = io.Copy(dest, source)
+			if nil != err {
+				panic(err)
+			}
+			err = source.Close()
+			if nil != err {
+				panic(err)
+			}
+
+			err = dest.Close()
+			if nil != err {
+				panic(err)
+			}
+			filesListToExecute = []string{rootSource}
 		} else if options.No == toTranslate {
 			rootDest = "program.basm"
 			filesListToExecute = []string{rootDest}
@@ -88,13 +116,14 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 	return rootSource, rootDest, filesListToExecute
 }
 
-func Start(filesListToExecute []string, rootSource string, rootDest string) {
+func Start(filesListToExecute []string, rootSource string, rootDest string, sysMod int) {
 	COMMAND_COUNTER := 1
 	var variables [][]interface{}
 	var exprList [][]interface{}
 	var infoListList [][]interface{}
 	var source *os.File
 	var dest *os.File
+	var transpileDest *os.File
 	var sourceNewChunk func() string
 	var wasGetCommandCounterByMark bool
 
@@ -110,12 +139,22 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 		}
 	}()
 
+	var err error
+
+	if options.Transpile == sysMod {
+		transpileDest, err = os.OpenFile(rootDest, os.O_APPEND|os.O_WRONLY, 0644)
+		if nil != err {
+			panic(err)
+		}
+	}
+
 	for _, fileToExecute = range filesListToExecute {
 		COMMAND_COUNTER = 1
 		sourceCommandCounter = 1
 		LineCounter = 0
 		variables = nil
 		systemStack = []interface{}{"end"}
+		var inputedCode string
 
 		f, err := os.Open(fileToExecute)
 
@@ -125,7 +164,20 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 		newChunk := EachChunk(f)
 		for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
 			CommandToExecute = strings.TrimSpace(chunk)
-			exprList, variables, err = LexicalAnalyze(CodeInput(chunk, !wasGetCommandCounterByMark), variables)
+			inputedCode = CodeInput(chunk, !wasGetCommandCounterByMark)
+
+			if options.Transpile == sysMod {
+				mark := GetMark(inputedCode)
+				if "" != mark {
+					_, err = transpileDest.WriteString("goto " + mark[1:] + "\n" + mark[1:] + ":\n")
+					if nil != err {
+						panic(err)
+					}
+				}
+			}
+
+			exprList, variables, err = LexicalAnalyze(inputedCode,
+				variables, options.Transpile == sysMod, transpileDest)
 			wasGetCommandCounterByMark = false
 
 			if nil != err {
@@ -133,14 +185,16 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 			}
 
 			if 0 != exprList[0][1] { // выражение содержит команды
-				_, infoListList, systemStack = parser.Parse(exprList, variables, systemStack, false)
+				_, infoListList, systemStack = parser.Parse(exprList, variables, systemStack, options.HideTree,
+					options.Transpile == sysMod, transpileDest)
 			} else {
 				continue
 			}
 
 			for _, infoList := range infoListList {
 				var res []interface{}
-				res, variables, systemStack = executor.ExecuteTree(infoList, variables, systemStack)
+				res, variables, systemStack = executor.ExecuteTree(infoList, variables, systemStack,
+					options.Transpile == sysMod, transpileDest)
 				if "print" != res[0] {
 					if "goto" == fmt.Sprintf("%v", res[0]) {
 
@@ -222,6 +276,13 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 								var code string
 								code = sourceNewChunk()
 								v[2] = CodeInput(code, false)
+								if options.Transpile == sysMod {
+									_, err = transpileDest.WriteString("setVar(" +
+										fmt.Sprintf("%v", varName) + ", " + v[2].(string))
+									if nil != err {
+										panic(err)
+									}
+								}
 								break
 							}
 						}
@@ -236,6 +297,13 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 						for v := newVariable(); "end" != v[0]; v = newVariable() {
 							if fmt.Sprintf("%v", varName) == fmt.Sprintf("%v", v[1]) {
 								v[2] = rootSource
+								if options.Transpile == sysMod {
+									_, err = transpileDest.WriteString("setVar(" +
+										fmt.Sprintf("%v", varName) + ", " + v[2].(string))
+									if nil != err {
+										panic(err)
+									}
+								}
 								break
 							}
 						}
@@ -246,6 +314,13 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 						for v := newVariable(); "end" != v[0]; v = newVariable() {
 							if fmt.Sprintf("%v", varName) == fmt.Sprintf("%v", v[1]) {
 								v[2] = rootDest
+								if options.Transpile == sysMod {
+									_, err = transpileDest.WriteString("setVar(" +
+										fmt.Sprintf("%v", varName) + ", " + v[2].(string))
+									if nil != err {
+										panic(err)
+									}
+								}
 								break
 							}
 						}
@@ -267,13 +342,24 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 				var strRes string
 
 				if "print" == res[0] {
-					strRes = strings.Replace(fmt.Sprintf("%v", ValueFoldInterface(res[1])), "\\n", "\n", -1)
+					strRes = fmt.Sprintf("%v", ValueFoldInterface(res[1]))
+					if options.Transpile == sysMod {
+						goCommand := "fmt.Print(" + strRes + ")\n"
+						_, err = transpileDest.WriteString(goCommand)
+						if nil != err {
+							panic(err)
+						}
+					}
+
+					strRes = strings.Replace(strRes, "\\n", "\n", -1)
 
 					if "" != strRes && "\"" == string(strRes[0]) && "\"" == string(strRes[len(strRes)-1]) {
 						strRes = strRes[1 : len(strRes)-1]
 					}
 
-					fmt.Print(strRes)
+					if options.Transpile != sysMod {
+						fmt.Print(strRes)
+					}
 				}
 			}
 
@@ -282,6 +368,18 @@ func Start(filesListToExecute []string, rootSource string, rootDest string) {
 
 		if nil != err {
 			panic(err)
+		}
+
+		if options.Transpile == sysMod {
+			_, err = transpileDest.WriteString("}\n")
+			if nil != err {
+				panic(err)
+			}
+			err = transpileDest.Close()
+
+			if nil != err {
+				panic(err)
+			}
 		}
 	}
 }

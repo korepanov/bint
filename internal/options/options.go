@@ -1,11 +1,10 @@
 package options
 
 const (
-	Internal = iota
-	User     = iota
-	No       = iota
+	Internal  = iota
+	User      = iota
+	Transpile = iota
+	No        = iota
+	ShowTree  = true
+	HideTree  = false
 )
-
-type Options struct {
-	Opt int
-}

@@ -3,10 +3,14 @@ package lexer
 import (
 	. "bint.com/pkg/serviceTools"
 	"errors"
+	"fmt"
+	"os"
 	"unicode"
 )
 
-func LexicalAnalyze(expr string, variables [][]interface{}) ([][]interface{}, [][]interface{}, error) {
+func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool,
+	transpileDest *os.File) ([][]interface{}, [][]interface{}, error) {
+
 	var res [][]interface{}
 
 	i := 0
@@ -253,6 +257,26 @@ func LexicalAnalyze(expr string, variables [][]interface{}) ([][]interface{}, []
 				if isType {
 					isType = false
 					variables[len(variables)-1][1] = varName
+
+					if toTranspile {
+						var err error
+
+						goCommand := "defineVar(\"" + varName + "\")\n"
+
+						_, err = transpileDest.WriteString(goCommand)
+						if nil != err {
+							return res, variables, err
+						}
+
+						if "stack" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
+							goCommand = "setVar(\"" + varName + "\", []interface{}{\"end\"})\n"
+
+							_, err = transpileDest.WriteString(goCommand)
+							if nil != err {
+								return res, variables, err
+							}
+						}
+					}
 				}
 			} else if len(expr) > i && "\"" == string(expr[i]) {
 				// строка
