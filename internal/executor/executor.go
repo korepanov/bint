@@ -947,7 +947,7 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 					if !toTranspile {
 						RO = v[2].([]interface{})
 					} else {
-						LO = []interface{}{"getVar(\"" + fmt.Sprintf("%v", v[1]) + "\")"}
+						RO = []interface{}{"getVar(\"" + fmt.Sprintf("%v", v[1]) + "\")"}
 					}
 					wasRO = true
 				}

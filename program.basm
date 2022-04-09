@@ -1,8 +1,10 @@
 string buf;
+string buf2;
 
-buf = "Hello world!";
+buf = "world";
+buf2 = "Hello world";
 int ind;
-ind = index(buf, "world");
+ind = index(buf2, buf);
 buf = str(ind);
 print(buf);
 print("\n");
