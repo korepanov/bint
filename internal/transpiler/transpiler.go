@@ -53,42 +53,26 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 		return []interface{}{fmt.Sprintf("%v", fmt.Sprintf("%v", LO[0])) + "||" + fmt.Sprintf("%v", fmt.Sprintf("%v", RO[0]))}, systemStack, nil
 
 	} else if "XOR" == OP {
-		if "bool" == WhatsType(fmt.Sprintf("%v", LO[0])) && "bool" == WhatsType(fmt.Sprintf("%v", RO[0])) {
-			return []interface{}{StrToBool(fmt.Sprintf("%v", LO[0])) != StrToBool(fmt.Sprintf("%v", RO[0]))}, systemStack, nil
+		if "bool" == WhatsType(fmt.Sprintf("%v", LO[0])) {
+			LO[0] = StrToBool(fmt.Sprintf("%v", LO[0]))
+		} else {
+			LO[0] = "toBool(" + fmt.Sprintf("%v", LO[0]) + ")"
 		}
-		err := errors.New("executor: XOR: error: data type mismatch")
-		return LO, systemStack, err
+		if "bool" == WhatsType(fmt.Sprintf("%v", RO[0])) {
+			RO[0] = StrToBool(fmt.Sprintf("%v", RO[0]))
+		} else {
+			RO[0] = "toBool(" + fmt.Sprintf("%v", RO[0]) + ")"
+		}
+
+		return []interface{}{fmt.Sprintf("%v", fmt.Sprintf("%v", LO[0])) + "!=" + fmt.Sprintf("%v", fmt.Sprintf("%v", RO[0]))}, systemStack, nil
 	} else if "NOT" == OP {
 		if "bool" == WhatsType(fmt.Sprintf("%v", LO[0])) {
-			return []interface{}{!StrToBool(fmt.Sprintf("%v", LO[0]))}, systemStack, nil
-		}
-		err := errors.New("executor: NOT: error: data type mismatch")
-		return LO, systemStack, err
-	} else if "L: True" == OP || "L: true" == OP {
-		return LO, systemStack, nil
-	} else if "L: False" == OP || "L: false" == OP {
-		return RO, systemStack, nil
-	} else if "<" == OP {
-		if ("int" != WhatsType(fmt.Sprintf("%v", LO[0])) && "float" != WhatsType(fmt.Sprintf("%v", LO[0]))) ||
-			("int" != WhatsType(fmt.Sprintf("%v", RO[0])) && "float" != WhatsType(fmt.Sprintf("%v", RO[0]))) {
-			err := errors.New("executor: < : error: data type mismatch")
-			return LO, systemStack, err
+			LO[0] = StrToBool(fmt.Sprintf("%v", LO[0]))
+		} else {
+			LO[0] = "toBool(" + fmt.Sprintf("%v", LO[0]) + ")"
 		}
 
-		floatLO, err := strconv.ParseFloat(fmt.Sprintf("%v", LO[0]), 64)
-
-		if nil != err {
-			return LO, systemStack, err
-		}
-
-		floatRO, err := strconv.ParseFloat(fmt.Sprintf("%v", RO[0]), 64)
-
-		if nil != err {
-			return RO, systemStack, err
-		}
-
-		return []interface{}{floatLO < floatRO}, systemStack, nil
-
+		return []interface{}{"!" + fmt.Sprintf("%v", fmt.Sprintf("%v", LO[0]))}, systemStack, nil
 	} else if "<=" == OP {
 		if ("int" != WhatsType(fmt.Sprintf("%v", LO[0])) && "float" != WhatsType(fmt.Sprintf("%v", LO[0]))) ||
 			("int" != WhatsType(fmt.Sprintf("%v", RO[0])) && "float" != WhatsType(fmt.Sprintf("%v", RO[0]))) {

@@ -1,8 +1,5 @@
 bool b;
 bool a;
-string c;
-c = "Jopa\n";
-b = False;
 a = True;
-
-[print("Left\n"), ((((a)AND(b))OR(a))AND(a)), print("Right\n")];
+b = True;
+[print("Left\n"), (NOT((b)XOR(a))), print("Right\n")];

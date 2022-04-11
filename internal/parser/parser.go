@@ -414,7 +414,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 		}
 	}
 
-	// заменяем NOT на станжартную бинарную операцию
+	// заменяем NOT на стандартную бинарную операцию
 	i = 0
 	wasNOT := false
 
@@ -598,9 +598,11 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 					condition[0][1] = v[2]
 					transpileVar = v[1]
 					wasVar = true
-					_, err := transpileDest.WriteString("if \"True\" == getVar(\"" + fmt.Sprintf("%v", transpileVar) + "\"){\n")
-					if nil != err {
-						panic(err)
+					if toTranspile {
+						_, err := transpileDest.WriteString("if toBool(getVar(\"" + fmt.Sprintf("%v", transpileVar) + "\")){\n")
+						if nil != err {
+							panic(err)
+						}
 					}
 				}
 			}

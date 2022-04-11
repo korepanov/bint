@@ -7,6 +7,7 @@ import(
 "os"
 "strconv"
 "unicode"
+"errors"
 )
 var systemStack = []interface{}{"end"}
 var vars = make(map[string][]interface{})
@@ -31,11 +32,15 @@ func toBool(s interface{}) bool{
 if "bool" == fmt.Sprintf("%T", s){
 	return s.(bool)
 }
+if "string" == fmt.Sprintf("%T", s){
 if "True" == s.(string){
 return true
 }else{
 return false
 }
+}
+
+panic(errors.New("toBool: failed to parse bool, arg: " + fmt.Sprintf("%v", s)))
 } 
 
 func main(){
