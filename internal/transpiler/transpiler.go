@@ -73,6 +73,35 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 		}
 
 		return []interface{}{"!" + fmt.Sprintf("%v", fmt.Sprintf("%v", LO[0]))}, systemStack, nil
+	} else if "<" == OP {
+		var floatLO float64
+		var floatRO float64
+		var err error
+
+		if "int" != WhatsType(fmt.Sprintf("%v", LO[0])) && "float" != WhatsType(fmt.Sprintf("%v", LO[0])) {
+			LO[0] = "toFloat(" + fmt.Sprintf("%v", LO[0]) + ")"
+		} else {
+			floatLO, err = strconv.ParseFloat(fmt.Sprintf("%v", LO[0]), 64)
+
+			if nil != err {
+				return LO, systemStack, err
+			}
+
+			LO[0] = floatLO
+		}
+		if "int" != WhatsType(fmt.Sprintf("%v", RO[0])) && "float" != WhatsType(fmt.Sprintf("%v", RO[0])) {
+			RO[0] = "toFloat(" + fmt.Sprintf("%v", RO[0]) + ")"
+		} else {
+			floatRO, err = strconv.ParseFloat(fmt.Sprintf("%v", RO[0]), 64)
+
+			if nil != err {
+				return RO, systemStack, err
+			}
+
+			RO[0] = floatRO
+		}
+
+		return []interface{}{fmt.Sprintf("%v", LO[0]) + "<" + fmt.Sprintf("%v", RO[0])}, systemStack, nil
 	} else if "<=" == OP {
 		var floatLO float64
 		var floatRO float64
@@ -107,112 +136,66 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 
 		return []interface{}{"isEqual(" + fmt.Sprintf("%v", LO[0]) + ", " + fmt.Sprintf("%v", RO[0]) + ")"}, systemStack, nil
 	} else if ">" == OP {
-		if ("int" != WhatsType(fmt.Sprintf("%v", LO[0])) && "float" != WhatsType(fmt.Sprintf("%v", LO[0]))) ||
-			("int" != WhatsType(fmt.Sprintf("%v", RO[0])) && "float" != WhatsType(fmt.Sprintf("%v", RO[0]))) {
-			err := errors.New("executor: > : error: data type mismatch")
-			return LO, systemStack, err
+		var floatLO float64
+		var floatRO float64
+		var err error
+
+		if "int" != WhatsType(fmt.Sprintf("%v", LO[0])) && "float" != WhatsType(fmt.Sprintf("%v", LO[0])) {
+			LO[0] = "toFloat(" + fmt.Sprintf("%v", LO[0]) + ")"
+		} else {
+			floatLO, err = strconv.ParseFloat(fmt.Sprintf("%v", LO[0]), 64)
+
+			if nil != err {
+				return LO, systemStack, err
+			}
+
+			LO[0] = floatLO
+		}
+		if "int" != WhatsType(fmt.Sprintf("%v", RO[0])) && "float" != WhatsType(fmt.Sprintf("%v", RO[0])) {
+			RO[0] = "toFloat(" + fmt.Sprintf("%v", RO[0]) + ")"
+		} else {
+			floatRO, err = strconv.ParseFloat(fmt.Sprintf("%v", RO[0]), 64)
+
+			if nil != err {
+				return RO, systemStack, err
+			}
+
+			RO[0] = floatRO
 		}
 
-		floatLO, err := strconv.ParseFloat(fmt.Sprintf("%v", LO[0]), 64)
-
-		if nil != err {
-			return LO, systemStack, err
-		}
-
-		floatRO, err := strconv.ParseFloat(fmt.Sprintf("%v", RO[0]), 64)
-
-		if nil != err {
-			return LO, systemStack, err
-		}
-
-		return []interface{}{BoolToStr(floatLO > floatRO)}, systemStack, nil
+		return []interface{}{fmt.Sprintf("%v", LO[0]) + ">" + fmt.Sprintf("%v", RO[0])}, systemStack, nil
 	} else if ">=" == OP {
-		if ("int" != WhatsType(fmt.Sprintf("%v", LO[0])) && "float" != WhatsType(fmt.Sprintf("%v", LO[0]))) ||
-			("int" != WhatsType(fmt.Sprintf("%v", RO[0])) && "float" != WhatsType(fmt.Sprintf("%v", RO[0]))) {
-			err := errors.New("executor: >= : error: data type mismatch")
-			return LO, systemStack, err
+		var floatLO float64
+		var floatRO float64
+		var err error
+
+		if "int" != WhatsType(fmt.Sprintf("%v", LO[0])) && "float" != WhatsType(fmt.Sprintf("%v", LO[0])) {
+			LO[0] = "toFloat(" + fmt.Sprintf("%v", LO[0]) + ")"
+		} else {
+			floatLO, err = strconv.ParseFloat(fmt.Sprintf("%v", LO[0]), 64)
+
+			if nil != err {
+				return LO, systemStack, err
+			}
+
+			LO[0] = floatLO
+		}
+		if "int" != WhatsType(fmt.Sprintf("%v", RO[0])) && "float" != WhatsType(fmt.Sprintf("%v", RO[0])) {
+			RO[0] = "toFloat(" + fmt.Sprintf("%v", RO[0]) + ")"
+		} else {
+			floatRO, err = strconv.ParseFloat(fmt.Sprintf("%v", RO[0]), 64)
+
+			if nil != err {
+				return RO, systemStack, err
+			}
+
+			RO[0] = floatRO
 		}
 
-		floatLO, err := strconv.ParseFloat(fmt.Sprintf("%v", LO[0]), 64)
-
-		if nil != err {
-			return LO, systemStack, err
-		}
-
-		floatRO, err := strconv.ParseFloat(fmt.Sprintf("%v", RO[0]), 64)
-
-		if nil != err {
-			return LO, systemStack, err
-		}
-
-		return []interface{}{BoolToStr(floatLO >= floatRO)}, systemStack, nil
+		return []interface{}{fmt.Sprintf("%v", LO[0]) + ">=" + fmt.Sprintf("%v", RO[0])}, systemStack, nil
 	} else if "+" == OP {
-		if ("int" != WhatsType(fmt.Sprintf("%v", LO[0])) && "float" != WhatsType(fmt.Sprintf("%v", LO[0]))) ||
-			("int" != WhatsType(fmt.Sprintf("%v", RO[0])) && "float" != WhatsType(fmt.Sprintf("%v", RO[0]))) {
-			if !("string" == WhatsType(fmt.Sprintf("%v", LO[0])) && "string" == WhatsType(fmt.Sprintf("%v", RO[0]))) {
-				err := errors.New("executor: + : error: data type mismatch")
-				return LO, systemStack, err
-			}
-		}
 
-		if "int" == WhatsType(fmt.Sprintf("%v", LO[0])) {
-			intLO, err := strconv.Atoi(fmt.Sprintf("%v", LO[0]))
-			if nil != err {
-				return LO, systemStack, err
-			}
-
-			if "int" == WhatsType(fmt.Sprintf("%v", RO[0])) {
-				intRO, err := strconv.Atoi(fmt.Sprintf("%v", RO[0]))
-				if nil != err {
-					return RO, systemStack, err
-				}
-
-				return []interface{}{intLO + intRO}, systemStack, nil
-			}
-
-			err = errors.New("executor: + : error: data type mismatch")
-			return LO, systemStack, err
-
-		}
-
-		if "float" == WhatsType(fmt.Sprintf("%v", LO[0])) {
-			floatLO, err := strconv.ParseFloat(fmt.Sprintf("%v", LO[0]), 64)
-
-			if nil != err {
-				return LO, systemStack, err
-			}
-
-			if "float" == WhatsType(fmt.Sprintf("%v", RO[0])) {
-				floatRO, err := strconv.ParseFloat(fmt.Sprintf("%v", RO[0]), 64)
-				if nil != err {
-					return LO, systemStack, err
-				}
-
-				return []interface{}{floatLO + floatRO}, systemStack, nil
-			}
-
-			err = errors.New("executor: + : error: data type mismatch")
-			return LO, systemStack, err
-		}
-
-		if "string" == WhatsType(fmt.Sprintf("%v", LO[0])) {
-			if "string" == WhatsType(fmt.Sprintf("%v", RO[0])) {
-				if len(LO) > 0 && "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
-					LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
-				}
-				if len(RO) > 0 && "\"" == string(fmt.Sprintf("%v", RO[0])[0]) {
-					RO[0] = RO[0].(string)[1 : len(RO[0].(string))-1]
-				}
-
-				return []interface{}{"\"" + fmt.Sprintf("%v", LO[0]) + fmt.Sprintf("%v", RO[0]) + "\""}, systemStack, nil
-			}
-
-			err := errors.New("executor: + : error: data type mismatch")
-			return LO, systemStack, err
-		}
-
-		err := errors.New("executor: + : error: data type mismatch")
-		return LO, systemStack, err
+		return []interface{}{"sum(" + fmt.Sprintf("%v", LO[0]) + ", " + fmt.Sprintf("%v", RO[0]) + ")"}, systemStack, nil
 	} else if "-" == OP {
 		if ("int" != WhatsType(fmt.Sprintf("%v", LO[0])) && "float" != WhatsType(fmt.Sprintf("%v", LO[0]))) ||
 			("int" != WhatsType(fmt.Sprintf("%v", RO[0])) && "float" != WhatsType(fmt.Sprintf("%v", RO[0]))) {

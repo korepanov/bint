@@ -74,6 +74,29 @@ return resA == resB
 return resA == resB 
 }
 
+func sum(a interface{}, b interface{}) interface{}{
+if "\"" == string(fmt.Sprintf("%v", a)[0]) && "\"" == string(fmt.Sprintf("%v", b)[0]) {
+	return fmt.Sprintf("%v", a) + fmt.Sprintf("%v", b)
+}
+
+resA, errA := strconv.Atoi(fmt.Sprintf("%v", a))
+resB, errB := strconv.Atoi(fmt.Sprintf("%v", b))
+
+if errA != nil || errB != nil{
+
+resA, errA := strconv.ParseFloat(fmt.Sprintf("%v", a), 64)
+resB, errB := strconv.ParseFloat(fmt.Sprintf("%v", b), 64)
+
+if nil != errA || nil != errB{
+return fmt.Sprintf("%v", a) + fmt.Sprintf("%v", b)
+}
+
+return resA + resB
+}
+
+return resA + resB 
+}
+
 func main(){
 
 _ = strings.Index("", "")

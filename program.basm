@@ -1,12 +1,28 @@
+int i;
+float f; 
 int a;
 int b;
-a = 10;
-b = 10;
+int c;
+float fa;
+float fb;
+float fc;
 
-string sa;
-string sb;
+a = 5;
+b = 4;
+c = 4;
+fa = 5.1;
+fb = 4.1'
+fc = 3;
 
-sa = "hello";
-sb = "hello";
+i = ((4 + (a + b)) + c);
+f = ((fa + fb) + fc);
 
-[print("Left\n"), (a == a), print("Right\n")];
+string buf;
+buf = str(i);
+print(buf);
+print("\n");
+buf = str(f);
+print(buf);
+print("\n");
+
+
