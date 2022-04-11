@@ -1,5 +1,12 @@
-bool b;
-bool a;
-a = True;
-b = True;
-[print("Left\n"), (NOT((b)XOR(a))), print("Right\n")];
+int a;
+int b;
+a = 10;
+b = 10;
+
+string sa;
+string sb;
+
+sa = "hello";
+sb = "hello";
+
+[print("Left\n"), (a == a), print("Right\n")];
