@@ -7,6 +7,7 @@ import(
 "os"
 "strconv"
 "unicode"
+"math"
 "errors"
 )
 var systemStack = []interface{}{"end"}
@@ -108,5 +109,6 @@ os.Remove(f.Name())
 os.Remove(f2.Name());
 _, _ = strconv.ParseFloat("64", 64)
 _ = unicode.IsLetter('a')
+_ = math.Pow(2, 2);
 	
 	

@@ -1,27 +1,19 @@
-int i;
-float f; 
-int a;
-int b;
-int c;
-float fa;
-float fb;
-float fc;
+float a;
+float b;
+float c;
+int d;
 
-a = 5;
-b = 4;
-c = 4;
-fa = 5.1;
-fb = 4.1'
-fc = 3;
+d = 5;
+a = 2.5;
+b = 3.5;
+c = 4.5;
 
-i = ((4 + (a + b)) + c);
-f = ((fa + fb) + fc);
+float res;
+
+res = (((((a + b) - c) * a) / a)^d);
 
 string buf;
-buf = str(i);
-print(buf);
-print("\n");
-buf = str(f);
+buf = str(res);
 print(buf);
 print("\n");
 
