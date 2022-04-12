@@ -21,6 +21,11 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 
 		return []interface{}{"len(" + "fmt.Sprintf(\"%v\"," + fmt.Sprintf("%v", LO[0]) + "))"}, systemStack, nil
 	} else if "CD" == OP {
+		if "goto" == fmt.Sprintf("%v", LO[0]) {
+			_, err := transpileDest.WriteString(fmt.Sprintf("%v", LO[0]) + " " + fmt.Sprintf("%v", LO[1].(string)[1:]) + "\n" + "}else{\n" +
+				fmt.Sprintf("%v", RO[0]) + " " + fmt.Sprintf("%v", RO[1].(string)[1:]) + "\n}\n")
+			return []interface{}{0}, systemStack, err
+		}
 		_, err := transpileDest.WriteString(fmt.Sprintf("%v", LO[0]) + "(" + fmt.Sprintf("%v", LO[1].([]interface{})[0]) + ")\n" + "}else{\n" +
 			fmt.Sprintf("%v", RO[0]) + "(" + fmt.Sprintf("%v", RO[1].([]interface{})[0]) + ")" + "\n}\n")
 		return []interface{}{0}, systemStack, err

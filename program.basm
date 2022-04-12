@@ -1,17 +1,9 @@
-int a;
-int b;
-a = 10;
-b = 20;
+[goto(#Left), (1 > 2), goto(#Right)];
 
-push(a);
-push(b);
-string s;
-pop(s);
-print(s);
-print("\n");
-pop(s);
-print(s);
-print("\n");
-pop(s);
-print(s);
-print("\n");
+#Left:
+print("Left\n");
+goto(#Right_end);
+#Right:
+print("Right\n");
+#Right_end:
+print("");

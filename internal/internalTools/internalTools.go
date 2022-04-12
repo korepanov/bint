@@ -193,19 +193,24 @@ func Start(filesListToExecute []string, rootSource string, rootDest string, sysM
 					options.Transpile == sysMod, transpileDest)
 				if "print" != res[0] {
 					if "goto" == fmt.Sprintf("%v", res[0]) {
+						if options.Transpile != sysMod {
+							wasGetCommandCounterByMark = true
+							COMMAND_COUNTER, f, err = GetCommandCounterByMark(f, fmt.Sprintf("%v", res[1]))
 
-						wasGetCommandCounterByMark = true
-						COMMAND_COUNTER, f, err = GetCommandCounterByMark(f, fmt.Sprintf("%v", res[1]))
+							if nil != err {
+								panic(err)
+							}
 
-						if nil != err {
-							panic(err)
+							newChunk, err = SetCommandCounter(f, COMMAND_COUNTER)
+							if nil != err {
+								panic(err)
+							}
+						} else {
+							_, err = transpileDest.WriteString(fmt.Sprintf("%v", res[0]) + " " + fmt.Sprintf("%v", res[1])[1:] + "\n")
+							if nil != err {
+								panic(err)
+							}
 						}
-
-						newChunk, err = SetCommandCounter(f, COMMAND_COUNTER)
-						if nil != err {
-							panic(err)
-						}
-
 						continue
 					}
 					if "SET_SOURCE" == fmt.Sprintf("%v", res[0]) {
