@@ -1,20 +1,17 @@
-float a;
-float b;
-float c;
-int d;
+int a;
+int b;
+a = 10;
+b = 20;
 
-d = 5;
-a = 2.5;
-b = 3.5;
-c = 4.5;
-
-float res;
-
-res = (((((a + b) - c) * a) / a)^d);
-
-string buf;
-buf = str(res);
-print(buf);
+push(a);
+push(b);
+string s;
+pop(s);
+print(s);
 print("\n");
-
-
+pop(s);
+print(s);
+print("\n");
+pop(s);
+print(s);
+print("\n");

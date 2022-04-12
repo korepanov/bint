@@ -482,12 +482,16 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 		return []interface{}{"send_command", LO}, systemStack, nil
 	} else if "push" == OP {
 		systemStack = append(systemStack, LO)
-		return []interface{}{0}, systemStack, nil
+
+		_, err := transpileDest.WriteString("systemStack = append(systemStack, " + fmt.Sprintf("%v", LO[0]) + ")\n")
+
+		return []interface{}{0}, systemStack, err
 	} else if "pop" == OP {
 		res := systemStack[len(systemStack)-1]
 		if "end" != res {
 			systemStack = systemStack[:len(systemStack)-1]
 		}
+
 		if "string" == fmt.Sprintf("%T", ValueFoldInterface(res)) {
 			return []interface{}{ValueFoldInterface(res)}, systemStack, nil
 		} else {

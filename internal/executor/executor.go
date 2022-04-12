@@ -722,12 +722,14 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 		for v := newVariable(); "end" != v[0]; v = newVariable() {
 			if fmt.Sprintf("%v", v[1]) == fmt.Sprintf("%v", LO[0]) {
 				var err error
-				v[2], systemStack, err = execute(systemStack, OP, LO, RO)
+				if !toTranspile {
+					v[2], systemStack, err = execute(systemStack, OP, LO, RO)
+				}
 				if nil != err {
 					panic(err)
 				}
-				_, err = transpileDest.WriteString("if \"end\" != systemStack[len(systemStack)-1] {\n" +
-					"setVar(" + fmt.Sprintf("%v", LO[0]) + ", " + "systemStack[len(systemStack)-1])\n" +
+				_, err = transpileDest.WriteString("setVar(\"" + fmt.Sprintf("%v", LO[0]) + "\", " + "systemStack[len(systemStack)-1])\n" +
+					"if \"end\" != systemStack[len(systemStack)-1] {\n" +
 					"systemStack = systemStack[:len(systemStack)-1]\n}\n")
 				if nil != err {
 					panic(err)
@@ -861,6 +863,7 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 					newPopVariable := EachVariable(variables)
 					for popVar := newPopVariable(); "end" != fmt.Sprintf("%v", popVar[0]); popVar = newPopVariable() {
 						if popVar[1] == RO[0].([]string)[1] {
+
 							if "end" == fmt.Sprintf("%v", v[2].([]interface{})[0]) {
 								v[2].([]interface{})[0] = []interface{}{"end"}
 							}
