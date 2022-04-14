@@ -7,7 +7,6 @@ import (
 	"io"
 	"os"
 	"strconv"
-	"unicode"
 )
 
 func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []interface{},
@@ -362,19 +361,16 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
 		}
 
-		floatLO, err := strconv.ParseFloat(fmt.Sprintf("%v", LO[0]), 64)
-
-		return []interface{}{floatLO}, systemStack, err
+		return []interface{}{"toFloat(" + fmt.Sprintf("%v", LO[0]) + ")"}, systemStack, nil
 	} else if "bool" == OP {
 		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
 		}
 
-		return LO, systemStack, nil
+		return []interface{}{"toBool(" + fmt.Sprintf("%v", LO[0]) + ")"}, systemStack, nil
 	} else if "input" == OP {
-		var s string
-		_, err := fmt.Scan(&s)
-		return []interface{}{s}, systemStack, err
+
+		return []interface{}{-1}, systemStack, errors.New("can not transpile input")
 	} else if "goto" == OP {
 		if "string" != WhatsType(fmt.Sprintf("%v", LO[0])) {
 			err := errors.New("executor: goto : error: data type mismatch")
@@ -390,35 +386,11 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 
 		return []interface{}{"goto", LO[0]}, systemStack, nil
 	} else if "is_letter" == OP {
-		if "string" != WhatsType(fmt.Sprintf("%v", LO[0])) {
-			err := errors.New("executor: is_letter : error: data type mismatch")
-			return LO, systemStack, err
-		}
-		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
-			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
-		}
-		if 1 != len(fmt.Sprintf("%v", LO[0])) {
-			err := errors.New("executor: is_letter : error: length of the argument is more than 1, argument: " +
-				fmt.Sprintf("%v", LO[0]))
 
-			return LO, systemStack, err
-		}
-		return []interface{}{unicode.IsLetter([]rune(fmt.Sprintf("%v", LO[0]))[0])}, systemStack, nil
+		return []interface{}{"unicode.IsLetter([]rune(fmt.Sprintf(\"%v\"," + fmt.Sprintf("%v", LO[0]) + "))[0])"}, systemStack, nil
 	} else if "is_digit" == OP {
-		if "string" != WhatsType(fmt.Sprintf("%v", LO[0])) {
-			err := errors.New("executor: is_digit : error: data type mismatch")
-			return LO, systemStack, err
-		}
-		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
-			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
-		}
-		if 1 != len(fmt.Sprintf("%v", LO[0])) {
-			err := errors.New("executor: is_digit : error: length of the argument is more than 1, argument: " +
-				fmt.Sprintf("%v", LO[0]))
 
-			return LO, systemStack, err
-		}
-		return []interface{}{unicode.IsDigit([]rune(fmt.Sprintf("%v", LO[0]))[0])}, systemStack, nil
+		return []interface{}{"unicode.IsDigit([]rune(fmt.Sprintf(\"%v\"," + fmt.Sprintf("%v", LO[0]) + "))[0])"}, systemStack, nil
 	} else if "SET_SOURCE" == OP {
 		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]

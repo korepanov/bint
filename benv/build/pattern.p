@@ -34,7 +34,7 @@ if "bool" == fmt.Sprintf("%T", s){
 	return s.(bool)
 }
 if "string" == fmt.Sprintf("%T", s){
-if "True" == s.(string){
+if "True" == s.(string) || "true" == s.(string){
 return true
 }else{
 return false

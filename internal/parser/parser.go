@@ -615,7 +615,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 			}
 
 			resCon = []interface{}{ValueFoldInterface(condition[0][1])}
-			if "bool" != WhatsType(fmt.Sprintf("%v", resCon[0])) {
+			if "bool" != WhatsType(fmt.Sprintf("%v", resCon[0])) && !toTranspile {
 				panic("parser: ERROR: data type mismatch")
 			}
 		}

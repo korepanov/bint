@@ -1,14 +1,7 @@
-int a;
-a = 1;
-int b;
-b = 2;
+bool b;
+string buf;
+string symbol;
 
-[goto(#Left), (a > b), goto(#Right)];
-
-#Left:
-print("Left\n");
-goto(#Right_end);
-#Right:
-print("Right\n");
-#Right_end:
-print("");
+symbol = "1";
+b = is_digit("s");
+[print("yes"), (b), print("no")];
