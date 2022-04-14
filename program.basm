@@ -1,4 +1,9 @@
-[goto(#Left), (1 > 2), goto(#Right)];
+int a;
+a = 1;
+int b;
+b = 2;
+
+[goto(#Left), (a > b), goto(#Right)];
 
 #Left:
 print("Left\n");

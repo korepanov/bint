@@ -21,14 +21,27 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 
 		return []interface{}{"len(" + "fmt.Sprintf(\"%v\"," + fmt.Sprintf("%v", LO[0]) + "))"}, systemStack, nil
 	} else if "CD" == OP {
-		if "goto" == fmt.Sprintf("%v", LO[0]) {
+		if "goto" == fmt.Sprintf("%v", LO[0]) && "goto" == fmt.Sprintf("%v", RO[0]) {
 			_, err := transpileDest.WriteString(fmt.Sprintf("%v", LO[0]) + " " + fmt.Sprintf("%v", LO[1].(string)[1:]) + "\n" + "}else{\n" +
 				fmt.Sprintf("%v", RO[0]) + " " + fmt.Sprintf("%v", RO[1].(string)[1:]) + "\n}\n")
 			return []interface{}{0}, systemStack, err
+		} else if "print" == fmt.Sprintf("%v", LO[0]) && "print" == fmt.Sprintf("%v", RO[0]) {
+			_, err := transpileDest.WriteString(fmt.Sprintf("%v", LO[0]) + "(" + fmt.Sprintf("%v", LO[1].([]interface{})[0]) + ")\n" + "}else{\n" +
+				fmt.Sprintf("%v", RO[0]) + "(" + fmt.Sprintf("%v", RO[1].([]interface{})[0]) + ")" + "\n}\n")
+			return []interface{}{0}, systemStack, err
+		} else if "print" == fmt.Sprintf("%v", LO[0]) && "goto" == fmt.Sprintf("%v", RO[0]) {
+			_, err := transpileDest.WriteString(fmt.Sprintf("%v", LO[0]) + "(" + fmt.Sprintf("%v", LO[1].([]interface{})[0]) + ")\n" + "}else{\n" +
+				fmt.Sprintf("%v", RO[0]) + " " + fmt.Sprintf("%v", RO[1].(string)[1:]) + "\n}\n")
+			return []interface{}{0}, systemStack, err
+		} else if "goto" == fmt.Sprintf("%v", LO[0]) && "print" == fmt.Sprintf("%v", RO[0]) {
+			_, err := transpileDest.WriteString(fmt.Sprintf("%v", LO[0]) + " " + fmt.Sprintf("%v", LO[1].(string)[1:]) + "\n" + "}else{\n" +
+				fmt.Sprintf("%v", RO[0]) + "(" + fmt.Sprintf("%v", RO[1].([]interface{})[0]) + ")" + "\n}\n")
+			return []interface{}{0}, systemStack, err
+		} else {
+			return []interface{}{-1}, systemStack,
+				errors.New("could not recognize operands of conditional disjunction; left operand: " + fmt.Sprintf("%v", LO[0]) + ", " +
+					"right operand:" + fmt.Sprintf("%v", RO[0]))
 		}
-		_, err := transpileDest.WriteString(fmt.Sprintf("%v", LO[0]) + "(" + fmt.Sprintf("%v", LO[1].([]interface{})[0]) + ")\n" + "}else{\n" +
-			fmt.Sprintf("%v", RO[0]) + "(" + fmt.Sprintf("%v", RO[1].([]interface{})[0]) + ")" + "\n}\n")
-		return []interface{}{0}, systemStack, err
 	} else if "AND" == OP {
 		if "bool" == WhatsType(fmt.Sprintf("%v", LO[0])) {
 			LO[0] = StrToBool(fmt.Sprintf("%v", LO[0]))
