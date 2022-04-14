@@ -9,6 +9,8 @@ import(
 "unicode"
 "math"
 "errors"
+"path/filepath"
+"regexp"
 )
 var systemStack = []interface{}{"end"}
 var vars = make(map[string][]interface{})
@@ -96,6 +98,242 @@ return resA + resB
 }
 
 return resA + resB 
+}
+
+func openFile(fileName interface{}) *os.File{
+f, err := os.Open(fmt.Sprintf("%v", fileName))
+if nil != err{
+panic(errors.New("could not open file " + fmt.Sprintf("%v", fileName) + ": " + err.Error()))
+}
+return f 
+}
+
+func createFile(fileName interface{}) *os.File{
+f, err := os.Create(fmt.Sprintf("%v", fileName))
+if nil != err{
+panic(errors.New("could not create file " + fmt.Sprintf("%v", fileName) + ": " + err.Error()))
+}
+return f 
+}
+
+func getRootSource(source string) string{
+ex, err := os.Executable()
+if err != nil {
+panic(errors.New("getRootSource: " + err.Error()))
+}
+exPath := filepath.Dir(ex)
+i := strings.Index(exPath, "benv")
+return exPath[:i] + source 
+}
+
+func mySplit(buffer string, pattern *regexp.Regexp) [2]string {
+	findList := pattern.FindAllString(buffer, -1)
+	var resList [2]string
+	resList[0] = findList[0]
+	for i := 1; i < len(findList); i++ {
+		resList[1] += findList[i]
+		if i != len(findList)-1 {
+			resList[1] += ";"
+		}
+	}
+
+	trimBuffer := strings.TrimSpace(buffer)
+	trimRes := strings.TrimSpace(resList[1])
+
+	if len(trimBuffer) > 0 && ";" == string(trimBuffer[len(trimBuffer)-1]) &&
+		len(trimRes) > 0 && ";" != string(trimRes[len(trimRes)-1]) {
+		resList[1] += ";"
+	}
+
+	return resList
+}
+
+func EachChunk(file *os.File) func() string {
+	const chunkSize = 100
+	chunk := make([]byte, chunkSize)
+	var buffer string
+	var resList [2]string
+	var part string
+
+	pattern, err := regexp.Compile("((?:[^;\"']|\"[^\"]*\"|'[^']*'|\".*)+)")
+
+	if nil != err {
+		panic(err)
+	}
+
+	_, err = file.Read(chunk)
+
+	if nil != err && io.EOF != err {
+		panic(err)
+	}
+	buffer = string(chunk)
+
+	return func() string {
+		var wasSemicolon bool
+
+		trimBuffer := strings.TrimSpace(buffer)
+
+		if len(trimBuffer) > 0 && ";" == string(trimBuffer[len(trimBuffer)-1]) {
+			wasSemicolon = true
+		}
+
+		if "" == strings.TrimSpace(buffer) {
+			buffer = part
+			chunk = make([]byte, chunkSize)
+			_, err := file.Read(chunk)
+
+			if io.EOF == err {
+				return "end"
+			}
+			if nil != err && io.EOF != err {
+				panic(err)
+			}
+
+			if !wasSemicolon {
+				buffer += string(chunk)
+			}
+			resList = mySplit(buffer, pattern)
+			part = resList[0]
+			buffer = resList[1]
+		}
+
+		if -1 != strings.Index(buffer, ";") {
+			resList = mySplit(buffer, pattern)
+		} else {
+			resList[0] = buffer
+			resList[1] = ""
+			part = resList[0]
+			buffer = resList[1]
+
+			buffer = part
+			chunk = make([]byte, chunkSize)
+			_, err := file.Read(chunk)
+
+			if io.EOF == err {
+				return "end"
+			}
+			if nil != err && io.EOF != err {
+				panic(err)
+			}
+
+			if !wasSemicolon {
+				buffer += string(chunk)
+			}
+			if len(buffer) > 0 && ";" == string(buffer[len(buffer)-1]) {
+				wasSemicolon = true
+			}
+			resList = mySplit(buffer, pattern)
+
+		}
+		part = resList[0]
+		buffer = resList[1]
+
+		if wasSemicolon {
+			if "" != strings.TrimSpace(buffer) {
+				buffer += ";"
+			}
+
+			part += ";"
+
+			return part[:len(part)-1]
+		}
+
+		return part
+	}
+}
+
+func CodeInput(expr string, lineIncrement bool) string {
+	var stringsInside []string
+	var poses []int
+	var pos int
+	var startFlag bool
+	var stringInside string
+
+	// базовые комментарии в одну строку
+	lineComPos := strings.Index(expr, "//")
+
+	var i int
+
+	if -1 != lineComPos {
+		i = lineComPos
+		for i < len(expr) && "\n" != string(expr[i]) {
+			expr = expr[:i] + expr[i+1:]
+		}
+	}
+
+	//запоминаем стоки, чтобы оставить в них пробелы
+	for _, ch := range expr {
+		if startFlag {
+			if `"` != string(ch) {
+				stringInside += string(ch)
+			} else {
+				startFlag = false
+				stringsInside = append(stringsInside, stringInside)
+				stringInside = ""
+				continue
+			}
+		}
+		if `"` == string(ch) {
+			startFlag = true
+		}
+	}
+	
+	expr = strings.Replace(expr, " ", "", -1)
+	expr = strings.Replace(expr, "\t", "", -1)
+	expr = strings.Replace(expr, "\n", "", -1)
+
+	// запоминаем местоположение строк
+	for _, ch := range expr {
+		pos += 1
+		if startFlag {
+			if `"` == string(ch) {
+				startFlag = false
+				continue
+			}
+		}
+
+		if `"` == string(ch) {
+			poses = append(poses, pos)
+			startFlag = true
+		}
+	}
+
+	// вырезаем строки из выражений и перерассчитываем их местоположение
+	i = 0
+	var lenStringInside int
+
+	for _, str := range stringsInside {
+		stringInside = strings.Replace(str, " ", "", -1)
+		stringInside = strings.Replace(stringInside, "\t", "", -1)
+		stringInside = strings.Replace(stringInside, "\n", "", -1)
+
+		lenStringInside = len(stringInside)
+
+		for j := poses[i]; j < poses[i]+lenStringInside; j++ {
+			expr = expr[:poses[i]] + expr[poses[i]+1:]
+			// переситываем позиции из-за изменившегося выражения
+			for k := i + 1; k < len(poses); k++ {
+				poses[k] -= 1
+			}
+		}
+		i++
+	}
+
+	i = 0
+	var leftExpr string
+	var rightExpr string
+	for _, str := range stringsInside {
+		leftExpr = expr[:poses[i]]
+		rightExpr = expr[poses[i]:]
+		expr = leftExpr + str + rightExpr
+		// пересчитываем позиции из-за изменившегося выражения
+		for k := i + 1; k < len(poses); k++ {
+			poses[k] += len(str)
+		}
+		i += 1
+	}
+
+	return expr
 }
 
 func main(){

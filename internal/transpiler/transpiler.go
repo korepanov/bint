@@ -392,17 +392,37 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 
 		return []interface{}{"unicode.IsDigit([]rune(fmt.Sprintf(\"%v\"," + fmt.Sprintf("%v", LO[0]) + "))[0])"}, systemStack, nil
 	} else if "SET_SOURCE" == OP {
-		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
-			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
+		_, err := transpileDest.WriteString("defineVar(\"$SOURCE\")\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
 		}
-		f, err := os.Open(fmt.Sprintf("%v", LO[0]))
-		return []interface{}{"SET_SOURCE", f}, systemStack, err
+
+		_, err = transpileDest.WriteString("setVar(\"$SOURCE\", openFile(getRootSource(" + fmt.Sprintf("%v", LO[0]) + ")))\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
+		}
+
+		_, err = transpileDest.WriteString("defineVar(\"sourceNewChunk\")\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
+		}
+
+		_, err = transpileDest.WriteString("setVar(\"sourceNewChunk\", EachChunk(getVar(\"$SOURCE\").(*os.File)))\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
+		}
+		return []interface{}{0}, systemStack, nil
 	} else if "SET_DEST" == OP {
-		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
-			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
+		_, err := transpileDest.WriteString("defineVar(\"$DEST\")\n")
+		if nil != err {
+			panic(err)
 		}
-		f, err := os.Create(fmt.Sprintf("%v", LO[0]))
-		return []interface{}{"SET_DEST", f}, systemStack, err
+
+		_, err = transpileDest.WriteString("setVar(\"$DEST\", createFile(getRootSource(" + fmt.Sprintf("%v", LO[0]) + ")))\n")
+		if nil != err {
+			panic(err)
+		}
+		return []interface{}{0}, systemStack, nil
 	} else if "SEND_DEST" == OP {
 		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
@@ -457,19 +477,51 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 	} else if "REROUTE" == OP {
 		return []interface{}{"REROUTE", 0}, systemStack, nil
 	} else if "UNSET_SOURCE" == OP {
-		return []interface{}{"UNSET_SOURCE", 0}, systemStack, nil
+		_, err := transpileDest.WriteString("getVar(\"$SOURCE\").(*os.File).Close()\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, nil
+		}
+
+		return []interface{}{0}, systemStack, nil
 	} else if "UNSET_DEST" == OP {
-		return []interface{}{"UNSET_DEST", 0}, systemStack, nil
+		_, err := transpileDest.WriteString("getVar(\"$DEST\").(*os.File).Close()\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, nil
+		}
+
+		return []interface{}{0}, systemStack, nil
 	} else if "RESET_SOURCE" == OP {
 		return []interface{}{"RESET_SOURCE", 0}, systemStack, nil
 	} else if "next_command" == OP {
-		return []interface{}{"next_command", LO}, systemStack, nil
+		_, err := transpileDest.WriteString("defineVar(\"$CODE\")\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
+		}
+		_, err = transpileDest.WriteString("setVar(\"$CODE\", fmt.Sprintf(\"%v\", getVar(\"sourceNewChunk\").(func () string)()))\n")
+
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
+		}
+		_, err = transpileDest.WriteString("setVar(" +
+			fmt.Sprintf("%v", LO[0])[7:len(fmt.Sprintf("%v", LO[0]))-1] + ", " + "getVar(\"$CODE\"))\n")
+		if nil != err {
+			panic(err)
+		}
+
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
+		}
+		return []interface{}{0}, systemStack, nil
 	} else if "get_root_source" == OP {
 		return []interface{}{"get_root_source", LO}, systemStack, nil
 	} else if "get_root_dest" == OP {
 		return []interface{}{"get_root_dest", LO}, systemStack, nil
 	} else if "send_command" == OP {
-		return []interface{}{"send_command", LO}, systemStack, nil
+		_, err := transpileDest.WriteString("getVar(\"$DEST\").(*os.File).WriteString(" + fmt.Sprintf("%v", LO[0]) + ".(string) + \";\")\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
+		}
+		return []interface{}{0}, systemStack, nil
 	} else if "push" == OP {
 		systemStack = append(systemStack, LO)
 

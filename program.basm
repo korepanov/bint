@@ -1,7 +1,14 @@
-bool b;
-string buf;
-string symbol;
+SET_SOURCE("input.basm");
+SET_DEST("output.basm");
+string command;
+next_command(command);
 
-symbol = "1";
-b = is_digit("s");
-[print("yes"), (b), print("no")];
+#begin:
+[goto(#end), ("end" == command), print("")];
+send_command(command);
+next_command(command);
+goto(#begin);
+#end:
+
+UNSET_SOURCE();
+UNSET_DEST();

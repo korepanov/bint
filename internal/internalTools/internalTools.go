@@ -277,13 +277,6 @@ func Start(filesListToExecute []string, rootSource string, rootDest string, sysM
 								var code string
 								code = sourceNewChunk()
 								v[2] = CodeInput(code, false)
-								if options.Transpile == sysMod {
-									_, err = transpileDest.WriteString("setVar(" +
-										fmt.Sprintf("%v", varName) + ", " + v[2].(string))
-									if nil != err {
-										panic(err)
-									}
-								}
 								break
 							}
 						}
