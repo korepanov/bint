@@ -765,6 +765,8 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 							stranspileVar := fmt.Sprintf("%v", transpileVar)
 							if len(stranspileVar) > 7 && "\"getVar" == string(stranspileVar[0:7]) {
 								stranspileVar = stranspileVar[1 : len(stranspileVar)-1]
+							} else if "\"" != string(stranspileVar[0]) {
+								stranspileVar = "\"" + stranspileVar + "\""
 							}
 							_, err := transpileDest.WriteString("setVar(\"" + fmt.Sprintf("%v", LO[0]) +
 								"\"," + stranspileVar + ")\n")

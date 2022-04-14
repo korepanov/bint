@@ -111,6 +111,14 @@ panic(errors.New("could not open file " + fmt.Sprintf("%v", fileName) + ": " + e
 return f 
 }
 
+func openFile666(fileName interface{}) *os.File{
+f, err := os.OpenFile(fmt.Sprintf("%v", fileName), os.O_WRONLY, 0666)
+if nil != err{
+panic(errors.New("could not open file " + fmt.Sprintf("%v", fileName) + ": " + err.Error()))
+}
+return f 
+}
+
 func createFile(fileName interface{}) *os.File{
 f, err := os.Create(fmt.Sprintf("%v", fileName))
 if nil != err{

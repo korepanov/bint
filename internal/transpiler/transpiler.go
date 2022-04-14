@@ -4,7 +4,6 @@ import (
 	. "bint.com/pkg/serviceTools"
 	"errors"
 	"fmt"
-	"io"
 	"os"
 	"strconv"
 )
@@ -402,12 +401,12 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 			return []interface{}{-1}, systemStack, err
 		}
 
-		_, err = transpileDest.WriteString("defineVar(\"sourceNewChunk\")\n")
+		_, err = transpileDest.WriteString("defineVar(\"$sourceNewChunk\")\n")
 		if nil != err {
 			return []interface{}{-1}, systemStack, err
 		}
 
-		_, err = transpileDest.WriteString("setVar(\"sourceNewChunk\", EachChunk(getVar(\"$SOURCE\").(*os.File)))\n")
+		_, err = transpileDest.WriteString("setVar(\"$sourceNewChunk\", EachChunk(getVar(\"$SOURCE\").(*os.File)))\n")
 		if nil != err {
 			return []interface{}{-1}, systemStack, err
 		}
@@ -424,58 +423,85 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 		}
 		return []interface{}{0}, systemStack, nil
 	} else if "SEND_DEST" == OP {
-		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
-			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
-		}
-		fin, err := os.Open("benv/program.basm")
+		_, err := transpileDest.WriteString("defineVar(\"$fin\")\n")
 		if nil != err {
-			return []interface{}{1}, systemStack, err
+			return []interface{}{-1}, systemStack, err
 		}
-
-		fout, err := os.Create(fmt.Sprintf("%v", LO[0]))
-
+		_, err = transpileDest.WriteString("defineVar(\"$fout\")\n")
 		if nil != err {
-			return []interface{}{1}, systemStack, err
+			return []interface{}{-1}, systemStack, err
 		}
-		_, err = io.Copy(fout, fin)
-
+		_, err = transpileDest.WriteString("setVar(\"$fin\", openFile(getRootSource(\"benv/program.basm\")))\n")
 		if nil != err {
-			return []interface{}{1}, systemStack, err
+			return []interface{}{-1}, systemStack, err
+		}
+		_, err = transpileDest.WriteString("setVar(\"$fout\", createFile(getRootSource(" + fmt.Sprintf("%v", LO[0]) + ")))\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
 		}
 
-		err = fin.Close()
+		_, err = transpileDest.WriteString("io.Copy(getVar(\"$fout\").(*os.File), getVar(\"$fin\").(*os.File))\n")
 		if nil != err {
-			return []interface{}{1}, systemStack, err
-		}
-		err = fout.Close()
-		if nil != err {
-			return []interface{}{1}, systemStack, err
+			return []interface{}{-1}, systemStack, err
 		}
 
-		err = os.Remove("benv/program.basm")
+		_, err = transpileDest.WriteString("os.Remove(getRootSource(\"benv/program.basm\"))\n")
+
 		if nil != err {
-			return []interface{}{1}, systemStack, err
+			return []interface{}{-1}, systemStack, err
 		}
 
 		return []interface{}{0}, systemStack, nil
 	} else if "DEL_DEST" == OP {
-		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
-			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
+		_, err := transpileDest.WriteString("os.Remove(getRootSource(" + fmt.Sprintf("%v", LO[0]) + "))\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, nil
 		}
-		if Exists(fmt.Sprintf("%v", LO[0])) {
-			//err := LO[0].(*os.File).Close()
-			//if nil != err{
-			//	return []interface{}{1}, systemStack, err
-			//}
-			err := os.Remove(fmt.Sprintf("%v", LO[0]))
-			if nil != err {
-				return []interface{}{1}, systemStack, err
-			}
+		return []interface{}{0}, systemStack, nil
+	} else if "REROUTE" == OP {
+		_, err := transpileDest.WriteString("getVar(\"$DEST\").(*os.File).Close()\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
+		}
+		_, err = transpileDest.WriteString("getVar(\"$SOURCE\").(*os.File).Close()\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
+		}
+		_, err = transpileDest.WriteString("defineVar(\"$temp\")\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
+		}
+		_, err = transpileDest.WriteString("setVar(\"$temp\", getVar(\"$DEST\"))\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
+		}
+
+		_, err = transpileDest.WriteString("setVar(\"$DEST\", getVar(\"$SOURCE\"))\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
+		}
+
+		_, err = transpileDest.WriteString("setVar(\"$SOURCE\", getVar(\"$temp\"))\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
+		}
+
+		_, err = transpileDest.WriteString("setVar(\"$SOURCE\", openFile(getVar(\"$SOURCE\").(*os.File).Name()))\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
+		}
+
+		_, err = transpileDest.WriteString("setVar(\"$DEST\", openFile666(getVar(\"$SOURCE\").(*os.File).Name()))\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
+		}
+
+		_, err = transpileDest.WriteString("setVar(\"$sourceNewChunk\", EachChunk(getVar(\"$SOURCE\").(*os.File)))\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
 		}
 
 		return []interface{}{0}, systemStack, nil
-	} else if "REROUTE" == OP {
-		return []interface{}{"REROUTE", 0}, systemStack, nil
 	} else if "UNSET_SOURCE" == OP {
 		_, err := transpileDest.WriteString("getVar(\"$SOURCE\").(*os.File).Close()\n")
 		if nil != err {
@@ -497,7 +523,7 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 		if nil != err {
 			return []interface{}{-1}, systemStack, err
 		}
-		_, err = transpileDest.WriteString("setVar(\"$CODE\", fmt.Sprintf(\"%v\", getVar(\"sourceNewChunk\").(func () string)()))\n")
+		_, err = transpileDest.WriteString("setVar(\"$CODE\", fmt.Sprintf(\"%v\", getVar(\"$sourceNewChunk\").(func () string)()))\n")
 
 		if nil != err {
 			return []interface{}{-1}, systemStack, err
