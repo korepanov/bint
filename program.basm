@@ -1,14 +1,11 @@
-SET_SOURCE("input.basm");
-SET_DEST("output.basm");
-string command;
-next_command(command);
+string root_source;
+string root_dest;
 
-#begin:
-[goto(#end), ("end" == command), print("")];
-send_command(command);
-next_command(command);
-goto(#begin);
-#end:
+get_root_source(root_source);
+get_root_dest(root_dest);
 
-UNSET_SOURCE();
-UNSET_DEST();
+print(root_source);
+print("\n");
+print(root_dest);
+print("\n"); 
+

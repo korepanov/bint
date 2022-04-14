@@ -11,7 +11,10 @@ import(
 "errors"
 "path/filepath"
 "regexp"
+"flag"
 )
+var iFlag = "-i"
+var oFlag = "-o"
 var systemStack = []interface{}{"end"}
 var vars = make(map[string][]interface{})
 
@@ -337,6 +340,9 @@ func CodeInput(expr string, lineIncrement bool) string {
 }
 
 func main(){
+flag.StringVar(&iFlag, "i", "", "-i input.b")
+flag.StringVar(&oFlag, "o", "", "-o output.b")
+flag.Parse()
 
 _ = strings.Index("", "")
 fmt.Printf("")

@@ -513,9 +513,17 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 		}
 		return []interface{}{0}, systemStack, nil
 	} else if "get_root_source" == OP {
-		return []interface{}{"get_root_source", LO}, systemStack, nil
+		_, err := transpileDest.WriteString("setVar(" + fmt.Sprintf("%v", LO[0])[7:len(fmt.Sprintf("%v", LO[0]))-1] + ", iFlag)\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
+		}
+		return []interface{}{0}, systemStack, nil
 	} else if "get_root_dest" == OP {
-		return []interface{}{"get_root_dest", LO}, systemStack, nil
+		_, err := transpileDest.WriteString("setVar(" + fmt.Sprintf("%v", LO[0])[7:len(fmt.Sprintf("%v", LO[0]))-1] + ", oFlag)\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
+		}
+		return []interface{}{0}, systemStack, nil
 	} else if "send_command" == OP {
 		_, err := transpileDest.WriteString("getVar(\"$DEST\").(*os.File).WriteString(" + fmt.Sprintf("%v", LO[0]) + ".(string) + \";\")\n")
 		if nil != err {
