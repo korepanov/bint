@@ -7,7 +7,7 @@ import (
 
 func main() {
 	// эту опцию можно менять для системной отладки
-	sysMode := options.No
+	sysMode := options.Transpile
 
 	var filesListToExecute []string
 

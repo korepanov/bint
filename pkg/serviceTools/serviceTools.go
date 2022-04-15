@@ -16,7 +16,7 @@ var CommandToExecute string
 func FindExprListEnd(exprList [][]interface{}, exprBegin int) int {
 	openedBraces := 1
 	closedBraces := 0
-	//exprBegin - первы токен после "("
+	//exprBegin - первый токен после "("
 	i := exprBegin
 
 	for openedBraces != closedBraces {

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 )
 
 func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []interface{},
@@ -209,6 +210,16 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 
 		return []interface{}{fmt.Sprintf("%v", LO[0]) + ">=" + fmt.Sprintf("%v", RO[0])}, systemStack, nil
 	} else if "+" == OP {
+		if len(fmt.Sprintf("%v", LO[0])) > 6 && "getVar" != fmt.Sprintf("%v", LO[0])[0:6] {
+			LO[0] = string(fmt.Sprintf("%v", LO[0])[0]) +
+				strings.Replace(fmt.Sprintf("%v", LO[0])[1:len(fmt.Sprintf("%v", LO[0]))-1], "\"", `\"`, -1) +
+				string(fmt.Sprintf("%v", LO[0])[len(fmt.Sprintf("%v", LO[0]))-1])
+		}
+		if len(fmt.Sprintf("%v", RO[0])) > 6 && "getVar" != fmt.Sprintf("%v", RO[0])[0:6] {
+			RO[0] = string(fmt.Sprintf("%v", RO[0])[0]) +
+				strings.Replace(fmt.Sprintf("%v", RO[0])[1:len(fmt.Sprintf("%v", RO[0]))-1], "\"", `\"`, -1) +
+				string(fmt.Sprintf("%v", RO[0])[len(fmt.Sprintf("%v", RO[0]))-1])
+		}
 
 		return []interface{}{"sum(" + fmt.Sprintf("%v", LO[0]) + ", " + fmt.Sprintf("%v", RO[0]) + ")"}, systemStack, nil
 	} else if "-" == OP {
@@ -396,7 +407,7 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 			return []interface{}{-1}, systemStack, err
 		}
 
-		_, err = transpileDest.WriteString("setVar(\"$SOURCE\", openFile(getRootSource(" + fmt.Sprintf("%v", LO[0]) + ")))\n")
+		_, err = transpileDest.WriteString("setVar(\"$SOURCE\", openFile(getRootSource(fmt.Sprintf(\"%v\", " + fmt.Sprintf("%v", LO[0]) + "))))\n")
 		if nil != err {
 			return []interface{}{-1}, systemStack, err
 		}

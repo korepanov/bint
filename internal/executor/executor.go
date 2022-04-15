@@ -768,9 +768,21 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 							stranspileVar := fmt.Sprintf("%v", transpileVar)
 							if len(stranspileVar) > 7 && "\"getVar" == string(stranspileVar[0:7]) {
 								stranspileVar = stranspileVar[1 : len(stranspileVar)-1]
-							} else if "\"" != string(stranspileVar[0]) {
+							} else if "\"" != string(stranspileVar[0]) &&
+								!(len(stranspileVar) > 6 && "string" == string(stranspileVar[0:6])) {
 								stranspileVar = "\"" + stranspileVar + "\""
 							}
+
+							if "\"sum" == stranspileVar[0:4] || "\"len" == stranspileVar[0:4] {
+								stranspileVar = stranspileVar[1 : len(stranspileVar)-1]
+							}
+
+							if -1 == strings.Index(stranspileVar, "getVar") {
+								stranspileVar = string(stranspileVar[0]) +
+									strings.Replace(stranspileVar[1:len(stranspileVar)-1], "\"", `\"`, -1) +
+									string(stranspileVar[len(stranspileVar)-1])
+							}
+
 							_, err := transpileDest.WriteString("setVar(\"" + fmt.Sprintf("%v", LO[0]) +
 								"\"," + stranspileVar + ")\n")
 							if nil != err {

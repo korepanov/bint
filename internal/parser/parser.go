@@ -332,10 +332,16 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 			if isColon {
 				if "VAR" == fmt.Sprintf("%v", exprListInside[0][0]) {
 					newVariable = EachVariable(variables)
+
 					for v := newVariable(); "end" != v[0]; v = newVariable() {
 						if fmt.Sprintf("%v", exprListInside[0][1]) == fmt.Sprintf("%v", v[1]) {
-							exprListInside[0][0] = "VAL"
-							exprListInside[0][1] = v[2]
+							if !toTranspile {
+								exprListInside[0][0] = "VAL"
+								exprListInside[0][1] = v[2]
+							} else {
+								exprListInside[0][0] = "VAL"
+								exprListInside[0][1] = "toInt(getVar(\"" + fmt.Sprintf("%v", v[1]) + "\"))"
+							}
 						}
 					}
 				}
@@ -344,54 +350,82 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 					newVariable = EachVariable(variables)
 					for v := newVariable(); "end" != v[0]; v = newVariable() {
 						if fmt.Sprintf("%v", exprListInside[2][1]) == fmt.Sprintf("%v", v[1]) {
-							exprList[2][0] = "VAL"
-							exprListInside[2][1] = v[2]
+							if !toTranspile {
+								exprList[2][0] = "VAL"
+								exprListInside[2][1] = v[2]
+							} else {
+								exprListInside[2][0] = "VAL"
+								exprListInside[2][1] = "toInt(getVar(\"" + fmt.Sprintf("%v", v[1]) + "\"))"
+							}
+
 						}
 					}
 				}
+				var leftNumber interface{}
+				var rightNumber interface{}
 
 				leftNumber, err := strconv.Atoi(fmt.Sprintf("%v", ValueFoldInterface(exprListInside[0][1])))
-				if nil != err {
+				if nil != err && !toTranspile {
 					err = errors.New("parser: ERROR: data type mismatch")
 					panic(err)
+				} else {
+					leftNumber = fmt.Sprintf("%v", ValueFoldInterface(exprListInside[0][1]))
 				}
 
-				rightNumber, err := strconv.Atoi(fmt.Sprintf("%v", ValueFoldInterface(exprListInside[2][1])))
-				if nil != err {
+				rightNumber, err = strconv.Atoi(fmt.Sprintf("%v", ValueFoldInterface(exprListInside[2][1])))
+				if nil != err && !toTranspile {
 					err = errors.New("parser: ERROR: data type mismatch")
 					panic(err)
+				} else {
+					rightNumber = fmt.Sprintf("%v", ValueFoldInterface(exprListInside[2][1]))
 				}
 
 				for k := 0; k < 6; k++ {
 					exprList = Pop(exprList, i-1) // выражение
 				}
-
-				exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" + varVal[leftNumber:rightNumber] + "\""})
+				if !toTranspile {
+					exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" + varVal[leftNumber.(int):rightNumber.(int)] + "\""})
+				} else {
+					exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" + "getVar(\"" + varName + "\").(string)[" +
+						fmt.Sprintf("%v", leftNumber) + ":" + fmt.Sprintf("%v", rightNumber) + "]\""})
+				}
 
 			} else {
+				var number interface{}
 				number, err := strconv.Atoi(fmt.Sprintf("%v", exprListInside[0][1]))
 				if nil != err {
 					newVariable = EachVariable(variables)
 					for v := newVariable(); "end" != v[0]; v = newVariable() {
 						if fmt.Sprintf("%v", v[1]) == fmt.Sprintf("%v", exprListInside[0][1]) {
-							exprListInside[0][0] = "VAL"
-							exprListInside[0][1] = v[2]
+							if !toTranspile {
+								exprListInside[0][0] = "VAL"
+								exprListInside[0][1] = v[2]
+							} else {
+								exprListInside[0][0] = "VAL"
+								exprListInside[0][1] = "toInt(getVar(\"" + fmt.Sprintf("%v", v[1]) + "\"))"
+							}
 						}
 					}
 
 					number, err = strconv.Atoi(fmt.Sprintf("%v", ValueFoldInterface(exprListInside[0][1])))
 
-					if nil != err {
+					if nil != err && !toTranspile {
 						err = errors.New("parser: ERROR: data type mismatch")
 						panic(err)
+					} else {
+						number = fmt.Sprintf("%v", ValueFoldInterface(exprListInside[0][1]))
 					}
 				}
 
 				for k := 0; k < 4; k++ {
 					exprList = Pop(exprList, i-1)
 				}
-
-				exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" + string(varVal[number]) + "\""})
+				if !toTranspile {
+					exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" + string(varVal[number.(int)]) + "\""})
+				} else {
+					exprList = Insert(exprList, i-1, []interface{}{"VAL", "string(getVar(\"" + varName + "\").(string)[" +
+						fmt.Sprintf("%v", number) + "])"})
+				}
 			}
 
 		}
