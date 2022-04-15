@@ -927,8 +927,13 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 		newVariable := EachVariable(variables)
 		for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
 			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
-				LO = v[2].([]interface{})
+				if !toTranspile {
+					LO = v[2].([]interface{})
+				} else {
+					LO[0] = "#getVar(\"" + fmt.Sprintf("%v", v[1]) + "\")"
+				}
 			}
+
 		}
 	} else {
 		newVariable := EachVariable(variables)

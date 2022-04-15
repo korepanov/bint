@@ -382,17 +382,6 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 
 		return []interface{}{-1}, systemStack, errors.New("can not transpile input")
 	} else if "goto" == OP {
-		if "string" != WhatsType(fmt.Sprintf("%v", LO[0])) {
-			err := errors.New("executor: goto : error: data type mismatch")
-			return LO, systemStack, err
-		}
-		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
-			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
-		}
-		if "#" != string(fmt.Sprintf("%v", LO[0])[0]) {
-			err := errors.New("executor: goto: ERROR: mark must start with \"#\", mark: " + fmt.Sprintf("%v", LO[0]))
-			return LO, systemStack, err
-		}
 
 		return []interface{}{"goto", LO[0]}, systemStack, nil
 	} else if "is_letter" == OP {
