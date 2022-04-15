@@ -491,7 +491,7 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 			return []interface{}{-1}, systemStack, err
 		}
 
-		_, err = transpileDest.WriteString("setVar(\"$DEST\", openFile666(getVar(\"$SOURCE\").(*os.File).Name()))\n")
+		_, err = transpileDest.WriteString("setVar(\"$DEST\", openFile666(getVar(\"$DEST\").(*os.File).Name()))\n")
 		if nil != err {
 			return []interface{}{-1}, systemStack, err
 		}
@@ -551,9 +551,16 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 		}
 		return []interface{}{0}, systemStack, nil
 	} else if "send_command" == OP {
-		_, err := transpileDest.WriteString("getVar(\"$DEST\").(*os.File).WriteString(" + fmt.Sprintf("%v", LO[0]) + ".(string) + \";\")\n")
-		if nil != err {
-			return []interface{}{-1}, systemStack, err
+		if "\"" != string(fmt.Sprintf("%v", LO[0])[0]) && "\"" != string(fmt.Sprintf("%v", LO[0])[len(fmt.Sprintf("%v", LO[0]))-1]) {
+			_, err := transpileDest.WriteString("getVar(\"$DEST\").(*os.File).WriteString(" + fmt.Sprintf("%v", LO[0]) + ".(string) + \";\")\n")
+			if nil != err {
+				return []interface{}{-1}, systemStack, err
+			}
+		} else {
+			_, err := transpileDest.WriteString("getVar(\"$DEST\").(*os.File).WriteString(" + fmt.Sprintf("%v", LO[0]) + " + \";\\n\")\n")
+			if nil != err {
+				return []interface{}{-1}, systemStack, err
+			}
 		}
 		return []interface{}{0}, systemStack, nil
 	} else if "push" == OP {
