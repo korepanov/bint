@@ -517,7 +517,15 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 
 		return []interface{}{0}, systemStack, nil
 	} else if "RESET_SOURCE" == OP {
-		return []interface{}{"RESET_SOURCE", 0}, systemStack, nil
+		_, err := transpileDest.WriteString("getVar(\"$SOURCE\").(*os.File).Seek(0, 0)\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, nil
+		}
+		_, err = transpileDest.WriteString("setVar(\"$sourceNewChunk\", EachChunk(getVar(\"$SOURCE\").(*os.File)))\n")
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
+		}
+		return []interface{}{0}, systemStack, nil
 	} else if "next_command" == OP {
 		_, err := transpileDest.WriteString("defineVar(\"$CODE\")\n")
 		if nil != err {
