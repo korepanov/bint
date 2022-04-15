@@ -66,8 +66,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 		} else if options.User == toTranslate {
 			rootSource = "program.b"
 			rootDest = "program.basm"
-			filesListToExecute = []string{"benv/import.basm"}
-			//filesListToExecute = []string{"benv/import.basm", "benv/prep_func.basm", "benv/long_function.basm", "benv/func.basm"}
+			//filesListToExecute = []string{"benv/import.basm"}
+			filesListToExecute = []string{"benv/import.basm", "benv/prep_func.basm", "benv/long_function.basm", "benv/func.basm"}
 		} else if options.Transpile == toTranslate {
 			rootSource = "benv/myprogram.basm"
 			rootDest = "benv/build/main.go"

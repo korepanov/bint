@@ -724,15 +724,18 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 				var err error
 				if !toTranspile {
 					v[2], systemStack, err = execute(systemStack, OP, LO, RO)
-				}
-				if nil != err {
-					panic(err)
-				}
-				_, err = transpileDest.WriteString("setVar(\"" + fmt.Sprintf("%v", LO[0]) + "\", " + "systemStack[len(systemStack)-1])\n" +
-					"if \"end\" != systemStack[len(systemStack)-1] {\n" +
-					"systemStack = systemStack[:len(systemStack)-1]\n}\n")
-				if nil != err {
-					panic(err)
+
+					if nil != err {
+						panic(err)
+					}
+
+				} else {
+					_, err = transpileDest.WriteString("setVar(\"" + fmt.Sprintf("%v", LO[0]) + "\", " + "systemStack[len(systemStack)-1])\n" +
+						"if \"end\" != systemStack[len(systemStack)-1] {\n" +
+						"systemStack = systemStack[:len(systemStack)-1]\n}\n")
+					if nil != err {
+						panic(err)
+					}
 				}
 				break
 			}
@@ -840,7 +843,7 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 							if nil != err {
 								panic(err)
 							}
-						} else if nil == transpileVar {
+						} else if toTranspile && nil == transpileVar {
 							_, err := transpileDest.WriteString("setVar(\"" +
 								fmt.Sprintf("%v", v[1]) + "\", append(getVar(\"" +
 								fmt.Sprintf("%v", v[1]) + "\").([]interface{}), " + RO[0].([]string)[1] + "))\n")
