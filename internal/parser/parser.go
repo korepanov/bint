@@ -1,7 +1,6 @@
 package parser
 
 import (
-	. "bint.com/internal/drawModule"
 	. "bint.com/internal/executor"
 	. "bint.com/pkg/serviceTools"
 	"errors"
@@ -368,7 +367,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 				if nil != err && !toTranspile {
 					err = errors.New("parser: ERROR: data type mismatch")
 					panic(err)
-				} else {
+				} else if toTranspile {
 					leftNumber = fmt.Sprintf("%v", ValueFoldInterface(exprListInside[0][1]))
 				}
 
@@ -376,7 +375,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 				if nil != err && !toTranspile {
 					err = errors.New("parser: ERROR: data type mismatch")
 					panic(err)
-				} else {
+				} else if toTranspile {
 					rightNumber = fmt.Sprintf("%v", ValueFoldInterface(exprListInside[2][1]))
 				}
 
@@ -412,7 +411,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 					if nil != err && !toTranspile {
 						err = errors.New("parser: ERROR: data type mismatch")
 						panic(err)
-					} else {
+					} else if toTranspile {
 						number = fmt.Sprintf("%v", ValueFoldInterface(exprListInside[0][1]))
 					}
 				}
@@ -754,9 +753,9 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 		infoList = []interface{}{fmt.Sprintf("%v", exprList[0][1])}
 	}
 
-	if showTree {
+	/*if showTree {
 		DrawTree(treeStructure, infoList)
-	}
+	}*/
 
 	treeStructureList = append(treeStructureList, treeStructure)
 	infoListList = append(infoListList, infoList)

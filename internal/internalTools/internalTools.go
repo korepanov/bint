@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -52,25 +53,32 @@ func ParseArgs() (int, string, string, error) {
 	return toTranslate, rootSource, rootDest, nil
 }
 
-func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInternal int) (string, string, []string) {
+func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInternal int, execBenv bool) (string, string, []string) {
 	var filesListToExecute []string
 
 	if options.Internal == toTranslate {
 		toTranslate = toTranslateInternal
 
 		if options.Internal == toTranslate {
-			rootSource = "benv/import.b"
-			rootDest = "benv/import.basm"
-			filesListToExecute = []string{"benv/internal/prep_func.basm", "benv/internal/long_function.basm",
+			rootSource = "benv/long_function.b"
+			rootDest = "benv/long_function.basm"
+			filesListToExecute = []string{"benv/internal/prep_func.basm",
 				"benv/internal/func.basm"}
 		} else if options.User == toTranslate {
 			rootSource = "program.b"
 			rootDest = "program.basm"
 			//filesListToExecute = []string{"benv/import.basm"}
-			filesListToExecute = []string{"benv/import.basm", "benv/prep_func.basm", "benv/long_function.basm", "benv/func.basm"}
+			if execBenv {
+				filesListToExecute = []string{"benv/build/import", "benv/build/prep_func", "benv/build/long_function",
+					"benv/build/func"}
+			} else {
+				filesListToExecute = []string{"benv/import.basm", "benv/prep_func.basm", "benv/long_function.basm",
+					"benv/func.basm"}
+			}
 		} else if options.Transpile == toTranslate {
-			rootSource = "benv/myprogram.basm"
+			rootSource = "benv/func.basm"
 			rootDest = "benv/build/main.go"
+
 			source, err := os.Open("benv/build/pattern.p")
 			if nil != err {
 				panic(err)
@@ -102,7 +110,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 		}
 
 	} else if options.User == toTranslate {
-		filesListToExecute = []string{"benv/prep_func.basm", "benv/long_function.basm", "benv/func.basm"}
+		filesListToExecute = []string{"benv/build/import", "benv/build/prep_func",
+			"benv/build/long_function", "benv/build/func"}
 	} else if options.No == toTranslate {
 		filesListToExecute = []string{rootDest}
 	} else {
@@ -112,7 +121,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 	return rootSource, rootDest, filesListToExecute
 }
 
-func Start(filesListToExecute []string, rootSource string, rootDest string, sysMod int) {
+func Start(toTranslate int, filesListToExecute []string, rootSource string, rootDest string, sysMod int, execBenv bool) {
 	COMMAND_COUNTER := 1
 	var variables [][]interface{}
 	var exprList [][]interface{}
@@ -136,6 +145,47 @@ func Start(filesListToExecute []string, rootSource string, rootDest string, sysM
 	}()
 
 	var err error
+	if (options.Internal == toTranslate && options.User == sysMod && execBenv) ||
+		options.User == toTranslate {
+		fileToExecute = filesListToExecute[0]
+
+		cmd := exec.Command(filesListToExecute[0], "-i", rootSource)
+
+		err := cmd.Start()
+		if nil != err {
+			panic(err)
+		}
+		err = cmd.Wait()
+		if nil != err {
+			panic(err)
+		}
+
+		for i := 1; i < len(filesListToExecute)-1; i++ {
+			fileToExecute = filesListToExecute[i]
+			cmd := exec.Command(filesListToExecute[i])
+			err := cmd.Start()
+			if nil != err {
+				panic(err)
+			}
+			err = cmd.Wait()
+			if nil != err {
+				panic(err)
+			}
+		}
+
+		fileToExecute = filesListToExecute[len(filesListToExecute)-1]
+
+		cmd = exec.Command(filesListToExecute[len(filesListToExecute)-1], "-o", rootDest)
+		err = cmd.Start()
+		if nil != err {
+			panic(err)
+		}
+		err = cmd.Wait()
+		if nil != err {
+			panic(err)
+		}
+		return
+	}
 
 	if options.Transpile == sysMod {
 		transpileDest, err = os.OpenFile(rootDest, os.O_APPEND|os.O_WRONLY, 0644)
@@ -150,6 +200,7 @@ func Start(filesListToExecute []string, rootSource string, rootDest string, sysM
 		LineCounter = 0
 		variables = nil
 		systemStack = []interface{}{"end"}
+		var marks []string
 		var inputedCode string
 
 		f, err := os.Open(fileToExecute)
@@ -158,6 +209,27 @@ func Start(filesListToExecute []string, rootSource string, rootDest string, sysM
 			panic(err)
 		}
 		newChunk := EachChunk(f)
+		// собираем все метки файла в marks
+		if options.Transpile == sysMod {
+			for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
+				CommandToExecute = strings.TrimSpace(chunk)
+				inputedCode = CodeInput(chunk, false)
+
+				mark := GetMark(inputedCode)
+				if "" != mark {
+					marks = append(marks, mark)
+				}
+
+			}
+
+			_, err := f.Seek(0, 0)
+
+			if nil != err {
+				panic(err)
+			}
+
+			newChunk = EachChunk(f)
+		}
 		for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
 			CommandToExecute = strings.TrimSpace(chunk)
 			inputedCode = CodeInput(chunk, !wasGetCommandCounterByMark)
@@ -206,9 +278,20 @@ func Start(filesListToExecute []string, rootSource string, rootDest string, sysM
 								panic(err)
 							}
 						} else {
-							_, err = transpileDest.WriteString(fmt.Sprintf("%v", res[0]) + " " + fmt.Sprintf("%v", res[1])[1:] + "\n")
-							if nil != err {
-								panic(err)
+							if (len(fmt.Sprintf("%v", res[1])) > 7 && "#getVar" != fmt.Sprintf("%v", res[1])[0:7]) ||
+								len(fmt.Sprintf("%v", res[1])) <= 7 {
+								_, err = transpileDest.WriteString(fmt.Sprintf("%v", res[0]) + " " + fmt.Sprintf("%v", res[1])[1:] + "\n")
+								if nil != err {
+									panic(err)
+								}
+							} else {
+								for _, mark := range marks {
+									_, err = transpileDest.WriteString("if \"" + mark + "\" == fmt.Sprintf(\"%v\", " +
+										fmt.Sprintf("%v", res[1])[1:] + "){\ngoto " + mark[1:] + "\n}\n")
+									if nil != err {
+										panic(err)
+									}
+								}
 							}
 						}
 						continue

@@ -287,7 +287,6 @@ command = (("UNDEFINE(" + arg_name) + ")");
 [goto(#undefine_end0), ("end" == arg_name), print("")];
 send_command(command);
 buf_stack_reserv.push(arg_name);
-#not_send0:
 goto(#undefine_start0);
 #undefine_end0:
 inside_vars_stack = inside_vars_stack_reserv;
@@ -327,7 +326,6 @@ command = (("UNDEFINE(" + arg_name) + ")");
 [goto(#undefine_end), ("end" == arg_name), print("")];
 send_command(command);
 buf_stack_reserv.push(arg_name);
-#not_send:
 goto(#undefine_start);
 #undefine_end:
 inside_vars_stack = inside_vars_stack_reserv;

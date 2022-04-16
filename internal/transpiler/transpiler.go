@@ -12,9 +12,13 @@ import (
 func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []interface{},
 	transpileDest *os.File) ([]interface{}, []interface{}, error) {
 	if "print" == OP {
+		LO[0] = strings.Replace(fmt.Sprintf("%v", LO[0]), "\n", "\\n", -1)
 		return []interface{}{"print", LO}, systemStack, nil
 	} else if "index" == OP {
-
+		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) &&
+			"\"" == string(fmt.Sprintf("%v", LO[0])[len(fmt.Sprintf("%v", LO[0]))-1]) {
+			LO[0] = fmt.Sprintf("%v", LO[0])[1 : len(fmt.Sprintf("%v", LO[0]))-1]
+		}
 		return []interface{}{"strings.Index(fmt.Sprintf(\"%v\"," + fmt.Sprintf("%v", LO[0]) + "), fmt.Sprintf(\"%v\"," + fmt.Sprintf("%v", RO[0]) + "))"}, systemStack, nil
 	} else if "len" == OP {
 
@@ -149,7 +153,12 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 		return []interface{}{fmt.Sprintf("%v", LO[0]) + "<=" + fmt.Sprintf("%v", RO[0])}, systemStack, nil
 
 	} else if "==" == OP {
-
+		if len(fmt.Sprintf("%v", LO[0])) > 7 && fmt.Sprintf("%v", LO[0])[0:7] == "\"getVar" {
+			LO[0] = fmt.Sprintf("%v", LO[0])[1 : len(fmt.Sprintf("%v", LO[0]))-1]
+		}
+		if len(fmt.Sprintf("%v", RO[0])) > 7 && fmt.Sprintf("%v", RO[0])[0:7] == "\"getVar" {
+			RO[0] = fmt.Sprintf("%v", RO[0])[1 : len(fmt.Sprintf("%v", RO[0]))-1]
+		}
 		return []interface{}{"isEqual(" + fmt.Sprintf("%v", LO[0]) + ", " + fmt.Sprintf("%v", RO[0]) + ")"}, systemStack, nil
 	} else if ">" == OP {
 		var floatLO float64
@@ -210,12 +219,16 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 
 		return []interface{}{fmt.Sprintf("%v", LO[0]) + ">=" + fmt.Sprintf("%v", RO[0])}, systemStack, nil
 	} else if "+" == OP {
-		if len(fmt.Sprintf("%v", LO[0])) > 6 && "getVar" != fmt.Sprintf("%v", LO[0])[0:6] {
+		if (len(fmt.Sprintf("%v", LO[0])) > 7 && "getVar" != fmt.Sprintf("%v", LO[0])[0:6] &&
+			"toFloat" != fmt.Sprintf("%v", LO[0])[0:7] && "sum" != fmt.Sprintf("%v", LO[0])[0:3]) ||
+			(len(fmt.Sprintf("%v", LO[0])) < 7 && -1 != strings.Index(fmt.Sprintf("%v", LO[0]), "\"")) {
 			LO[0] = string(fmt.Sprintf("%v", LO[0])[0]) +
 				strings.Replace(fmt.Sprintf("%v", LO[0])[1:len(fmt.Sprintf("%v", LO[0]))-1], "\"", `\"`, -1) +
 				string(fmt.Sprintf("%v", LO[0])[len(fmt.Sprintf("%v", LO[0]))-1])
 		}
-		if len(fmt.Sprintf("%v", RO[0])) > 6 && "getVar" != fmt.Sprintf("%v", RO[0])[0:6] {
+		if (len(fmt.Sprintf("%v", RO[0])) > 7 && "getVar" != fmt.Sprintf("%v", RO[0])[0:6] &&
+			"toFloat" != fmt.Sprintf("%v", RO[0])[0:7] && "sum" != fmt.Sprintf("%v", RO[0])[0:3]) ||
+			(len(fmt.Sprintf("%v", RO[0])) < 7 && -1 != strings.Index(fmt.Sprintf("%v", RO[0]), "\"")) {
 			RO[0] = string(fmt.Sprintf("%v", RO[0])[0]) +
 				strings.Replace(fmt.Sprintf("%v", RO[0])[1:len(fmt.Sprintf("%v", RO[0]))-1], "\"", `\"`, -1) +
 				string(fmt.Sprintf("%v", RO[0])[len(fmt.Sprintf("%v", RO[0]))-1])
@@ -347,25 +360,8 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 	} else if "UNDEFINE" == OP {
 		return []interface{}{0}, systemStack, nil
 	} else if "int" == OP {
-		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
-			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
-		}
-		if "float" == WhatsType(fmt.Sprintf("%v", LO[0])) {
-			floatLO, err := strconv.ParseFloat(fmt.Sprintf("%v", LO[0]), 64)
-			if nil != err {
-				return LO, systemStack, err
-			}
 
-			return []interface{}{int(floatLO)}, systemStack, nil
-		}
-
-		intLO, err := strconv.Atoi(fmt.Sprintf("%v", LO[0]))
-
-		if nil != err {
-			return LO, systemStack, err
-		}
-
-		return []interface{}{intLO}, systemStack, nil
+		return []interface{}{"toInt(" + fmt.Sprintf("%v", LO[0]) + ")"}, systemStack, nil
 	} else if "float" == OP {
 		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
@@ -435,7 +431,9 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 		if nil != err {
 			return []interface{}{-1}, systemStack, err
 		}
-		_, err = transpileDest.WriteString("setVar(\"$fout\", createFile(getRootSource(" + fmt.Sprintf("%v", LO[0]) + ")))\n")
+
+		_, err = transpileDest.WriteString("setVar(\"$fout\", createFile(getRootSource(fmt.Sprintf(\"%v\", " +
+			fmt.Sprintf("%v", LO[0]) + "))))\n")
 		if nil != err {
 			return []interface{}{-1}, systemStack, err
 		}
@@ -531,7 +529,8 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 		if nil != err {
 			return []interface{}{-1}, systemStack, err
 		}
-		_, err = transpileDest.WriteString("setVar(\"$CODE\", fmt.Sprintf(\"%v\", getVar(\"$sourceNewChunk\").(func () string)()))\n")
+		_, err = transpileDest.WriteString("setVar(\"$CODE\", " +
+			"CodeInput(fmt.Sprintf(\"%v\", getVar(\"$sourceNewChunk\").(func () string)()), false))\n")
 
 		if nil != err {
 			return []interface{}{-1}, systemStack, err
@@ -560,7 +559,7 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 		return []interface{}{0}, systemStack, nil
 	} else if "send_command" == OP {
 		if "\"" != string(fmt.Sprintf("%v", LO[0])[0]) && "\"" != string(fmt.Sprintf("%v", LO[0])[len(fmt.Sprintf("%v", LO[0]))-1]) {
-			_, err := transpileDest.WriteString("getVar(\"$DEST\").(*os.File).WriteString(" + fmt.Sprintf("%v", LO[0]) + ".(string) + \";\")\n")
+			_, err := transpileDest.WriteString("getVar(\"$DEST\").(*os.File).WriteString(" + fmt.Sprintf("%v", LO[0]) + ".(string) + \";\\n\")\n")
 			if nil != err {
 				return []interface{}{-1}, systemStack, err
 			}

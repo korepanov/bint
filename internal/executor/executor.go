@@ -238,6 +238,19 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				return []interface{}{intLO + intRO}, systemStack, nil
 			}
 
+			if "float" == WhatsType(fmt.Sprintf("%v", RO[0])) {
+				floatRO, err := strconv.ParseFloat(fmt.Sprintf("%v", RO[0]), 64)
+				if nil != err {
+					return RO, systemStack, err
+				}
+				floatLO, err := strconv.ParseFloat(fmt.Sprintf("%v", LO[0]), 64)
+				if nil != err {
+					return RO, systemStack, err
+				}
+
+				return []interface{}{floatLO + floatRO}, systemStack, nil
+			}
+
 			err = errors.New("executor: + : error: data type mismatch")
 			return LO, systemStack, err
 
@@ -250,7 +263,7 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				return LO, systemStack, err
 			}
 
-			if "float" == WhatsType(fmt.Sprintf("%v", RO[0])) {
+			if "float" == WhatsType(fmt.Sprintf("%v", RO[0])) || "int" == WhatsType(fmt.Sprintf("%v", RO[0])) {
 				floatRO, err := strconv.ParseFloat(fmt.Sprintf("%v", RO[0]), 64)
 				if nil != err {
 					return LO, systemStack, err
@@ -303,6 +316,18 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				return []interface{}{intLO - intRO}, systemStack, nil
 			}
 
+			if "float" == WhatsType(fmt.Sprintf("%v", RO[0])) {
+				floatRO, err := strconv.ParseFloat(fmt.Sprintf("%v", RO[0]), 64)
+				if nil != err {
+					return LO, systemStack, err
+				}
+				floatLO, err := strconv.ParseFloat(fmt.Sprintf("%v", LO[0]), 64)
+				if nil != err {
+					return LO, systemStack, err
+				}
+
+				return []interface{}{floatLO - floatRO}, systemStack, nil
+			}
 			err = errors.New("executor: - : error: data type mismatch")
 			return LO, systemStack, err
 
@@ -315,7 +340,7 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				return LO, systemStack, err
 			}
 
-			if "float" == WhatsType(fmt.Sprintf("%v", RO[0])) {
+			if "float" == WhatsType(fmt.Sprintf("%v", RO[0])) || "int" == WhatsType(fmt.Sprintf("%v", RO[0])) {
 				floatRO, err := strconv.ParseFloat(fmt.Sprintf("%v", RO[0]), 64)
 				if nil != err {
 					return LO, systemStack, err
@@ -349,6 +374,19 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				return []interface{}{intLO * intRO}, systemStack, nil
 			}
 
+			if "float" == WhatsType(fmt.Sprintf("%v", RO[0])) {
+				floatRO, err := strconv.ParseFloat(fmt.Sprintf("%v", RO[0]), 64)
+				if nil != err {
+					return LO, systemStack, err
+				}
+				floatLO, err := strconv.ParseFloat(fmt.Sprintf("%v", LO[0]), 64)
+				if nil != err {
+					return LO, systemStack, err
+				}
+
+				return []interface{}{floatLO * floatRO}, systemStack, nil
+			}
+
 			err = errors.New("executor: * : error: data type mismatch")
 			return LO, systemStack, err
 
@@ -361,7 +399,7 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				return LO, systemStack, err
 			}
 
-			if "float" == WhatsType(fmt.Sprintf("%v", RO[0])) {
+			if "float" == WhatsType(fmt.Sprintf("%v", RO[0])) || "int" == WhatsType(fmt.Sprintf("%v", RO[0])) {
 				floatRO, err := strconv.ParseFloat(fmt.Sprintf("%v", RO[0]), 64)
 				if nil != err {
 					return LO, systemStack, err
@@ -395,6 +433,20 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				return []interface{}{intLO / intRO}, systemStack, nil
 			}
 
+			if "float" == WhatsType(fmt.Sprintf("%v", RO[0])) {
+				floatRO, err := strconv.ParseFloat(fmt.Sprintf("%v", RO[0]), 64)
+				if nil != err {
+					return LO, systemStack, err
+				}
+
+				floatLO, err := strconv.ParseFloat(fmt.Sprintf("%v", LO[0]), 64)
+				if nil != err {
+					return LO, systemStack, err
+				}
+
+				return []interface{}{floatLO / floatRO}, systemStack, nil
+			}
+
 			err = errors.New("executor: / : error: data type mismatch")
 			return LO, systemStack, err
 
@@ -407,7 +459,7 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				return LO, systemStack, err
 			}
 
-			if "float" == WhatsType(fmt.Sprintf("%v", RO[0])) {
+			if "float" == WhatsType(fmt.Sprintf("%v", RO[0])) || "int" == WhatsType(fmt.Sprintf("%v", RO[0])) {
 				floatRO, err := strconv.ParseFloat(fmt.Sprintf("%v", RO[0]), 64)
 				if nil != err {
 					return LO, systemStack, err
@@ -742,8 +794,10 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 		}
 	}
 	var transpileVar interface{}
+	var stranspileVar string
 
 	if "=" == OP {
+
 		newVariable := EachVariable(variables)
 		for v := newVariable(); "end" != v[0]; v = newVariable() {
 			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
@@ -755,6 +809,7 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 						RO[0] = ValueFoldInterface(rightVar[2])
 						transpileVar = rightVar[1]
 						typeRO = fmt.Sprintf("%v", rightVar[0])
+						break
 					}
 				}
 				if "" == typeRO {
@@ -765,15 +820,20 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 					if toTranspile {
 						if nil == transpileVar {
 							transpileVar = RO[0]
-							stranspileVar := fmt.Sprintf("%v", transpileVar)
-							if len(stranspileVar) > 7 && "\"getVar" == string(stranspileVar[0:7]) {
+							stranspileVar = fmt.Sprintf("%v", transpileVar)
+							if len(stranspileVar) > 7 && "\"getVar" == stranspileVar[0:7] {
 								stranspileVar = stranspileVar[1 : len(stranspileVar)-1]
 							} else if "\"" != string(stranspileVar[0]) &&
-								!(len(stranspileVar) > 6 && "string" == string(stranspileVar[0:6])) {
+								!(len(stranspileVar) > 6 && "string" == stranspileVar[0:6]) &&
+								!(len(stranspileVar) > 6 && "getVar" == stranspileVar[0:6]) {
 								stranspileVar = "\"" + stranspileVar + "\""
 							}
 
-							if "\"sum" == stranspileVar[0:4] || "\"len" == stranspileVar[0:4] {
+							if len(stranspileVar) > 4 && ("\"sum" == stranspileVar[0:4] || "\"len" == stranspileVar[0:4]) {
+								stranspileVar = stranspileVar[1 : len(stranspileVar)-1]
+							}
+
+							if len(stranspileVar) > 8 && ("\"toInt" == stranspileVar[0:6] || "\"toFloat" == stranspileVar[0:8]) {
 								stranspileVar = stranspileVar[1 : len(stranspileVar)-1]
 							}
 
@@ -788,11 +848,13 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 							if nil != err {
 								panic(err)
 							}
+							transpileVar = nil
 						} else {
-							stranspileVar := fmt.Sprintf("%v", transpileVar)
+							stranspileVar = fmt.Sprintf("%v", transpileVar)
 							if len(stranspileVar) > 7 && "\"getVar" == string(stranspileVar[0:7]) {
 								stranspileVar = stranspileVar[1 : len(stranspileVar)-1]
 							}
+
 							_, err := transpileDest.WriteString("setVar(\"" + fmt.Sprintf("%v", LO[0]) + "\", getVar(\"" +
 								stranspileVar + "\"))\n")
 							if nil != err {
@@ -831,7 +893,11 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 						if fmt.Sprintf("%v", RO[0].([]string)[1]) == fmt.Sprintf("%v", rightVar[1]) {
 
 							if "string" == fmt.Sprintf("%T", ValueFoldInterface(rightVar[2])) {
-								RO[0].([]string)[1] = fmt.Sprintf("%v", rightVar[2].([]interface{})[0])
+								if !toTranspile {
+									RO[0].([]string)[1] = fmt.Sprintf("%v", rightVar[2].([]interface{})[0])
+								} else {
+									RO[0].([]string)[1] = fmt.Sprintf("%v", rightVar[2])
+								}
 								transpileVar = rightVar[1]
 							} else {
 								RO = nil
@@ -902,10 +968,15 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 								if nil != err {
 									panic(err)
 								}
-
+								_, err = transpileDest.WriteString("if !isEqual(\"end\", " + "getVar(\"" +
+									fmt.Sprintf("%v", v[1]) + "\").([]interface{})[len(getVar(\"" + fmt.Sprintf("%v", v[1]) +
+									"\").([]interface{})) - 1]){\n")
+								if nil != err {
+									panic(err)
+								}
 								_, err = transpileDest.WriteString("setVar(\"" + fmt.Sprintf("%v", v[1]) + "\", getVar(\"" +
 									fmt.Sprintf("%v", v[1]) + "\").([]interface{})[:len(getVar(\"" + fmt.Sprintf("%v", v[1]) +
-									"\").([]interface{})) - 1])\n")
+									"\").([]interface{})) - 1])\n}\n")
 								if nil != err {
 									panic(err)
 								}

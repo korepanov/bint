@@ -47,7 +47,7 @@ is_first = True;
 was_here = False;
 get_root_dest(root_dest);
  
-SET_SOURCE("benv/internal/long_function_program.b");
+SET_SOURCE("benv/internal/prep_func_program.b");
 SET_DEST("benv/program.basm");
 next_command(command);
 
@@ -445,7 +445,7 @@ next_command(command);
 goto(#again_begin);
 #del_file:
 DEL_DEST("benv/program2.basm");
-DEL_DEST("benv/internal/long_function_program.b");
+DEL_DEST("benv/internal/prep_func_program.b");
 SEND_DEST(root_dest);
 #end:
 UNSET_SOURCE();

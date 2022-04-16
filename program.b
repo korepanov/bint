@@ -4,7 +4,7 @@ void println(string s){
 };
 
 void main(){
-	println("lala!");
+	println("Hello world!");
 };
 
 main();

@@ -6,8 +6,9 @@ import (
 )
 
 func main() {
-	// эту опцию можно менять для системной отладки
-	sysMode := options.Transpile
+	// эти опции можно менять для системной отладки
+	sysMode := options.No
+	benvMode := options.ExecBenv
 
 	var filesListToExecute []string
 
@@ -17,8 +18,7 @@ func main() {
 		return
 	}
 
-	// последнюю опцию можно менять для системной отладки
-	rootSource, rootDest, filesListToExecute = SetConf(toTranslate, rootSource, rootDest, sysMode)
+	rootSource, rootDest, filesListToExecute = SetConf(toTranslate, rootSource, rootDest, sysMode, benvMode)
 
-	Start(filesListToExecute, rootSource, rootDest, sysMode)
+	Start(toTranslate, filesListToExecute, rootSource, rootDest, sysMode, benvMode)
 }
