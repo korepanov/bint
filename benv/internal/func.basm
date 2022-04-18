@@ -47,7 +47,7 @@ is_first = True;
 was_here = False;
 get_root_dest(root_dest);
  
-SET_SOURCE("benv/internal/prep_func_program.b");
+SET_SOURCE("benv/internal/long_function_program.b");
 SET_DEST("benv/program.basm");
 next_command(command);
 
@@ -287,7 +287,6 @@ command = (("UNDEFINE(" + arg_name) + ")");
 [goto(#undefine_end0), ("end" == arg_name), print("")];
 send_command(command);
 buf_stack_reserv.push(arg_name);
-#not_send0:
 goto(#undefine_start0);
 #undefine_end0:
 inside_vars_stack = inside_vars_stack_reserv;
@@ -327,7 +326,6 @@ command = (("UNDEFINE(" + arg_name) + ")");
 [goto(#undefine_end), ("end" == arg_name), print("")];
 send_command(command);
 buf_stack_reserv.push(arg_name);
-#not_send:
 goto(#undefine_start);
 #undefine_end:
 inside_vars_stack = inside_vars_stack_reserv;
@@ -445,7 +443,7 @@ next_command(command);
 goto(#again_begin);
 #del_file:
 DEL_DEST("benv/program2.basm");
-DEL_DEST("benv/internal/prep_func_program.b");
+DEL_DEST("benv/internal/long_function_program.b");
 SEND_DEST(root_dest);
 #end:
 UNSET_SOURCE();

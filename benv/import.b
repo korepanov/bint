@@ -55,6 +55,8 @@ stack get_imports(){
 	int command_len;
 	int import_end;
 	string buf;
+	string symbol;
+	symbol="\"";
 
 	next_command(command);
 	#get_imports_s:
@@ -62,7 +64,7 @@ stack get_imports(){
 	number = index(command, "#import");
 	[print(""), (0 == number), goto(#get_imports_e)];
 	command_len = len(command);
-	import_end = rindex(command, "\"");
+	import_end = rindex(command, symbol);
 	buf = str(import_end);
 	print(buf);
 	print("\n");

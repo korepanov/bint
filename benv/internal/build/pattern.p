@@ -57,8 +57,16 @@ panic(errors.New("toFloat: failed to parse float, arg: " + fmt.Sprintf("%v", n))
 return res 
 }
 
+func toInt(n interface{}) int{
+res, err := strconv.Atoi(fmt.Sprintf("%v", n))
+if nil != err{
+panic(errors.New("toInt: failed to parse int, arg: " + fmt.Sprintf("%v", n)))
+}
+return res 
+}
+
 func isEqual(a interface{}, b interface{}) bool{
-if "\"" == string(fmt.Sprintf("%v", a)[0]) && "\"" == string(fmt.Sprintf("%v", b)[0]) {
+if len(fmt.Sprintf("%v", a)) > 0 && len(fmt.Sprintf("%v", b)) > 0 && "\"" == string(fmt.Sprintf("%v", a)[0]) && "\"" == string(fmt.Sprintf("%v", b)[0]) {
 	return fmt.Sprintf("%v", a) == fmt.Sprintf("%v", b)
 }
 
@@ -81,7 +89,7 @@ return resA == resB
 }
 
 func sum(a interface{}, b interface{}) interface{}{
-if "\"" == string(fmt.Sprintf("%v", a)[0]) && "\"" == string(fmt.Sprintf("%v", b)[0]) {
+if len(fmt.Sprintf("%v", a)) > 0 && len(fmt.Sprintf("%v", b)) > 0 && "\"" == string(fmt.Sprintf("%v", a)[0]) && "\"" == string(fmt.Sprintf("%v", b)[0]) {
 	return fmt.Sprintf("%v", a) + fmt.Sprintf("%v", b)
 }
 

@@ -89,7 +89,8 @@ func EachChunk(file *os.File) func() string {
 	var resList [2]string
 	var part string
 
-	pattern, err := regexp.Compile("((?:[^;\"']|\"[^\"]*\"|'[^']*'|\".*)+)")
+	//pattern, err := regexp.Compile("((?:[^;\"']|\"[^\"]*\"|'[^']*'|\".*)+)")
+	pattern, err := regexp.Compile(`(?m)((?:[^;"']|".*[\\",^", ^\\n]*"|'[^']*'|".*)+)`)
 
 	if nil != err {
 		panic(err)
@@ -142,7 +143,7 @@ func EachChunk(file *os.File) func() string {
 			buffer = part
 			chunk = make([]byte, chunkSize)
 			_, err := file.Read(chunk)
-
+			fmt.Println(string(chunk))
 			if io.EOF == err {
 				return "end"
 			}
@@ -172,6 +173,9 @@ func EachChunk(file *os.File) func() string {
 			return part[:len(part)-1]
 		}
 
+		if "\nsymbol" == part[0:7] {
+			fmt.Println("YES")
+		}
 		return part
 	}
 }
@@ -342,8 +346,10 @@ func CodeInput(expr string, lineIncrement bool) string {
 		if startFlag {
 			if `"` != string(ch) {
 				stringInside += string(ch)
+
 			} else {
 				startFlag = false
+
 				stringsInside = append(stringsInside, stringInside)
 				stringInside = ""
 				continue
@@ -353,6 +359,7 @@ func CodeInput(expr string, lineIncrement bool) string {
 			startFlag = true
 		}
 	}
+
 	if lineIncrement {
 		if 0 == strings.Count(expr, "\n") {
 			LineCounter++

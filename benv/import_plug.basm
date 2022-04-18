@@ -1,0 +1,17 @@
+string root_source;
+string command;
+
+get_root_source(root_source);
+SET_SOURCE(root_source);
+SET_DEST("benv/import_program.b");
+next_command(command);
+#begin:
+[goto(#end),("end" == command), print("")];
+send_command(command);
+next_command(command);
+goto(#begin);
+#end:
+
+UNSET_SOURCE();
+UNSET_DEST();
+

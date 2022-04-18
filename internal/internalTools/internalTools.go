@@ -20,6 +20,7 @@ var iFlag = "-i"
 var oFlag = "-o"
 var sFlag = flag.Bool("s", false, "Use system options (for system debug only)")
 var eFlag = "-e"
+var fileToExecute string
 
 func ParseArgs() (int, string, string, error) {
 	var toTranslate int
@@ -60,10 +61,15 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 		toTranslate = toTranslateInternal
 
 		if options.Internal == toTranslate {
-			rootSource = "benv/long_function.b"
-			rootDest = "benv/long_function.basm"
-			filesListToExecute = []string{"benv/internal/prep_func.basm",
-				"benv/internal/func.basm"}
+			rootSource = "benv/import.b"
+			rootDest = "benv/import.basm"
+			if execBenv {
+				filesListToExecute = []string{"benv/internal/prep_func",
+					"long_function", "benv/internal/func"}
+			} else {
+				filesListToExecute = []string{"benv/internal/prep_func.basm",
+					"benv/internal/long_function.basm", "benv/internal/func.basm"}
+			}
 		} else if options.User == toTranslate {
 			rootSource = "program.b"
 			rootDest = "program.basm"
@@ -76,8 +82,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 					"benv/func.basm"}
 			}
 		} else if options.Transpile == toTranslate {
-			rootSource = "benv/func.basm"
-			rootDest = "benv/build/main.go"
+			rootSource = "benv/internal/func.basm"
+			rootDest = "benv/internal/build/main.go"
 
 			source, err := os.Open("benv/build/pattern.p")
 			if nil != err {
@@ -103,7 +109,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 			}
 			filesListToExecute = []string{rootSource}
 		} else if options.No == toTranslate {
-			rootDest = "program.basm"
+			rootSource = "benv/import.b"
+			rootDest = "benv/import.basm"
 			filesListToExecute = []string{rootDest}
 		} else {
 			panic(errors.New("set option to translate"))
@@ -120,6 +127,45 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 
 	return rootSource, rootDest, filesListToExecute
 }
+func ExecBenv(filesListToExecute []string, rootSource string, rootDest string) {
+	fileToExecute = filesListToExecute[0]
+
+	cmd := exec.Command(filesListToExecute[0], "-i", rootSource)
+
+	err := cmd.Start()
+	if nil != err {
+		panic(err)
+	}
+	err = cmd.Wait()
+	if nil != err {
+		panic(err)
+	}
+
+	for i := 1; i < len(filesListToExecute)-1; i++ {
+		fileToExecute = filesListToExecute[i]
+		cmd := exec.Command(filesListToExecute[i])
+		err := cmd.Start()
+		if nil != err {
+			panic(err)
+		}
+		err = cmd.Wait()
+		if nil != err {
+			panic(err)
+		}
+	}
+
+	fileToExecute = filesListToExecute[len(filesListToExecute)-1]
+
+	cmd = exec.Command(filesListToExecute[len(filesListToExecute)-1], "-o", rootDest)
+	err = cmd.Start()
+	if nil != err {
+		panic(err)
+	}
+	err = cmd.Wait()
+	if nil != err {
+		panic(err)
+	}
+}
 
 func Start(toTranslate int, filesListToExecute []string, rootSource string, rootDest string, sysMod int, execBenv bool) {
 	COMMAND_COUNTER := 1
@@ -134,7 +180,6 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 
 	systemStack := []interface{}{"end"}
 	sourceCommandCounter := 1
-	var fileToExecute string
 
 	defer func() {
 		if r := recover(); nil != r {
@@ -145,46 +190,9 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	}()
 
 	var err error
-	if (options.Internal == toTranslate && options.User == sysMod && execBenv) ||
+	if (options.Internal == toTranslate && (options.User == sysMod || options.Internal == sysMod) && execBenv) ||
 		options.User == toTranslate {
-		fileToExecute = filesListToExecute[0]
-
-		cmd := exec.Command(filesListToExecute[0], "-i", rootSource)
-
-		err := cmd.Start()
-		if nil != err {
-			panic(err)
-		}
-		err = cmd.Wait()
-		if nil != err {
-			panic(err)
-		}
-
-		for i := 1; i < len(filesListToExecute)-1; i++ {
-			fileToExecute = filesListToExecute[i]
-			cmd := exec.Command(filesListToExecute[i])
-			err := cmd.Start()
-			if nil != err {
-				panic(err)
-			}
-			err = cmd.Wait()
-			if nil != err {
-				panic(err)
-			}
-		}
-
-		fileToExecute = filesListToExecute[len(filesListToExecute)-1]
-
-		cmd = exec.Command(filesListToExecute[len(filesListToExecute)-1], "-o", rootDest)
-		err = cmd.Start()
-		if nil != err {
-			panic(err)
-		}
-		err = cmd.Wait()
-		if nil != err {
-			panic(err)
-		}
-		return
+		ExecBenv(filesListToExecute, rootSource, rootDest)
 	}
 
 	if options.Transpile == sysMod {
