@@ -66,9 +66,10 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 			if execBenv {
 				filesListToExecute = []string{"benv/internal/prep_func",
 					"long_function", "benv/internal/func"}
+
 			} else {
-				filesListToExecute = []string{"benv/internal/prep_func.basm",
-					"benv/internal/long_function.basm", "benv/internal/func.basm"}
+				filesListToExecute = []string{"benv/internal/prep_func.basm", "benv/internal/long_function.basm",
+					"benv/internal/func.basm"}
 			}
 		} else if options.User == toTranslate {
 			rootSource = "program.b"
@@ -412,15 +413,19 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 					}
 					if "send_command" == fmt.Sprintf("%v", res[0]) {
 						result := ValueFoldInterface(res[1]).(string)
+
 						if "" != result && ("\n" != result) {
 							if "\"" == string(result[0]) && "\"" == string(result[len(result)-1]) {
 								result = result[1 : len(result)-1]
 							}
+
 							result = strings.Replace(result, "\\n", "\n", -1)
+
 							_, err := dest.WriteString(result + ";\n")
 							if nil != err {
 								panic(err)
 							}
+
 						}
 					}
 				}

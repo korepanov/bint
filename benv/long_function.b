@@ -173,10 +173,11 @@ void del_file(bool change_flag){
 	[print(""), (change_flag), goto(#copy_e)];
 	SET_SOURCE("benv/long_function_program2.b");
 	SET_DEST("benv/long_function_program.b");
+	next_command(command);
 	#copy_s:
 	[goto(#copy_e), ("end" == command), print("")];
-	next_command(command);
 	send_command(command);
+	next_command(command);
 	goto(#copy_s);
 	#copy_e:
 	DEL_DEST("benv/long_function_program2.b");

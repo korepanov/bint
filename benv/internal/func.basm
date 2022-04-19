@@ -84,7 +84,6 @@ call_number = 0;
 
 #begin:
 [goto(#again_end), ("end" == command), print("")];
-
 void_flag = False; 
 br_number = index(command, "(");
 [goto(#command_end), (-1 == br_number), print("")];
@@ -397,7 +396,7 @@ buf = (buf + buf2);
 buf="print(\"\")";
 #set_buf_nop_end:
 str_call_number = str(call_number);
-command = (((((("$" + func_name) + "_return_var=\"#")+func_name)+"_res")+str_call_number)+"\"");
+command = (((((("$"+func_name)+"_return_var=\"#")+func_name)+"_res")+str_call_number)+"\"");
 send_command(command);
 command = (("goto(#" + func_name) + ")");
 send_command(command); 

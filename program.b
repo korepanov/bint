@@ -1,7 +1,4 @@
-void println(string s){
-	print(s);
-	print("\n");
-};
+#import "strings.b"
 
 void main(){
 	println("Hello world!");

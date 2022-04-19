@@ -90,7 +90,7 @@ func EachChunk(file *os.File) func() string {
 	var part string
 
 	//pattern, err := regexp.Compile("((?:[^;\"']|\"[^\"]*\"|'[^']*'|\".*)+)")
-	pattern, err := regexp.Compile(`(?m)((?:[^;"']|".*[\\",^", ^\\n]*"|'[^']*'|".*)+)`)
+	pattern, err := regexp.Compile(`(?m)((?:[^;"']|".*[\\",^",^\\n,^\n]*"|'[^']*'|".)[^;]+)`)
 
 	if nil != err {
 		panic(err)
@@ -143,7 +143,7 @@ func EachChunk(file *os.File) func() string {
 			buffer = part
 			chunk = make([]byte, chunkSize)
 			_, err := file.Read(chunk)
-			fmt.Println(string(chunk))
+
 			if io.EOF == err {
 				return "end"
 			}
@@ -173,9 +173,6 @@ func EachChunk(file *os.File) func() string {
 			return part[:len(part)-1]
 		}
 
-		if "\nsymbol" == part[0:7] {
-			fmt.Println("YES")
-		}
 		return part
 	}
 }
@@ -342,20 +339,19 @@ func CodeInput(expr string, lineIncrement bool) string {
 	}
 
 	//запоминаем стоки, чтобы оставить в них пробелы
-	for _, ch := range expr {
+	for i = 0; i < len(expr); i++ {
 		if startFlag {
-			if `"` != string(ch) {
-				stringInside += string(ch)
+			if `"` != string(expr[i]) || (i > 0 && string(expr[i-1]) == `\` && `"` == string(expr[i])) {
+				stringInside += string(expr[i])
 
 			} else {
 				startFlag = false
-
 				stringsInside = append(stringsInside, stringInside)
 				stringInside = ""
 				continue
 			}
 		}
-		if `"` == string(ch) {
+		if `"` == string(expr[i]) {
 			startFlag = true
 		}
 	}
@@ -372,16 +368,16 @@ func CodeInput(expr string, lineIncrement bool) string {
 	expr = strings.Replace(expr, "\n", "", -1)
 
 	// запоминаем местоположение строк
-	for _, ch := range expr {
+	for i = 0; i < len(expr); i++ {
 		pos += 1
 		if startFlag {
-			if `"` == string(ch) {
+			if i > 0 && `\` != string(expr[i-1]) && `"` == string(expr[i]) {
 				startFlag = false
 				continue
 			}
 		}
 
-		if `"` == string(ch) {
+		if i > 0 && `\` != string(expr[i-1]) && `"` == string(expr[i]) {
 			poses = append(poses, pos)
 			startFlag = true
 		}
