@@ -90,7 +90,7 @@ func EachChunk(file *os.File) func() string {
 	var part string
 
 	//pattern, err := regexp.Compile("((?:[^;\"']|\"[^\"]*\"|'[^']*'|\".*)+)")
-	pattern, err := regexp.Compile(`(?m)((?:[^;"']|".*[\\",^",^\\n,^\n]*"|'[^']*'|".)[^;]+)`)
+	pattern, err := regexp.Compile(`(?m)((?:[^;"']|".*[\\"][^"][^\\n][^\n]*"|'[^']*'|".)[^;]+)`)
 
 	if nil != err {
 		panic(err)

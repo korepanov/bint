@@ -90,7 +90,7 @@ intcommand_len;
 intimport_end;
 stringbuf;
 stringsymbol;
-symbol="a";
+symbol="at";
 next_command(command);
 #get_imports_s:print("");
 [goto(#get_imports_e),("end"==command),print("")];

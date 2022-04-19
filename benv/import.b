@@ -56,7 +56,7 @@ stack get_imports(){
 	int import_end;
 	string buf;
 	string symbol;
-	symbol="\"";
+	symbol="at";
 
 	next_command(command);
 	#get_imports_s:
@@ -90,6 +90,7 @@ void file_union(){
 	#file_union_e:
 	print("");
 };
+
 void main(){
 	string command;
 	stack imports;
