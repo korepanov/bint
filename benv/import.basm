@@ -123,8 +123,7 @@ imports.pop(import);
 #file_union_s:print("");
 [goto(#file_union_e),("end"==import),print("")];
 print(import);
-print("
-");
+print("\n");
 imports.pop(import);
 print("");
 goto(#file_union_s);

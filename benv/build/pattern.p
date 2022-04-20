@@ -174,7 +174,7 @@ func EachChunk(file *os.File) func() string {
 	var resList [2]string
 	var part string
 
-	pattern, err := regexp.Compile("((?:[^;\"']|\"[^\"]*\"|'[^']*'|\".*)+)")
+	pattern, err := regexp.Compile(`((?:[^;"']|"(?:\\"|[^"])*"|'[^']*'|".*)+)`)
 
 	if nil != err {
 		panic(err)
@@ -281,10 +281,11 @@ func CodeInput(expr string, lineIncrement bool) string {
 	}
 
 	//запоминаем стоки, чтобы оставить в них пробелы
-	for _, ch := range expr {
+	for i = 0; i < len(expr); i++ {
 		if startFlag {
-			if `"` != string(ch) {
-				stringInside += string(ch)
+			if `"` != string(expr[i]) || (i > 0 && string(expr[i-1]) == `\` && `"` == string(expr[i])) {
+				stringInside += string(expr[i])
+
 			} else {
 				startFlag = false
 				stringsInside = append(stringsInside, stringInside)
@@ -292,26 +293,26 @@ func CodeInput(expr string, lineIncrement bool) string {
 				continue
 			}
 		}
-		if `"` == string(ch) {
+		if `"` == string(expr[i]) {
 			startFlag = true
 		}
 	}
-	
+
 	expr = strings.Replace(expr, " ", "", -1)
 	expr = strings.Replace(expr, "\t", "", -1)
 	expr = strings.Replace(expr, "\n", "", -1)
 
 	// запоминаем местоположение строк
-	for _, ch := range expr {
+	for i = 0; i < len(expr); i++ {
 		pos += 1
 		if startFlag {
-			if `"` == string(ch) {
+			if i > 0 && `\` != string(expr[i-1]) && `"` == string(expr[i]) {
 				startFlag = false
 				continue
 			}
 		}
 
-		if `"` == string(ch) {
+		if i > 0 && `\` != string(expr[i-1]) && `"` == string(expr[i]) {
 			poses = append(poses, pos)
 			startFlag = true
 		}
