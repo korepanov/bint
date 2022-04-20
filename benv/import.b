@@ -41,6 +41,7 @@ stack get_imports(){
 	stack res; 
 	int number;
 	string import_name;
+	string command;
 	int command_len;
 	int import_end;
 	
@@ -62,12 +63,23 @@ stack get_imports(){
 };
 
 void file_union(){
+	string command;
+	stack imports;
+	string import;
+
 	imports = get_imports();
 	imports.pop(import);
 	#file_union_s:
 	[goto(#file_union_e), ("end" == import), print("")];
-	print(import);
-	print("\n");
+	UNSET_SOURCE();
+	SET_SOURCE(import);
+	next_command(command);
+	#import_s:
+	[goto(#import_e), ("end" == command), print("")];
+	send_command(command);
+	next_command(command);
+	goto(#import_s);
+	#import_e:
 	imports.pop(import);	
 	goto(#file_union_s);
 	#file_union_e:
@@ -75,10 +87,6 @@ void file_union(){
 };
 
 void main(){
-	string command;
-	stack imports;
-	string import;
-	
 	init();
 	file_union();	
 	finish();
