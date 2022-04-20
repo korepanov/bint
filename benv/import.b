@@ -11,26 +11,15 @@ void finish(){
 	UNSET_DEST();
 };
 
-int rindex(string s, string sub_s){
-	int number;
-	int s_len;
-	int sub_len;
-	int left_border;
+int find_import_end(string command){
+	int command_len;
 	int res;
-	
-	number = index(s, sub_s);
-	res = number;
-	
-	#rindex_s:
-	[goto(#rindex_e), (-1 == number), print("")];
-	s_len = len(s);
-	sub_len = len(sub_s);
-	left_border = (number + sub_len);
-	s = s[left_border:s_len];
-	number = index(s, sub_s);
-	res = number;
-	goto(#rindex_s);
-	#rindex_e:
+
+	command_len = len(command);	
+	command = command[8:command_len];
+	res = index(command, "\"");
+	res = (res + 8);	
+ 
 	return res;
 };
 
@@ -54,24 +43,18 @@ stack get_imports(){
 	string import_name;
 	int command_len;
 	int import_end;
-	string buf;
-	string symbol;
-	symbol="at";
-
+	
 	next_command(command);
 	#get_imports_s:
 	[goto(#get_imports_e), ("end" == command), print("")];
 	number = index(command, "#import");
 	[print(""), (0 == number), goto(#get_imports_e)];
 	command_len = len(command);
-	import_end = rindex(command, symbol);
-	buf = str(import_end);
-	print(buf);
-	print("\n");
-
-	import_name = command[7:command_len];
+	import_end = find_import_end(command);
+	import_name = command[8:import_end];
 	res.push(import_name);
-	next_command(command);	
+	import_end = (import_end + 1);
+	command = command[import_end:command_len];
 	goto(#get_imports_s);
 	#get_imports_e:
 	RESET_SOURCE();
@@ -95,7 +78,7 @@ void main(){
 	string command;
 	stack imports;
 	string import;
-
+	
 	init();
 	file_union();	
 	finish();

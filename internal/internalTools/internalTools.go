@@ -110,7 +110,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 			}
 			filesListToExecute = []string{rootSource}
 		} else if options.No == toTranslate {
-			rootSource = "benv/import.b"
+			rootSource = "program.b"
 			rootDest = "benv/import.basm"
 			filesListToExecute = []string{rootDest}
 		} else {
