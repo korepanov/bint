@@ -3,11 +3,11 @@ stack reverse(stack s){
 	stack res; 
 	
 	s.pop(buf);
-	#reverse_s:
-	[goto(#reverse_e), ("end" == buf), print("")];
+	#_reverse_s:
+	[goto(#_reverse_e), ("end" == buf), print("")];
 	res.push(buf);
 	s.pop(buf);
-	goto(#reverse_s);
-	#reverse_e:
+	goto(#_reverse_s);
+	#_reverse_e:
 	return res;
 };
