@@ -1,4 +1,5 @@
 string root_source;
+string first_command;
 
 void init(){
 	get_root_source(root_source);
@@ -59,6 +60,7 @@ stack get_imports(){
 	goto(#get_imports_s);
 	#get_imports_e:
 	RESET_SOURCE();
+	first_command = command;
 	return reverse(res);	
 };
 
@@ -83,6 +85,16 @@ void file_union(){
 	imports.pop(import);	
 	goto(#file_union_s);
 	#file_union_e:
+	SET_SOURCE(root_source);
+	next_command(command);
+	send_command(first_command);
+	next_command(command);
+	#final_s:
+	[goto(#final_e), ("end" == command), print("")];
+	send_command(command);
+	next_command(command);
+	goto(#final_s);
+	#final_e:
 	print("");
 };
 

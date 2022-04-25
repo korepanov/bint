@@ -1,8 +1,11 @@
 #import "stdlib/strings.b"
-#import "stdlib/stacks.b"
 
+void hello_user(string s){
+	s = (("Hello, " + s) + "!");
+	println(s);
+};
 void main(){
-	println("Hello world!");
+	hello_user("Slava");
 };
 
 main();

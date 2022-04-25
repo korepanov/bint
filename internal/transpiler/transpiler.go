@@ -19,6 +19,10 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 			"\"" == string(fmt.Sprintf("%v", LO[0])[len(fmt.Sprintf("%v", LO[0]))-1]) {
 			LO[0] = fmt.Sprintf("%v", LO[0])[1 : len(fmt.Sprintf("%v", LO[0]))-1]
 		}
+		if "\"\"\"" == RO[0] {
+			RO[0] = fmt.Sprintf("%v", "\"\\\"\"")
+		}
+
 		return []interface{}{"strings.Index(fmt.Sprintf(\"%v\"," + fmt.Sprintf("%v", LO[0]) + "), fmt.Sprintf(\"%v\"," + fmt.Sprintf("%v", RO[0]) + "))"}, systemStack, nil
 	} else if "len" == OP {
 

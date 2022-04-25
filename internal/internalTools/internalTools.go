@@ -83,8 +83,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 					"benv/func.basm"}
 			}
 		} else if options.Transpile == toTranslate {
-			rootSource = "benv/internal/func.basm"
-			rootDest = "benv/internal/build/main.go"
+			rootSource = "benv/func.basm"
+			rootDest = "benv/build/main.go"
 
 			source, err := os.Open("benv/build/pattern.p")
 			if nil != err {
@@ -110,8 +110,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 			}
 			filesListToExecute = []string{rootSource}
 		} else if options.No == toTranslate {
-			rootSource = "program.b"
-			rootDest = "benv/import.basm"
+			//rootSource = "program.b"
+			rootDest = "program.basm"
 			filesListToExecute = []string{rootDest}
 		} else {
 			panic(errors.New("set option to translate"))
