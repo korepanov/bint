@@ -20,6 +20,9 @@ var iFlag = "-i"
 var oFlag = "-o"
 var sFlag = flag.Bool("s", false, "Use system options (for system debug only)")
 var eFlag = "-e"
+var piFlag = "-pi"
+var poFlag = "-po"
+
 var fileToExecute string
 
 func ParseArgs() (int, string, string, error) {
@@ -30,20 +33,26 @@ func ParseArgs() (int, string, string, error) {
 	flag.StringVar(&iFlag, "i", "", "-i input.b")
 	flag.StringVar(&oFlag, "o", "", "-o output.basm")
 	flag.StringVar(&eFlag, "e", "", "-e program.basm")
+	flag.StringVar(&piFlag, "pi", "", "-pi input.basm")
+	flag.StringVar(&poFlag, "po", "", "-po output.bend")
 	flag.Parse()
 
 	if *help {
 		flag.Usage()
 		err := errors.New("help")
 		return toTranslate, rootSource, rootDest, err
-	} else if "" == iFlag && "" == oFlag && "" != eFlag {
+	} else if "" == iFlag && "" == oFlag && "" != eFlag && "" == piFlag && "" == poFlag {
 		toTranslate = options.No
 		rootDest = eFlag
-	} else if "" != iFlag && "" != oFlag && "" == eFlag {
+	} else if "" != iFlag && "" != oFlag && "" == eFlag && "" == piFlag && "" == poFlag {
 		toTranslate = options.User
 		rootSource = iFlag
 		rootDest = oFlag
-	} else if "" == iFlag && "" == oFlag && "" == eFlag && *sFlag {
+	} else if "" != piFlag && "" != poFlag && "" == iFlag && "" == oFlag && "" == eFlag {
+		toTranslate = options.Primitive
+		rootSource = piFlag
+		rootDest = poFlag
+	} else if "" == iFlag && "" == oFlag && "" == eFlag && "" == piFlag && "" == poFlag && *sFlag {
 		toTranslate = options.Internal
 	} else {
 		flag.Usage()
@@ -113,6 +122,10 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 			//rootSource = "program.b"
 			rootDest = "program.basm"
 			filesListToExecute = []string{rootDest}
+		} else if options.Primitive == toTranslate {
+			rootSource = "program.basm"
+			rootDest = "program.bend"
+			filesListToExecute = nil
 		} else {
 			panic(errors.New("set option to translate"))
 		}
@@ -122,6 +135,10 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 			"benv/build/long_function", "benv/build/func"}
 	} else if options.No == toTranslate {
 		filesListToExecute = []string{rootDest}
+	} else if options.Primitive == toTranslate {
+		rootSource = piFlag
+		rootDest = poFlag
+		filesListToExecute = []string{rootSource}
 	} else {
 		panic(errors.New("set option to translate"))
 	}
@@ -264,7 +281,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 
 			if 0 != exprList[0][1] { // выражение содержит команды
 				_, infoListList, systemStack = parser.Parse(exprList, variables, systemStack, options.HideTree,
-					options.Transpile == sysMod, transpileDest)
+					options.Transpile == sysMod, options.Primitive == sysMod, transpileDest)
 			} else {
 				continue
 			}
@@ -272,7 +289,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			for _, infoList := range infoListList {
 				var res []interface{}
 				res, variables, systemStack = executor.ExecuteTree(infoList, variables, systemStack,
-					options.Transpile == sysMod, transpileDest)
+					options.Transpile == sysMod, options.Primitive == sysMod, transpileDest)
 				if "print" != res[0] {
 					if "goto" == fmt.Sprintf("%v", res[0]) {
 						if options.Transpile != sysMod {

@@ -679,7 +679,7 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 }
 
 func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemStack []interface{},
-	OPPointer int, toTranspile bool, transpileDest *os.File) ([]interface{}, [][]interface{}, []interface{}, int) {
+	OPPointer int, toTranspile bool, toPrimitive bool, transpileDest *os.File) ([]interface{}, [][]interface{}, []interface{}, int) {
 	// заканчивает свою работу, когда выполнен первый оператор
 	OP := fmt.Sprintf("%v", infoList[OPPointer])
 	var LO []interface{}
@@ -703,7 +703,7 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 	} else {
 		// операция
 		OPPointer += 1
-		LO, variables, _, OPPointer = sysExecuteTree(infoList, variables, systemStack, OPPointer, toTranspile, transpileDest)
+		LO, variables, _, OPPointer = sysExecuteTree(infoList, variables, systemStack, OPPointer, toTranspile, toPrimitive, transpileDest)
 	}
 
 	if "True" == infoList[OPPointer+1] {
@@ -718,7 +718,7 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 	} else {
 		// операция
 		OPPointer += 1
-		RO, variables, _, OPPointer = sysExecuteTree(infoList, variables, systemStack, OPPointer, toTranspile, transpileDest)
+		RO, variables, _, OPPointer = sysExecuteTree(infoList, variables, systemStack, OPPointer, toTranspile, toPrimitive, transpileDest)
 	}
 
 	if "UNDEFINE" == OP {
@@ -739,6 +739,7 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 				panic(err)
 			}
 		}
+
 	}
 
 	if "input" == OP {
@@ -1112,7 +1113,7 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 }
 
 func ExecuteTree(infoList []interface{}, variables [][]interface{},
-	systemStack []interface{}, toTranspile bool, transpileDest *os.File) ([]interface{}, [][]interface{}, []interface{}) {
-	res, variables, systemStack, _ := sysExecuteTree(infoList, variables, systemStack, 0, toTranspile, transpileDest)
+	systemStack []interface{}, toTranspile bool, toPrimitive bool, transpileDest *os.File) ([]interface{}, [][]interface{}, []interface{}) {
+	res, variables, systemStack, _ := sysExecuteTree(infoList, variables, systemStack, 0, toTranspile, toPrimitive, transpileDest)
 	return res, variables, systemStack
 }

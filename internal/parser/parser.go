@@ -46,7 +46,7 @@ func makeOperationBinary(exprListInput [][]interface{}) [][]interface{} {
 }
 
 func makePrintBinary(exprListInput [][]interface{}, variables [][]interface{}, usersStack []interface{}, showTree bool,
-	toTranspile bool, transpileDest *os.File) [][]interface{} {
+	toTranspile bool, toPrimitive bool, transpileDest *os.File) [][]interface{} {
 	var exprList [][]interface{}
 	exprList = exprListInput
 	i := 0
@@ -108,9 +108,9 @@ func makePrintBinary(exprListInput [][]interface{}, variables [][]interface{}, u
 			var finalRes interface{}
 
 			if len(boolExpr) > 3 { // составное логическое выражение
-				_, infoListList, _ := Parse(boolExpr, variables, usersStack, showTree, toTranspile, transpileDest)
+				_, infoListList, _ := Parse(boolExpr, variables, usersStack, showTree, toTranspile, toPrimitive, transpileDest)
 				infoList := infoListList[0]
-				ExecuteTree(infoList, variables, usersStack, toTranspile, transpileDest)
+				ExecuteTree(infoList, variables, usersStack, toTranspile, toPrimitive, transpileDest)
 
 			} else {
 				finalRes = boolExpr[1][1]
@@ -201,7 +201,7 @@ func codeTree(exprList [][]interface{}, treeStructure string, infoList []interfa
 }
 
 func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack []interface{}, showTree bool,
-	toTranspile bool, transpileDest *os.File) ([]string, [][]interface{}, []interface{}) {
+	toTranspile bool, toPrimitive bool, transpileDest *os.File) ([]string, [][]interface{}, []interface{}) {
 	const imgWidth = 1600
 	const imgHeight = 800
 	var treeStructure string
@@ -597,23 +597,23 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 		if "print" == leftExpr[0][1] {
 			exprList = append(exprList, []interface{}{"BR", "("})
 			exprList = append(exprList, makePrintBinary(leftExpr, variables,
-				usersStack, showTree, toTranspile, transpileDest)...)
+				usersStack, showTree, toTranspile, toPrimitive, transpileDest)...)
 			exprList = append(exprList, []interface{}{"BR", ")"})
 		} else if "goto" == leftExpr[0][1] {
 			exprList = append(exprList, []interface{}{"BR", "("})
 			exprList = append(exprList, makeOperationBinary(leftExpr)...)
 			exprList = append(exprList, []interface{}{"BR", ")"})
 		} else {
-			_, infoListList, _ = Parse(leftExpr, variables, usersStack, showTree, toTranspile, transpileDest)
+			_, infoListList, _ = Parse(leftExpr, variables, usersStack, showTree, toTranspile, toPrimitive, transpileDest)
 			infoList := infoListList[0]
-			_, variables, usersStack = ExecuteTree(infoList, variables, usersStack, toTranspile, transpileDest)
+			_, variables, usersStack = ExecuteTree(infoList, variables, usersStack, toTranspile, toPrimitive, transpileDest)
 		}
 
 		// неоднозначное условие
 		if len(condition) > 1 {
-			_, infoListList, _ = Parse(condition, variables, usersStack, showTree, toTranspile, transpileDest)
+			_, infoListList, _ = Parse(condition, variables, usersStack, showTree, toTranspile, toPrimitive, transpileDest)
 			infoList := infoListList[0]
-			resCon, variables, usersStack = ExecuteTree(infoList, variables, usersStack, toTranspile, transpileDest)
+			resCon, variables, usersStack = ExecuteTree(infoList, variables, usersStack, toTranspile, toPrimitive, transpileDest)
 
 			if toTranspile {
 				_, err := transpileDest.WriteString("if " + fmt.Sprintf("%v", fmt.Sprintf("%v", resCon[0])) + "{\n")
@@ -662,16 +662,16 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 		if "print" == rightExpr[0][1] {
 			exprList = append(exprList, []interface{}{"BR", "("})
 			exprList = append(exprList, makePrintBinary(rightExpr, variables, usersStack, showTree,
-				toTranspile, transpileDest)...)
+				toTranspile, toPrimitive, transpileDest)...)
 			exprList = append(exprList, []interface{}{"BR", ")"})
 		} else if "goto" == rightExpr[0][1] {
 			exprList = append(exprList, []interface{}{"BR", "("})
 			exprList = append(exprList, makeOperationBinary(rightExpr)...)
 			exprList = append(exprList, []interface{}{"BR", ")"})
 		} else {
-			_, infoListList, _ = Parse(rightExpr, variables, usersStack, showTree, toTranspile, transpileDest)
+			_, infoListList, _ = Parse(rightExpr, variables, usersStack, showTree, toTranspile, toPrimitive, transpileDest)
 			infoList := infoListList[0]
-			_, variables, usersStack = ExecuteTree(infoList, variables, usersStack, toTranspile, transpileDest)
+			_, variables, usersStack = ExecuteTree(infoList, variables, usersStack, toTranspile, toPrimitive, transpileDest)
 
 		}
 	}
@@ -689,7 +689,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 				// меняем print под стандартную бинарную операцию
 				i = 0
 				if "print" == fmt.Sprintf("%v", exprList[i][1]) {
-					exprList = makePrintBinary(exprList, variables, usersStack, showTree, toTranspile, transpileDest)
+					exprList = makePrintBinary(exprList, variables, usersStack, showTree, toTranspile, toPrimitive, transpileDest)
 					i += 7
 				} else if "input" == fmt.Sprintf("%v", exprList[i][1]) {
 					exprList = makeOperationBinary(exprList)
