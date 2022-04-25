@@ -679,12 +679,30 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 }
 
 func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemStack []interface{},
-	OPPointer int, toTranspile bool, toPrimitive bool, transpileDest *os.File) ([]interface{}, [][]interface{}, []interface{}, int) {
+	OPPointer int, toTranspile bool, toPrimitive bool, primitiveDest *os.File, transpileDest *os.File) ([]interface{}, [][]interface{}, []interface{}, int) {
 	// заканчивает свою работу, когда выполнен первый оператор
 	OP := fmt.Sprintf("%v", infoList[OPPointer])
 	var LO []interface{}
 	var RO []interface{}
 
+	if toPrimitive {
+		var err error
+		for i := 0; i < len(infoList); i++ {
+			if i < len(infoList)-1 {
+				_, err = primitiveDest.WriteString(fmt.Sprintf("%v", infoList[i]) + ", ")
+			} else {
+				_, err = primitiveDest.WriteString(fmt.Sprintf("%v", infoList[i]))
+			}
+			if nil != err {
+				panic(err)
+			}
+		}
+
+		_, err = primitiveDest.WriteString(";\n")
+		if nil != err {
+			panic(err)
+		}
+	}
 	if 1 == len(infoList) && ("UNSET_SOURCE" == infoList[0] || "RESET_SOURCE" == infoList[0] ||
 		"UNSET_DEST" == infoList[0] || "REROUTE" == infoList[0]) {
 		infoList = append(infoList, "null")
@@ -703,7 +721,7 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 	} else {
 		// операция
 		OPPointer += 1
-		LO, variables, _, OPPointer = sysExecuteTree(infoList, variables, systemStack, OPPointer, toTranspile, toPrimitive, transpileDest)
+		LO, variables, _, OPPointer = sysExecuteTree(infoList, variables, systemStack, OPPointer, toTranspile, toPrimitive, primitiveDest, transpileDest)
 	}
 
 	if "True" == infoList[OPPointer+1] {
@@ -718,7 +736,7 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 	} else {
 		// операция
 		OPPointer += 1
-		RO, variables, _, OPPointer = sysExecuteTree(infoList, variables, systemStack, OPPointer, toTranspile, toPrimitive, transpileDest)
+		RO, variables, _, OPPointer = sysExecuteTree(infoList, variables, systemStack, OPPointer, toTranspile, toPrimitive, primitiveDest, transpileDest)
 	}
 
 	if "UNDEFINE" == OP {
@@ -742,7 +760,7 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 
 	}
 
-	if "input" == OP {
+	if "input" == OP && !toPrimitive {
 		newVariable := EachVariable(variables)
 		for v := newVariable(); "end" != v[0]; v = newVariable() {
 			if fmt.Sprintf("%v", v[1]) == fmt.Sprintf("%v", LO[0]) {
@@ -808,7 +826,7 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 	var transpileVar interface{}
 	var stranspileVar string
 
-	if "=" == OP {
+	if "=" == OP && !toPrimitive {
 
 		newVariable := EachVariable(variables)
 		for v := newVariable(); "end" != v[0]; v = newVariable() {
@@ -1094,16 +1112,18 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 		for _, el := range RO {
 			passRO = append(passRO, el)
 		}
-		if !toTranspile {
+		if !toTranspile && !toPrimitive {
 			res, systemStack, err = execute(systemStack, OP, passLO, passRO)
 			if nil != err {
 				panic(err)
 			}
-		} else {
+		} else if toTranspile {
 			res, systemStack, err = Transpile(systemStack, OP, passLO, passRO, transpileDest)
 			if nil != err {
 				panic(err)
 			}
+		} else if toPrimitive {
+			res = []interface{}{0}
 		}
 	} else {
 		res = []interface{}{0}
@@ -1113,7 +1133,7 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 }
 
 func ExecuteTree(infoList []interface{}, variables [][]interface{},
-	systemStack []interface{}, toTranspile bool, toPrimitive bool, transpileDest *os.File) ([]interface{}, [][]interface{}, []interface{}) {
-	res, variables, systemStack, _ := sysExecuteTree(infoList, variables, systemStack, 0, toTranspile, toPrimitive, transpileDest)
+	systemStack []interface{}, toTranspile bool, toPrimitive bool, primitiveDest *os.File, transpileDest *os.File) ([]interface{}, [][]interface{}, []interface{}) {
+	res, variables, systemStack, _ := sysExecuteTree(infoList, variables, systemStack, 0, toTranspile, toPrimitive, primitiveDest, transpileDest)
 	return res, variables, systemStack
 }

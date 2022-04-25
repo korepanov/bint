@@ -9,7 +9,7 @@ import (
 )
 
 func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool,
-	transpileDest *os.File) ([][]interface{}, [][]interface{}, error) {
+	transpileDest *os.File, toPrimitive bool, primitiveDest *os.File) ([][]interface{}, [][]interface{}, error) {
 
 	var res [][]interface{}
 
@@ -279,6 +279,16 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool,
 								return res, variables, err
 							}
 						}
+					}
+					if toPrimitive {
+						var err error
+
+						varType := fmt.Sprintf("%v", variables[len(variables)-1][0])
+						_, err = primitiveDest.WriteString(varType + ", " + varName + ";\n")
+						if nil != err {
+							panic(err)
+						}
+
 					}
 				}
 			} else if len(expr) > i && "\"" == string(expr[i]) {

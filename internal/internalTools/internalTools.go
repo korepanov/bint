@@ -5,6 +5,7 @@ import (
 	. "bint.com/internal/lexer"
 	"bint.com/internal/options"
 	"bint.com/internal/parser"
+	. "bint.com/internal/primitiveLexer"
 	. "bint.com/pkg/serviceTools"
 	"errors"
 	"flag"
@@ -22,6 +23,7 @@ var sFlag = flag.Bool("s", false, "Use system options (for system debug only)")
 var eFlag = "-e"
 var piFlag = "-pi"
 var poFlag = "-po"
+var peFlag = "-pe"
 
 var fileToExecute string
 
@@ -35,24 +37,28 @@ func ParseArgs() (int, string, string, error) {
 	flag.StringVar(&eFlag, "e", "", "-e program.basm")
 	flag.StringVar(&piFlag, "pi", "", "-pi input.basm")
 	flag.StringVar(&poFlag, "po", "", "-po output.bend")
+	flag.StringVar(&peFlag, "pe", "", "-pe program.bend")
 	flag.Parse()
 
 	if *help {
 		flag.Usage()
 		err := errors.New("help")
 		return toTranslate, rootSource, rootDest, err
-	} else if "" == iFlag && "" == oFlag && "" != eFlag && "" == piFlag && "" == poFlag {
-		toTranslate = options.No
+	} else if "" == iFlag && "" == oFlag && "" != eFlag && "" == piFlag && "" == poFlag && "" == peFlag {
+		toTranslate = options.ExecBasm
 		rootDest = eFlag
-	} else if "" != iFlag && "" != oFlag && "" == eFlag && "" == piFlag && "" == poFlag {
+	} else if "" != iFlag && "" != oFlag && "" == eFlag && "" == piFlag && "" == poFlag && "" == peFlag {
 		toTranslate = options.User
 		rootSource = iFlag
 		rootDest = oFlag
-	} else if "" != piFlag && "" != poFlag && "" == iFlag && "" == oFlag && "" == eFlag {
+	} else if "" != piFlag && "" != poFlag && "" == iFlag && "" == oFlag && "" == eFlag && "" == peFlag {
 		toTranslate = options.Primitive
 		rootSource = piFlag
 		rootDest = poFlag
-	} else if "" == iFlag && "" == oFlag && "" == eFlag && "" == piFlag && "" == poFlag && *sFlag {
+	} else if "" == piFlag && "" == poFlag && "" == iFlag && "" == oFlag && "" == eFlag && "" != peFlag {
+		toTranslate = options.ExecPrimitive
+		rootDest = peFlag
+	} else if "" == iFlag && "" == oFlag && "" == eFlag && "" == piFlag && "" == poFlag && "" == peFlag && *sFlag {
 		toTranslate = options.Internal
 	} else {
 		flag.Usage()
@@ -118,14 +124,17 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 				panic(err)
 			}
 			filesListToExecute = []string{rootSource}
-		} else if options.No == toTranslate {
+		} else if options.ExecBasm == toTranslate {
 			//rootSource = "program.b"
 			rootDest = "program.basm"
 			filesListToExecute = []string{rootDest}
 		} else if options.Primitive == toTranslate {
 			rootSource = "program.basm"
 			rootDest = "program.bend"
-			filesListToExecute = nil
+			filesListToExecute = []string{rootSource}
+		} else if options.ExecPrimitive == toTranslate {
+			rootDest = "program.bend"
+			filesListToExecute = []string{rootDest}
 		} else {
 			panic(errors.New("set option to translate"))
 		}
@@ -133,12 +142,15 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 	} else if options.User == toTranslate {
 		filesListToExecute = []string{"benv/build/import", "benv/build/prep_func",
 			"benv/build/long_function", "benv/build/func"}
-	} else if options.No == toTranslate {
+	} else if options.ExecBasm == toTranslate {
 		filesListToExecute = []string{rootDest}
 	} else if options.Primitive == toTranslate {
 		rootSource = piFlag
 		rootDest = poFlag
 		filesListToExecute = []string{rootSource}
+	} else if options.ExecPrimitive == toTranslate {
+		rootDest = peFlag
+		filesListToExecute = []string{rootDest}
 	} else {
 		panic(errors.New("set option to translate"))
 	}
@@ -193,6 +205,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	var source *os.File
 	var dest *os.File
 	var transpileDest *os.File
+	var primitiveDest *os.File
 	var sourceNewChunk func() string
 	var wasGetCommandCounterByMark bool
 
@@ -216,6 +229,13 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 
 	if options.Transpile == sysMod {
 		transpileDest, err = os.OpenFile(rootDest, os.O_APPEND|os.O_WRONLY, 0644)
+		if nil != err {
+			panic(err)
+		}
+	}
+
+	if options.Primitive == sysMod {
+		primitiveDest, err = os.Create(rootDest)
 		if nil != err {
 			panic(err)
 		}
@@ -270,29 +290,48 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 					}
 				}
 			}
+			if options.Primitive == sysMod {
+				mark := GetMark(inputedCode)
+				if "" != mark {
+					_, err = primitiveDest.WriteString(mark + ":\n")
+					if nil != err {
+						panic(err)
+					}
+				}
+			}
 
-			exprList, variables, err = LexicalAnalyze(inputedCode,
-				variables, options.Transpile == sysMod, transpileDest)
+			if options.ExecPrimitive != sysMod {
+				exprList, variables, err = LexicalAnalyze(inputedCode,
+					variables, options.Transpile == sysMod, transpileDest, options.Primitive == sysMod, primitiveDest)
+			} else {
+				exprList, variables, err = PrimitiveLexicalAnalyze(inputedCode,
+					variables)
+
+			}
 			wasGetCommandCounterByMark = false
 
 			if nil != err {
 				panic(err)
 			}
 
-			if 0 != exprList[0][1] { // выражение содержит команды
+			if options.ExecPrimitive != sysMod && 0 != exprList[0][1] { // выражение содержит команды
 				_, infoListList, systemStack = parser.Parse(exprList, variables, systemStack, options.HideTree,
-					options.Transpile == sysMod, options.Primitive == sysMod, transpileDest)
-			} else {
+					options.Transpile == sysMod, options.Primitive == sysMod, primitiveDest, transpileDest)
+			} else if options.ExecPrimitive != sysMod && 0 == exprList[0][1] {
+				continue
+			} else if options.ExecPrimitive == sysMod && (1 == len(exprList[0]) || (len(exprList[0]) > 1 && 0 != exprList[0][1])) {
+				infoListList = exprList
+			} else if options.ExecPrimitive == sysMod && len(exprList[0]) > 1 && 0 == exprList[0][1] {
 				continue
 			}
 
 			for _, infoList := range infoListList {
 				var res []interface{}
 				res, variables, systemStack = executor.ExecuteTree(infoList, variables, systemStack,
-					options.Transpile == sysMod, options.Primitive == sysMod, transpileDest)
+					options.Transpile == sysMod, options.Primitive == sysMod, primitiveDest, transpileDest)
 				if "print" != res[0] {
 					if "goto" == fmt.Sprintf("%v", res[0]) {
-						if options.Transpile != sysMod {
+						if options.Transpile != sysMod && options.Primitive != sysMod {
 							wasGetCommandCounterByMark = true
 							COMMAND_COUNTER, f, err = GetCommandCounterByMark(f, fmt.Sprintf("%v", res[1]))
 
@@ -304,7 +343,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 							if nil != err {
 								panic(err)
 							}
-						} else {
+						} else if options.Transpile == sysMod {
 							if (len(fmt.Sprintf("%v", res[1])) > 7 && "#getVar" != fmt.Sprintf("%v", res[1])[0:7]) ||
 								len(fmt.Sprintf("%v", res[1])) <= 7 {
 								_, err = transpileDest.WriteString(fmt.Sprintf("%v", res[0]) + " " + fmt.Sprintf("%v", res[1])[1:] + "\n")
