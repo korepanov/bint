@@ -5,7 +5,9 @@ void hello_user(string s){
 	println(s);
 };
 void main(){
-	hello_user("Slava");
+	string s;
+	input(s);
+	hello_user(s);
 };
 
 main();
