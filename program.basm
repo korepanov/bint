@@ -1,6 +1,6 @@
 stack s;
-s.push("lala");
+push("lala");
 string buf;
-s.pop(buf);
+pop(buf);
 print(buf);
 print("\n");

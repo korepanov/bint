@@ -1,6 +1,6 @@
 stack$303s;
-s.push("lala");
+push$303 "lala"$303 null;
 string$303buf;
-s.pop(buf);
+pop$303 buf$303 null;
 print$303 buf$303 null;
 print$303 "\n"$303 null;
