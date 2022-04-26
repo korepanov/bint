@@ -682,14 +682,15 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 	OPPointer int, toTranspile bool, toPrimitive bool, primitiveDest *os.File, transpileDest *os.File) ([]interface{}, [][]interface{}, []interface{}, int) {
 	// заканчивает свою работу, когда выполнен первый оператор
 	OP := fmt.Sprintf("%v", infoList[OPPointer])
+
 	var LO []interface{}
 	var RO []interface{}
 
-	if toPrimitive {
+	if toPrimitive && 0 == OPPointer {
 		var err error
 		for i := 0; i < len(infoList); i++ {
 			if i < len(infoList)-1 {
-				_, err = primitiveDest.WriteString(fmt.Sprintf("%v", infoList[i]) + ", ")
+				_, err = primitiveDest.WriteString(fmt.Sprintf("%v", infoList[i]) + "$303 ")
 			} else {
 				_, err = primitiveDest.WriteString(fmt.Sprintf("%v", infoList[i]))
 			}

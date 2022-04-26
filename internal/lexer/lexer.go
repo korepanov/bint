@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	"bint.com/internal/options"
 	. "bint.com/pkg/serviceTools"
 	"errors"
 	"fmt"
@@ -284,7 +285,7 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool,
 						var err error
 
 						varType := fmt.Sprintf("%v", variables[len(variables)-1][0])
-						_, err = primitiveDest.WriteString(varType + ", " + varName + ";\n")
+						_, err = primitiveDest.WriteString(varType + options.BendSep + varName + ";\n")
 						if nil != err {
 							panic(err)
 						}

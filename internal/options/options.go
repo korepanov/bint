@@ -1,5 +1,7 @@
 package options
 
+var BendSep = "$303"
+
 const (
 	Internal      = iota
 	User          = iota

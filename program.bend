@@ -1,57 +1,55 @@
-string, $println_return_var;
-goto, #println_end, null;
+string$303$println_return_var;
+goto$303 #println_end$303 null;
 #println:
-print, "", null;
-string, s;
-print, "", null;
-pop, s, null;
-print, "", null;
-print, s, null;
-print, "\n", null;
-UNDEFINE, s, null;
-goto, $println_return_var, null;
+print$303 ""$303 null;
+string$303s;
+print$303 ""$303 null;
+pop$303 s$303 null;
+print$303 ""$303 null;
+print$303 s$303 null;
+print$303 "\n"$303 null;
+UNDEFINE$303 s$303 null;
+goto$303 $println_return_var$303 null;
 #println_end:
-print, "", null;
-string, $hello_user_return_var;
-goto, #hello_user_end, null;
+print$303 ""$303 null;
+string$303$hello_user_return_var;
+goto$303 #hello_user_end$303 null;
 #hello_user:
-print, "", null;
-string, s;
-print, "", null;
-pop, s, null;
-print, "", null;
-=, s, +, +, "Hello, ", s, "!";
-=, s, +, +, "Hello, ", s, "!";
-=, s, +, +, "Hello, ", s, "!";
-push, s, null;
-=, $println_return_var, "#println_res0";
-goto, #println, null;
+print$303 ""$303 null;
+string$303s;
+print$303 ""$303 null;
+pop$303 s$303 null;
+print$303 ""$303 null;
+=$303 s$303 +$303 +$303 "Hello, "$303 s$303 "!";
+push$303 s$303 null;
+=$303 $println_return_var$303 "#println_res0";
+goto$303 #println$303 null;
 #println_res0:
-print, "", null;
-print, "", null;
-UNDEFINE, s, null;
-goto, $hello_user_return_var, null;
+print$303 ""$303 null;
+print$303 ""$303 null;
+UNDEFINE$303 s$303 null;
+goto$303 $hello_user_return_var$303 null;
 #hello_user_end:
-print, "", null;
-string, $main_return_var;
-goto, #main_end, null;
+print$303 ""$303 null;
+string$303$main_return_var;
+goto$303 #main_end$303 null;
 #main:
-print, "", null;
-print, "", null;
-string, s;
-input, s, null;
-push, s, null;
-=, $hello_user_return_var, "#hello_user_res0";
-goto, #hello_user, null;
+print$303 ""$303 null;
+print$303 ""$303 null;
+string$303s;
+input$303 s$303 null;
+push$303 s$303 null;
+=$303 $hello_user_return_var$303 "#hello_user_res0";
+goto$303 #hello_user$303 null;
 #hello_user_res0:
-print, "", null;
-print, "", null;
-UNDEFINE, s, null;
-goto, $main_return_var, null;
+print$303 ""$303 null;
+print$303 ""$303 null;
+UNDEFINE$303 s$303 null;
+goto$303 $main_return_var$303 null;
 #main_end:
-print, "", null;
-=, $main_return_var, "#main_res0";
-goto, #main, null;
+print$303 ""$303 null;
+=$303 $main_return_var$303 "#main_res0";
+goto$303 #main$303 null;
 #main_res0:
-print, "", null;
-print, "", null;
+print$303 ""$303 null;
+print$303 ""$303 null;
