@@ -212,13 +212,13 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	systemStack := []interface{}{"end"}
 	sourceCommandCounter := 1
 
-	defer func() {
+	/*defer func() {
 		if r := recover(); nil != r {
 			fmt.Println("ERROR in " + fileToExecute + " at near line " + fmt.Sprintf("%v", LineCounter))
 			fmt.Println(CommandToExecute)
 			fmt.Println(r)
 		}
-	}()
+	}()*/
 
 	var err error
 	if (options.Internal == toTranslate && (options.User == sysMod || options.Internal == sysMod) && execBenv) ||
@@ -301,8 +301,28 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			}
 
 			if options.ExecPrimitive != sysMod {
-				exprList, variables, err = LexicalAnalyze(inputedCode,
-					variables, options.Transpile == sysMod, transpileDest, options.Primitive == sysMod, primitiveDest)
+				var temp string
+				if options.Primitive == sysMod {
+					if "#" == string(inputedCode[0]) {
+						pos := strings.Index(inputedCode, ":")
+						if -1 == pos {
+							panic(errors.New("ERROR: mark must end with \":\""))
+						}
+						pos++
+						temp = inputedCode[pos:]
+					} else {
+						temp = inputedCode
+					}
+				}
+				if len(temp) > 0 && "[" == string(temp[0]) {
+					_, err = primitiveDest.WriteString(temp + ";\n")
+					if nil != err {
+						panic(err)
+					}
+				} else {
+					exprList, variables, err = LexicalAnalyze(inputedCode,
+						variables, options.Transpile == sysMod, transpileDest, options.Primitive == sysMod, primitiveDest)
+				}
 			} else {
 				exprList, variables, err = PrimitiveLexicalAnalyze(inputedCode,
 					variables)
@@ -320,7 +340,23 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			} else if options.ExecPrimitive != sysMod && 0 == exprList[0][1] {
 				continue
 			} else if options.ExecPrimitive == sysMod && (1 == len(exprList[0]) || (len(exprList[0]) > 1 && 0 != exprList[0][1])) {
-				infoListList = exprList
+				var temp string
+				if "#" == string(inputedCode[0]) {
+					pos := strings.Index(inputedCode, ":")
+					if -1 == pos {
+						panic(errors.New("ERROR: mark must end with \":\""))
+					}
+					pos++
+					temp = inputedCode[pos:]
+				}
+				if len(temp) > 0 && "[" == string(temp[0]) {
+					exprList, variables, err = LexicalAnalyze(inputedCode,
+						variables, options.Transpile == sysMod, transpileDest, options.Primitive == sysMod, primitiveDest)
+					_, infoListList, systemStack = parser.Parse(exprList, variables, systemStack, options.HideTree,
+						options.Transpile == sysMod, options.Primitive == sysMod, primitiveDest, transpileDest)
+				} else {
+					infoListList = exprList
+				}
 			} else if options.ExecPrimitive == sysMod && len(exprList[0]) > 1 && 0 == exprList[0][1] {
 				continue
 			}

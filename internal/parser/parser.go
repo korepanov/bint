@@ -614,9 +614,11 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 
 		// неоднозначное условие
 		if len(condition) > 1 {
+
 			_, infoListList, _ = Parse(condition, variables, usersStack, showTree, toTranspile, toPrimitive,
 				primitiveDest, transpileDest)
 			infoList := infoListList[0]
+
 			resCon, variables, usersStack = ExecuteTree(infoList, variables, usersStack, toTranspile, toPrimitive,
 				primitiveDest, transpileDest)
 
@@ -658,7 +660,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 			}
 		}
 
-		if !toTranspile {
+		if !toTranspile && !toPrimitive {
 			exprList = append(exprList, []interface{}{"OP", "L: " + fmt.Sprintf("%v", resCon[0])})
 		} else {
 			exprList = append(exprList, []interface{}{"OP", "CD"})
