@@ -129,6 +129,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 			rootDest = "program.basm"
 			filesListToExecute = []string{rootDest}
 		} else if options.Primitive == toTranslate {
+			//rootSource = "benv/import.basm"
+			//rootDest = "bendBenv/import.bend"
 			rootSource = "program.basm"
 			rootDest = "program.bend"
 			filesListToExecute = []string{rootSource}
@@ -319,6 +321,21 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 					if nil != err {
 						panic(err)
 					}
+					continue
+				} else if -1 != strings.Index(temp, "[") && -1 == strings.Index(temp, "\"") { // режем строку
+					_, err = primitiveDest.WriteString(temp + ";\n")
+					if nil != err {
+						panic(err)
+					}
+					continue
+				} else if -1 != strings.Index(temp, ".") {
+					if -1 == strings.Index(temp[:strings.Index(temp, ".")], "\"") {
+						_, err = primitiveDest.WriteString(temp + ";\n")
+						if nil != err {
+							panic(err)
+						}
+						continue
+					}
 				} else {
 					exprList, variables, err = LexicalAnalyze(inputedCode,
 						variables, options.Transpile == sysMod, transpileDest, options.Primitive == sysMod, primitiveDest)
@@ -341,15 +358,21 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 				continue
 			} else if options.ExecPrimitive == sysMod && (1 == len(exprList[0]) || (len(exprList[0]) > 1 && 0 != exprList[0][1])) {
 				var temp string
-				if "#" == string(inputedCode[0]) {
-					pos := strings.Index(inputedCode, ":")
-					if -1 == pos {
-						panic(errors.New("ERROR: mark must end with \":\""))
+				if options.Primitive == sysMod {
+					if "#" == string(inputedCode[0]) {
+						pos := strings.Index(inputedCode, ":")
+						if -1 == pos {
+							panic(errors.New("ERROR: mark must end with \":\""))
+						}
+						pos++
+						temp = inputedCode[pos:]
+					} else {
+						temp = inputedCode
 					}
-					pos++
-					temp = inputedCode[pos:]
 				}
-				if len(temp) > 0 && "[" == string(temp[0]) {
+				if (len(temp) > 0 && "[" == string(temp[0])) ||
+					(-1 != strings.Index(inputedCode, "[") && -1 == strings.Index(inputedCode, "\"")) ||
+					(-1 != strings.Index(inputedCode, ".") && -1 == strings.Index(inputedCode[:strings.Index(inputedCode, ".")], "\"")) {
 					exprList, variables, err = LexicalAnalyze(inputedCode,
 						variables, options.Transpile == sysMod, transpileDest, options.Primitive == sysMod, primitiveDest)
 					_, infoListList, systemStack = parser.Parse(exprList, variables, systemStack, options.HideTree,

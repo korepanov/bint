@@ -11,8 +11,10 @@ func PrimitiveLexicalAnalyze(expr string, variables [][]interface{}) ([][]interf
 	var res [][]interface{}
 
 	strRes := strings.Split(expr, options.BendSep)
-	if "string" == strRes[0] || "float" == strRes[0] || "int" == strRes[0] || "bool" == strRes[0] || "stack" == strRes[0] {
+	if "string" == strRes[0] || "float" == strRes[0] || "int" == strRes[0] || "bool" == strRes[0] {
 		variables = append(variables, []interface{}{strRes[0], strRes[1], []interface{}{"var_val"}})
+	} else if "stack" == strRes[0] {
+		variables = append(variables, []interface{}{strRes[0], strRes[1], []interface{}{"end"}})
 	} else {
 		var temp []interface{}
 

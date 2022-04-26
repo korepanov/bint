@@ -1,9 +1,6 @@
-bool a;
-bool b;
-a = True;
-b = False;
-#start:
-[print(""), ((b)OR(a)), goto(#end)];
-print("OPA!");
-#end:
-print("");
+stack s;
+s.push("lala");
+string buf;
+s.pop(buf);
+print(buf);
+print("\n");

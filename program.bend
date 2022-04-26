@@ -1,10 +1,6 @@
-bool$303a;
-bool$303b;
-=$303 a$303 True;
-=$303 b$303 False;
-#start:
-[print(""),((b)OR(a)),goto(#end)];
-=$303 b$303 False;
-print$303 "OPA!"$303 null;
-#end:
-print$303 ""$303 null;
+stack$303s;
+s.push("lala");
+string$303buf;
+s.pop(buf);
+print$303 buf$303 null;
+print$303 "\n"$303 null;
