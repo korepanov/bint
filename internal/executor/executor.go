@@ -1,6 +1,7 @@
 package executor
 
 import (
+	"bint.com/internal/options"
 	. "bint.com/internal/transpiler"
 	. "bint.com/pkg/serviceTools"
 	"errors"
@@ -689,10 +690,15 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 	if toPrimitive && 0 == OPPointer {
 		var err error
 		for i := 0; i < len(infoList); i++ {
+			el := infoList[i]
+			if "\"" == string(fmt.Sprintf("%v", el)[0]) && "\"" == string(fmt.Sprintf("%v", el)[len(fmt.Sprintf("%v", el))-1]) {
+				el = strings.Replace(fmt.Sprintf("%v", el)[1:len(fmt.Sprintf("%v", el))-1], "\"", "\\\"", -1)
+				el = "\"" + fmt.Sprintf("%v", el) + "\""
+			}
 			if i < len(infoList)-1 {
-				_, err = primitiveDest.WriteString(fmt.Sprintf("%v", infoList[i]) + "$303 ")
+				_, err = primitiveDest.WriteString(fmt.Sprintf("%v", el) + options.BendSep)
 			} else {
-				_, err = primitiveDest.WriteString(fmt.Sprintf("%v", infoList[i]))
+				_, err = primitiveDest.WriteString(fmt.Sprintf("%v", el))
 			}
 			if nil != err {
 				panic(err)

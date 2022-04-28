@@ -27,6 +27,10 @@ func PrimitiveLexicalAnalyze(expr string, variables [][]interface{}) ([][]interf
 			strRes[0] = strRes[0][pos:]
 		}
 		for _, el := range strRes {
+			if "\"" == string(el[0]) && "\"" == string(el[len(el)-1]) {
+				el = strings.Replace(el[1:len(el)-1], "\\\"", "\"", -1)
+				el = "\"" + el + "\""
+			}
 			temp = append(temp, el)
 		}
 		res = append(res, temp)

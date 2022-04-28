@@ -1,4 +1,4 @@
-[goto(#end), (True), print("")];
+[print(""), (False), goto(#end)];
 print("YES\n");
 #end:
 print("");

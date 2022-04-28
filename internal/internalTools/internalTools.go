@@ -96,6 +96,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 			} else {
 				filesListToExecute = []string{"benv/import.basm", "benv/prep_func.basm", "benv/long_function.basm",
 					"benv/func.basm"}
+				//filesListToExecute = []string{"bendBenv/import.basm"}
 			}
 		} else if options.Transpile == toTranslate {
 			rootSource = "benv/func.basm"
@@ -129,16 +130,17 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 			rootDest = "program.basm"
 			filesListToExecute = []string{rootDest}
 		} else if options.Primitive == toTranslate {
-			//rootSource = "benv/import.basm"
-			//rootDest = "bendBenv/import.bend"
-			rootSource = "program.basm"
-			rootDest = "program.bend"
+			rootSource = "benv/import.basm"
+			rootDest = "bendBenv/import.bend"
+			//rootSource = "program.basm"
+			//rootDest = "program.bend"
 			filesListToExecute = []string{rootSource}
 		} else if options.InterpPrimitive == toTranslate {
-			//rootSource = "program.b"
-			///rootDest = "bendBenv/import.bend"
-			rootDest = "program.bend"
-			filesListToExecute = []string{rootDest}
+			rootSource = "program.b"
+			rootDest = "program.basm"
+			filesListToExecute = []string{"bendBenv/import.bend"}
+			//rootDest = "program.bend"
+			//filesListToExecute = []string{rootDest}
 		} else {
 			panic(errors.New("set option to translate"))
 		}
@@ -216,13 +218,13 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	systemStack := []interface{}{"end"}
 	sourceCommandCounter := 1
 
-	/*defer func() {
+	defer func() {
 		if r := recover(); nil != r {
 			fmt.Println("ERROR in " + fileToExecute + " at near line " + fmt.Sprintf("%v", LineCounter))
 			fmt.Println(CommandToExecute)
 			fmt.Println(r)
 		}
-	}()*/
+	}()
 
 	var err error
 	if (options.Internal == toTranslate && (options.UserTranslate == sysMod || options.Internal == sysMod) && execBenv) ||
@@ -248,11 +250,12 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	for _, fileToExecute = range filesListToExecute {
 		COMMAND_COUNTER = 1
 		sourceCommandCounter = 1
-		LineCounter = 0
+		LineCounter = 1
 		variables = nil
 		systemStack = []interface{}{"end"}
 		var marks []string
 		var inputedCode string
+		var isBasmStyle bool
 
 		f, err := os.Open(fileToExecute)
 
@@ -282,6 +285,9 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			newChunk = EachChunk(f)
 		}
 		for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
+			if 114 == LineCounter {
+				fmt.Println("YES")
+			}
 			CommandToExecute = strings.TrimSpace(chunk)
 			inputedCode = CodeInput(chunk, !wasGetCommandCounterByMark)
 
@@ -354,16 +360,15 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 				} else {
 					temp = inputedCode
 				}
-				if LineCounter == 103 {
-					fmt.Println("YES")
-				}
+
 				if len(temp) > 0 && "[" == string(temp[0]) {
-					fmt.Printf("")
+					isBasmStyle = true
 				} else if -1 != strings.Index(temp, "[") && -1 == strings.Index(temp, "\"") { // режем строку
-					fmt.Printf("")
+					isBasmStyle = true
 				} else if -1 != strings.Index(temp, ".") && -1 == strings.Index(temp[:strings.Index(temp, ".")], "\"") {
-					fmt.Printf("")
+					isBasmStyle = true
 				} else {
+					isBasmStyle = false
 					exprList, variables, err = PrimitiveLexicalAnalyze(inputedCode, variables)
 					if nil != err {
 						panic(err)
@@ -378,23 +383,8 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 					options.Transpile == sysMod, options.Primitive == sysMod, primitiveDest, transpileDest)
 			} else if options.InterpPrimitive != sysMod && 0 == exprList[0][1] {
 				continue
-			} else if options.InterpPrimitive == sysMod && (1 == len(exprList[0]) || (len(exprList[0]) > 1 && 0 != exprList[0][1])) {
-				var temp string
-
-				if "#" == string(inputedCode[0]) {
-					pos := strings.Index(inputedCode, ":")
-					if -1 == pos {
-						panic(errors.New("ERROR: mark must end with \":\""))
-					}
-					pos++
-					temp = inputedCode[pos:]
-				} else {
-					temp = inputedCode
-				}
-
-				if (len(temp) > 0 && "[" == string(temp[0])) ||
-					(-1 != strings.Index(inputedCode, "[") && -1 == strings.Index(inputedCode, "\"")) ||
-					(-1 != strings.Index(inputedCode, ".") && -1 == strings.Index(inputedCode[:strings.Index(inputedCode, ".")], "\"")) {
+			} else if options.InterpPrimitive == sysMod {
+				if isBasmStyle {
 					exprList, variables, err = LexicalAnalyze(inputedCode,
 						variables, options.Transpile == sysMod, transpileDest, options.Primitive == sysMod, primitiveDest)
 					_, infoListList, systemStack = parser.Parse(exprList, variables, systemStack, options.HideTree,
@@ -402,10 +392,13 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 				} else {
 					infoListList = exprList
 				}
-			} else if options.InterpPrimitive == sysMod && len(exprList[0]) > 1 && 0 == exprList[0][1] {
+			} else if options.InterpPrimitive == sysMod && !isBasmStyle {
 				continue
 			}
-
+			if 2 == len(infoListList[0]) && "res" == fmt.Sprintf("%v", infoListList[0][0]) &&
+				0 == infoListList[0][1] {
+				continue // выражение не содержит команд
+			}
 			for _, infoList := range infoListList {
 				var res []interface{}
 				res, variables, systemStack = executor.ExecuteTree(infoList, variables, systemStack,
