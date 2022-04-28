@@ -7,7 +7,7 @@ import (
 
 func main() {
 	// эти опции можно менять для системной отладки
-	sysMode := options.ExecPrimitive
+	sysMode := options.Primitive
 	benvMode := options.ExecBenv
 
 	var filesListToExecute []string

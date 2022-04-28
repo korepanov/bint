@@ -703,6 +703,7 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 		if nil != err {
 			panic(err)
 		}
+
 	}
 	if 1 == len(infoList) && ("UNSET_SOURCE" == infoList[0] || "RESET_SOURCE" == infoList[0] ||
 		"UNSET_DEST" == infoList[0] || "REROUTE" == infoList[0]) {

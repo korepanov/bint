@@ -129,10 +129,10 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 			rootDest = "program.basm"
 			filesListToExecute = []string{rootDest}
 		} else if options.Primitive == toTranslate {
-			//rootSource = "benv/import.basm"
-			//rootDest = "bendBenv/import.bend"
-			rootSource = "program.basm"
-			rootDest = "program.bend"
+			rootSource = "benv/import.basm"
+			rootDest = "bendBenv/import.bend"
+			//rootSource = "program.basm"
+			//rootDest = "program.bend"
 			filesListToExecute = []string{rootSource}
 		} else if options.ExecPrimitive == toTranslate {
 			rootDest = "program.bend"
@@ -213,14 +213,14 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 
 	systemStack := []interface{}{"end"}
 	sourceCommandCounter := 1
-
-	/*defer func() {
-		if r := recover(); nil != r {
-			fmt.Println("ERROR in " + fileToExecute + " at near line " + fmt.Sprintf("%v", LineCounter))
-			fmt.Println(CommandToExecute)
-			fmt.Println(r)
-		}
-	}()*/
+	/*
+		defer func() {
+			if r := recover(); nil != r {
+				fmt.Println("ERROR in " + fileToExecute + " at near line " + fmt.Sprintf("%v", LineCounter))
+				fmt.Println(CommandToExecute)
+				fmt.Println(r)
+			}
+		}()*/
 
 	var err error
 	if (options.Internal == toTranslate && (options.User == sysMod || options.Internal == sysMod) && execBenv) ||
@@ -328,14 +328,13 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 						panic(err)
 					}
 					continue
-				} else if -1 != strings.Index(temp, ".") {
-					if -1 == strings.Index(temp[:strings.Index(temp, ".")], "\"") {
-						_, err = primitiveDest.WriteString(temp + ";\n")
-						if nil != err {
-							panic(err)
-						}
-						continue
+				} else if -1 != strings.Index(temp, ".") && -1 == strings.Index(temp[:strings.Index(temp, ".")], "\"") {
+					_, err = primitiveDest.WriteString(temp + ";\n")
+					if nil != err {
+						panic(err)
 					}
+					continue
+
 				} else {
 					exprList, variables, err = LexicalAnalyze(inputedCode,
 						variables, options.Transpile == sysMod, transpileDest, options.Primitive == sysMod, primitiveDest)
