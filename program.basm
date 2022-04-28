@@ -1,6 +1,4 @@
-stack s;
-push("lala");
-string buf;
-pop(buf);
-print(buf);
-print("\n");
+[goto(#end), (True), print("")];
+print("YES\n");
+#end:
+print("");

@@ -48,7 +48,7 @@ func ParseArgs() (int, string, string, error) {
 		toTranslate = options.ExecBasm
 		rootDest = eFlag
 	} else if "" != iFlag && "" != oFlag && "" == eFlag && "" == piFlag && "" == poFlag && "" == peFlag {
-		toTranslate = options.User
+		toTranslate = options.UserTranslate
 		rootSource = iFlag
 		rootDest = oFlag
 	} else if "" != piFlag && "" != poFlag && "" == iFlag && "" == oFlag && "" == eFlag && "" == peFlag {
@@ -56,7 +56,7 @@ func ParseArgs() (int, string, string, error) {
 		rootSource = piFlag
 		rootDest = poFlag
 	} else if "" == piFlag && "" == poFlag && "" == iFlag && "" == oFlag && "" == eFlag && "" != peFlag {
-		toTranslate = options.ExecPrimitive
+		toTranslate = options.InterpPrimitive
 		rootDest = peFlag
 	} else if "" == iFlag && "" == oFlag && "" == eFlag && "" == piFlag && "" == poFlag && "" == peFlag && *sFlag {
 		toTranslate = options.Internal
@@ -86,7 +86,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 				filesListToExecute = []string{"benv/internal/prep_func.basm", "benv/internal/long_function.basm",
 					"benv/internal/func.basm"}
 			}
-		} else if options.User == toTranslate {
+		} else if options.UserTranslate == toTranslate {
 			rootSource = "program.b"
 			rootDest = "program.basm"
 			//filesListToExecute = []string{"benv/import.basm"}
@@ -129,19 +129,21 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 			rootDest = "program.basm"
 			filesListToExecute = []string{rootDest}
 		} else if options.Primitive == toTranslate {
-			rootSource = "benv/import.basm"
-			rootDest = "bendBenv/import.bend"
-			//rootSource = "program.basm"
-			//rootDest = "program.bend"
+			//rootSource = "benv/import.basm"
+			//rootDest = "bendBenv/import.bend"
+			rootSource = "program.basm"
+			rootDest = "program.bend"
 			filesListToExecute = []string{rootSource}
-		} else if options.ExecPrimitive == toTranslate {
+		} else if options.InterpPrimitive == toTranslate {
+			//rootSource = "program.b"
+			///rootDest = "bendBenv/import.bend"
 			rootDest = "program.bend"
 			filesListToExecute = []string{rootDest}
 		} else {
 			panic(errors.New("set option to translate"))
 		}
 
-	} else if options.User == toTranslate {
+	} else if options.UserTranslate == toTranslate {
 		filesListToExecute = []string{"benv/build/import", "benv/build/prep_func",
 			"benv/build/long_function", "benv/build/func"}
 	} else if options.ExecBasm == toTranslate {
@@ -150,7 +152,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 		rootSource = piFlag
 		rootDest = poFlag
 		filesListToExecute = []string{rootSource}
-	} else if options.ExecPrimitive == toTranslate {
+	} else if options.InterpPrimitive == toTranslate {
 		rootDest = peFlag
 		filesListToExecute = []string{rootDest}
 	} else {
@@ -213,18 +215,18 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 
 	systemStack := []interface{}{"end"}
 	sourceCommandCounter := 1
-	/*
-		defer func() {
-			if r := recover(); nil != r {
-				fmt.Println("ERROR in " + fileToExecute + " at near line " + fmt.Sprintf("%v", LineCounter))
-				fmt.Println(CommandToExecute)
-				fmt.Println(r)
-			}
-		}()*/
+
+	/*defer func() {
+		if r := recover(); nil != r {
+			fmt.Println("ERROR in " + fileToExecute + " at near line " + fmt.Sprintf("%v", LineCounter))
+			fmt.Println(CommandToExecute)
+			fmt.Println(r)
+		}
+	}()*/
 
 	var err error
-	if (options.Internal == toTranslate && (options.User == sysMod || options.Internal == sysMod) && execBenv) ||
-		options.User == toTranslate {
+	if (options.Internal == toTranslate && (options.UserTranslate == sysMod || options.Internal == sysMod) && execBenv) ||
+		options.UserTranslate == toTranslate {
 		ExecBenv(filesListToExecute, rootSource, rootDest)
 		return
 	}
@@ -302,7 +304,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 				}
 			}
 
-			if options.ExecPrimitive != sysMod {
+			if options.InterpPrimitive != sysMod {
 				var temp string
 				if options.Primitive == sysMod {
 					if "#" == string(inputedCode[0]) {
@@ -340,35 +342,56 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 						variables, options.Transpile == sysMod, transpileDest, options.Primitive == sysMod, primitiveDest)
 				}
 			} else {
-				exprList, variables, err = PrimitiveLexicalAnalyze(inputedCode,
-					variables)
+				var temp string
+
+				if "#" == string(inputedCode[0]) {
+					pos := strings.Index(inputedCode, ":")
+					if -1 == pos {
+						panic(errors.New("ERROR: mark must end with \":\""))
+					}
+					pos++
+					temp = inputedCode[pos:]
+				} else {
+					temp = inputedCode
+				}
+				if LineCounter == 103 {
+					fmt.Println("YES")
+				}
+				if len(temp) > 0 && "[" == string(temp[0]) {
+					fmt.Printf("")
+				} else if -1 != strings.Index(temp, "[") && -1 == strings.Index(temp, "\"") { // режем строку
+					fmt.Printf("")
+				} else if -1 != strings.Index(temp, ".") && -1 == strings.Index(temp[:strings.Index(temp, ".")], "\"") {
+					fmt.Printf("")
+				} else {
+					exprList, variables, err = PrimitiveLexicalAnalyze(inputedCode, variables)
+					if nil != err {
+						panic(err)
+					}
+				}
 
 			}
 			wasGetCommandCounterByMark = false
 
-			if nil != err {
-				panic(err)
-			}
-
-			if options.ExecPrimitive != sysMod && 0 != exprList[0][1] { // выражение содержит команды
+			if options.InterpPrimitive != sysMod && 0 != exprList[0][1] { // выражение содержит команды
 				_, infoListList, systemStack = parser.Parse(exprList, variables, systemStack, options.HideTree,
 					options.Transpile == sysMod, options.Primitive == sysMod, primitiveDest, transpileDest)
-			} else if options.ExecPrimitive != sysMod && 0 == exprList[0][1] {
+			} else if options.InterpPrimitive != sysMod && 0 == exprList[0][1] {
 				continue
-			} else if options.ExecPrimitive == sysMod && (1 == len(exprList[0]) || (len(exprList[0]) > 1 && 0 != exprList[0][1])) {
+			} else if options.InterpPrimitive == sysMod && (1 == len(exprList[0]) || (len(exprList[0]) > 1 && 0 != exprList[0][1])) {
 				var temp string
-				if options.Primitive == sysMod {
-					if "#" == string(inputedCode[0]) {
-						pos := strings.Index(inputedCode, ":")
-						if -1 == pos {
-							panic(errors.New("ERROR: mark must end with \":\""))
-						}
-						pos++
-						temp = inputedCode[pos:]
-					} else {
-						temp = inputedCode
+
+				if "#" == string(inputedCode[0]) {
+					pos := strings.Index(inputedCode, ":")
+					if -1 == pos {
+						panic(errors.New("ERROR: mark must end with \":\""))
 					}
+					pos++
+					temp = inputedCode[pos:]
+				} else {
+					temp = inputedCode
 				}
+
 				if (len(temp) > 0 && "[" == string(temp[0])) ||
 					(-1 != strings.Index(inputedCode, "[") && -1 == strings.Index(inputedCode, "\"")) ||
 					(-1 != strings.Index(inputedCode, ".") && -1 == strings.Index(inputedCode[:strings.Index(inputedCode, ".")], "\"")) {
@@ -379,7 +402,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 				} else {
 					infoListList = exprList
 				}
-			} else if options.ExecPrimitive == sysMod && len(exprList[0]) > 1 && 0 == exprList[0][1] {
+			} else if options.InterpPrimitive == sysMod && len(exprList[0]) > 1 && 0 == exprList[0][1] {
 				continue
 			}
 
