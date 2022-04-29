@@ -94,9 +94,9 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 				filesListToExecute = []string{"benv/build/import", "benv/build/prep_func", "benv/build/long_function",
 					"benv/build/func"}
 			} else {
-				//filesListToExecute = []string{"benv/import.basm", "benv/prep_func.basm", "benv/long_function.basm",
-				//"benv/func.basm"}
-				filesListToExecute = []string{"bendBenv/import.basm"}
+				filesListToExecute = []string{"benv/import.basm", "benv/prep_func.basm", "benv/long_function.basm",
+					"benv/func.basm"}
+				//filesListToExecute = []string{"bendBenv/import.basm"}
 			}
 		} else if options.Transpile == toTranslate {
 			rootSource = "benv/func.basm"
@@ -130,15 +130,16 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 			rootDest = "program.basm"
 			filesListToExecute = []string{rootDest}
 		} else if options.Primitive == toTranslate {
-			rootSource = "benv/import.basm"
-			rootDest = "bendBenv/import.bend"
+			rootSource = "bendBenv/prep_func.basm"
+			rootDest = "bendBenv/prep_func.bend"
 			//rootSource = "program.basm"
 			//rootDest = "program.bend"
 			filesListToExecute = []string{rootSource}
 		} else if options.InterpPrimitive == toTranslate {
 			rootSource = "program.b"
 			rootDest = "program.basm"
-			filesListToExecute = []string{"bendBenv/import.bend"}
+			filesListToExecute = []string{"bendBenv/import.bend", "bendBenv/prep_func.bend", "bendBenv/long_function.bend",
+				"bendBenv/func.bend"}
 			//rootDest = "program.bend"
 			//filesListToExecute = []string{rootDest}
 		} else {
@@ -327,7 +328,8 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 						panic(err)
 					}
 					continue
-				} else if -1 != strings.Index(temp, "[") && -1 == strings.Index(temp, "\"") { // режем строку
+				} else if -1 != strings.Index(temp, "[") &&
+					(-1 == strings.Index(temp, "\"") || -1 != strings.Index(temp[:strings.Index(temp, "\"")], "[")) {
 					_, err = primitiveDest.WriteString(temp + ";\n")
 					if nil != err {
 						panic(err)
@@ -360,7 +362,8 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 
 				if len(temp) > 0 && "[" == string(temp[0]) {
 					isBasmStyle = true
-				} else if -1 != strings.Index(temp, "[") && -1 == strings.Index(temp, "\"") { // режем строку
+				} else if -1 != strings.Index(temp, "[") &&
+					(-1 == strings.Index(temp, "\"") || -1 != strings.Index(temp[:strings.Index(temp, "\"")], "[")) {
 					isBasmStyle = true
 				} else if -1 != strings.Index(temp, ".") && -1 == strings.Index(temp[:strings.Index(temp, ".")], "\"") {
 					isBasmStyle = true
