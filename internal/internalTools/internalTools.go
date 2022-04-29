@@ -94,9 +94,9 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 				filesListToExecute = []string{"benv/build/import", "benv/build/prep_func", "benv/build/long_function",
 					"benv/build/func"}
 			} else {
-				filesListToExecute = []string{"benv/import.basm", "benv/prep_func.basm", "benv/long_function.basm",
-					"benv/func.basm"}
-				//filesListToExecute = []string{"bendBenv/import.basm"}
+				//filesListToExecute = []string{"benv/import.basm", "benv/prep_func.basm", "benv/long_function.basm",
+				//"benv/func.basm"}
+				filesListToExecute = []string{"bendBenv/import.basm"}
 			}
 		} else if options.Transpile == toTranslate {
 			rootSource = "benv/func.basm"
@@ -285,9 +285,6 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			newChunk = EachChunk(f)
 		}
 		for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
-			if 114 == LineCounter {
-				fmt.Println("YES")
-			}
 			CommandToExecute = strings.TrimSpace(chunk)
 			inputedCode = CodeInput(chunk, !wasGetCommandCounterByMark)
 

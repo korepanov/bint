@@ -14,7 +14,7 @@ func PrimitiveLexicalAnalyze(expr string, variables [][]interface{}) ([][]interf
 	if "string" == strRes[0] || "float" == strRes[0] || "int" == strRes[0] || "bool" == strRes[0] {
 		variables = append(variables, []interface{}{strRes[0], strRes[1], []interface{}{"var_val"}})
 	} else if "stack" == strRes[0] {
-		variables = append(variables, []interface{}{strRes[0], strRes[1], []interface{}{"end"}})
+		variables = append(variables, []interface{}{strRes[0], strRes[1], []interface{}{[]interface{}{"end"}}})
 	} else {
 		var temp []interface{}
 
