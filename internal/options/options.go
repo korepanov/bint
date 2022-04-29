@@ -1,6 +1,7 @@
 package options
 
 var BendSep = "$303"
+var MaxTrashLen = 5
 
 const (
 	Internal        = iota
@@ -9,6 +10,8 @@ const (
 	Primitive       = iota
 	InterpPrimitive = iota
 	ExecBasm        = iota
+	Encrypt         = iota
+	ExecEncrypt     = iota
 	ShowTree        = true
 	ExecBenv        = true
 	InterpBenv      = false

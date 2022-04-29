@@ -1,6 +1,7 @@
 package internalTools
 
 import (
+	"bint.com/internal/encrypter"
 	"bint.com/internal/executor"
 	. "bint.com/internal/lexer"
 	"bint.com/internal/options"
@@ -24,13 +25,18 @@ var eFlag = "-e"
 var piFlag = "-pi"
 var poFlag = "-po"
 var peFlag = "-pe"
+var ciFlag = "-ci"
+var coFlag = "-co"
+var ceFlag = "-ce"
+var kFlag = "-k"
 
 var fileToExecute string
 
-func ParseArgs() (int, string, string, error) {
+func ParseArgs() (int, string, string, string, error) {
 	var toTranslate int
 	var rootSource string
 	var rootDest string
+	var keyDest string
 
 	flag.StringVar(&iFlag, "i", "", "-i input.b")
 	flag.StringVar(&oFlag, "o", "", "-o output.basm")
@@ -38,38 +44,58 @@ func ParseArgs() (int, string, string, error) {
 	flag.StringVar(&piFlag, "pi", "", "-pi input.basm")
 	flag.StringVar(&poFlag, "po", "", "-po output.bend")
 	flag.StringVar(&peFlag, "pe", "", "-pe program.bend")
+	flag.StringVar(&ciFlag, "ci", "", "-ci input.bend")
+	flag.StringVar(&coFlag, "co", "", "-co output.benc")
+	flag.StringVar(&ceFlag, "ce", "", "-ce program.benc")
+	flag.StringVar(&kFlag, "k", "", "-k key.k")
 	flag.Parse()
 
 	if *help {
 		flag.Usage()
 		err := errors.New("help")
-		return toTranslate, rootSource, rootDest, err
-	} else if "" == iFlag && "" == oFlag && "" != eFlag && "" == piFlag && "" == poFlag && "" == peFlag {
+		return toTranslate, rootSource, rootDest, keyDest, err
+	} else if "" == iFlag && "" == oFlag && "" != eFlag && "" == piFlag && "" == poFlag && "" == peFlag &&
+		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag {
 		toTranslate = options.ExecBasm
 		rootDest = eFlag
-	} else if "" != iFlag && "" != oFlag && "" == eFlag && "" == piFlag && "" == poFlag && "" == peFlag {
+	} else if "" != iFlag && "" != oFlag && "" == eFlag && "" == piFlag && "" == poFlag && "" == peFlag &&
+		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag {
 		toTranslate = options.UserTranslate
 		rootSource = iFlag
 		rootDest = oFlag
-	} else if "" != piFlag && "" != poFlag && "" == iFlag && "" == oFlag && "" == eFlag && "" == peFlag {
+	} else if "" != piFlag && "" != poFlag && "" == iFlag && "" == oFlag && "" == eFlag && "" == peFlag &&
+		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag {
 		toTranslate = options.Primitive
 		rootSource = piFlag
 		rootDest = poFlag
-	} else if "" == piFlag && "" == poFlag && "" == iFlag && "" == oFlag && "" == eFlag && "" != peFlag {
+	} else if "" == piFlag && "" == poFlag && "" == iFlag && "" == oFlag && "" == eFlag && "" != peFlag &&
+		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag {
 		toTranslate = options.InterpPrimitive
 		rootDest = peFlag
-	} else if "" == iFlag && "" == oFlag && "" == eFlag && "" == piFlag && "" == poFlag && "" == peFlag && *sFlag {
+	} else if "" == piFlag && "" == poFlag && "" == iFlag && "" == oFlag && "" == eFlag && "" == peFlag &&
+		"" != ciFlag && "" != coFlag && "" == ceFlag && "" != kFlag {
+		toTranslate = options.Encrypt
+		rootSource = ciFlag
+		rootDest = coFlag
+		keyDest = kFlag
+	} else if "" == piFlag && "" == poFlag && "" == iFlag && "" == oFlag && "" == eFlag && "" == peFlag &&
+		"" == ciFlag && "" == coFlag && "" != ceFlag && "" != kFlag {
+		toTranslate = options.ExecEncrypt
+		rootDest = ceFlag
+		keyDest = kFlag
+	} else if "" == iFlag && "" == oFlag && "" == eFlag && "" == piFlag && "" == poFlag && "" == peFlag &&
+		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && *sFlag {
 		toTranslate = options.Internal
 	} else {
 		flag.Usage()
 		err := errors.New("invalid arguments")
-		return toTranslate, rootSource, rootDest, err
+		return toTranslate, rootSource, rootDest, keyDest, err
 	}
 
-	return toTranslate, rootSource, rootDest, nil
+	return toTranslate, rootSource, rootDest, keyDest, nil
 }
 
-func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInternal int, execBenv bool) (string, string, []string) {
+func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string, toTranslateInternal int, execBenv bool) (string, string, string, []string) {
 	var filesListToExecute []string
 
 	if options.Internal == toTranslate {
@@ -130,18 +156,31 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 			rootDest = "program.basm"
 			filesListToExecute = []string{rootDest}
 		} else if options.Primitive == toTranslate {
-			rootSource = "bendBenv/prep_func.basm"
-			rootDest = "bendBenv/prep_func.bend"
-			//rootSource = "program.basm"
-			//rootDest = "program.bend"
+			//rootSource = "bendBenv/prep_func.basm"
+			//rootDest = "bendBenv/prep_func.bend"
+			rootSource = "program.basm"
+			rootDest = "program.bend"
 			filesListToExecute = []string{rootSource}
 		} else if options.InterpPrimitive == toTranslate {
-			rootSource = "program.b"
-			rootDest = "program.basm"
-			filesListToExecute = []string{"bendBenv/import.bend", "bendBenv/prep_func.bend", "bendBenv/long_function.bend",
-				"bendBenv/func.bend"}
-			//rootDest = "program.bend"
-			//filesListToExecute = []string{rootDest}
+			//rootSource = "program.b"
+			//rootDest = "program.basm"
+			//filesListToExecute = []string{"bendBenv/import.bend", "bendBenv/prep_func.bend", "bendBenv/long_function.bend",
+			//"bendBenv/func.bend"}
+			rootDest = "program.bend"
+			filesListToExecute = []string{rootDest}
+		} else if options.Encrypt == toTranslate {
+			//rootSource = "bendBenv/prep_func.basm"
+			//rootDest = "bendBenv/prep_func.bend"
+			rootSource = "program.bend"
+			rootDest = "program.benc"
+			keyDest = "key.k"
+		} else if options.ExecEncrypt == toTranslate {
+			//rootSource = "bendBenv/prep_func.basm"
+			//rootDest = "bendBenv/prep_func.bend"
+
+			rootDest = "program.benc"
+			keyDest = "key.k"
+			filesListToExecute = []string{rootDest}
 		} else {
 			panic(errors.New("set option to translate"))
 		}
@@ -158,11 +197,19 @@ func SetConf(toTranslate int, rootSource string, rootDest string, toTranslateInt
 	} else if options.InterpPrimitive == toTranslate {
 		rootDest = peFlag
 		filesListToExecute = []string{rootDest}
+	} else if options.Encrypt == toTranslate {
+		rootSource = ciFlag
+		rootDest = coFlag
+		keyDest = kFlag
+	} else if options.ExecEncrypt == toTranslate {
+		rootDest = ceFlag
+		keyDest = kFlag
+		filesListToExecute = []string{rootDest}
 	} else {
 		panic(errors.New("set option to translate"))
 	}
 
-	return rootSource, rootDest, filesListToExecute
+	return rootSource, rootDest, keyDest, filesListToExecute
 }
 func ExecBenv(filesListToExecute []string, rootSource string, rootDest string) {
 	fileToExecute = filesListToExecute[0]
@@ -204,7 +251,7 @@ func ExecBenv(filesListToExecute []string, rootSource string, rootDest string) {
 	}
 }
 
-func Start(toTranslate int, filesListToExecute []string, rootSource string, rootDest string, sysMod int, execBenv bool) {
+func Start(toTranslate int, filesListToExecute []string, rootSource string, rootDest string, keyDest string, sysMod int, execBenv bool) {
 	COMMAND_COUNTER := 1
 	var variables [][]interface{}
 	var exprList [][]interface{}
@@ -248,6 +295,11 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 		}
 	}
 
+	if options.Encrypt == sysMod {
+		encrypter.Encrypt(rootSource, rootDest, keyDest)
+		return
+	}
+
 	for _, fileToExecute = range filesListToExecute {
 		COMMAND_COUNTER = 1
 		sourceCommandCounter = 1
@@ -286,6 +338,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			newChunk = EachChunk(f)
 		}
 		for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
+			//ввод команд
 			CommandToExecute = strings.TrimSpace(chunk)
 			inputedCode = CodeInput(chunk, !wasGetCommandCounterByMark)
 
