@@ -6,18 +6,10 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"sort"
 	"strings"
 	"time"
 )
-
-func insertStr(a []string, index int, value string) []string {
-	if len(a) == index { // nil or empty slice or after last element
-		return append(a, value)
-	}
-	a = append(a[:index+1], a[index:]...) // index < len(a)
-	a[index] = value
-	return a
-}
 
 func Encrypt(rootSource string, rootDest string, keyDest string) {
 	var encryptDest *os.File
@@ -30,6 +22,8 @@ func Encrypt(rootSource string, rootDest string, keyDest string) {
 	var err error
 	var res string
 	var trash []string
+	var generateTrash bool
+	var splitedChunkNumber int
 
 	trash = []string{"AND", "OR", "NOT", "XOR", ".", "+", "-", "*", "/", "^", "print", "len",
 		"index", "is_letter", "is_digit", "pop", "push", "input", "next_command", "get_root_source",
@@ -63,18 +57,44 @@ func Encrypt(rootSource string, rootDest string, keyDest string) {
 
 		for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
 			splitedChunk = strings.Split(chunk, options.BendSep)
-			encryptedChunk = splitedChunk
-			for i := 0; i < rand.Intn(options.MaxTrashLen); i++ {
-				t := trash[rand.Intn(len(trash))]
-				randArg := len(encryptedChunk) - 1 - trashNumber
-				if randArg <= 0 {
-					continue
-				}
-				trashNumber = rand.Intn(randArg) + trashNumber
-				trashNumbersList = append(trashNumbersList, trashNumber)
+			trashLen := rand.Intn(options.MaxTrashLen)
+			encryptedChunkLen := trashLen + len(splitedChunk)
 
-				encryptedChunk = insertStr(encryptedChunk, trashNumber, t)
+		Outer:
+			for i := 0; i < trashLen; i++ {
+				trashNumber = rand.Intn(encryptedChunkLen)
+				for j := 0; j < len(trashNumbersList); j++ {
+					if trashNumbersList[j] == trashNumber {
+						i--
+						continue Outer
+					}
+				}
+				trashNumbersList = append(trashNumbersList, trashNumber)
 			}
+			sort.Ints(trashNumbersList)
+
+			encryptedChunk = nil
+			for i := 0; i < encryptedChunkLen; i++ {
+				encryptedChunk = append(encryptedChunk, "")
+			}
+
+			for i := 0; i < encryptedChunkLen; i++ {
+				generateTrash = false
+				for _, j := range trashNumbersList {
+					if i == j {
+						generateTrash = true
+						break
+					}
+				}
+				if generateTrash {
+					t := trash[rand.Intn(len(trash))]
+					encryptedChunk[i] = t
+				} else {
+					encryptedChunk[i] = splitedChunk[splitedChunkNumber]
+					splitedChunkNumber++
+				}
+			}
+			splitedChunkNumber = 0
 			for i := 0; i < len(encryptedChunk); i++ {
 				if i < len(encryptedChunk)-1 {
 					res += encryptedChunk[i] + options.BendSep
