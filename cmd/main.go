@@ -7,7 +7,7 @@ import (
 
 func main() {
 	// эти опции можно менять для системной отладки
-	sysMode := options.Encrypt
+	sysMode := options.ExecEncrypt
 	benvMode := options.InterpBenv
 
 	var filesListToExecute []string

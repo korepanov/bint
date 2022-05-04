@@ -24,6 +24,7 @@ func Encrypt(rootSource string, rootDest string, keyDest string) {
 	var trash []string
 	var generateTrash bool
 	var splitedChunkNumber int
+	var minVal int
 
 	trash = []string{"AND", "OR", "NOT", "XOR", ".", "+", "-", "*", "/", "^", "print", "len",
 		"index", "is_letter", "is_digit", "pop", "push", "input", "next_command", "get_root_source",
@@ -62,7 +63,12 @@ func Encrypt(rootSource string, rootDest string, keyDest string) {
 
 		Outer:
 			for i := 0; i < trashLen; i++ {
-				trashNumber = rand.Intn(encryptedChunkLen)
+				if "#" == string(strings.TrimSpace(splitedChunk[0])[0]) {
+					minVal = 1
+				} else {
+					minVal = 0
+				}
+				trashNumber = rand.Intn(encryptedChunkLen-1-minVal) + minVal
 				for j := 0; j < len(trashNumbersList); j++ {
 					if trashNumbersList[j] == trashNumber {
 						i--

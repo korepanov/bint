@@ -1,6 +1,7 @@
 package internalTools
 
 import (
+	"bint.com/internal/decryptor"
 	"bint.com/internal/encrypter"
 	"bint.com/internal/executor"
 	. "bint.com/internal/lexer"
@@ -258,10 +259,12 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	var infoListList [][]interface{}
 	var source *os.File
 	var dest *os.File
+	var key *os.File
 	var transpileDest *os.File
 	var primitiveDest *os.File
 	var sourceNewChunk func() string
 	var wasGetCommandCounterByMark bool
+	var newKey func() string
 
 	systemStack := []interface{}{"end"}
 	sourceCommandCounter := 1
@@ -298,6 +301,13 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	if options.Encrypt == sysMod {
 		encrypter.Encrypt(rootSource, rootDest, keyDest)
 		return
+	}
+	if options.ExecEncrypt == sysMod {
+		key, err = os.Open(keyDest)
+		if nil != err {
+			panic(err)
+		}
+		newKey = EachChunk(key)
 	}
 
 	for _, fileToExecute = range filesListToExecute {
@@ -341,6 +351,9 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			//ввод команд
 			CommandToExecute = strings.TrimSpace(chunk)
 			inputedCode = CodeInput(chunk, !wasGetCommandCounterByMark)
+			if options.ExecEncrypt == sysMod {
+				inputedCode = decryptor.Decrypt(inputedCode, newKey())
+			}
 
 			if options.Transpile == sysMod {
 				mark := GetMark(inputedCode)
@@ -361,7 +374,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 				}
 			}
 
-			if options.InterpPrimitive != sysMod {
+			if options.InterpPrimitive != sysMod && options.ExecEncrypt != sysMod {
 				var temp string
 				if options.Primitive == sysMod {
 					if "#" == string(inputedCode[0]) {
@@ -431,12 +444,12 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			}
 			wasGetCommandCounterByMark = false
 
-			if options.InterpPrimitive != sysMod && 0 != exprList[0][1] { // выражение содержит команды
+			if options.InterpPrimitive != sysMod && options.ExecEncrypt != sysMod && 0 != exprList[0][1] { // выражение содержит команды
 				_, infoListList, systemStack = parser.Parse(exprList, variables, systemStack, options.HideTree,
 					options.Transpile == sysMod, options.Primitive == sysMod, primitiveDest, transpileDest)
-			} else if options.InterpPrimitive != sysMod && 0 == exprList[0][1] {
+			} else if options.InterpPrimitive != sysMod && options.ExecEncrypt != sysMod && 0 == exprList[0][1] {
 				continue
-			} else if options.InterpPrimitive == sysMod {
+			} else if options.InterpPrimitive == sysMod || options.ExecEncrypt == sysMod {
 				if isBasmStyle {
 					exprList, variables, err = LexicalAnalyze(inputedCode,
 						variables, options.Transpile == sysMod, transpileDest, options.Primitive == sysMod, primitiveDest)
@@ -445,7 +458,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 				} else {
 					infoListList = exprList
 				}
-			} else if options.InterpPrimitive == sysMod && !isBasmStyle {
+			} else if (options.InterpPrimitive == sysMod || options.ExecEncrypt == sysMod) && !isBasmStyle {
 				continue
 			}
 			if 2 == len(infoListList[0]) && "res" == fmt.Sprintf("%v", infoListList[0][0]) &&
@@ -469,6 +482,12 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 							newChunk, err = SetCommandCounter(f, COMMAND_COUNTER)
 							if nil != err {
 								panic(err)
+							}
+							if options.ExecEncrypt == sysMod {
+								newKey, err = SetCommandCounter(key, COMMAND_COUNTER)
+								if nil != err {
+									panic(err)
+								}
 							}
 						} else if options.Transpile == sysMod {
 							if (len(fmt.Sprintf("%v", res[1])) > 7 && "#getVar" != fmt.Sprintf("%v", res[1])[0:7]) ||
@@ -651,6 +670,12 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			}
 			err = transpileDest.Close()
 
+			if nil != err {
+				panic(err)
+			}
+		}
+		if options.ExecEncrypt == sysMod {
+			err = key.Close()
 			if nil != err {
 				panic(err)
 			}
