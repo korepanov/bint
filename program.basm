@@ -6,8 +6,7 @@ print("");
 pop(s);
 print("");
 print(s);
-print("
-");
+print("\n");
 UNDEFINE(s);
 goto($println_return_var);
 #println_end:print("");

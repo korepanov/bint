@@ -7,8 +7,7 @@ print$303""$303null;
 pop$303s$303null;
 print$303""$303null;
 print$303s$303null;
-print$303"
-"$303null;
+print$303"\n"$303null;
 UNDEFINE$303s$303null;
 goto$303$println_return_var$303null;
 #println_end:
