@@ -68,7 +68,13 @@ func Encrypt(rootSource string, rootDest string, keyDest string) {
 				} else {
 					minVal = 0
 				}
-				trashNumber = rand.Intn(encryptedChunkLen-1-minVal) + minVal
+				if encryptedChunkLen-1-minVal > 0 {
+					trashNumber = rand.Intn(encryptedChunkLen-minVal) + minVal
+				} else {
+					encryptedChunk = splitedChunk
+					encryptedChunkLen = len(encryptedChunk)
+					break
+				}
 				for j := 0; j < len(trashNumbersList); j++ {
 					if trashNumbersList[j] == trashNumber {
 						i--
@@ -77,6 +83,7 @@ func Encrypt(rootSource string, rootDest string, keyDest string) {
 				}
 				trashNumbersList = append(trashNumbersList, trashNumber)
 			}
+
 			sort.Ints(trashNumbersList)
 
 			encryptedChunk = nil
@@ -96,6 +103,9 @@ func Encrypt(rootSource string, rootDest string, keyDest string) {
 					t := trash[rand.Intn(len(trash))]
 					encryptedChunk[i] = t
 				} else {
+					if splitedChunkNumber > len(splitedChunk)-1 {
+						fmt.Println("YES")
+					}
 					encryptedChunk[i] = splitedChunk[splitedChunkNumber]
 					splitedChunkNumber++
 				}

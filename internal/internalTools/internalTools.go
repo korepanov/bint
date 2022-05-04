@@ -170,17 +170,19 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 			rootDest = "program.bend"
 			filesListToExecute = []string{rootDest}
 		} else if options.Encrypt == toTranslate {
-			//rootSource = "bendBenv/prep_func.basm"
-			//rootDest = "bendBenv/prep_func.bend"
+			//rootSource = "program.bend"
+			//rootDest = "program.benc"
+			//keyDest = "key.k"
 			rootSource = "program.bend"
 			rootDest = "program.benc"
 			keyDest = "key.k"
 		} else if options.ExecEncrypt == toTranslate {
-			//rootSource = "bendBenv/prep_func.basm"
-			//rootDest = "bendBenv/prep_func.bend"
-
+			//rootSource = "program.b"
 			rootDest = "program.benc"
 			keyDest = "key.k"
+
+			//rootDest = "program.benc"
+			//keyDest = "key.k"
 			filesListToExecute = []string{rootDest}
 		} else {
 			panic(errors.New("set option to translate"))
@@ -269,13 +271,13 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	systemStack := []interface{}{"end"}
 	sourceCommandCounter := 1
 
-	defer func() {
+	/*defer func() {
 		if r := recover(); nil != r {
 			fmt.Println("ERROR in " + fileToExecute + " at near line " + fmt.Sprintf("%v", LineCounter))
 			fmt.Println(CommandToExecute)
 			fmt.Println(r)
 		}
-	}()
+	}()*/
 
 	var err error
 	if (options.Internal == toTranslate && (options.UserTranslate == sysMod || options.Internal == sysMod) && execBenv) ||
