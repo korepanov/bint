@@ -1,6 +1,7 @@
 string s;
-s = "Привет";
-string s2;
-s2 = ", мир!";
-s2 = (s + s2);
-print(s2);
+s = "Hel мир";
+int t;
+t = len(s);
+string buf;
+buf = str(t);
+print(buf);

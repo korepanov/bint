@@ -271,13 +271,13 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	systemStack := []interface{}{"end"}
 	sourceCommandCounter := 1
 
-	/*defer func() {
+	defer func() {
 		if r := recover(); nil != r {
 			fmt.Println("ERROR in " + fileToExecute + " at near line " + fmt.Sprintf("%v", LineCounter))
 			fmt.Println(CommandToExecute)
 			fmt.Println(r)
 		}
-	}()*/
+	}()
 
 	var err error
 
@@ -320,7 +320,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	for _, fileToExecute = range filesListToExecute {
 		COMMAND_COUNTER = 1
 		sourceCommandCounter = 1
-		LineCounter = 1
+		LineCounter = 0
 		variables = nil
 		systemStack = []interface{}{"end"}
 		var marks []string

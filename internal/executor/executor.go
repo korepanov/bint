@@ -32,7 +32,7 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
 		}
 
-		return []interface{}{len(fmt.Sprintf("%v", LO[0]))}, systemStack, nil
+		return []interface{}{len([]rune(fmt.Sprintf("%v", LO[0])))}, systemStack, nil
 	} else if "AND" == OP {
 		if "bool" == WhatsType(fmt.Sprintf("%v", LO[0])) && "bool" == WhatsType(fmt.Sprintf("%v", RO[0])) {
 			return []interface{}{StrToBool(fmt.Sprintf("%v", LO[0])) && StrToBool(fmt.Sprintf("%v", RO[0]))}, systemStack, nil

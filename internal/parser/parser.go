@@ -233,6 +233,10 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 	wasIsLetter := false
 	wasIsDigit := false
 
+	if LineCounter == 31 {
+		fmt.Println("YES")
+	}
+
 	if "goto" == fmt.Sprintf("%v", exprList[0][1]) {
 		exprList = makeOperationBinary(exprList)
 		wasGoto = true
@@ -304,8 +308,8 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 				if fmt.Sprintf("%v", v[1]) == varName {
 					varVal = fmt.Sprintf("%v", ValueFoldInterface(v[2]))
 
-					if `"` == string(varVal[0]) && `"` == string(varVal[len(varVal)-1]) {
-						varVal = string([]rune(varVal)[1 : len(varVal)-1])
+					if `"` == string([]rune(varVal)[0]) && `"` == string([]rune(varVal)[len(varVal)-1]) {
+						varVal = string([]rune(varVal)[1 : len([]rune(varVal))-1])
 					}
 					//if "\"" == string(varVal[0]) {
 					//	varVal = varVal[1 : len(varVal)-1]

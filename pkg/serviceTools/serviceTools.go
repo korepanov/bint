@@ -197,7 +197,7 @@ func SetCommandCounter(file *os.File, COMMAND_COUNTER int) (func() string, error
 func GetCommandCounterByMark(f *os.File, mark string) (int, *os.File, error) {
 	i := 1
 	shadowLineCounter := LineCounter
-	LineCounter = 1
+	LineCounter = 0
 
 	_, err := f.Seek(0, 0)
 	if nil != err {
