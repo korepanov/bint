@@ -305,7 +305,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 					varVal = fmt.Sprintf("%v", ValueFoldInterface(v[2]))
 
 					if `"` == string(varVal[0]) && `"` == string(varVal[len(varVal)-1]) {
-						varVal = varVal[1 : len(varVal)-1]
+						varVal = string([]rune(varVal)[1 : len(varVal)-1])
 					}
 					//if "\"" == string(varVal[0]) {
 					//	varVal = varVal[1 : len(varVal)-1]
@@ -384,7 +384,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 					exprList = Pop(exprList, i-1) // выражение
 				}
 				if !toTranspile {
-					exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" + varVal[leftNumber.(int):rightNumber.(int)] + "\""})
+					exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" + string([]rune(varVal)[leftNumber.(int):rightNumber.(int)]) + "\""})
 				} else {
 					exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" + "getVar(\"" + varName + "\").(string)[" +
 						fmt.Sprintf("%v", leftNumber) + ":" + fmt.Sprintf("%v", rightNumber) + "]\""})
@@ -421,7 +421,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 					exprList = Pop(exprList, i-1)
 				}
 				if !toTranspile {
-					exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" + string(varVal[number.(int)]) + "\""})
+					exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" + string([]rune(varVal)[number.(int)]) + "\""})
 				} else {
 					exprList = Insert(exprList, i-1, []interface{}{"VAL", "string(getVar(\"" + varName + "\").(string)[" +
 						fmt.Sprintf("%v", number) + "])"})

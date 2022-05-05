@@ -292,16 +292,16 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool,
 
 					}
 				}
-			} else if len(expr) > i && "\"" == string(expr[i]) {
+			} else if len([]rune(expr)) > i && "\"" == string([]rune(expr)[i]) {
 				// строка
 				var stringInside string
 
 				j := i + 1
 				offset := 1
 
-				for !("\"" == string(expr[j]) && "\\" != string(expr[j-1])) {
-					if !("\\" == string(expr[j]) && "\"" == string(expr[j+1])) {
-						stringInside += string(expr[j])
+				for !("\"" == string([]rune(expr)[j]) && "\\" != string([]rune(expr)[j-1])) {
+					if !("\\" == string([]rune(expr)[j]) && "\"" == string([]rune(expr)[j+1])) {
+						stringInside += string([]rune(expr)[j])
 					} else {
 						offset += 1
 					}
