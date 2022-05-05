@@ -233,10 +233,6 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 	wasIsLetter := false
 	wasIsDigit := false
 
-	if LineCounter == 31 {
-		fmt.Println("YES")
-	}
-
 	if "goto" == fmt.Sprintf("%v", exprList[0][1]) {
 		exprList = makeOperationBinary(exprList)
 		wasGoto = true
