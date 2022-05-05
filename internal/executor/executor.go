@@ -4,7 +4,6 @@ import (
 	"bint.com/internal/options"
 	. "bint.com/internal/transpiler"
 	. "bint.com/pkg/serviceTools"
-	"bytes"
 	"errors"
 	"fmt"
 	"io"
@@ -26,9 +25,8 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		if `"` == string(fmt.Sprintf("%v", RO[0])[0]) && `"` == string(fmt.Sprintf("%v", RO[0])[len(fmt.Sprintf("%v", RO[0]))-1]) {
 			RO[0] = RO[0].(string)[1 : len(RO[0].(string))-1]
 		}
-		tempLO := []byte(fmt.Sprintf("%v", LO[0]))
-		tempRO := []byte(fmt.Sprintf("%v", RO[0]))
-		return []interface{}{bytes.Index(tempLO, tempRO)}, systemStack, nil
+
+		return []interface{}{strings.Index(fmt.Sprintf("%v", LO[0]), fmt.Sprintf("%v", RO[0]))}, systemStack, nil
 	} else if "len" == OP {
 		if `"` == string(fmt.Sprintf("%v", LO[0])[0]) && `"` == string(fmt.Sprintf("%v", LO[0])[len(fmt.Sprintf("%v", LO[0]))-1]) {
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]

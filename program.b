@@ -1,14 +1,9 @@
-#import "stdlib/strings.b"
-
-void hello_user(string s){
-	s = (("Hello, " + s) + "!");
-	println(s);
-};
 void main(){
-	string s;
-	println("Your name:");
-	input(s);
-	hello_user(s);
+	string s1;
+	string s2;
+	s1 = "Hello";
+	s2 = ", world!\n";
+	print((s1 + s2));
 };
 
 main();

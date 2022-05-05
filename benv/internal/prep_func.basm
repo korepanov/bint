@@ -1,6 +1,5 @@
 string root_source; 
-get_root_source(root_source);
-SET_SOURCE(root_source);
+SET_SOURCE("benv/internal/import_program.b");
 SET_DEST("benv/internal/prep_func_program.b");
 
 string command;
@@ -65,3 +64,4 @@ goto(#begin);
 #end:
 UNSET_SOURCE();
 UNSET_DEST();
+DEL_DEST("benv/internal/import_program.b");
