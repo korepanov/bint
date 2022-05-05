@@ -1,12 +1,12 @@
 #import "stdlib/strings.b"
 
 void hello_user(string s){
-	s = (("Привет, " + s) + "!");
+	s = (("Hello, " + s) + "!");
 	println(s);
 };
 void main(){
 	string s;
-	println("Ваше имя:");
+	println("Your name:");
 	input(s);
 	hello_user(s);
 };
