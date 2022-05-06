@@ -8,7 +8,7 @@ import (
 
 func Decrypt(inputedCode string, key string) string {
 	var output string
-	var lexemList []string
+	var lexemeList []string
 	var keyList []string
 	var codeList []string
 
@@ -21,14 +21,14 @@ func Decrypt(inputedCode string, key string) string {
 		if nil != err {
 			panic(err)
 		}
-		lexemList = append(lexemList, codeList[intKeyVal])
+		lexemeList = append(lexemeList, codeList[intKeyVal])
 	}
 
-	for i := 0; i < len(lexemList); i++ {
-		if i < len(lexemList)-1 {
-			output += lexemList[i] + options.BendSep
+	for i := 0; i < len(lexemeList); i++ {
+		if i < len(lexemeList)-1 {
+			output += lexemeList[i] + options.BendSep
 		} else {
-			output += lexemList[i]
+			output += lexemeList[i]
 		}
 	}
 

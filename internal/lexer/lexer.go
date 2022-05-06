@@ -84,6 +84,9 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool,
 		} else if len(expr) > i+8 && "is_digit" == expr[i:i+8] {
 			res = append(res, []interface{}{"OP", "is_digit"})
 			i += 7
+		} else if len(expr) > i+8 && "reg_find" == expr[i:i+8] {
+			res = append(res, []interface{}{"OP", "reg_find"})
+			i += 8
 		} else if len(expr) > i+3 && "pop" == expr[i:i+3] {
 			res = append(res, []interface{}{"OP", "pop"})
 			i += 2

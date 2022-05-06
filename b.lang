@@ -237,6 +237,7 @@
 	  <keyword>get_root_dest</keyword>
 	  <keyword>is_letter</keyword>
 	  <keyword>is_digit</keyword>
+	  <keyword>reg_find</keyword>
 	
       
     </context>

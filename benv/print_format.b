@@ -11,20 +11,35 @@ void finish(){
 	UNSET_DEST();
 };
 
+stack ops(string command, string op){
+	stack res;
+	int i;
+	int op_len;
+	int command_len;
+	string lexeme;
+
+	command_len = len(command);
+	op_len = len(op);
+	i = 0;
+
+	#ops_s:
+	[print(""), (i < command_len), goto(#ops_e)];
+	[goto(#push_op_s), (op == command[i:op_len]), print("")];
+	[goto(#qoute_s), ("\"" == command[i]), ];
+	#quote_s:
+	
+	#quote_e:
+	#push_op_s:
+	i = (i + command_len);
+	goto(#ops_s);
+	#push_op_e:
+	#ops_e: 
+
+	return res;
+};
+
 void replace_print(string command){
-	int quote_pos;
-	int print_pos;
-
-	quote_pos = index(command, "\"");
-	print_pos = index(command, "print");
 	
-	[goto(#replace_print_e), (-1 == print_pos), print("")];
-	[goto(#replace), (-1 == quote_pos), print("")];
-	
-	
-	#replace:
-
-	#replace_print_e:
 	print("");
 };
 
