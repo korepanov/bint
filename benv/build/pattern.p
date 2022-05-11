@@ -23,7 +23,9 @@ vars[varName] = append(vars[varName], interface{}(nil))
 }
 
 func undefineVar(varName string){
+if len(vars[varName]) > 0{
 vars[varName] = vars[varName][:len(vars[varName]) - 1]
+}
 }
 
 func setVar(varName string, varVal interface{}){
@@ -281,10 +283,10 @@ func CodeInput(expr string, lineIncrement bool) string {
 	}
 
 	//запоминаем стоки, чтобы оставить в них пробелы
-	for i = 0; i < len(expr); i++ {
+	for i = 0; i < len([]rune(expr)); i++ {
 		if startFlag {
-			if `"` != string(expr[i]) || (i > 0 && string(expr[i-1]) == `\` && `"` == string(expr[i])) {
-				stringInside += string(expr[i])
+			if `"` != string([]rune(expr)[i]) || (i > 0 && string([]rune(expr)[i-1]) == `\` && `"` == string([]rune(expr)[i])) {
+				stringInside += string([]rune(expr)[i])
 
 			} else {
 				startFlag = false
@@ -293,26 +295,27 @@ func CodeInput(expr string, lineIncrement bool) string {
 				continue
 			}
 		}
-		if `"` == string(expr[i]) {
+		if `"` == string([]rune(expr)[i]) {
 			startFlag = true
 		}
 	}
+
 
 	expr = strings.Replace(expr, " ", "", -1)
 	expr = strings.Replace(expr, "\t", "", -1)
 	expr = strings.Replace(expr, "\n", "", -1)
 
 	// запоминаем местоположение строк
-	for i = 0; i < len(expr); i++ {
+	for i = 0; i < len([]rune(expr)); i++ {
 		pos += 1
 		if startFlag {
-			if i > 0 && `\` != string(expr[i-1]) && `"` == string(expr[i]) {
+			if i > 0 && `\` != string([]rune(expr)[i-1]) && `"` == string([]rune(expr)[i]) {
 				startFlag = false
 				continue
 			}
 		}
 
-		if i > 0 && `\` != string(expr[i-1]) && `"` == string(expr[i]) {
+		if i > 0 && `\` != string([]rune(expr)[i-1]) && `"` == string([]rune(expr)[i]) {
 			poses = append(poses, pos)
 			startFlag = true
 		}
@@ -327,10 +330,10 @@ func CodeInput(expr string, lineIncrement bool) string {
 		stringInside = strings.Replace(stringInside, "\t", "", -1)
 		stringInside = strings.Replace(stringInside, "\n", "", -1)
 
-		lenStringInside = len(stringInside)
+		lenStringInside = len([]rune(stringInside))
 
 		for j := poses[i]; j < poses[i]+lenStringInside; j++ {
-			expr = expr[:poses[i]] + expr[poses[i]+1:]
+			expr = string([]rune(expr)[:poses[i]]) + string([]rune(expr)[poses[i]+1:])
 			// переситываем позиции из-за изменившегося выражения
 			for k := i + 1; k < len(poses); k++ {
 				poses[k] -= 1
@@ -343,12 +346,12 @@ func CodeInput(expr string, lineIncrement bool) string {
 	var leftExpr string
 	var rightExpr string
 	for _, str := range stringsInside {
-		leftExpr = expr[:poses[i]]
-		rightExpr = expr[poses[i]:]
+		leftExpr = string([]rune(expr)[:poses[i]])
+		rightExpr = string([]rune(expr)[poses[i]:])
 		expr = leftExpr + str + rightExpr
 		// пересчитываем позиции из-за изменившегося выражения
 		for k := i + 1; k < len(poses); k++ {
-			poses[k] += len(str)
+			poses[k] += len([]rune(str))
 		}
 		i += 1
 	}

@@ -814,10 +814,11 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 					}
 
 					if fmt.Sprintf("%v", v[0]) != WhatsType(tempV2) && "string" != fmt.Sprintf("%v", v[0]) &&
+						(fmt.Sprintf("%v", v[0]) != "float" && WhatsType(tempV2) != "int") &&
 						!("stack" == fmt.Sprintf("%v", v[0]) && "[]interface {}" == fmt.Sprintf("%T", v[2]) &&
 							"end" == ValueFoldInterface(v[2].([]interface{})[0])) {
 						panic("pop: data type mismatch: " + fmt.Sprintf("%v", v[0]) + " and " +
-							WhatsType(fmt.Sprintf("%v", v[2])))
+							WhatsType(tempV2))
 					}
 				} else {
 					_, err = transpileDest.WriteString("setVar(\"" + fmt.Sprintf("%v", LO[0]) + "\", " + "systemStack[len(systemStack)-1])\n" +
@@ -1000,10 +1001,11 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 							}
 
 							if fmt.Sprintf("%v", popVar[0]) != WhatsType(tempPopVar2) && "string" != fmt.Sprintf("%v", popVar[0]) &&
-								!("stack" == fmt.Sprintf("%v", popVar[0]) && "[]interface {}" == fmt.Sprintf("%T", popVar[2]) &&
-									"end" == ValueFoldInterface(popVar[2].([]interface{})[0])) {
+								(fmt.Sprintf("%v", popVar[0]) != "float" && WhatsType(tempPopVar2) != "int") && !("stack" == fmt.Sprintf("%v", popVar[0]) &&
+								"[]interface {}" == fmt.Sprintf("%T", popVar[2]) &&
+								"end" == ValueFoldInterface(popVar[2].([]interface{})[0])) {
 								panic("pop: data type mismatch: " + fmt.Sprintf("%v", popVar[0]) + " and " +
-									WhatsType(fmt.Sprintf("%v", popVar[2])))
+									WhatsType(fmt.Sprintf("%v", tempPopVar2)))
 							}
 
 							v[2] = VFI
