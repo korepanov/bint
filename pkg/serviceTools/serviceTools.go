@@ -316,6 +316,10 @@ func WhatsType(val string) string {
 		return "float"
 	}
 
+	if len(val) > 0 && `[` == string(val[0]) && `]` == string(val[len(val)-1]) {
+		return "stack"
+	}
+
 	return "string"
 }
 
