@@ -32,13 +32,13 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			return []interface{}{-1}, systemStack, err
 		}
 		intListList := pattern.FindAllIndex([]byte(fmt.Sprintf("%v", RO[0])), -1)
-		var res [][]interface{}
+		var res []interface{}
 		res = append(res, []interface{}{"end"})
 
 		for _, intList := range intListList {
 			res = append(res, []interface{}{[]interface{}{"end"}})
 			for _, intVal := range intList {
-				res[len(res)-1] = append(res[len(res)-1], []interface{}{intVal})
+				res[len(res)-1] = append(res[len(res)-1].([]interface{}), []interface{}{intVal})
 			}
 		}
 
