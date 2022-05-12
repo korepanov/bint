@@ -263,7 +263,7 @@ func IsOp(s string) bool {
 		"goto", "SET_SOURCE", "UNSET_SOURCE", "RESET_SOURCE",
 		"SET_DEST", "UNSET_DEST", "next_command", "send_command", "UNDEFINE", "pop", "push",
 		"DEL_DEST", "SEND_DEST", "REROUTE", ".", "len", "index", "get_root_source", "get_root_dest",
-		"is_letter", "is_digit"}
+		"is_letter", "is_digit", "reg_find"}
 
 	if stringInSlice(s, ops) {
 		return true

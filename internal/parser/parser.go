@@ -30,6 +30,23 @@ func maxBraces(exprList [][]interface{}) int {
 	return maxNbraces
 }
 
+func toStandardBinaryOperation(exprListInput [][]interface{}) [][]interface{} {
+	exprList := exprListInput
+	operation := fmt.Sprintf("%v", exprList[0][1])
+	exprList = Pop(exprList, 0) // выталкиваем операцию
+	exprList = Pop(exprList, 0) // выталкиваем скобки рядом с именем операции
+	exprList = Pop(exprList, len(exprList)-1)
+	exprList = Pop(exprList, 1) // выталкиваем запятую
+
+	exprList = Insert(exprList, 1, []interface{}{"OP", operation})
+	//exprList = Insert(exprList, 0, []interface{}{"BR", "("})
+	//exprList = Insert(exprList, 2, []interface{}{"BR", ")"})
+	//exprList = Insert(exprList, 4, []interface{}{"BR", "("})
+	//exprList = Insert(exprList, len(exprList), []interface{}{"BR", ")"})
+
+	return exprList
+}
+
 func makeOperationBinary(exprListInput [][]interface{}) [][]interface{} {
 	exprList := exprListInput
 	i := 0
@@ -548,6 +565,11 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 				exprInside = append(exprInside, []interface{}{"BR", ")"})
 				wasIsDigit = true
 				i += 7
+			}
+			if "reg_find" == exprInside[0][1] {
+				exprInside = toStandardBinaryOperation(exprInside)
+				exprInside = Insert(exprInside, 0, []interface{}{"BR", "("})
+				exprInside = append(exprInside, []interface{}{"BR", ")"})
 			}
 
 			exprList = append(exprOutside, []interface{}{"OP", "="})

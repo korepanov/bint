@@ -1,0 +1,3 @@
+stack res;
+res = reg_find("(.*?)", "print(\"Lala\")");
+

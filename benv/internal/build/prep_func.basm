@@ -1,0 +1,67 @@
+string root_source; 
+SET_SOURCE("benv/internal/import_program.b");
+SET_DEST("benv/internal/prep_func_program.b");
+
+string command;
+int number;
+string left_part;
+string right_part;
+int command_len;
+
+next_command(command);
+#begin:
+[goto(#end), ("end" == command), print("")];
+number = index(command, "#");
+[goto(#add_nop_after_mark_end), (-1 == number), print("")];
+number = index(command, ":");
+goto(#add_nop3);
+#add_nop_after_mark_end:
+
+number = index(command, "{");
+[goto(#add_nop_end), (-1 == number), print("")];
+number = index(command, "int");
+[goto(#add_nop), (0 == number), print("")];
+number = index(command, "bool");
+[goto(#add_nop), (0 == number), print("")];
+number = index(command, "float");
+[goto(#add_nop), (0 == number), print("")];
+number = index(command, "stack");
+[goto(#add_nop), (0 == number), print("")];
+number = index(command, "string");
+[goto(#add_nop), (0 == number), print("")];
+number = index(command, "void");
+[goto(#add_nop), (0 == number), goto(#add_nop_end)];
+
+
+#add_nop:
+number = index(command, "{");
+#add_nop3:
+number = (number + 1);
+left_part = command[0:number];
+command_len = len(command); 
+right_part = command[number:command_len];
+command=(left_part+"print(\"\")");
+send_command(command); 
+send_command(right_part);
+next_command(command);
+goto(#begin);
+#add_nop_end:
+
+number = index(command, "}");
+[print(""), (0 == number), goto(#add_nop_end2)];
+
+#add_nop2:
+send_command(command);
+command="print(\"\")";
+send_command(command);
+next_command(command);
+goto(#begin);
+#add_nop_end2:
+
+send_command(command);
+next_command(command);
+goto(#begin);
+#end:
+UNSET_SOURCE();
+UNSET_DEST();
+DEL_DEST("benv/internal/import_program.b");
