@@ -1,3 +1,8 @@
 stack res;
 res = reg_find("\"(.*?)\"", "print(\"Lala\") AND print(\"Something\")");
+stack bufs;
+res.pop(bufs);
+string buf;
+bufs.pop(buf);
+print(buf);
 

@@ -31,7 +31,18 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		if nil != err {
 			return []interface{}{-1}, systemStack, err
 		}
-		return []interface{}{pattern.FindAllIndex([]byte(fmt.Sprintf("%v", RO[0])), -1)}, systemStack, nil
+		intListList := pattern.FindAllIndex([]byte(fmt.Sprintf("%v", RO[0])), -1)
+		var res [][]interface{}
+		res = append(res, []interface{}{"end"})
+
+		for _, intList := range intListList {
+			res = append(res, []interface{}{[]interface{}{"end"}})
+			for _, intVal := range intList {
+				res[len(res)-1] = append(res[len(res)-1], []interface{}{intVal})
+			}
+		}
+
+		return []interface{}{res}, systemStack, nil
 
 	} else if "index" == OP {
 
