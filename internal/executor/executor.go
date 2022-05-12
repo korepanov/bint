@@ -35,10 +35,10 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		var res []interface{}
 		res = append(res, []interface{}{"end"})
 
-		for _, intList := range intListList {
+		for i := len(intListList) - 1; i >= 0; i-- {
 			res = append(res, []interface{}{[]interface{}{"end"}})
-			for _, intVal := range intList {
-				res[len(res)-1] = append(res[len(res)-1].([]interface{}), []interface{}{intVal})
+			for j := len(intListList[i]) - 1; j >= 0; j-- {
+				res[len(res)-1] = append(res[len(res)-1].([]interface{}), []interface{}{intListList[i][j]})
 			}
 		}
 
