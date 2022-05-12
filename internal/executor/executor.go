@@ -1031,8 +1031,14 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 								(fmt.Sprintf("%v", popVar[0]) != "float" && WhatsType(tempPopVar2) != "int") && !("stack" == fmt.Sprintf("%v", popVar[0]) &&
 								"[]interface {}" == fmt.Sprintf("%T", popVar[2]) &&
 								"end" == ValueFoldInterface(popVar[2].([]interface{})[0])) {
-								panic("pop: data type mismatch: " + fmt.Sprintf("%v", popVar[0]) + " and " +
-									WhatsType(fmt.Sprintf("%v", tempPopVar2)))
+								if !("stack" == fmt.Sprintf("%v", popVar[0]) && "string" == WhatsType(fmt.Sprintf("%v", tempPopVar2)) &&
+									"end" == tempPopVar2) {
+									panic("pop: data type mismatch: " + fmt.Sprintf("%v", popVar[0]) + " and " +
+										WhatsType(fmt.Sprintf("%v", tempPopVar2)))
+								} else {
+									VFI = []interface{}{[]interface{}{"end"}}
+									popVar[2] = []interface{}{[]interface{}{"end"}}
+								}
 							}
 
 							v[2] = VFI

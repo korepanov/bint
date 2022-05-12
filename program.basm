@@ -1,8 +1,22 @@
 stack res;
 res = reg_find("\"(.*?)\"", "print(\"Lala\") AND print(\"Something\")");
 stack bufs;
+string buf; 
+
+#start:
 res.pop(bufs);
-string buf;
 bufs.pop(buf);
+[goto(#end), ("end" == buf), print("")];
+#buf_s:
+[goto(#buf_e), ("end" == buf), print("")];
 print(buf);
+print(" ");
+bufs.pop(buf);
+goto(#buf_s);
+#buf_e:
+print("\n");
+goto(#start);
+#end:
+print("");
+
 
