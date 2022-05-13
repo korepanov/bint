@@ -75,7 +75,7 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool,
 		} else if len(expr) > i+3 && "len" == expr[i:i+3] {
 			res = append(res, []interface{}{"OP", "len"})
 			i += 2
-		} else if len(expr) > i+5 && "index" == expr[i:i+5] {
+		} else if len(expr) > i+6 && "index(" == expr[i:i+6] {
 			res = append(res, []interface{}{"OP", "index"})
 			i += 4
 		} else if len(expr) > i+9 && "is_letter" == expr[i:i+9] {

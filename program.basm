@@ -1,5 +1,9 @@
 stack res;
-res = reg_find("\"(.*?)\"", "print(\"Lala\") AND print(\"Something\")");
+string reg_expr;
+string expr;
+reg_expr = "\"(.*?)\"";
+expr = "print(\"Lala\") AND print(\"Something\")";
+res = reg_find(reg_expr, expr);
 stack bufs;
 string buf; 
 

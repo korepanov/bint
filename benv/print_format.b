@@ -12,34 +12,35 @@ void finish(){
 };
 
 stack ops(string command, string op){
+	stack indexes;
+	stack these_indexes; 
+	string buf;
 	stack res;
-	int i;
-	int op_len;
-	int command_len;
-	string lexeme;
 
-	command_len = len(command);
-	op_len = len(op);
-	i = 0;
-
-	#ops_s:
-	[print(""), (i < command_len), goto(#ops_e)];
-	[goto(#push_op_s), (op == command[i:op_len]), print("")];
-	[goto(#qoute_s), ("\"" == command[i]), ];
-	#quote_s:
-	
-	#quote_e:
-	#push_op_s:
-	i = (i + command_len);
-	goto(#ops_s);
-	#push_op_e:
-	#ops_e: 
+	indexes = reg_find("\"(.*?)\"", command);
+	print(command);
+	print("\n");
+	#indexes_s:
+	indexes.pop(these_indexes);
+	these_indexes.pop(buf);
+	[goto(#indexes_e), ("end" == buf), print("")];
+	#these_indexes_s:
+	[goto(#these_indexes_e), ("end" == buf), print("")];
+	print(buf);
+	print(" ");
+	these_indexes.pop(buf);
+	goto(#these_indexes_s);
+	#these_indexes_e:
+	print("\n");
+	goto(#indexes_s);
+	#indexes_e:
 
 	return res;
 };
 
 void replace_print(string command){
-	
+	stack res;
+	res = ops(command, "print");
 	print("");
 };
 
