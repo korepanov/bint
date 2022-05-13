@@ -284,7 +284,7 @@ func EachVariable(variables [][]interface{}) func() []interface{} {
 }
 
 func StrToBool(s string) bool {
-	if "True" == s {
+	if "True" == s || "true" == s {
 		return true
 	}
 	return false

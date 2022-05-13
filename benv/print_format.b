@@ -21,16 +21,18 @@ stack ops(string command, string op){
 	stack res;
 	int num1;
 	int num2; 
-
-	num1 = 0;
-	num2 = len(command);
-	num2 = (num2 - 1); 
+	int op_num;
+	bool was_quote;
+	bool cond;
 	
-	op_nums = indexes(command, op);	
-	print(command);
-	print("\n");
+	was_quote = False;
 
-	quotes = reg_find("\"(.*?)\"", command);
+	op_nums = indexes(command, op);
+	op_nums.pop(buf);
+	#op_nums_s:
+	[goto(#op_nums_e), ("end" == buf), print("")];
+	op_num = int(buf);
+	quotes = reg_find("\"(\\.|[^\"])*\"", command);
 	
 	#quotes_s:
 	quotes.pop(these_quotes);
@@ -42,18 +44,42 @@ stack ops(string command, string op){
 	these_quotes.pop(buf);
 	num2 = int(buf);
 	these_quotes.pop(buf);
+	was_quote = True;
 	goto(#these_quotes_s);
 	#these_quotes_e:
-	print("\n");
+	cond = ((op_num > num1)AND(op_num < num2));
+	[goto(#is_op_end), (cond), print("")];
+	res.push(op_num);
+	goto(#push_op_end);
+	#is_op_end:	
 	goto(#quotes_s);
 	#quotes_e:
-
+	[goto(#push_op_end), (was_quote), print("")];
+	res.push(op_num);
+	was_quote = False;
+	#push_op_end:
+	print("");
+	op_nums.pop(buf);
+	goto(#op_nums_s);
+	#op_nums_e:
 	return res;
 };
 
 void replace_print(string command){
-	stack res;
-	res = ops(command, "print");
+	stack s;
+	string buf;
+
+	s = ops(command, "print");
+
+	s.pop(buf);
+	#replace_s:
+	[goto(#replace_e), ("end" == buf), print("")];
+	println(command);
+	println(buf);
+	s.pop(buf);	
+	goto(#replace_s);
+	#replace_e:	
+
 	print("");
 };
 

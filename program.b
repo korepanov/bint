@@ -1,8 +1,10 @@
 void main(){
 	string s1;
 	string s2;
+	string s3;
 	s1 = "Hello";
 	s2 = ", world!\n";
+	s3 = "lala print(\"\") lala print(\"lala\") lk";
 	print((s1 + s2));
 };
 

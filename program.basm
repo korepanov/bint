@@ -1,26 +1,14 @@
-stack res;
-string reg_expr;
-string expr;
-reg_expr = "\"(.*?)\"";
-expr = "print(\"Lala\") AND print(\"Something\")";
-res = reg_find(reg_expr, expr);
-stack bufs;
-string buf; 
+bool cond;
+int op_num;
+int num1;
+int num2;
+string buf;
 
-#start:
-res.pop(bufs);
-bufs.pop(buf);
-[goto(#end), ("end" == buf), print("")];
-#buf_s:
-[goto(#buf_e), ("end" == buf), print("")];
+num1 = 3;
+num2 = 45;
+op_num = 9;
+
+cond = ((op_num > num1)AND(op_num < num2));
+buf = str(cond);
 print(buf);
-print(" ");
-bufs.pop(buf);
-goto(#buf_s);
-#buf_e:
 print("\n");
-goto(#start);
-#end:
-print("");
-
-
