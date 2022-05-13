@@ -1,4 +1,4 @@
-#import "stdlib/strings.b"
+#import "stdlib/core.b"
 
 string root_source;
 
