@@ -1,3 +1,5 @@
+#import "stdlib/strings.b"
+
 string root_source;
 
 void init(){
@@ -12,28 +14,39 @@ void finish(){
 };
 
 stack ops(string command, string op){
-	stack indexes;
-	stack these_indexes; 
+	stack quotes;
+	stack these_quotes; 
+	stack op_nums;
 	string buf;
 	stack res;
+	int num1;
+	int num2; 
 
-	indexes = reg_find("\"(.*?)\"", command);
+	num1 = 0;
+	num2 = len(command);
+	num2 = (num2 - 1); 
+	
+	op_nums = indexes(command, op);	
 	print(command);
 	print("\n");
-	#indexes_s:
-	indexes.pop(these_indexes);
-	these_indexes.pop(buf);
-	[goto(#indexes_e), ("end" == buf), print("")];
-	#these_indexes_s:
-	[goto(#these_indexes_e), ("end" == buf), print("")];
-	print(buf);
-	print(" ");
-	these_indexes.pop(buf);
-	goto(#these_indexes_s);
-	#these_indexes_e:
+
+	quotes = reg_find("\"(.*?)\"", command);
+	
+	#quotes_s:
+	quotes.pop(these_quotes);
+	these_quotes.pop(buf);
+	[goto(#quotes_e), ("end" == buf), print("")];
+	#these_quotes_s:
+	[goto(#these_quotes_e), ("end" == buf), print("")];
+	num1 = int(buf);
+	these_quotes.pop(buf);
+	num2 = int(buf);
+	these_quotes.pop(buf);
+	goto(#these_quotes_s);
+	#these_quotes_e:
 	print("\n");
-	goto(#indexes_s);
-	#indexes_e:
+	goto(#quotes_s);
+	#quotes_e:
 
 	return res;
 };
