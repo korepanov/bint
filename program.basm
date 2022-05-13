@@ -1,14 +1,10 @@
-bool cond;
-int op_num;
-int num1;
-int num2;
-string buf;
+bool was_quote;
+bool to_add;
 
-num1 = 3;
-num2 = 45;
-op_num = 9;
+was_quote = True;
+to_add = False;
 
-cond = ((op_num > num1)AND(op_num < num2));
+cond = ((was_quote)OR(NOT(to_add)));
 buf = str(cond);
 print(buf);
 print("\n");

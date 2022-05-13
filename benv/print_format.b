@@ -23,9 +23,10 @@ stack ops(string command, string op){
 	int num2; 
 	int op_num;
 	bool was_quote;
-	bool cond;
+	bool to_add;
 	
 	was_quote = False;
+	to_add = True;
 
 	op_nums = indexes(command, op);
 	op_nums.pop(buf);
@@ -47,16 +48,16 @@ stack ops(string command, string op){
 	was_quote = True;
 	goto(#these_quotes_s);
 	#these_quotes_e:
-	cond = ((op_num > num1)AND(op_num < num2));
-	[goto(#is_op_end), (cond), print("")];
-	res.push(op_num);
+	[print(""), ((op_num > num1)AND(op_num < num2)), goto(#is_op_end)];
+	to_add = False;
 	goto(#push_op_end);
 	#is_op_end:	
 	goto(#quotes_s);
 	#quotes_e:
-	[goto(#push_op_end), (was_quote), print("")];
+	[goto(#push_op_end), ((was_quote)OR(NOT(to_add))), print("")];
 	res.push(op_num);
 	was_quote = False;
+	to_add = True;
 	#push_op_end:
 	print("");
 	op_nums.pop(buf);
