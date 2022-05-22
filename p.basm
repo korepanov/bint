@@ -8,8 +8,7 @@ pop(s);
 print("");
 print("Hello, ");
 print(s);
-print("!
-");
+print("!\n");
 push(0);
 UNDEFINE(s);
 goto($hello_return_var);
