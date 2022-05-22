@@ -417,6 +417,7 @@ print("");
 goto(#pop_func_pos_start);
 #pop_func_pos_end:print("");
 send_command(replaced_command);
+offset=0;
 print("");
 goto(#next);
 #next_end:print("");

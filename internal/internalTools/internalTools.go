@@ -114,7 +114,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/internal/func.basm"}
 			}
 		} else if options.UserTranslate == toTranslate {
-			rootSource = "quadratic_equation.b"
+			rootSource = "p.b"
 			rootDest = "p.basm"
 			//filesListToExecute = []string{"benv/import.basm"}
 			if execBenv {
@@ -126,7 +126,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 				//filesListToExecute = []string{"bendBenv/import.basm"}
 			}
 		} else if options.Transpile == toTranslate {
-			rootSource = "benv/internal/build/func.basm"
+			rootSource = "benv/internal/build/long_function.basm"
 			rootDest = "benv/internal/build/main.go"
 
 			source, err := os.Open("benv/build/pattern.p")
@@ -153,37 +153,35 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 			}
 			filesListToExecute = []string{rootSource}
 		} else if options.ExecBasm == toTranslate {
-			//rootSource = "program.b"
-			//rootDest = "benv/print_format.basm"
-			rootDest = "program.basm"
+			rootSource = "program.b"
+			rootDest = "benv/print_format.basm"
+			//rootDest = "p.basm"
 			filesListToExecute = []string{rootDest}
 		} else if options.Primitive == toTranslate {
-			//rootSource = "bendBenv/prep_func.basm"
-			//rootDest = "bendBenv/prep_func.bend"
+			//rootSource = "bendBenv/long_function.basm"
+			//rootDest = "bendBenv/long_function.bend"
 			rootSource = "program.basm"
 			rootDest = "program.bend"
 			filesListToExecute = []string{rootSource}
 		} else if options.InterpPrimitive == toTranslate {
-			//rootSource = "program.b"
-			//rootDest = "program.basm"
-			//filesListToExecute = []string{"bendBenv/import.bend", "bendBenv/prep_func.bend", "bendBenv/long_function.bend",
-			//"bendBenv/func.bend"}
-			rootDest = "program.bend"
-			filesListToExecute = []string{rootDest}
+			rootSource = "p.b"
+			rootDest = "p.basm"
+			filesListToExecute = []string{"bendBenv/import.bend", "bendBenv/prep_func.bend", "bendBenv/long_function.bend",
+				"bendBenv/func.bend"}
+			//rootDest = "program.bend"
+			//filesListToExecute = []string{rootDest}
 		} else if options.Encrypt == toTranslate {
+			rootSource = "bencBenv/func.bend"
+			rootDest = "bencBenv/func.benc"
+			keyDest = "bencBenv/func.k"
 			//rootSource = "program.bend"
 			//rootDest = "program.benc"
 			//keyDest = "key.k"
-			rootSource = "program.bend"
-			rootDest = "program.benc"
-			keyDest = "key.k"
 		} else if options.ExecEncrypt == toTranslate {
-			//rootSource = "program.b"
-			rootDest = "program.benc"
-			keyDest = "key.k"
+			rootSource = "p.b"
 
-			//rootDest = "program.benc"
-			//keyDest = "key.k"
+			rootDest = "bencBenv/func.benc"
+			keyDest = "bencBenv/func.k"
 			filesListToExecute = []string{rootDest}
 		} else {
 			panic(errors.New("set option to translate"))
@@ -272,13 +270,13 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	systemStack := []interface{}{"end"}
 	sourceCommandCounter := 1
 
-	/*defer func() {
+	defer func() {
 		if r := recover(); nil != r {
 			fmt.Println("ERROR in " + fileToExecute + " at near line " + fmt.Sprintf("%v", LineCounter))
 			fmt.Println(CommandToExecute)
 			fmt.Println(r)
 		}
-	}()*/
+	}()
 
 	var err error
 

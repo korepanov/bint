@@ -301,12 +301,13 @@ void replace(){
 	command_to_send = (command_to_send + func_call);
 	
 	send_command(command_to_send);
-		
+	
 	func_pos_stack.pop(sleft_border);
 	func_ends_stack.pop(sright_border);
 	goto(#pop_func_pos_start);
 	#pop_func_pos_end:
 	send_command(replaced_command);
+	offset = 0;
 	goto(#next);
 	#next_end:
 	UNSET_SOURCE();

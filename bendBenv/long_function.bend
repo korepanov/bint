@@ -465,6 +465,7 @@ goto$303#pop_func_pos_start$303null;
 #pop_func_pos_end:
 print$303""$303null;
 send_command$303replaced_command$303null;
+=$303offset$3030;
 print$303""$303null;
 goto$303#next$303null;
 #next_end:

@@ -502,7 +502,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 				}
 			}
 
-			//i -= 1 // возвращаемся на единицу назад, т. к. справа от NOT внешняя скобка
+			i -= 1 // возвращаемся на единицу назад, т. к. справа от NOT внешняя скобка
 			exprList = Insert(exprList, i, []interface{}{"OP", "NOT"})
 			i += 1
 			exprList = Insert(exprList, i, []interface{}{"VAL", "null", "null"})

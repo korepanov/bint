@@ -103,20 +103,13 @@ func Encrypt(rootSource string, rootDest string, keyDest string) {
 					t := trash[rand.Intn(len(trash))]
 					encryptedChunk[i] = t
 				} else {
-					if splitedChunkNumber > len(splitedChunk)-1 {
-						fmt.Println("YES")
-					}
 					encryptedChunk[i] = splitedChunk[splitedChunkNumber]
 					splitedChunkNumber++
 				}
 			}
 			splitedChunkNumber = 0
 			for i := 0; i < len(encryptedChunk); i++ {
-				if i < len(encryptedChunk)-1 {
-					res += encryptedChunk[i] + options.BendSep
-				} else {
-					res += encryptedChunk[i]
-				}
+				res += encryptedChunk[i] + options.BendSep
 			}
 			_, err = encryptDest.WriteString(res + ";")
 			if nil != err {

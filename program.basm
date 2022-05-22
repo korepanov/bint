@@ -1,10 +1,12 @@
 bool was_quote;
 bool to_add;
+string buf; 
+bool cond; 
 
-was_quote = True;
-to_add = False;
+was_quote = False;
+to_add = True;
 
-cond = ((was_quote)OR(NOT(to_add)));
+cond = (NOT(to_add));
 buf = str(cond);
 print(buf);
 print("\n");
