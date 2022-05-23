@@ -16,14 +16,20 @@ void finish(){
 void replace_print(string command){
 	stack s;
 	string buf;
+	int nbuf;
 
 	s = ops(command, "print");
 
 	s.pop(buf);
 	#replace_s:
 	[goto(#replace_e), ("end" == buf), print("")];
+	nbuf = int(buf);
+	nbuf = (nbuf + 5);
+	buf = str(nbuf);
 	println(command);
 	println(buf);
+	nbuf = func_end(command, nbuf);
+	buf = str(nbuf);
 	s.pop(buf);	
 	goto(#replace_s);
 	#replace_e:	

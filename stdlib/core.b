@@ -101,3 +101,61 @@ stack ops(string command, string op){
 	res = reverse(res);
 	return res;
 };
+
+bool in_stack(stack s, string el){
+	string buf;
+	bool res;
+
+	res = False;
+	s.pop(buf);
+	#_in_stack_s:
+	[goto(#_in_stack_e), ("end" == buf), print("")];
+	[print(""), (el == buf), goto(#_no)];
+	res = True;
+	goto(#_in_stack_e);
+	#_no:
+	s.pop(buf);
+	goto(#_in_stack_s);	
+	#_in_stack_e:
+	return res;
+};
+
+int func_end(string command, int func_begin){
+	stack obraces;
+	stack cbraces;
+	string obrace;
+	string cbrace;
+	string symbol;
+	int o_sum;
+	int c_sum;
+	int pos;
+	string spos;
+	int command_len;
+	
+	command_len = len(command);
+	obrace = "(";
+	cbrace = ")";
+	o_sum = 1;
+	c_sum = 0;
+	pos = (func_begin + 1);
+
+	obraces = ops(command, obrace);
+	cbraces = ops(command, cbrace);
+	
+	#_braces_s:
+	[print(""), (pos < command_len), goto(#_braces_e)];
+	spos = str(pos);
+	[print(""), in_stack(obraces, spos), goto(#_o_plus_end)];
+	o_sum = (o_sum + 1);
+	#_o_plus_end:
+	[print(""), in_stack(cbraces, spos), goto(#_c_plus_end)];
+	c_sum = (c_sum + 1);
+	#_c_plus_end:
+	[goto(#_braces_e), (o_sum == c_sum), print("")];
+	pos = (pos + 1);
+	goto(#_braces_s);
+	#_braces_e:
+	spos = str(pos);
+	println(spos);
+	return 0;
+};
