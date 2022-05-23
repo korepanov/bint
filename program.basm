@@ -1,12 +1,27 @@
-bool was_quote;
-bool to_add;
-string buf; 
-bool cond; 
-
-was_quote = False;
-to_add = True;
-
-cond = (NOT(to_add));
-buf = str(cond);
-print(buf);
-print("\n");
+string $main_return_var;
+goto(#main_end);
+#main:
+print("");
+print("");
+strings1;
+strings2;
+strings3;
+s1="Hello";
+s2=", world!
+";
+stringprint_arg0;
+print_arg0=(s1+s2);
+print(print_arg0);
+UNDEFINE(print_arg0);
+UNDEFINE(print_arg0);
+UNDEFINE(s3);
+UNDEFINE(s2);
+UNDEFINE(s1);
+goto($main_return_var);
+#main_end:
+print("");
+$main_return_var="#main_res0";
+goto(#main);
+#main_res0:
+print("");
+print("");

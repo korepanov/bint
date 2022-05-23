@@ -3,14 +3,14 @@
 string root_source;
 
 void init(){
-	get_root_source(root_source);
-	SET_SOURCE(root_source);
+	SET_SOURCE("benv/import_program.b");
 	SET_DEST("benv/print_format_program.b");
 };
 
 void finish(){
 	UNSET_SOURCE();
 	UNSET_DEST();
+	DEL_DEST("benv/import_program.b");
 };
 
 void replace_print(string command){
