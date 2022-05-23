@@ -155,7 +155,5 @@ int func_end(string command, int func_begin){
 	pos = (pos + 1);
 	goto(#_braces_s);
 	#_braces_e:
-	spos = str(pos);
-	println(spos);
-	return 0;
+	return pos;
 };

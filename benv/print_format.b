@@ -17,6 +17,8 @@ void replace_print(string command){
 	stack s;
 	string buf;
 	int nbuf;
+	int arg_begin;
+	int arg_end;
 
 	s = ops(command, "print");
 
@@ -26,10 +28,16 @@ void replace_print(string command){
 	nbuf = int(buf);
 	nbuf = (nbuf + 5);
 	buf = str(nbuf);
-	println(command);
-	println(buf);
-	nbuf = func_end(command, nbuf);
+	arg_begin = (nbuf + 1);
+	arg_end = func_end(command, nbuf);
+	arg_end = (arg_end - 1);
 	buf = str(nbuf);
+	println(command);
+	buf = str(arg_begin);
+	print(buf);
+	print(" ");
+	buf = str(arg_end);
+	println(buf);
 	s.pop(buf);	
 	goto(#replace_s);
 	#replace_e:	
