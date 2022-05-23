@@ -69,7 +69,7 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool,
 			res = append(res, []interface{}{"OP", "/"})
 		} else if len(expr) > i && "^" == string(expr[i]) {
 			res = append(res, []interface{}{"OP", "^"})
-		} else if len(expr) > i+5 && "print" == expr[i:i+5] {
+		} else if len(expr) > i+6 && "print(" == expr[i:i+6] {
 			res = append(res, []interface{}{"OP", "print"})
 			i += 4
 		} else if len(expr) > i+3 && "len" == expr[i:i+3] {
