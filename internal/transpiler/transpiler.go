@@ -379,6 +379,12 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 
 		return []interface{}{"toBool(" + fmt.Sprintf("%v", LO[0]) + ")"}, systemStack, nil
 	} else if "reg_find" == OP {
+		_, err := transpileDest.WriteString("defineVar(\"$regRes\")\n")
+
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
+		}
+
 		if `"` == string(fmt.Sprintf("%v", LO[0])[0]) && `"` == string(fmt.Sprintf("%v", LO[0])[len(fmt.Sprintf("%v", LO[0]))-1]) {
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
 		}
@@ -386,8 +392,8 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 			RO[0] = RO[0].(string)[1 : len(RO[0].(string))-1]
 		}
 
-		_, err := transpileDest.WriteString("{infoListList := compileRegexp(`" + fmt.Sprintf("%v", LO[0]) +
-			"`).FindAllIndex([]byte(" + fmt.Sprintf("%v", RO[0]) + ")), -1)\n")
+		_, err = transpileDest.WriteString("{intListList := compileRegexp(`" + fmt.Sprintf("%v", LO[0]) +
+			"`).FindAllIndex([]byte(fmt.Sprintf(\"%v\", " + fmt.Sprintf("%v", RO[0]) + ")), -1)\n")
 
 		if nil != err {
 			return []interface{}{-1}, systemStack, err
@@ -408,11 +414,17 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 		_, err = transpileDest.WriteString("for i := len(intListList) - 1; i >= 0; i-- {\n" +
 			"res = append(res, []interface{}{[]interface{}{\"end\"}})\n" +
 			"for j := len(intListList[i]) - 1; j >= 0; j-- {\n" +
-			"res[len(res)-1] = append(res[len(res)-1].([]interface{}), []interface{}{intListList[i][j]})\n" +
+			"res[len(res)-1] = append(res[len(res)-1].([]interface{}), intListList[i][j])\n" +
 			"}\n" +
-			"}\n}")
+			"}\n")
 
-		return []interface{}{"res"}, systemStack, nil
+		_, err = transpileDest.WriteString("setVar(\"$regRes\", res)}\n")
+
+		if nil != err {
+			return []interface{}{-1}, systemStack, err
+		}
+
+		return []interface{}{"getVar(\"$regRes\")"}, systemStack, nil
 	} else if "input" == OP {
 
 		return []interface{}{-1}, systemStack, errors.New("can not transpile input")

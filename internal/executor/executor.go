@@ -1032,7 +1032,7 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 								"[]interface {}" == fmt.Sprintf("%T", popVar[2]) &&
 								"end" == ValueFoldInterface(popVar[2].([]interface{})[0])) {
 								if !("stack" == fmt.Sprintf("%v", popVar[0]) && "string" == WhatsType(fmt.Sprintf("%v", tempPopVar2)) &&
-									"end" == tempPopVar2) {
+									"end" == tempPopVar2) && !toTranspile {
 									panic("pop: data type mismatch: " + fmt.Sprintf("%v", popVar[0]) + " and " +
 										WhatsType(fmt.Sprintf("%v", tempPopVar2)))
 								} else {
