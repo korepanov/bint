@@ -359,6 +359,15 @@ func CodeInput(expr string, lineIncrement bool) string {
 	return expr
 }
 
+func compileRegexp(r string) *regexp.Regexp{
+	pattern, err := regexp.Compile(r)
+	if nil != err{
+		panic(errors.New("could compile regexp " + r + ": " + err.Error()))
+	}
+	
+	return pattern 
+}
+
 func main(){
 flag.StringVar(&iFlag, "i", "", "-i input.b")
 flag.StringVar(&oFlag, "o", "", "-o output.b")
