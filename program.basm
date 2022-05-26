@@ -1,27 +1,26 @@
-string command;
-stack res;
-stack these_quotes;
-string buf;
-
-command = "print(\"something\")print(\"yes\")";
-print(command);
-print("\n");
-res = reg_find("\"(\\.|[^\"])*\"", command);
-
-res.pop(these_quotes);
-these_quotes.pop(buf);
-#start:
-[goto(#end), ("end" == buf), print("")];
-print(buf);
-print(" ");
-these_quotes.pop(buf);
-print(buf);
-print("\n");
-res.pop(these_quotes);
-these_quotes.pop(buf);
-goto(#start);
-#end:
+string $main_return_var;
+goto(#main_end);
+#main:
 print("");
-
-
-
+print("");
+strings1;
+strings2;
+strings3;
+s1="Hello";
+s2=", world!\n";
+stringprint_arg0;
+print_arg0=(s1+s2);
+print(print_arg0);
+UNDEFINE(print_arg0);
+UNDEFINE(print_arg0);
+UNDEFINE(s3);
+UNDEFINE(s2);
+UNDEFINE(s1);
+goto($main_return_var);
+#main_end:
+print("");
+$main_return_var="#main_res0";
+goto(#main);
+#main_res0:
+print("");
+print("");

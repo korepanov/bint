@@ -1,0 +1,451 @@
+string command;
+int i;
+int j;
+int right_border;
+int command_len;
+int call_number;
+string str_call_number; 
+string func_name_br;
+string return_type;
+string buf;
+string buf2;
+string buf3; 
+string buf4;
+string symbol; 
+int int_buf;
+int int_buf2;
+int int_buf3; 
+int type_len;
+int arg_type_len;
+int func_begin;
+int func_end; 
+int func_len;
+int limit_border;
+int number;
+int func_len;
+int func_name_len;
+int br_number;
+int fig_br_number;
+string func_name;
+string arg_type;
+string arg_name;
+int left_border;
+int comma_pos;
+stack buf_stack;
+stack buf_stack_reserv;
+stack buf_stack2;
+stack inside_vars_stack;
+stack inside_vars_stack_reserv;
+stack null;
+bool is_first;
+bool was_func;
+bool was_here; 
+bool void_flag;
+string root_dest;
+
+is_first = True;
+was_here = False;
+get_root_dest(root_dest);
+ 
+SET_SOURCE("benv/long_function_program.b");
+SET_DEST("benv/program.basm");
+next_command(command);
+
+#again_begin:
+i = 0;
+j = 0;
+right_border = 0;
+command_len = 0;
+call_number = 0;
+str_call_number = ""; 
+return_type = "";
+buf = "";
+buf2 = "";
+buf3 = ""; 
+int_buf = 0;
+int_buf2 = 0;
+int_buf3 = 0; 
+type_len = 0;
+arg_type_len = 0;
+func_begin = 0;
+func_end = 0; 
+func_len = 0;
+number = 0;
+func_len = 0;
+br_number = 0;
+func_name = "";
+arg_type = "";
+arg_name = "";
+left_border = 0;
+comma_pos = 0;
+was_func = False; 
+
+call_number = 0; 
+
+#begin:
+[goto(#again_end), ("end" == command), print("")];
+
+void_flag = False; 
+br_number = index(command, "(");
+[goto(#command_end), (-1 == br_number), print("")];
+buf = command[0:br_number];
+return_type = "int";
+number = index(buf, "int");
+[goto(#end_type), (0 == number), print("")];
+return_type = "bool";
+number = index(buf, "bool");
+[goto(#end_type), (0 == number), print("")];
+return_type = "float";
+number = index(buf, "float");
+[goto(#end_type), (0 == number), print("")];
+return_type = "stack";
+number = index(buf, "stack");
+[goto(#end_type), (0 == number), print("")];
+return_type = "string";
+number = index(buf, "string");
+[goto(#end_type), (0 == number), print("")];
+return_type = "void";
+number = index(buf, "void");
+[goto(#end_type), (0 == number), print("")];
+goto(#command_end);
+#end_type:
+[print(""),("void" == return_type), goto(#set_void_flag_end)];
+void_flag = True;
+#set_void_flag_end:
+type_len = len(return_type);
+func_name = command[type_len:br_number];
+buf = (("string $" + func_name) + "_return_var");
+send_command(buf);
+left_border = (br_number + 1);
+was_func = True;
+
+buf = (((return_type + " $") + func_name) + "_res");
+[goto(#not_define_void_end), (void_flag), print("")];
+send_command(buf);
+#not_define_void_end:
+print("");
+#func_args:
+[goto(#func_end), ("{" == command[0]), print("")];
+arg_type = "int";
+right_border = (left_border + 3);
+number = index(command[left_border:right_border], "int");
+[print(""), (-1 == number), goto(#arg_type_end)];
+arg_type = "bool";
+right_border = (left_border + 4);
+number = index(command[left_border:right_border], "bool");
+[print(""), (-1 == number), goto(#arg_type_end)];
+arg_type = "float";
+right_border = (left_border + 5);
+number = index(command[left_border:right_border], "float");
+[print(""), (-1 == number), goto(#arg_type_end)];
+arg_type = "stack";
+right_border = (left_border + 5);
+number = index(command[left_border:right_border], "stack");
+[print(""), (-1 == number), goto(#arg_type_end)];
+arg_type = "string";
+right_border = (left_border + 6);
+number = index(command[left_border:right_border], "string");
+[print(""), (-1 == number), goto(#arg_type_end)];
+arg_type = "no_args";
+goto(#func_end);
+
+#arg_type_end:
+arg_type_len = len(arg_type);
+command_len = len(command);
+
+command = command[right_border:command_len];
+comma_pos = index(command, ",");
+[print(""), (-1 == comma_pos), goto(#br_end)];
+comma_pos = index(command, ")");
+#br_end:
+arg_name = command[0:comma_pos];  
+push(arg_name);
+buf_stack.push(arg_name);
+buf_stack2.push(arg_name);
+buf_stack2.push(arg_type);
+left_border = (comma_pos + 1);
+command_len = len(command);
+command = command[left_border:command_len];
+left_border = 0;
+right_border = index(command, ",");
+[print(""), (-1 == right_border), goto(#func_args)];
+right_border = 3;
+
+goto(#func_args);
+#func_end:
+command_len = len(command);
+buf = command[1:command_len];
+
+command = "goto(#";
+command = (command + func_name);
+command = (command + "_end)");
+send_command(command);
+command = "#";
+command = (command + func_name);
+command = (command + ":\n");
+command=(command+"print(\"\")");
+send_command(command);
+command = "";
+#args_to_pass:
+buf_stack2.pop(arg_type);
+buf_stack2.pop(arg_name);
+command = ((command + arg_type) + arg_name);
+[goto(#not_send_pass_args), ("end" == arg_type), print("")];
+send_command(command);
+#not_send_pass_args:
+command = "";
+[print(""), ("end" == arg_type), goto(#args_to_pass)];
+
+fig_br_number = index(buf, "{");
+[print(""), (-1 == fig_br_number), goto(#not_send_fig_br)];
+send_command(buf);
+goto(#not_send_fig_br_end);
+#not_send_fig_br:
+buf="print(\"\")";
+#not_send_fig_br_end:
+command = "";
+arg_name = "";
+#pop_start:
+[goto(#pop_end), ("end" == arg_name), print("")];
+pop(arg_name);
+command = (command + "pop(");
+command = (command + arg_name);
+command = (command + ")");
+[goto(#not_send_pop), ("end" == arg_name), print("")];
+send_command(command);
+#not_send_pop:
+command = "";
+goto(#pop_start);
+#pop_end:
+
+left_border = 0;
+
+#inside_args:
+limit_border = len(buf);
+limit_border = (limit_border - 1);
+
+[goto(#inside_args_end), (buf == "}"), print("")];
+arg_type = "int";
+right_border = (left_border + 3);
+[goto(#no_args), (right_border > limit_border), print("")];
+number = index(buf[left_border:right_border], "int");
+[print(""), (-1 == number), goto(#inside_arg_type_end)];
+arg_type = "bool";
+right_border = (left_border + 4);
+[goto(#no_args), (right_border > limit_border), print("")];
+number = index(buf[left_border:right_border], "bool");
+[print(""), (-1 == number), goto(#inside_arg_type_end)];
+arg_type = "float";
+right_border = (left_border + 5);
+[goto(#no_args), (right_border > limit_border), print("")];
+number = index(buf[left_border:right_border], "float");
+[print(""), (-1 == number), goto(#inside_arg_type_end)];
+arg_type = "stack";
+right_border = (left_border + 5);
+[goto(#no_args), (right_border > limit_border), print("")];
+number = index(buf[left_border:right_border], "stack");
+[print(""), (-1 == number), goto(#inside_arg_type_end)];
+arg_type = "string";
+right_border = (left_border + 6);
+[goto(#no_args), (right_border > limit_border), print("")];
+number = index(buf[left_border:right_border], "string");
+[print(""), (-1 == number), goto(#inside_arg_type_end)];
+arg_type = "no_args";
+#inside_arg_type_end:
+[goto(#no_args), ("no_args" == arg_type), print("")];
+type_len = len(arg_type); 
+command_len = len(buf);
+arg_name = buf[type_len:command_len];
+inside_vars_stack.push(arg_name);
+#no_args:
+command_len = len(buf);
+[print(""), (command_len > 6), goto(#not_send_return_end)];
+[goto(#not_send_return), ("return" == buf[0:6]), goto(#not_send_return_end)];
+#not_send_return:
+buf = buf[6:command_len];
+buf = ((("push(") + buf) + ")");
+send_command(buf);
+next_command(buf);
+
+
+#pop_args_start0:
+inside_vars_stack.pop(arg_name);
+[goto(#pop_args_end0), ("end" == arg_name), print("")];
+command = (("UNDEFINE(" + arg_name) + ")");
+[goto(#not_send0), ("end" == arg_name), print("")];
+send_command(command);
+inside_vars_stack_reserv.push(arg_name);
+#not_send0:
+goto(#pop_args_start0);
+#pop_args_end0:
+
+arg_name = "";
+#undefine_start0:
+[goto(#undefine_end0), ("end" == arg_name), print("")];
+buf_stack.pop(arg_name); 
+command = (("UNDEFINE(" + arg_name) + ")");
+[goto(#undefine_end0), ("end" == arg_name), print("")];
+send_command(command);
+buf_stack_reserv.push(arg_name);
+goto(#undefine_start0);
+#undefine_end0:
+inside_vars_stack = inside_vars_stack_reserv;
+buf_stack = buf_stack_reserv;
+arg_name = "";
+command = (("goto($" + func_name) + "_return_var)");
+send_command(command);
+
+goto(#inside_args);
+#not_send_return_end:
+send_command(buf);
+next_command(buf);
+
+
+goto(#inside_args);
+#inside_args_end:
+[print(""), ("void" == return_type), goto(#define_return_end)];
+
+
+
+#pop_args_start:
+inside_vars_stack.pop(arg_name);
+[goto(#pop_args_end), ("end" == arg_name), print("")];
+command = (("UNDEFINE(" + arg_name) + ")");
+[goto(#not_send), ("end" == arg_name), print("")];
+send_command(command);
+inside_vars_stack_reserv.push(arg_name);
+#not_send:
+goto(#pop_args_start);
+#pop_args_end:
+
+arg_name = "";
+#undefine_start:
+[goto(#undefine_end), ("end" == arg_name), print("")];
+buf_stack.pop(arg_name); 
+command = (("UNDEFINE(" + arg_name) + ")");
+[goto(#undefine_end), ("end" == arg_name), print("")];
+send_command(command);
+buf_stack_reserv.push(arg_name);
+goto(#undefine_start);
+#undefine_end:
+inside_vars_stack = inside_vars_stack_reserv;
+buf_stack = buf_stack_reserv;
+arg_name = "";
+command = (("goto($" + func_name) + "_return_var)");
+send_command(command);
+
+
+#define_return_end:
+print("");
+inside_vars_stack = null;
+buf_stack = null; 
+
+next_command(command);
+command = ((("#" + (func_name + "_end:")) + "\n") + command);
+send_command(command);
+next_command(command);
+i = 0; 
+command_len = len(command); 
+func_name_len = len(func_name);
+func_name_br = (func_name + "(");
+
+#start_entry: 
+[goto(#again_end), ("end" == command), print("")];
+number = index(command, func_name_br);
+[goto(#mod_end), (-1 == number), print("")];
+
+number = (number + func_name_len);
+buf4 = command[number];
+number = (number - func_name_len); 
+[print(""), ("(" == buf4), goto(#mod_end)];
+
+buf = command;
+
+br_number = index(buf, "(");
+left_border = (br_number + 1);
+buf2 = buf;
+
+#call_start:
+[goto(#call_end), ("" == buf), print("")];
+comma_pos = index(buf, ",");
+[print(""), (-1 == comma_pos), goto(#comma_end)];
+comma_pos = index(buf, ")");
+#comma_end:
+arg_name = buf[left_border:comma_pos];
+command = (("push(" + arg_name) + ")");
+[goto(#not_send_push), ("" == arg_name), print("")];
+send_command(command);
+#not_send_push:
+comma_pos = (comma_pos + 1);
+command_len = len(buf);
+buf = buf[comma_pos:command_len];
+left_border = 0;
+goto(#call_start);
+#call_end:
+buf = buf2;
+buf3 = buf; 
+func_begin = index(buf, func_name_br); 
+command_len = len(buf);
+buf2 = buf[func_begin:command_len];
+func_len = index(buf2, ")"); 
+func_end = ((func_begin + func_len) + 1); 
+buf = buf[0:func_begin];
+buf = (((buf + "$") + func_name) + "_res"); 
+buf2 = buf3[func_end:command_len];
+buf = (buf + buf2);
+[print(""),(void_flag), goto(#set_buf_nop_end)];
+buf="print(\"\")";
+#set_buf_nop_end:
+str_call_number = str(call_number);
+command = (((((("$" + func_name) + "_return_var=\"#")+func_name)+"_res")+str_call_number)+"\"");
+send_command(command);
+command = (("goto(#" + func_name) + ")");
+send_command(command); 
+command = (((("#" + func_name) + "_res") + str_call_number) + ":\n");
+command = (command + (("pop($" + func_name) + "_res)"));
+[goto(#not_send_void_pop_end), (void_flag), print("")];
+send_command(command);
+#not_send_void_pop_end: 
+[print(""), (void_flag), goto(#send_void_mark_end)];
+command = (((("#" + func_name) + "_res") + str_call_number) + ":\n");
+command=(command+"print(\"\")");
+send_command(command); 
+#send_void_mark_end:
+command = buf; 
+call_number = (call_number + 1);
+
+#mod_end:
+send_command(command);
+next_command(command);
+goto(#start_entry);
+
+#end_entry:
+print("");
+#command_end:
+send_command(command);
+next_command(command);
+goto(#begin);
+#again_end:
+[print(""), (is_first), goto(#not_is_first)];
+UNSET_SOURCE();
+UNSET_DEST();
+SET_SOURCE("benv/program.basm");
+SET_DEST("benv/program2.basm");
+is_first = False;
+was_func = False;
+next_command(command);
+goto(#again_begin);
+#not_is_first:
+[print(""), (was_func), goto(#del_file)];
+was_func = False;
+REROUTE();
+next_command(command);
+goto(#again_begin);
+#del_file:
+DEL_DEST("benv/program2.basm");
+DEL_DEST("benv/long_function_program.b");
+SEND_DEST(root_dest);
+#end:
+UNSET_SOURCE();
+UNSET_DEST();
+
