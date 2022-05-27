@@ -107,17 +107,17 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 			rootDest = "benv/if.basm"
 			if execBenv {
 				filesListToExecute = []string{"benv/internal/build/import",
-					"benv/internal/build/print_format",
 					"benv/internal/build/prep_func",
+					"benv/internal/build/print_format",
 					"benv/internal/build/long_function",
 					"benv/internal/build/func"}
 
 			} else {
 				filesListToExecute = []string{"benv/internal/import.basm",
-					"benv/internal/print_format.basm",
 					"benv/internal/prep_func.basm",
 					"benv/internal/long_function.basm",
-					"benv/internal/func.basm"}
+					"benv/internal/func.basm",
+					"benv/internal/print_format.basm"}
 			}
 		} else if options.UserTranslate == toTranslate {
 			rootSource = "program.b"
@@ -125,14 +125,14 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 			//filesListToExecute = []string{"benv/import.basm"}
 			if execBenv {
 				filesListToExecute = []string{"benv/build/import",
-					"benv/build/print_format",
 					"benv/build/prep_func",
+					"benv/build/print_format",
 					"benv/build/long_function",
 					"benv/build/func"}
 			} else {
 				filesListToExecute = []string{"benv/import.basm",
-					"benv/print_format.basm",
 					"benv/prep_func.basm",
+					"benv/print_format.basm",
 					"benv/long_function.basm",
 					"benv/func.basm"}
 				//filesListToExecute = []string{"bendBenv/import.basm"}
@@ -179,8 +179,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 			rootSource = "program.b"
 			rootDest = "program.basm"
 			filesListToExecute = []string{"bendBenv/import.bend",
-				"bendBenv/print_format.bend",
 				"bendBenv/prep_func.bend",
+				"bendBenv/print_format.bend",
 				"bendBenv/long_function.bend",
 				"bendBenv/func.bend"}
 			//rootDest = "program.bend"

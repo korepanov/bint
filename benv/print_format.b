@@ -1,16 +1,18 @@
 #import "stdlib/core.b"
 
-string root_source;
+string root_dest;
 
 void init(){
-	SET_SOURCE("benv/import_program.b");
-	SET_DEST("benv/print_format_program.b");
+	SET_SOURCE("benv/func_program.b");
+	get_root_dest(root_dest);
+	SET_DEST("benv/program.b");
 };
 
 void finish(){
 	UNSET_SOURCE();
 	UNSET_DEST();
-	DEL_DEST("benv/import_program.b");
+	DEL_DEST("benv/func_program.b");
+	SEND_DEST(root_dest);
 };
 
 void replace_print(string command){
@@ -24,14 +26,20 @@ void replace_print(string command){
 	int command_len;
 	int i;
 	string op;
+	string first_symbol;
 
+	first_symbol = command[0];
+	[print(""), ("[" == first_symbol), goto(#send_this_end)];
+	send_command(command);
+	goto(#un_loop_e);
+	#send_this_end:
 	op = "print(";
 	i = 0;
 	command_len = len(command);
 	num = 0;
 	snum = str(num);
 	s = ops(command, op);
-
+	
 	s.pop(buf);
 	#replace_s:
 	[goto(#replace_e), ("end" == buf), print("")];
@@ -41,14 +49,14 @@ void replace_print(string command){
 	arg_begin = (nbuf + 1);
 	arg_end = func_end(command, nbuf);
 	buf = str(nbuf);
-	buf = ("string print_arg" + snum);
+	buf = ("string $print_arg" + snum);
 	send_command(buf);
 	buf = command[arg_begin:arg_end];
-	buf = ((("print_arg" + snum) + "=") + buf);
+	buf = ((("$print_arg" + snum) + "=") + buf);
 	send_command(buf);
 	buf = command[arg_end:command_len]; 
 	command = command[0:arg_begin];
-	command = ((command + "print_arg") + snum);
+	command = ((command + "$print_arg") + snum);
 	command = (command + buf);
 	command_len = len(command);
 	s = ops(command, op);
@@ -70,7 +78,7 @@ void replace_print(string command){
 	#un_loop:
 	[print(""), (i < num), goto(#un_loop_e)];
 	snum = str(i);
-	buf = (("UNDEFINE(print_arg" + snum) + ")");
+	buf = (("UNDEFINE($print_arg" + snum) + ")");
 	send_command(buf);
 	i = (i + 1);
 	goto(#un_loop);
