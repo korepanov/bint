@@ -5,7 +5,7 @@ string left_part;
 string right_part;
 int command_len;
  
-root_source = "bendBenv/import_program.b";
+root_source = "bendBenv/print_format_program.b";
 SET_SOURCE(root_source);
 SET_DEST("bendBenv/prep_func_program.b");
 
@@ -63,6 +63,6 @@ send_command(command);
 next_command(command);
 goto(#begin);
 #end:
-DEL_DEST("bendBenv/import_program.b");
+DEL_DEST("bendBenv/print_format_program.b");
 UNSET_SOURCE();
 UNSET_DEST();

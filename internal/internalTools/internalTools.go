@@ -166,19 +166,22 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 			filesListToExecute = []string{rootSource}
 		} else if options.ExecBasm == toTranslate {
 			//rootSource = "program.b"
-			rootDest = "benv/prog.basm"
-			//rootDest = "program.basm"
+			//rootDest = "benv/prog.basm"
+			rootDest = "program.basm"
 			filesListToExecute = []string{rootDest}
 		} else if options.Primitive == toTranslate {
-			//rootSource = "bendBenv/long_function.basm"
-			//rootDest = "bendBenv/long_function.bend"
-			rootSource = "program.basm"
-			rootDest = "program.bend"
+			rootSource = "bendBenv/print_format.basm"
+			rootDest = "bendBenv/print_format.bend"
+			//rootSource = "program.basm"
+			//rootDest = "program.bend"
 			filesListToExecute = []string{rootSource}
 		} else if options.InterpPrimitive == toTranslate {
-			rootSource = "p.b"
-			rootDest = "p.basm"
-			filesListToExecute = []string{"bendBenv/import.bend", "bendBenv/prep_func.bend", "bendBenv/long_function.bend",
+			rootSource = "program.b"
+			rootDest = "program.basm"
+			filesListToExecute = []string{"bendBenv/import.bend",
+				"bendBenv/print_format.bend",
+				"bendBenv/prep_func.bend",
+				"bendBenv/long_function.bend",
 				"bendBenv/func.bend"}
 			//rootDest = "program.bend"
 			//filesListToExecute = []string{rootDest}
@@ -190,7 +193,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 			//rootDest = "program.benc"
 			//keyDest = "key.k"
 		} else if options.ExecEncrypt == toTranslate {
-			rootSource = "p.b"
+			rootSource = "program.b"
 
 			rootDest = "bencBenv/func.benc"
 			keyDest = "bencBenv/func.k"

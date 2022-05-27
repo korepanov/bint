@@ -4,7 +4,7 @@ int$303number;
 string$303left_part;
 string$303right_part;
 int$303command_len;
-=$303root_source$303"bendBenv/import_program.b";
+=$303root_source$303"bendBenv/print_format_program.b";
 SET_SOURCE$303root_source$303null;
 SET_DEST$303"bendBenv/prep_func_program.b"$303null;
 next_command$303command$303null;
@@ -55,6 +55,6 @@ send_command$303command$303null;
 next_command$303command$303null;
 goto$303#begin$303null;
 #end:
-DEL_DEST$303"bendBenv/import_program.b"$303null;
+DEL_DEST$303"bendBenv/print_format_program.b"$303null;
 UNSET_SOURCE;
 UNSET_DEST;
