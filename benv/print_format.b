@@ -5,7 +5,7 @@ string root_dest;
 void init(){
 	SET_SOURCE("benv/func_program.b");
 	get_root_dest(root_dest);
-	SET_DEST("benv/program.b");
+	SET_DEST("benv/program.basm");
 };
 
 void finish(){

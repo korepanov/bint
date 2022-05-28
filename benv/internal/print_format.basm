@@ -310,7 +310,7 @@ goto(#init_end);
 print("");
 SET_SOURCE("benv/internal/func_program.b");
 get_root_dest(root_dest);
-SET_DEST("benv/internal/program.b");
+SET_DEST("benv/program.basm");
 goto($init_return_var);
 #init_end:print("");
 string$finish_return_var;
