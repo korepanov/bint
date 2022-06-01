@@ -163,7 +163,20 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 		if len(fmt.Sprintf("%v", RO[0])) > 7 && fmt.Sprintf("%v", RO[0])[0:7] == "\"getVar" {
 			RO[0] = fmt.Sprintf("%v", RO[0])[1 : len(fmt.Sprintf("%v", RO[0]))-1]
 		}
-		return []interface{}{"isEqual(" + fmt.Sprintf("%v", LO[0]) + ", " + fmt.Sprintf("%v", RO[0]) + ")"}, systemStack, nil
+
+		if strings.Index(fmt.Sprintf("%v", LO[0]), "getVar") == -1 && len(fmt.Sprintf("%v", LO[0])) > 1 {
+			LO[0] = string(fmt.Sprintf("%v", LO[0])[0]) +
+				strings.Replace(fmt.Sprintf("%v", LO[0])[1:len(fmt.Sprintf("%v", LO[0]))-1], `"`, `\"`, -1) +
+				string(fmt.Sprintf("%v", LO[0])[len(fmt.Sprintf("%v", LO[0]))-1])
+		}
+
+		if strings.Index(fmt.Sprintf("%v", RO[0]), "getVar") == -1 && len(fmt.Sprintf("%v", RO[0])) > 1 {
+			RO[0] = string(fmt.Sprintf("%v", RO[0])[0]) +
+				strings.Replace(fmt.Sprintf("%v", RO[0])[1:len(fmt.Sprintf("%v", RO[0]))-1], `"`, `\"`, -1) +
+				string(fmt.Sprintf("%v", RO[0])[len(fmt.Sprintf("%v", RO[0]))-1])
+		}
+
+		return []interface{}{"isEqual(ValueFoldInterface(" + fmt.Sprintf("%v", LO[0]) + "), ValueFoldInterface(" + fmt.Sprintf("%v", RO[0]) + "))"}, systemStack, nil
 	} else if ">" == OP {
 		var floatLO float64
 		var floatRO float64

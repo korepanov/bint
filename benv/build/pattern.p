@@ -18,6 +18,21 @@ var oFlag = "-o"
 var systemStack = []interface{}{"end"}
 var vars = make(map[string][]interface{})
 
+func ValueFoldInterface(exprList interface{}) interface{} {
+	if "[]interface {}" != fmt.Sprintf("%T", exprList) {
+		return exprList
+	}
+	for "[]interface {}" == fmt.Sprintf("%T", exprList.([]interface{})[0]) {
+		if 1 == len(exprList.([]interface{})) {
+			exprList = exprList.([]interface{})[0]
+		} else {
+			return exprList
+		}
+	}
+
+	return fmt.Sprintf("%v", exprList.([]interface{})[0])
+}
+
 func defineVar(varName string){
 vars[varName] = append(vars[varName], interface{}(nil))
 }
