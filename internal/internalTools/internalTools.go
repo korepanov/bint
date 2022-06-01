@@ -120,21 +120,21 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/internal/print_format.basm"}
 			}
 		} else if options.UserTranslate == toTranslate {
-			rootSource = "program.b"
-			rootDest = "program.basm"
+			rootSource = "quadratic_equation.b"
+			rootDest = "quadratic_equation.basm"
 			//filesListToExecute = []string{"benv/import.basm"}
 			if execBenv {
 				filesListToExecute = []string{"benv/build/import",
 					"benv/build/prep_func",
-					"benv/build/print_format",
 					"benv/build/long_function",
-					"benv/build/func"}
+					"benv/build/func",
+					"benv/build/print_format"}
 			} else {
 				filesListToExecute = []string{"benv/import.basm",
 					"benv/prep_func.basm",
-					"benv/print_format.basm",
 					"benv/long_function.basm",
-					"benv/func.basm"}
+					"benv/func.basm",
+					"benv/print_format.basm"}
 				//filesListToExecute = []string{"bendBenv/import.basm"}
 			}
 		} else if options.Transpile == toTranslate {
@@ -165,9 +165,9 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 			}
 			filesListToExecute = []string{rootSource}
 		} else if options.ExecBasm == toTranslate {
-			rootSource = "program.b"
-			rootDest = "benv/if.basm"
-			//rootDest = "program.basm"
+			//rootSource = "program.b"
+			//rootDest = "benv/if.basm"
+			rootDest = "quadratic_equation.basm"
 			filesListToExecute = []string{rootDest}
 		} else if options.Primitive == toTranslate {
 			rootSource = "bendBenv/print_format.basm"
@@ -285,13 +285,13 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	systemStack := []interface{}{"end"}
 	sourceCommandCounter := 1
 
-	/*defer func() {
+	defer func() {
 		if r := recover(); nil != r {
 			fmt.Println("ERROR in " + fileToExecute + " at near line " + fmt.Sprintf("%v", LineCounter))
 			fmt.Println(CommandToExecute)
 			fmt.Println(r)
 		}
-	}()*/
+	}()
 
 	var err error
 
