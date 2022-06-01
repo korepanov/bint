@@ -18,6 +18,7 @@ void finish(){
 void replace_print(string command){
 	stack s;
 	string buf;
+	string buf2;
 	int nbuf;
 	int arg_begin;
 	int arg_end;
@@ -30,6 +31,7 @@ void replace_print(string command){
 
 	first_symbol = command[0];
 	[print(""), ("[" == first_symbol), goto(#send_this_end)];
+	#send_this:
 	send_command(command);
 	goto(#un_loop_e);
 	#send_this_end:
@@ -48,6 +50,8 @@ void replace_print(string command){
 	buf = str(nbuf);
 	arg_begin = (nbuf + 1);
 	arg_end = func_end(command, nbuf);
+	buf2 = command[arg_begin:arg_end];
+	[goto(#send_this), ("\"\"" == buf2), print("")];
 	buf = str(nbuf);
 	buf = ("string $print_arg" + snum);
 	send_command(buf);
