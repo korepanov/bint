@@ -77,6 +77,12 @@ arg_name = "";
 left_border = 0;
 comma_pos = 0;
 was_func = False; 
+buf_stack = null;
+buf_stack_reserv = null;
+buf_stack2 = null;
+inside_vars_stack = null;
+inside_vars_stack_reserv = null;
+
 
 call_number = 0; 
 
@@ -298,9 +304,9 @@ goto(#inside_args);
 send_command(buf);
 next_command(buf);
 
-
 goto(#inside_args);
 #inside_args_end:
+
 [print(""), ("void" == return_type), goto(#define_return_end)];
 
 
@@ -335,8 +341,9 @@ send_command(command);
 
 #define_return_end:
 print("");
+
 inside_vars_stack = null;
-buf_stack = null; 
+buf_stack = null;
 
 next_command(command);
 command = ((("#" + (func_name + "_end:")) + "\n") + command);

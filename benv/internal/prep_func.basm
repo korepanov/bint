@@ -13,7 +13,7 @@ next_command(command);
 #begin:
 [goto(#end), ("end" == command), print("")];
 number = index(command, "#");
-[goto(#add_nop_after_mark_end), (-1 == number), print("")];
+[print(""), (0 == number), goto(#add_nop_after_mark_end)];
 number = index(command, ":");
 goto(#add_nop3);
 #add_nop_after_mark_end:

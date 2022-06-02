@@ -26,6 +26,7 @@ bool is_if(string command){
 	return True;
 	#end_true:
 	return False;
+	print("");
 };
 
 void main(){
