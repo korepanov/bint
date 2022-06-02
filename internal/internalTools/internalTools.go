@@ -120,8 +120,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/internal/print_format.basm"}
 			}
 		} else if options.UserTranslate == toTranslate {
-			rootSource = "quadratic_equation.b"
-			rootDest = "quadratic_equation.basm"
+			rootSource = "p.b"
+			rootDest = "p.basm"
 			//filesListToExecute = []string{"benv/import.basm"}
 			if execBenv {
 				filesListToExecute = []string{"benv/build/import",
@@ -165,9 +165,9 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 			}
 			filesListToExecute = []string{rootSource}
 		} else if options.ExecBasm == toTranslate {
-			rootSource = "program.b"
-			rootDest = "benv/if.basm"
-			//rootDest = "quadratic_equation.basm"
+			//rootSource = "program.b"
+			//rootDest = "benv/if.basm"
+			rootDest = "p.basm"
 			filesListToExecute = []string{rootDest}
 		} else if options.Primitive == toTranslate {
 			rootSource = "bendBenv/print_format.basm"
