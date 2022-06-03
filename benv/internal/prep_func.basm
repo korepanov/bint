@@ -15,6 +15,7 @@ next_command(command);
 number = index(command, "#");
 [print(""), (0 == number), goto(#add_nop_after_mark_end)];
 number = index(command, ":");
+[print("prep_func: ERROR: no symbol \":\" after mark\n"), (-1 == number), print("")];
 goto(#add_nop3);
 #add_nop_after_mark_end:
 

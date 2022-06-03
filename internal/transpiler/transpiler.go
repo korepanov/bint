@@ -13,6 +13,10 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 	transpileDest *os.File) ([]interface{}, []interface{}, error) {
 	if "print" == OP {
 		LO[0] = strings.Replace(fmt.Sprintf("%v", LO[0]), "\n", "\\n", -1)
+		LO[0] = string(fmt.Sprintf("%v", LO[0])[0]) +
+			strings.Replace(fmt.Sprintf("%v", LO[0])[1:len(fmt.Sprintf("%v", LO[0]))-1], `"`, `\"`, -1) +
+			string(fmt.Sprintf("%v", LO[0])[len(fmt.Sprintf("%v", LO[0]))-1])
+
 		return []interface{}{"print", LO}, systemStack, nil
 	} else if "index" == OP {
 		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) &&
