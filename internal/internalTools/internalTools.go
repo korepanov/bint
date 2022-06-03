@@ -31,7 +31,7 @@ var coFlag = "-co"
 var ceFlag = "-ce"
 var kFlag = "-k"
 
-var fileToExecute string
+var FileToExecute string
 
 func ParseArgs() (int, string, string, string, error) {
 	var toTranslate int
@@ -229,7 +229,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 	return rootSource, rootDest, keyDest, filesListToExecute
 }
 func ExecBenv(filesListToExecute []string, rootSource string, rootDest string) {
-	fileToExecute = filesListToExecute[0]
+	FileToExecute = filesListToExecute[0]
 
 	cmd := exec.Command(filesListToExecute[0], "-i", rootSource)
 
@@ -243,7 +243,7 @@ func ExecBenv(filesListToExecute []string, rootSource string, rootDest string) {
 	}
 
 	for i := 1; i < len(filesListToExecute)-1; i++ {
-		fileToExecute = filesListToExecute[i]
+		FileToExecute = filesListToExecute[i]
 		cmd := exec.Command(filesListToExecute[i])
 		err := cmd.Start()
 		if nil != err {
@@ -255,7 +255,7 @@ func ExecBenv(filesListToExecute []string, rootSource string, rootDest string) {
 		}
 	}
 
-	fileToExecute = filesListToExecute[len(filesListToExecute)-1]
+	FileToExecute = filesListToExecute[len(filesListToExecute)-1]
 
 	cmd = exec.Command(filesListToExecute[len(filesListToExecute)-1], "-o", rootDest)
 	err = cmd.Start()
@@ -287,7 +287,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 
 	defer func() {
 		if r := recover(); nil != r {
-			fmt.Println("ERROR in " + fileToExecute + " at near line " + fmt.Sprintf("%v", LineCounter))
+			fmt.Println("ERROR in " + FileToExecute + " at near line " + fmt.Sprintf("%v", LineCounter))
 			fmt.Println(CommandToExecute)
 			fmt.Println(r)
 		}
@@ -331,7 +331,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 		newKey = EachChunk(key)
 	}
 
-	for _, fileToExecute = range filesListToExecute {
+	for _, FileToExecute = range filesListToExecute {
 		COMMAND_COUNTER = 1
 		sourceCommandCounter = 1
 		LineCounter = 0
@@ -341,7 +341,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 		var inputedCode string
 		var isBasmStyle bool
 
-		f, err := os.Open(fileToExecute)
+		f, err := os.Open(FileToExecute)
 
 		if nil != err {
 			panic(err)

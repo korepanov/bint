@@ -863,7 +863,6 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 	var stranspileVar string
 
 	if "=" == OP && !toPrimitive {
-
 		newVariable := EachVariable(variables)
 		for v := newVariable(); "end" != v[0]; v = newVariable() {
 			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
@@ -872,6 +871,11 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 				newRightVar := EachVariable(variables)
 				for rightVar := newRightVar(); "end" != rightVar[0]; rightVar = newRightVar() {
 					if fmt.Sprintf("%v", RO[0]) == fmt.Sprintf("%v", rightVar[1]) {
+						if "[]interface {}" == fmt.Sprintf("%T", rightVar[2]) &&
+							"string" == fmt.Sprintf("%T", rightVar[2].([]interface{})[0]) &&
+							"end" == fmt.Sprintf("%v", rightVar[2].([]interface{})[0]) {
+							rightVar[2].([]interface{})[0] = []interface{}{"end"}
+						}
 						RO[0] = ValueFoldInterface(rightVar[2])
 						transpileVar = rightVar[1]
 						typeRO = fmt.Sprintf("%v", rightVar[0])

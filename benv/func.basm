@@ -260,6 +260,8 @@ command_len = len(buf);
 [print(""), (command_len > 6), goto(#not_send_return_end)];
 [goto(#not_send_return), ("return" == buf[0:6]), goto(#not_send_return_end)];
 #not_send_return:
+print(buf);
+print("\n");
 buf = buf[6:command_len];
 buf = ((("push(") + buf) + ")");
 send_command(buf);
