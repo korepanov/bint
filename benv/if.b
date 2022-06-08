@@ -29,6 +29,25 @@ bool is_if(string command){
 	print("");
 };
 
+string get_cond(string command){
+	string op;
+	stack s;
+	string buf;
+	int start_pos;
+	int end_pos; 
+
+	op = "if(";
+	s = ops(command, op);
+	s.pop(buf);
+	start_pos = int(buf);
+	start_pos = (start_pos + 2);
+	end_pos = func_end(command, start_pos);
+	end_pos = (end_pos + 1);
+	buf = command[start_pos:end_pos];
+
+	return buf;
+};
+
 void main(){
 	string buf;
 
@@ -37,9 +56,10 @@ void main(){
 	next_command(command);
 	#main_s:
 	[goto(#main_e), ("end" == command), print("")];
-	buf = str(is_if(command));
+	[print(""), (is_if(command)), goto(#next)];
 	println(command);
-	println(buf);	
+	println(get_cond(command));	
+	#next:
 	send_command(command);
 	next_command(command);
 	goto(#main_s);
