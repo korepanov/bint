@@ -49,58 +49,74 @@ string get_cond(string command){
 	return buf;
 };
 
+void SET_COMMAND_COUNTER(int counter){
+	int i;
+	i = 0;
+	RESET_SOURCE();
+	COMMAND_COUNTER = counter;
+
+	#set_start:
+	[print(""), (i < counter), goto(#set_end)];
+	next_command(command);
+	i = (i + 1);
+	goto(#set_start);
+	#set_end:
+	print("");
+};
+
 int block_end(){
-	string command; 
 	string op1;
 	string op2;
+	string code;
 	int o_sum;
 	int c_sum;
+	int command_len;
 	stack obraces;
 	stack cbraces;
-	string buf; 
+	string buf;
+	string spos;
 	int counter;
+	int pos; 
+
+	pos = 0;
 	counter = COMMAND_COUNTER;
+	code = "";
+
 	#block_s:
-	next_command(command);
+	pos = 0;
+	
 	println(command);
-	counter = (counter + 1);
-	o_sum = 1;
-	c_sum = 0;
-
-	obrace = "{";
-	cbrace = "}";
-
-	obraces = ops(command, obrace);
-	cbraces = ops(command, cbrace);
-	cbraces.pop(buf);
-	println(buf);
-
-	
-	obraces.pop(buf);
-	
-	#obrace_s:
-	[goto(#obrace_e), ("end" == buf), print("")];
-	o_sum = (o_sum + 1);
-	obraces.pop(buf);
-	goto(#obrace_s);
-	#obrace_e:
 	buf = str(o_sum);
 	println(buf);
-
-	cbraces.pop(buf);
-	println(buf);
-	#cbrace_s:
-	[goto(#cbrace_e), ("end" == buf), print("")];
-	c_sum = (c_sum + 1);
-	cbraces.pop(buf);
-	goto(#cbrace_s);
-	#cbrace_e:
-	
 	buf = str(c_sum);
 	println(buf);
+	
+	o_sum = 1;
+	c_sum = 0;
+	code = (code + command);
+	command_len = len(code);
+	counter = (counter + 1);
+
+	obraces = ops(code, "{");
+	cbraces = ops(code, "}");
+	
+	#braces_s:
+	[print(""), (pos < command_len), goto(#braces_e)];
+	spos = str(pos);
+	[print(""), in_stack(obraces, spos), goto(#o_plus_end)];
+	o_sum = (o_sum + 1);
+	#o_plus_end:
+	[print(""), in_stack(cbraces, spos), goto(#c_plus_end)];
+	c_sum = (c_sum + 1);
+	#c_plus_end:
 	[goto(#block_e), (o_sum == c_sum), print("")];
+	pos = (pos + 1);
+	goto(#braces_s);
+	#braces_e:
+	next_command(command);
 	goto(#block_s);
 	#block_e:
+	SET_COMMAND_COUNTER(COMMAND_COUNTER);
 	return counter; 
 };
 
@@ -116,6 +132,7 @@ void main(){
 	#main_s:
 	[goto(#main_e), ("end" == command), print("")];
 	[print(""), (is_if(command)), goto(#next)];
+	println("**************************");
 	println(command);
 	println(get_cond(command));	
 	println("---------------------------");
