@@ -2,6 +2,7 @@
 
 string root_source;
 string command;
+int COMMAND_COUNTER;
 
 void init(){
 	get_root_source(root_source);
@@ -48,12 +49,30 @@ string get_cond(string command){
 	return buf;
 };
 
+bool is_else(){
+	string op;
+	stack s;
+	string buf;
+
+	op = "}";
+	s = ops(command, op);
+	s.pop(buf);
+
+	#is_else_s:
+	[print(""), ("end" == buf), goto(#is_else_e)];
+	
+	#is_else_e:	
+	
+};
+
 void main(){
 	string buf;
+	COMMAND_COUNTER = 0;
 
 	init();
 	
 	next_command(command);
+	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
 	#main_s:
 	[goto(#main_e), ("end" == command), print("")];
 	[print(""), (is_if(command)), goto(#next)];
@@ -62,6 +81,7 @@ void main(){
 	#next:
 	send_command(command);
 	next_command(command);
+	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
 	goto(#main_s);
 	#main_e:	
 
