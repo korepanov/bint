@@ -49,24 +49,64 @@ string get_cond(string command){
 	return buf;
 };
 
-bool is_else(){
-	string op;
-	stack s;
-	string buf;
+int block_end(){
+	string command; 
+	string op1;
+	string op2;
+	int o_sum;
+	int c_sum;
+	stack obraces;
+	stack cbraces;
+	string buf; 
+	int counter;
+	counter = COMMAND_COUNTER;
+	#block_s:
+	next_command(command);
+	println(command);
+	counter = (counter + 1);
+	o_sum = 1;
+	c_sum = 0;
 
-	op = "}";
-	s = ops(command, op);
-	s.pop(buf);
+	obrace = "{";
+	cbrace = "}";
 
-	#is_else_s:
-	[print(""), ("end" == buf), goto(#is_else_e)];
+	obraces = ops(command, obrace);
+	cbraces = ops(command, cbrace);
+	cbraces.pop(buf);
+	println(buf);
+
 	
-	#is_else_e:	
+	obraces.pop(buf);
 	
+	#obrace_s:
+	[goto(#obrace_e), ("end" == buf), print("")];
+	o_sum = (o_sum + 1);
+	obraces.pop(buf);
+	goto(#obrace_s);
+	#obrace_e:
+	buf = str(o_sum);
+	println(buf);
+
+	cbraces.pop(buf);
+	println(buf);
+	#cbrace_s:
+	[goto(#cbrace_e), ("end" == buf), print("")];
+	c_sum = (c_sum + 1);
+	cbraces.pop(buf);
+	goto(#cbrace_s);
+	#cbrace_e:
+	
+	buf = str(c_sum);
+	println(buf);
+	[goto(#block_e), (o_sum == c_sum), print("")];
+	goto(#block_s);
+	#block_e:
+	return counter; 
 };
 
 void main(){
 	string buf;
+	int counter;
 	COMMAND_COUNTER = 0;
 
 	init();
@@ -78,6 +118,8 @@ void main(){
 	[print(""), (is_if(command)), goto(#next)];
 	println(command);
 	println(get_cond(command));	
+	println("---------------------------");
+	counter = block_end();
 	#next:
 	send_command(command);
 	next_command(command);
