@@ -1,5 +1,5 @@
 void main(){
-
+	print("");
 	if (1 > 2){
 		if (3 > 4){
 			print("yes");

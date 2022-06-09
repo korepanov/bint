@@ -64,10 +64,26 @@ void SET_COMMAND_COUNTER(int counter){
 	print("");
 };
 
+int stack_len(stack s){
+	int res;
+	string buf; 
+	res = 0; 
+	
+	s.pop(buf);
+	#stack_len_s:
+	[goto(#stack_len_e), ("end" == buf), print("")];
+	res = (res + 1);
+	s.pop(buf);
+	goto(#stack_len_s);
+	#stack_len_e:
+	return res; 
+};
+
 int block_end(){
 	string op1;
 	string op2;
 	string code;
+	string command_buf;
 	int o_sum;
 	int c_sum;
 	int command_len;
@@ -78,45 +94,41 @@ int block_end(){
 	int counter;
 	int pos; 
 
-	pos = 0;
 	counter = COMMAND_COUNTER;
-	code = "";
-
-	#block_s:
-	pos = 0;
+	command_len = len(command);
+	command = command[1:command_len];
+	code = command;
+	next_command(command);
+	counter = (counter + 1);
+	code = (code + command[0]);
+	o_sum = 1;
+	c_sum = 0;
 	
-	println(command);
+	#block_s:
+	[goto(#block_e), (o_sum == c_sum), print("")];
+	obraces = ops(code, "{");
+	cbraces = ops(code, "}");
+	
+	o_sum = stack_len(obraces);
+	c_sum = stack_len(cbraces);
+	
+	println(code);
 	buf = str(o_sum);
 	println(buf);
 	buf = str(c_sum);
 	println(buf);
 	
-	o_sum = 1;
-	c_sum = 0;
-	code = (code + command);
-	command_len = len(code);
+	command_buf = command[1:command_len];
+	code = (code + command_buf);
+	next_command(command); 
 	counter = (counter + 1);
-
-	obraces = ops(code, "{");
-	cbraces = ops(code, "}");
+	command_buf = command[0]; 
+	code = (code + command_buf);
 	
-	#braces_s:
-	[print(""), (pos < command_len), goto(#braces_e)];
-	spos = str(pos);
-	[print(""), in_stack(obraces, spos), goto(#o_plus_end)];
-	o_sum = (o_sum + 1);
-	#o_plus_end:
-	[print(""), in_stack(cbraces, spos), goto(#c_plus_end)];
-	c_sum = (c_sum + 1);
-	#c_plus_end:
-	[goto(#block_e), (o_sum == c_sum), print("")];
-	pos = (pos + 1);
-	goto(#braces_s);
-	#braces_e:
-	next_command(command);
 	goto(#block_s);
 	#block_e:
 	SET_COMMAND_COUNTER(COMMAND_COUNTER);
+	println("------------------------------------");
 	return counter; 
 };
 
@@ -132,10 +144,6 @@ void main(){
 	#main_s:
 	[goto(#main_e), ("end" == command), print("")];
 	[print(""), (is_if(command)), goto(#next)];
-	println("**************************");
-	println(command);
-	println(get_cond(command));	
-	println("---------------------------");
 	counter = block_end();
 	#next:
 	send_command(command);
