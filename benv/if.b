@@ -112,12 +112,6 @@ int block_end(){
 	o_sum = stack_len(obraces);
 	c_sum = stack_len(cbraces);
 	
-	println(code);
-	buf = str(o_sum);
-	println(buf);
-	buf = str(c_sum);
-	println(buf);
-	
 	command_buf = command[1:command_len];
 	code = (code + command_buf);
 	next_command(command); 
@@ -128,8 +122,7 @@ int block_end(){
 	goto(#block_s);
 	#block_e:
 	SET_COMMAND_COUNTER(COMMAND_COUNTER);
-	println("------------------------------------");
-	return counter; 
+	return (counter - 1); 
 };
 
 void main(){
@@ -145,6 +138,10 @@ void main(){
 	[goto(#main_e), ("end" == command), print("")];
 	[print(""), (is_if(command)), goto(#next)];
 	counter = block_end();
+	buf = str(COMMAND_COUNTER);
+	println(buf);
+	buf = str(counter);
+	println(buf);
 	#next:
 	send_command(command);
 	next_command(command);
