@@ -51,6 +51,7 @@ string get_cond(string command){
 
 void SET_COMMAND_COUNTER(int counter){
 	int i;
+	string command;
 	i = 0;
 	RESET_SOURCE();
 	COMMAND_COUNTER = counter;
@@ -62,6 +63,25 @@ void SET_COMMAND_COUNTER(int counter){
 	goto(#set_start);
 	#set_end:
 	print("");
+};
+
+string get_command(int counter){
+	int i;
+	string buf;
+	string command;
+
+	i = 0;
+	RESET_SOURCE();
+
+	#get_command_s:
+	[print(""), (i < counter), goto(#get_command_e)];
+	next_command(command);
+	i = (i + 1);
+	goto(#get_command_s);
+	#get_command_e:
+	SET_COMMAND_COUNTER(COMMAND_COUNTER);
+	println(command);
+	return command;
 };
 
 int stack_len(stack s){
@@ -127,8 +147,12 @@ int block_end(){
 
 void main(){
 	string buf;
+	string cond;
 	int counter;
+	int ibuf;
+
 	COMMAND_COUNTER = 0;
+	
 
 	init();
 	
@@ -137,11 +161,10 @@ void main(){
 	#main_s:
 	[goto(#main_e), ("end" == command), print("")];
 	[print(""), (is_if(command)), goto(#next)];
+	cond = get_cond(command);
 	counter = block_end();
-	buf = str(COMMAND_COUNTER);
-	println(buf);
-	buf = str(counter);
-	println(buf);
+	
+	buf = get_command(counter);
 	#next:
 	send_command(command);
 	next_command(command);
