@@ -80,7 +80,7 @@ string get_command(int counter){
 	goto(#get_command_s);
 	#get_command_e:
 	SET_COMMAND_COUNTER(COMMAND_COUNTER);
-	println(command);
+	
 	return command;
 };
 
@@ -145,6 +145,29 @@ int block_end(){
 	return (counter - 1); 
 };
 
+string if_type(string command){
+	int command_len;
+	string prefix; 
+	
+	command_len = len(command);
+	[print(""), (1 == command_len), goto(#not_clear)];
+	
+	return "clear";
+	#not_clear:
+	prefix = command[1:7];
+	
+	[print(""), ("elseif" == prefix), goto(#not_elseif)];
+	return "elseif";
+
+	#not_elseif:
+	prefix = command[1:5];
+	[print(""), ("else" == prefix), goto(#if_type_error)];
+	return "else";
+	
+	#if_type_error:
+	return "error";	
+};
+
 void main(){
 	string buf;
 	string cond;
@@ -165,6 +188,9 @@ void main(){
 	counter = block_end();
 	
 	buf = get_command(counter);
+	println("Hello!");
+	println(if_type(buf));
+	
 	#next:
 	send_command(command);
 	next_command(command);

@@ -295,6 +295,8 @@ goto(#undefine_start0);
 #undefine_end0:
 inside_vars_stack = inside_vars_stack_reserv;
 buf_stack = buf_stack_reserv;
+inside_vars_stack_reserv = null;
+buf_stack_reserv = null; 
 arg_name = "";
 command = (("goto($" + func_name) + "_return_var)");
 send_command(command);
