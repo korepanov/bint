@@ -188,7 +188,6 @@ void main(){
 	counter = block_end();
 	
 	buf = get_command(counter);
-	println("Hello!");
 	println(if_type(buf));
 	
 	#next:
