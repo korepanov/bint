@@ -176,9 +176,11 @@ void main(){
 	string buf;
 	string cond;
 	int counter;
-	int ibuf;
+	int num;
+	string snum;
 
 	COMMAND_COUNTER = 0;
+	num = 0;
 	
 
 	init();
@@ -191,8 +193,22 @@ void main(){
 	cond = get_cond(command);
 	counter = block_end();
 	buf = get_command(counter);
-	println(if_type(buf));
-	
+	[print(""), ("clear" == if_type(buf)), goto(#replace_clear_end)];
+	snum = str(num);
+	command = (((("[print(\"\"), " + cond) + ", goto(#if") + snum) + "_end]");
+	send_command(command);
+	#next_block_command_s:
+	[print(""), (COMMAND_COUNTER < counter), goto(#next_block_command_e)];
+	next_command(command);
+	send_command(command);
+	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
+	goto(#next_block_command_s);
+	#next_block_command_e:
+	command = (("#if" + snum) + "_end:print(\"\")");
+	send_command(command);
+	next_command(command);
+	#replace_clear_end:	
+	num = (num + 1); 
 	#next:
 	send_command(command);
 	next_command(command);
