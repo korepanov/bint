@@ -2,6 +2,7 @@
 
 string root_source;
 string command;
+bool first_file;
 int COMMAND_COUNTER;
 
 void init(){
@@ -172,6 +173,21 @@ string if_type(string command){
 	return "error";	
 };
 
+void switch_files(){
+	finish();
+	[print(""), (first_file), goto(#first_end)];
+	SET_SOURCE("benv/program.basm");
+	SET_DEST("benv/program2.basm");
+	first_file = False;
+	goto(#switch_files_e);
+	#first_end:
+	SET_SOURCE("benv/program2.basm");
+	SET_DEST("benv/program.basm");
+	first_file = True; 
+	#switch_files_e:
+	print("");
+};
+
 void main(){
 	string buf;
 	string cond;
@@ -180,25 +196,29 @@ void main(){
 	int num;
 	string snum;
 	string t;
-
+	bool is_stop;
+	
+	first_file = True;
+	init();
+	#again_s:
 	COMMAND_COUNTER = 0;
 	num = 0;
+	is_stop = True;
 	
-
-	init();
 	
 	next_command(command);
 	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
 	#main_s:
 	[goto(#main_e), ("end" == command), print("")];
 	[print(""), (is_if(command)), goto(#next)];
+	is_stop = False;
 	cond = get_cond(command);
 	counter = block_end();
 	buf = get_command(counter);
 	t = if_type(buf);
-	[print(""), ("clear" == t), goto(#replace_clear_end)];
+	[print(""), (("clear" == t) OR ("elseif" == t)), goto(#replace_clear_end)];
 	snum = str(num);
-	command = (((("[print(\"\"), " + cond) + ", goto(#if") + snum) + "_end]");
+	command = (((("[print(\"\"), " + cond) + ", goto(#cond") + snum) + "_end)]");
 	send_command(command);
 	buf_counter = (counter - 1);
 	#next_block_command_s:
@@ -208,20 +228,58 @@ void main(){
 	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
 	goto(#next_block_command_s);
 	#next_block_command_e:
-	command = (("#if" + snum) + "_end:print(\"\")");
+	command = (("#cond" + snum) + "_end:print(\"\")");
+	send_command(command);
+	next_command(command);
+	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
+	[print(""), ("elseif" == t), goto(#elseif_end)];
+	
+	goto(#replace_clear_end);
+	#elseif_end:
+	next_command(command);
+	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
+	#replace_clear_end:	
+	[print(""), ("else" == t), goto(#replace_else_end)];
+	snum = str(num);
+	command = (((("[print(\"\"), " + cond) + ", goto(#cond") + snum) + "_end)]");
+	send_command(command);
+	buf_counter = (counter - 1);
+	#next_block_command2_s:
+	[print(""), (COMMAND_COUNTER < buf_counter), goto(#next_block_command2_e)];
+	next_command(command);
+	send_command(command);
+	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
+	goto(#next_block_command2_s);
+	#next_block_command2_e:
+	command = (((("#cond" + snum) + "_end:goto(#other") + snum) + "_end)");
+	send_command(command);
+ 	command = (("#other" + snum) + ":print(\"\")");
+	send_command(command);
+	counter = block_end();
+	buf_counter = (counter - 1);
+	#next_block_command3_s:
+	[print(""), (COMMAND_COUNTER < buf_counter), goto(#next_block_command3_e)];
+	next_command(command);
+	send_command(command);
+	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
+	goto(#next_block_command3_s);
+	#next_block_command3_e:
+	command = (("#other" + snum) + "_end:print(\"\")");
 	send_command(command);
 	next_command(command);
 	next_command(command);
-	#replace_clear_end:	
-	
+	#replace_else_end:
 	num = (num + 1); 
 	#next:
 	send_command(command);
 	next_command(command);
 	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
 	goto(#main_s);
-	#main_e:	
-
+	#main_e:
+	[goto(#again_e), (is_stop), print("")];
+	switch_files();
+	goto(#again_s);	
+	#again_e:
 	finish();
 };
 
