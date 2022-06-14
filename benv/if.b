@@ -176,8 +176,10 @@ void main(){
 	string buf;
 	string cond;
 	int counter;
+	int buf_counter;
 	int num;
 	string snum;
+	string t;
 
 	COMMAND_COUNTER = 0;
 	num = 0;
@@ -193,12 +195,14 @@ void main(){
 	cond = get_cond(command);
 	counter = block_end();
 	buf = get_command(counter);
-	[print(""), ("clear" == if_type(buf)), goto(#replace_clear_end)];
+	t = if_type(buf);
+	[print(""), ("clear" == t), goto(#replace_clear_end)];
 	snum = str(num);
 	command = (((("[print(\"\"), " + cond) + ", goto(#if") + snum) + "_end]");
 	send_command(command);
+	buf_counter = (counter - 1);
 	#next_block_command_s:
-	[print(""), (COMMAND_COUNTER < counter), goto(#next_block_command_e)];
+	[print(""), (COMMAND_COUNTER < buf_counter), goto(#next_block_command_e)];
 	next_command(command);
 	send_command(command);
 	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
@@ -207,7 +211,9 @@ void main(){
 	command = (("#if" + snum) + "_end:print(\"\")");
 	send_command(command);
 	next_command(command);
+	next_command(command);
 	#replace_clear_end:	
+	
 	num = (num + 1); 
 	#next:
 	send_command(command);
