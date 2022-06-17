@@ -194,7 +194,7 @@ void switch_command(){
 	next_command(command);
 };
 
-void replace_if(string cond, int stop_pos, int num){
+void replace_if(string cond, int stop_pos){
 	string buf;
 	string snum;
 	
@@ -218,7 +218,7 @@ void replace_if(string cond, int stop_pos, int num){
 	switch_files();
 };
 
-void replace_elseif(string cond, int stop_pos, int num){
+void replace_elseif(string cond, int stop_pos){
 	string buf;
 	string snum; 
 	string t;
@@ -233,6 +233,7 @@ void replace_elseif(string cond, int stop_pos, int num){
 	[print(""), (stop_pos == COMMAND_COUNTER), goto(#add_replace_elseif_mark)];
 	buf = (("#_cond" + snum) + "_end:print(\"\")");
 	send_command(buf);
+	num = (num + 1);
 	t = if_type(command);
 	switch_command();
 	[goto(#replace_elseif_e), ("error" == t), print("")];
@@ -284,12 +285,12 @@ void main(){
 	goto(#total_e);
 	#error_end:
 	[print(""), ("clear" == t), goto(#if_end)];
-	replace_if(cond, counter, num);
+	replace_if(cond, counter);
 	num = (num + 1);
 	goto(#main_e);
 	#if_end:
 	[print(""), ("elseif" == t), goto(#elseif_end)];
-	replace_elseif(cond, counter, num);
+	replace_elseif(cond, counter);
 	goto(#main_e);
 	#elseif_end:
 	print("");
