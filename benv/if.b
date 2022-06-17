@@ -193,21 +193,24 @@ void switch_command(){
 	next_command(command);
 };
 
-void replace_clear_if(string cond, int stop_pos, int num){
+void replace_if(string cond, int stop_pos, int num, string T){
 	string buf;
 	string snum;
 	
 	snum = str(num);
-	buf = (((("[print(\"\"), " + cond) + ", goto(#cond") + snum) + "_end)]");
+	buf = (((("[print(\"\"), " + cond) + ", goto(#_cond") + snum) + "_end)]");
 	send_command(buf);
 	switch_command(); 
 
 	#replace_clear_if_s:
 	[goto(#replace_clear_if_e), ("end" == command), print("")];
 	[print(""), (stop_pos == COMMAND_COUNTER), goto(#add_replace_clear_if_mark)];
-	switch_command();
-	buf = (("#cond" + snum) + "_end:print(\"\")");
+	buf = (("#_cond" + snum) + "_end:print(\"\")");
 	send_command(buf);
+	[print(""), (T == "elseif"), goto(#send_if_end)];
+	send_command(command); 
+	#send_if_end:
+	switch_command();
 	#add_replace_clear_if_mark:
 	send_command(command);
 	switch_command();
@@ -230,9 +233,9 @@ void main(){
 	first_file = True;
 	init();
 	num = 0;
+	COMMAND_COUNTER = 0;
 
 	#again_s:
-	COMMAND_COUNTER = 0;
 	is_stop = True;
 	
 	
@@ -249,18 +252,18 @@ void main(){
 	println("ERROR in the if type\n");
 	goto(#total_e);
 	#error_end:
-	[print(""), ("clear" == t), goto(#clear_if_end)];
-	replace_clear_if(cond, counter, num);
+	[print(""), (("clear" == t) OR ("elseif" == t)), goto(#if_end)];
+	replace_if(cond, counter, num, t);
 	num = (num + 1);
 	goto(#main_e);
-	#clear_if_end:
+	#if_end:
 	print("");
 	#next:
 	send_command(command);
 	switch_command();
 	goto(#main_s);	
 	#main_e:
-	print("");
+	[print(""), (is_stop), goto(#again_s)];
 	#total_e:
 	finish();
 };

@@ -8,9 +8,12 @@ void main(){
 		}else if (5 > 6){
 			print("");
 			print("yes");
+		}else if (6 > 7){
+			print("");
+			print("yes");		
 		}else{
 			print("");
-			if (6 > 7){
+			if (7 > 8){
 				print("");
 				print("yes");
 			};		
