@@ -20,6 +20,13 @@ void main(){
 		};	
 	};
 
+	if (9 > 10){
+		print("");
+		print("yes");
+	}else{
+		print("");
+	};
+
 };
 
 main();

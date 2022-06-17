@@ -4,6 +4,7 @@ string root_source;
 string command;
 bool first_file;
 int COMMAND_COUNTER;
+int num;
 
 void init(){
 	get_root_source(root_source);
@@ -217,12 +218,45 @@ void replace_if(string cond, int stop_pos, int num){
 	switch_files();
 };
 
+void replace_elseif(string cond, int stop_pos, int num){
+	string buf;
+	string snum; 
+	string t;
+	
+	snum = str(num);
+	buf = (((("[print(\"\"), " + cond) + ", goto(#_cond") + snum) + "_end)]");
+	send_command(buf);
+	switch_command(); 
+
+	#replace_elseif_s:
+	[goto(#replace_elseif_e), ("end" == command), print("")];
+	[print(""), (stop_pos == COMMAND_COUNTER), goto(#add_replace_elseif_mark)];
+	buf = (("#_cond" + snum) + "_end:print(\"\")");
+	send_command(buf);
+	t = if_type(command);
+	switch_command();
+	[goto(#replace_elseif_e), ("error" == t), print("")];
+	#add_replace_elseif_mark:
+	send_command(command);
+	switch_command();
+	goto(#replace_elseif_s);
+	#replace_elseif_e:
+	print("");
+	#ts:
+	[goto(#te), ("end" == command), print("")];
+	send_command(command);
+	switch_command();
+	goto(#ts);
+	#te:
+	COMMAND_COUNTER = 0;
+	switch_files();
+};
+
 void main(){
 	string buf;
 	string cond;
 	int counter;
 	int buf_counter;
-	int num;
 	string snum;
 	string t;
 	bool is_stop;
@@ -254,6 +288,10 @@ void main(){
 	num = (num + 1);
 	goto(#main_e);
 	#if_end:
+	[print(""), ("elseif" == t), goto(#elseif_end)];
+	replace_elseif(cond, counter, num);
+	goto(#main_e);
+	#elseif_end:
 	print("");
 	#next:
 	send_command(command);
