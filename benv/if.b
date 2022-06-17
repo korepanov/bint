@@ -193,7 +193,7 @@ void switch_command(){
 	next_command(command);
 };
 
-void replace_if(string cond, int stop_pos, int num, string T){
+void replace_if(string cond, int stop_pos, int num){
 	string buf;
 	string snum;
 	
@@ -207,9 +207,6 @@ void replace_if(string cond, int stop_pos, int num, string T){
 	[print(""), (stop_pos == COMMAND_COUNTER), goto(#add_replace_clear_if_mark)];
 	buf = (("#_cond" + snum) + "_end:print(\"\")");
 	send_command(buf);
-	[print(""), (T == "elseif"), goto(#send_if_end)];
-	send_command(command); 
-	#send_if_end:
 	switch_command();
 	#add_replace_clear_if_mark:
 	send_command(command);
@@ -252,8 +249,8 @@ void main(){
 	println("ERROR in the if type\n");
 	goto(#total_e);
 	#error_end:
-	[print(""), (("clear" == t) OR ("elseif" == t)), goto(#if_end)];
-	replace_if(cond, counter, num, t);
+	[print(""), ("clear" == t), goto(#if_end)];
+	replace_if(cond, counter, num);
 	num = (num + 1);
 	goto(#main_e);
 	#if_end:
