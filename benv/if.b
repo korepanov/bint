@@ -188,6 +188,35 @@ void switch_files(){
 	print("");
 };
 
+void switch_command(){
+	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
+	next_command(command);
+};
+
+void replace_clear_if(string cond, int stop_pos, int num){
+	string buf;
+	string snum;
+	
+	snum = str(num);
+	buf = (((("[print(\"\"), " + cond) + ", goto(#cond") + snum) + "_end)]");
+	send_command(buf);
+	switch_command(); 
+
+	#replace_clear_if_s:
+	[goto(#replace_clear_if_e), ("end" == command), print("")];
+	[print(""), (stop_pos == COMMAND_COUNTER), goto(#add_replace_clear_if_mark)];
+	switch_command();
+	buf = (("#cond" + snum) + "_end:print(\"\")");
+	send_command(buf);
+	#add_replace_clear_if_mark:
+	send_command(command);
+	switch_command();
+	goto(#replace_clear_if_s);
+	#replace_clear_if_e:
+	COMMAND_COUNTER = 0;
+	switch_files();
+};
+
 void main(){
 	string buf;
 	string cond;
@@ -200,14 +229,14 @@ void main(){
 	
 	first_file = True;
 	init();
+	num = 0;
+
 	#again_s:
 	COMMAND_COUNTER = 0;
-	num = 0;
 	is_stop = True;
 	
 	
-	next_command(command);
-	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
+	switch_command(command);
 	#main_s:
 	[goto(#main_e), ("end" == command), print("")];
 	[print(""), (is_if(command)), goto(#next)];
@@ -215,71 +244,24 @@ void main(){
 	cond = get_cond(command);
 	counter = block_end();
 	buf = get_command(counter);
-	t = if_type(buf);
-	[print(""), (("clear" == t) OR ("elseif" == t)), goto(#replace_clear_end)];
-	snum = str(num);
-	command = (((("[print(\"\"), " + cond) + ", goto(#cond") + snum) + "_end)]");
-	send_command(command);
-	buf_counter = (counter - 1);
-	#next_block_command_s:
-	[print(""), (COMMAND_COUNTER < buf_counter), goto(#next_block_command_e)];
-	next_command(command);
-	send_command(command);
-	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
-	goto(#next_block_command_s);
-	#next_block_command_e:
-	command = (("#cond" + snum) + "_end:print(\"\")");
-	send_command(command);
-	next_command(command);
-	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
-	[print(""), ("elseif" == t), goto(#elseif_end)];
-	
-	goto(#replace_clear_end);
-	#elseif_end:
-	next_command(command);
-	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
-	#replace_clear_end:	
-	[print(""), ("else" == t), goto(#replace_else_end)];
-	snum = str(num);
-	command = (((("[print(\"\"), " + cond) + ", goto(#cond") + snum) + "_end)]");
-	send_command(command);
-	buf_counter = (counter - 1);
-	#next_block_command2_s:
-	[print(""), (COMMAND_COUNTER < buf_counter), goto(#next_block_command2_e)];
-	next_command(command);
-	send_command(command);
-	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
-	goto(#next_block_command2_s);
-	#next_block_command2_e:
-	command = (((("#cond" + snum) + "_end:goto(#other") + snum) + "_end)");
-	send_command(command);
- 	command = (("#other" + snum) + ":print(\"\")");
-	send_command(command);
-	counter = block_end();
-	buf_counter = (counter - 1);
-	#next_block_command3_s:
-	[print(""), (COMMAND_COUNTER < buf_counter), goto(#next_block_command3_e)];
-	next_command(command);
-	send_command(command);
-	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
-	goto(#next_block_command3_s);
-	#next_block_command3_e:
-	command = (("#other" + snum) + "_end:print(\"\")");
-	send_command(command);
-	next_command(command);
-	next_command(command);
-	#replace_else_end:
-	num = (num + 1); 
+	t = if_type(buf);	
+	[print(""), ("error" == t), goto(#error_end)];
+	println("ERROR in the if type\n");
+	goto(#total_e);
+	#error_end:
+	[print(""), ("clear" == t), goto(#clear_if_end)];
+	replace_clear_if(cond, counter, num);
+	num = (num + 1);
+	goto(#main_e);
+	#clear_if_end:
+	print("");
 	#next:
 	send_command(command);
-	next_command(command);
-	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
-	goto(#main_s);
+	switch_command();
+	goto(#main_s);	
 	#main_e:
-	[goto(#again_e), (is_stop), print("")];
-	switch_files();
-	goto(#again_s);	
-	#again_e:
+	print("");
+	#total_e:
 	finish();
 };
 
