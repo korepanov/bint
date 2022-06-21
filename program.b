@@ -44,6 +44,17 @@ void main(){
 		print("yes13");
 	};
 
+	if (11 > 12){
+		print("");
+		print("yes14");
+		print("yes15");
+		print("yes16");
+	}else if (13 > 14){
+		print("");
+		print("yes17");
+		print("yes18");
+	};
+
 };
 
 main();

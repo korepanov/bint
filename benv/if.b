@@ -5,6 +5,7 @@ string command;
 bool first_file;
 int COMMAND_COUNTER;
 int num;
+int exit_num;
 
 void init(){
 	get_root_source(root_source);
@@ -224,7 +225,9 @@ void replace_elseif(string cond, int stop_pos){
 	string t;
 	string bcommand;
 	int this_stop_pos;
+	string sexit_num;
 	
+	sexit_num = str(exit_num);
 	snum = str(num);
 	buf = (((("[print(\"\"), " + cond) + ", goto(#_cond") + snum) + "_end)]");
 	send_command(buf);
@@ -233,6 +236,9 @@ void replace_elseif(string cond, int stop_pos){
 	#replace_elseif_s:
 	[goto(#replace_elseif_e), ("end" == command), print("")];
 	[print(""), (stop_pos == COMMAND_COUNTER), goto(#add_replace_elseif_mark)];
+	sexit_num = str(exit_num);
+	buf = (("goto(#_cond_exit" + sexit_num) + ")");
+	send_command(buf);
 	buf = (("#_cond" + snum) + "_end:print(\"\")");
 	send_command(buf);
 	num = (num + 1);
@@ -242,7 +248,7 @@ void replace_elseif(string cond, int stop_pos){
 	#find_block_e:
 	bcommand = command;
 	switch_command();
-	[goto(#replace_elseif_e), ("error" == t), print("")];
+	[goto(#replace_elseif_e), (("error" == t)OR("else" == t)), print("")];
 	[print(""), ("elseif" == t), goto(#elif_end)];
 	cond = get_cond(bcommand);
 	snum = str(num);
@@ -257,6 +263,10 @@ void replace_elseif(string cond, int stop_pos){
 	switch_command();
 	goto(#replace_elseif_s);
 	#replace_elseif_e:
+	sexit_num = str(exit_num);
+	buf = ((("#_cond_exit") + sexit_num) + ":print(\"\")");
+	exit_num = (exit_num + 1);
+	send_command(buf);
 	print("");
 	#ts:
 	[goto(#te), ("end" == command), print("")];
@@ -280,6 +290,7 @@ void main(){
 	first_file = True;
 	init();
 	num = 0;
+	exit_num = 0;
 	COMMAND_COUNTER = 0;
 
 	#again_s:
