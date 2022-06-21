@@ -263,11 +263,18 @@ void replace_elseif(string cond, int stop_pos){
 	switch_command();
 	goto(#replace_elseif_s);
 	#replace_elseif_e:
+	t = if_type(bcommand);
+	[print(""), ("else" == t), goto(#final_cond_end)];
+	#final_cond_s:
+	[print(""), (stop_pos == COMMAND_COUNTER), goto(#final_cond_end)];
+	send_command(command);
+	switch_command();
+	goto(#final_cond_s);
+	#final_cond_end:
 	sexit_num = str(exit_num);
 	buf = ((("#_cond_exit") + sexit_num) + ":print(\"\")");
 	exit_num = (exit_num + 1);
 	send_command(buf);
-	print("");
 	#ts:
 	[goto(#te), ("end" == command), print("")];
 	send_command(command);
