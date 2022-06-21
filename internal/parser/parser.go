@@ -476,6 +476,8 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 		// если справа null, значит NOT уже заменен
 		if "NOT" == fmt.Sprintf("%v", exprList[i][1]) && "null" != fmt.Sprintf("%v", exprList[i+1][1]) {
 			exprList = Pop(exprList, i) // выталкиваем NOT
+			exprList = Insert(exprList, i, []interface{}{"BR", "("})
+			i += 1
 			// проверяем скобочку рядом с NOT; она всегда может быть частью логического выражения;
 			// значит, цикл должен выполниться хотя бы один раз
 			varFlag := true
@@ -503,9 +505,13 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 			}
 
 			i -= 1 // возвращаемся на единицу назад, т. к. справа от NOT внешняя скобка
+
+			exprList = Insert(exprList, i, []interface{}{"BR", ")"})
+			i += 1
 			exprList = Insert(exprList, i, []interface{}{"OP", "NOT"})
 			i += 1
 			exprList = Insert(exprList, i, []interface{}{"VAL", "null", "null"})
+
 			//exprList = Insert(exprList, i - 1, []interface{}{"BR", ")"})
 
 		}

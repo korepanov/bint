@@ -748,7 +748,7 @@ $switch_command_return_var="#switch_command_res4";
 goto(#switch_command);
 #switch_command_res4:print("");
 print("");
-[goto(#replace_elseif_e),(("error"==t)OR("else"==t)),print("")];
+[goto(#replace_elseif_e),(NOT("elseif"==t)),print("")];
 [print(""),("elseif"==t),goto(#elif_end)];
 string$get_cond_res0;
 push(bcommand);

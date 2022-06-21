@@ -232,7 +232,7 @@ void replace_elseif(string cond, int stop_pos){
 	buf = (((("[print(\"\"), " + cond) + ", goto(#_cond") + snum) + "_end)]");
 	send_command(buf);
 	switch_command(); 
-
+	
 	#replace_elseif_s:
 	[goto(#replace_elseif_e), ("end" == command), print("")];
 	[print(""), (stop_pos == COMMAND_COUNTER), goto(#add_replace_elseif_mark)];
@@ -248,7 +248,7 @@ void replace_elseif(string cond, int stop_pos){
 	#find_block_e:
 	bcommand = command;
 	switch_command();
-	[goto(#replace_elseif_e), (("error" == t)OR("else" == t)), print("")];
+	[goto(#replace_elseif_e), (NOT("elseif" == t)), print("")];
 	[print(""), ("elseif" == t), goto(#elif_end)];
 	cond = get_cond(bcommand);
 	snum = str(num);
