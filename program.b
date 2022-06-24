@@ -24,6 +24,7 @@ void main(){
 			print("3");	
 		}else{
 			print("");
+			print("Hello from else!\n");
 			if (7 > 8){
 				print("");
 				print("yes");

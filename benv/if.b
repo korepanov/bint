@@ -270,6 +270,7 @@ void replace_elseif(string cond, int stop_pos){
 	SET_COMMAND_COUNTER(ibuf);
 	switch_command();
 	stop_pos = block_end();
+	switch_command();
 	#restore_end:
 	[print(""), ("else" == t), goto(#final_cond_end)];
 	#final_cond_s:
