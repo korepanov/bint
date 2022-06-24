@@ -296,6 +296,31 @@ void replace_elseif(string cond, int stop_pos){
 	switch_files();
 };
 
+void replace_else(string cond, int stop_pos){
+	string buf;
+	string snum;
+	
+	snum = str(num);
+	buf = (((("[print(\"\"), " + cond) + ", goto(#_cond") + snum) + "_end)]");
+	send_command(buf);
+	switch_command(); 
+
+	#replace_else_s:
+	[goto(#replace_else_e), ("end" == command), print("")];
+	[print(""), (stop_pos == COMMAND_COUNTER), goto(#add_replace_else_mark)];
+	buf = (("#_cond" + snum) + "_end:print(\"\")");
+	send_command(buf);
+	switch_command();
+
+	#add_replace_else_mark:
+	send_command(command);
+	switch_command();
+	goto(#replace_else_s);
+	#replace_else_e:
+	COMMAND_COUNTER = 0;
+	switch_files();
+};
+
 void main(){
 	string buf;
 	string cond;
@@ -337,7 +362,10 @@ void main(){
 	replace_elseif(cond, counter);
 	goto(#main_e);
 	#elseif_end:
-	print("");
+	[print(""), ("else" == t), goto(#all_end)];
+	replace_else(cond, counter);
+	num = (num + 1);
+	goto(#main_e); 
 	#next:
 	send_command(command);
 	switch_command();
