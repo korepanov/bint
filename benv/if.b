@@ -279,7 +279,9 @@ void replace_elseif(string cond, int stop_pos){
 	switch_command();
 	goto(#final_cond_s);
 	#final_cond_end:
-	
+	[print(""), ("else" == t), goto(#else_end)];
+	switch_command();
+	#else_end:
 	sexit_num = str(exit_num);
 	buf = ((("#_cond_exit") + sexit_num) + ":print(\"\")");
 	exit_num = (exit_num + 1);
