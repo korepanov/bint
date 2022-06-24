@@ -221,6 +221,7 @@ void replace_if(string cond, int stop_pos){
 
 void replace_elseif(string cond, int stop_pos){
 	string buf;
+	int ibuf;
 	string snum; 
 	string t;
 	string bcommand;
@@ -264,13 +265,20 @@ void replace_elseif(string cond, int stop_pos){
 	goto(#replace_elseif_s);
 	#replace_elseif_e:
 	t = if_type(bcommand);
+	[print(""), ("else" == t), goto(#restore_end)];
+	ibuf = (COMMAND_COUNTER - 2);
+	SET_COMMAND_COUNTER(ibuf);
+	switch_command();
+	stop_pos = block_end();
+	#restore_end:
 	[print(""), ("else" == t), goto(#final_cond_end)];
 	#final_cond_s:
-	[print(""), (stop_pos == COMMAND_COUNTER), goto(#final_cond_end)];
+	[goto(#final_cond_end), (stop_pos == COMMAND_COUNTER), print("")];
 	send_command(command);
 	switch_command();
 	goto(#final_cond_s);
 	#final_cond_end:
+	
 	sexit_num = str(exit_num);
 	buf = ((("#_cond_exit") + sexit_num) + ":print(\"\")");
 	exit_num = (exit_num + 1);
