@@ -312,6 +312,9 @@ void replace_else(string cond, int stop_pos){
 	#replace_else_s:
 	[goto(#replace_else_e), ("end" == command), print("")];
 	[print(""), (stop_pos == COMMAND_COUNTER), goto(#add_replace_else_mark)];
+	sexit_num = str(exit_num);
+	buf = (("goto(#_cond_exit" + sexit_num) + ")");
+	send_command(buf); 
 	buf = (("#_cond" + snum) + "_end:print(\"\")");
 	send_command(buf);
 	switch_command();
