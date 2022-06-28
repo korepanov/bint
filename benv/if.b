@@ -8,7 +8,7 @@ int num;
 int exit_num;
 
 void init(){
-	get_root_source(root_source);
+	root_source = "benv/import_program.b";
 	SET_SOURCE(root_source);
 	SET_DEST("benv/if_program.b");
 };
@@ -363,6 +363,7 @@ void clear_files(){
 	#clear_files_e:
 	finish();
 	DEL_DEST("benv/if_program2.b");
+	DEL_DEST(root_source);
 };
 
 void main(){
