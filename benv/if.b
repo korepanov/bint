@@ -299,7 +299,11 @@ void replace_elseif(string cond, int stop_pos){
 void replace_else(string cond, int stop_pos){
 	string buf;
 	string snum;
+	string sexit_num;
+	int ibuf; 
+	int pos; 
 	
+	pos = -1;
 	snum = str(num);
 	buf = (((("[print(\"\"), " + cond) + ", goto(#_cond") + snum) + "_end)]");
 	send_command(buf);
@@ -312,7 +316,27 @@ void replace_else(string cond, int stop_pos){
 	send_command(buf);
 	switch_command();
 
+	ibuf = (COMMAND_COUNTER - 2);
+	SET_COMMAND_COUNTER(ibuf);
+	switch_command();
+	pos = block_end();
+	switch_command();
+	
 	#add_replace_else_mark:
+	[print(""), (pos == COMMAND_COUNTER), goto(#figure_brace_end)];
+	sexit_num = str(exit_num);
+	buf = ((("#_cond_exit") + sexit_num) + ":print(\"\")");
+	exit_num = (exit_num + 1);
+	send_command(buf);
+	switch_command();
+	#ets:
+	[goto(#ete), ("end" == command), print("")];
+	send_command(command);
+	switch_command();
+	goto(#ets);
+	#ete:
+	goto(#replace_else_e);
+	#figure_brace_end:
 	send_command(command);
 	switch_command();
 	goto(#replace_else_s);
