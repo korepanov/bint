@@ -1071,7 +1071,6 @@ goto(#replace_elseif);
 print("");
 goto(#main_e);
 #elseif_end:print("");
-[print(""),("else"==t),goto(#all_end)];
 push(cond);
 push(counter);
 $replace_else_return_var="#replace_else_res0";

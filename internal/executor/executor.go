@@ -775,17 +775,18 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 	}
 
 	if "UNDEFINE" == OP {
-		i := len(variables) - 1
-		newVariable := EachVariable(variables)
-		for v := newVariable(); "end" != v[0]; v = newVariable() {
-			if fmt.Sprintf("%v", v[1]) == fmt.Sprintf("%v", LO[0]) {
-				copy(variables[i:], variables[i+1:])
-				variables = variables[:len(variables)-1]
-				break
+		if !toTranspile {
+			i := len(variables) - 1
+			newVariable := EachVariable(variables)
+			for v := newVariable(); "end" != v[0]; v = newVariable() {
+				if fmt.Sprintf("%v", v[1]) == fmt.Sprintf("%v", LO[0]) {
+					copy(variables[i:], variables[i+1:])
+					variables = variables[:len(variables)-1]
+					break
+				}
+				i -= 1
 			}
-			i -= 1
 		}
-
 		if toTranspile {
 			_, err := transpileDest.WriteString("undefineVar(\"" + fmt.Sprintf("%v", LO[0]) + "\")\n")
 			if nil != err {

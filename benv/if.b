@@ -407,7 +407,6 @@ void main(){
 	replace_elseif(cond, counter);
 	goto(#main_e);
 	#elseif_end:
-	[print(""), ("else" == t), goto(#all_end)];
 	replace_else(cond, counter);
 	num = (num + 1);
 	goto(#main_e); 
