@@ -10,7 +10,7 @@ int exit_num;
 void init(){
 	get_root_source(root_source);
 	SET_SOURCE(root_source);
-	SET_DEST("benv/program.basm");
+	SET_DEST("benv/if_program.b");
 };
 
 void finish(){
@@ -178,13 +178,13 @@ string if_type(string command){
 void switch_files(){
 	finish();
 	[print(""), (first_file), goto(#first_end)];
-	SET_SOURCE("benv/program.basm");
-	SET_DEST("benv/program2.basm");
+	SET_SOURCE("benv/if_program.b");
+	SET_DEST("benv/if_program2.b");
 	first_file = False;
 	goto(#switch_files_e);
 	#first_end:
-	SET_SOURCE("benv/program2.basm");
-	SET_DEST("benv/program.basm");
+	SET_SOURCE("benv/if_program2.b");
+	SET_DEST("benv/if_program.b");
 	first_file = True; 
 	#switch_files_e:
 	print("");
@@ -348,6 +348,23 @@ void replace_else(string cond, int stop_pos){
 	switch_files();
 };
 
+void clear_files(){
+	[goto(#first_file), (first_file), print("")];
+	switch_files();
+	switch_command();
+	#clear_files_s:
+	[goto(#clear_files_e), ("end" == command), print("")];
+	send_command(command);
+	switch_command();
+	goto(#clear_files_s);
+
+	#first_file:
+	print("");
+	#clear_files_e:
+	finish();
+	DEL_DEST("benv/if_program2.b");
+};
+
 void main(){
 	string buf;
 	string cond;
@@ -400,7 +417,7 @@ void main(){
 	#main_e:
 	[print(""), (is_stop), goto(#again_s)];
 	#total_e:
-	finish();
+	clear_files();
 };
 
 main();
