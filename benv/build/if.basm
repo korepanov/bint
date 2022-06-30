@@ -544,6 +544,7 @@ goto(#stack_len);
 #stack_len_res1:pop($stack_len_res);
 $stack_len_res1=$stack_len_res;
 c_sum=$stack_len_res1;
+command_len=len(command);
 command_buf=command[1:command_len];
 code=(code+command_buf);
 next_command(command);

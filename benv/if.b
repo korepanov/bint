@@ -136,6 +136,7 @@ int block_end(){
 	o_sum = stack_len(obraces);
 	c_sum = stack_len(cbraces);
 	
+	command_len = len(command);
 	command_buf = command[1:command_len];
 	code = (code + command_buf);
 	next_command(command); 
