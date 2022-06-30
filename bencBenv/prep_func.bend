@@ -4,15 +4,16 @@ int$303number;
 string$303left_part;
 string$303right_part;
 int$303command_len;
-=$303root_source$303"bendBenv/print_format_program.b";
+=$303root_source$303"benv/if_program.b";
 SET_SOURCE$303root_source$303null;
-SET_DEST$303"bendBenv/prep_func_program.b"$303null;
+SET_DEST$303"benv/prep_func_program.b"$303null;
 next_command$303command$303null;
 #begin:
 [goto(#end),("end"==command),print("")];
 =$303number$303index$303command$303"#";
-[goto(#add_nop_after_mark_end),(-1==number),print("")];
+[print(""),(0==number),goto(#add_nop_after_mark_end)];
 =$303number$303index$303command$303":";
+[print("prep_func: ERROR: no symbol \":\" after mark\n"),(-1==number),print("")];
 goto$303#add_nop3$303null;
 #add_nop_after_mark_end:
 =$303number$303index$303command$303"{";
@@ -55,6 +56,6 @@ send_command$303command$303null;
 next_command$303command$303null;
 goto$303#begin$303null;
 #end:
-DEL_DEST$303"bendBenv/print_format_program.b"$303null;
+DEL_DEST$303"benv/if_program.b"$303null;
 UNSET_SOURCE;
 UNSET_DEST;

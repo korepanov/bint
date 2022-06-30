@@ -191,18 +191,20 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 			//rootDest = "program.bend"
 			//filesListToExecute = []string{rootDest}
 		} else if options.Encrypt == toTranslate {
-			rootSource = "bencBenv/func.bend"
-			rootDest = "bencBenv/func.benc"
-			keyDest = "bencBenv/func.k"
+			rootSource = "bencBenv/print_format.bend"
+			rootDest = "bencBenv/print_format.benc"
+			keyDest = "bencBenv/print_format.k"
 			//rootSource = "program.bend"
 			//rootDest = "program.benc"
 			//keyDest = "key.k"
 		} else if options.ExecEncrypt == toTranslate {
 			rootSource = "program.b"
 
-			rootDest = "bencBenv/func.benc"
-			keyDest = "bencBenv/func.k"
+			rootDest = "bencBenv/print_format.benc"
+			keyDest = "bencBenv/print_format.k"
 			filesListToExecute = []string{rootDest}
+
+			rootDest = "program.basm"
 		} else {
 			panic(errors.New("set option to translate"))
 		}
