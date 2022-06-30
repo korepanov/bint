@@ -6,7 +6,7 @@ goto(#init_end);
 print("");
 get_root_source(root_source);
 SET_SOURCE(root_source);
-SET_DEST("bendBenv/import_program.b");
+SET_DEST("benv/import_program.b");
 goto($init_return_var);
 #init_end:print("");
 string$finish_return_var;

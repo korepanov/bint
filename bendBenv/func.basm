@@ -41,14 +41,12 @@ bool is_first;
 bool was_func;
 bool was_here; 
 bool void_flag;
-string root_dest;
 
 is_first = True;
 was_here = False;
-get_root_dest(root_dest);
  
-SET_SOURCE("bendBenv/long_function_program.b");
-SET_DEST("bendBenv/program.basm");
+SET_SOURCE("benv/long_function_program.b");
+SET_DEST("benv/func_program.b");
 next_command(command);
 
 #again_begin:
@@ -79,6 +77,12 @@ arg_name = "";
 left_border = 0;
 comma_pos = 0;
 was_func = False; 
+buf_stack = null;
+buf_stack_reserv = null;
+buf_stack2 = null;
+inside_vars_stack = null;
+inside_vars_stack_reserv = null;
+
 
 call_number = 0; 
 
@@ -291,6 +295,8 @@ goto(#undefine_start0);
 #undefine_end0:
 inside_vars_stack = inside_vars_stack_reserv;
 buf_stack = buf_stack_reserv;
+inside_vars_stack_reserv = null;
+buf_stack_reserv = null; 
 arg_name = "";
 command = (("goto($" + func_name) + "_return_var)");
 send_command(command);
@@ -300,9 +306,9 @@ goto(#inside_args);
 send_command(buf);
 next_command(buf);
 
-
 goto(#inside_args);
 #inside_args_end:
+
 [print(""), ("void" == return_type), goto(#define_return_end)];
 
 
@@ -337,8 +343,9 @@ send_command(command);
 
 #define_return_end:
 print("");
+
 inside_vars_stack = null;
-buf_stack = null; 
+buf_stack = null;
 
 next_command(command);
 command = ((("#" + (func_name + "_end:")) + "\n") + command);
@@ -429,8 +436,8 @@ goto(#begin);
 [print(""), (is_first), goto(#not_is_first)];
 UNSET_SOURCE();
 UNSET_DEST();
-SET_SOURCE("bendBenv/program.basm");
-SET_DEST("bendBenv/program2.basm");
+SET_SOURCE("benv/func_program.b");
+SET_DEST("benv/func_program2.b");
 is_first = False;
 was_func = False;
 next_command(command);
@@ -442,9 +449,8 @@ REROUTE();
 next_command(command);
 goto(#again_begin);
 #del_file:
-DEL_DEST("bendBenv/program2.basm");
-DEL_DEST("bendBenv/long_function_program.b");
-SEND_DEST(root_dest);
+DEL_DEST("benv/func_program2.b");
+DEL_DEST("benv/long_function_program.b");
 #end:
 UNSET_SOURCE();
 UNSET_DEST();

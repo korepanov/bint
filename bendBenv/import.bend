@@ -7,7 +7,7 @@ print$303""$303null;
 print$303""$303null;
 get_root_source$303root_source$303null;
 SET_SOURCE$303root_source$303null;
-SET_DEST$303"bendBenv/import_program.b"$303null;
+SET_DEST$303"benv/import_program.b"$303null;
 goto$303$init_return_var$303null;
 #init_end:
 print$303""$303null;

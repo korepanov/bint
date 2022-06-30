@@ -174,8 +174,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 			rootDest = "program.basm"
 			filesListToExecute = []string{rootDest}
 		} else if options.Primitive == toTranslate {
-			rootSource = "bendBenv/print_format.basm"
-			rootDest = "bendBenv/print_format.bend"
+			rootSource = "bendBenv/func.basm"
+			rootDest = "bendBenv/func.bend"
 			//rootSource = "program.basm"
 			//rootDest = "program.bend"
 			filesListToExecute = []string{rootSource}
@@ -183,10 +183,11 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 			rootSource = "program.b"
 			rootDest = "program.basm"
 			filesListToExecute = []string{"bendBenv/import.bend",
+				"bendBenv/if.bend",
 				"bendBenv/prep_func.bend",
-				"bendBenv/print_format.bend",
 				"bendBenv/long_function.bend",
-				"bendBenv/func.bend"}
+				"bendBenv/func.bend",
+				"bendBenv/print_format.bend"}
 			//rootDest = "program.bend"
 			//filesListToExecute = []string{rootDest}
 		} else if options.Encrypt == toTranslate {
