@@ -3,11 +3,14 @@ package main
 import (
 	. "bint.com/internal/internalTools"
 	"bint.com/internal/options"
+	. "bint.com/internal/validator"
+	"bint.com/pkg/serviceTools"
+	"fmt"
 )
 
 func main() {
 	// эти опции можно менять для системной отладки
-	sysMode := options.ExecBasm
+	sysMode := options.UserTranslate
 	benvMode := options.ExecBenv
 
 	var filesListToExecute []string
@@ -19,6 +22,18 @@ func main() {
 	}
 
 	rootSource, rootDest, keyDest, filesListToExecute = SetConf(toTranslate, rootSource, rootDest, keyDest, sysMode, benvMode)
+
+	if options.UserTranslate == toTranslate ||
+		(options.Internal == toTranslate && (options.Internal == sysMode || options.UserTranslate == sysMode)) {
+		err = Validate(rootSource)
+		if nil != err {
+			fmt.Println("ERROR in " + rootSource + " at near line " +
+				fmt.Sprintf("%v", serviceTools.LineCounter))
+			fmt.Println(serviceTools.CommandToExecute)
+			fmt.Println(err)
+			return
+		}
+	}
 
 	Start(toTranslate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
 }
