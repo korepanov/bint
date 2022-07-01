@@ -2,13 +2,13 @@ package validator
 
 import (
 	. "bint.com/pkg/serviceTools"
-	"errors"
 	"os"
 	"strings"
 )
 
 func ValidateCommand(command string) error {
-	return errors.New("test")
+
+	return nil
 }
 
 func Validate(rootSource string) error {
