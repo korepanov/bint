@@ -30,46 +30,40 @@ func isValidBracesNum(command string) bool {
 }
 
 func validateFuncDefinition(command string) (tail string, stat int, err error) {
-	tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void)[[:alnum:]]*?\`+
-		`((?:((int|float|bool|string|stack))[[:alnum:]]*?\,)+)(int|float|bool|string|stack)[[:alnum:]]*?\){`, command)
+	tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void)[[:alnum:]|_]*?\`+
+		`((?:((int|float|bool|string|stack))[[:alnum:]|_]+\,){0,})(int|float|bool|string|stack)[[:alnum:]|_]+\){`, command)
 	if status.Yes == stat {
 		return tail, stat, nil
 	}
 
-	tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void)[[:alnum:]]*?\`+
+	tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void)[[:alnum:]|_]*?\`+
 		`(\){)`, command)
 	if status.Yes == stat {
 		return tail, stat, nil
 	}
 
-	tail, stat = check(`(?m)(?:[[:alnum:]]*?\`+
-		`((?:((int|float|bool|string|stack))[[:alnum:]]*?\,)+)(int|float|bool|string|stack)[[:alnum:]]*?\){`, command)
+	tail, stat = check(`(?m)(?:[[:alnum:]|_]*?\`+
+		`((?:((int|float|bool|string|stack))[[:alnum:]|_]+\,){0,})(int|float|bool|string|stack)[[:alnum:]|_]+\){`, command)
 	if status.Yes == stat {
 		return ``, status.Err, errors.New(`missing return value in function definition`)
 	}
 
-	tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void).*?\`+
-		`((?:((int|float|bool|string|stack)).*?\,)+)(int|float|bool|string|stack).*?\){`, command)
-	if status.Yes == stat {
-		return ``, status.Err, errors.New(`invalid characters in entity names`)
-	}
-
-	tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void)[[:alnum:]]*?\`+
-		`((?:((int|float|bool|string|stack|void))[[:alnum:]]*?\,)+)(int|float|bool|string|stack|void)[[:alnum:]]*?\){`, command)
+	tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void)[[:alnum:]|_]*?\`+
+		`((?:((int|float|bool|string|stack|void))[[:alnum:]|_]+\,){0,})(int|float|bool|string|stack|void)[[:alnum:]|_]+\){`, command)
 	if status.Yes == stat {
 		return ``, status.Err, errors.New(`function parameter cannot be of type void`)
 	}
 
-	tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void).*?`+
-		`(?:((int|float|bool|string|stack))[[:alnum:]]*?\,)+)(int|float|bool|string|stack).*?{`, command)
-	if status.Yes == stat {
-		return ``, status.Err, errors.New(`missing '(' or ')' in function definition`)
-	}
-
-	tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void)[[:alnum:]]*?\`+
-		`((?:((int|float|bool|string|stack))[[:alnum:]]*?\,)+)(int|float|bool|string|stack)[[:alnum:]]*?\)`, command)
+	tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void)[[:alnum:]|_]*?\`+
+		`((?:((int|float|bool|string|stack))[[:alnum:]|_]+\,){0,})(int|float|bool|string|stack)[[:alnum:]|_]+\)`, command)
 	if status.Yes == stat {
 		return ``, status.Err, errors.New(`missing '{' in function definition`)
+	}
+
+	tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void).*?\`+
+		`((?:((int|float|bool|string|stack)).+\,){0,})(int|float|bool|string|stack).+\){`, command)
+	if status.Yes == stat {
+		return ``, status.Err, errors.New(`invalid characters in entity names`)
 	}
 	return ``, status.No, nil
 }
@@ -85,7 +79,7 @@ func validateFigureBrace(command string) (tail string, stat int, err error) {
 }
 
 func validateVarDef(command string) (tail string, stat int, err error) {
-	tail, stat = check(`(?m)(?:(int|float|bool|string|stack)[[:alnum:]]*)`, command)
+	tail, stat = check(`(?m)(?:(int|float|bool|string|stack)[[:alnum:]|_]*)`, command)
 	if status.Yes == stat && `` == tail {
 		return tail, stat, nil
 	}
@@ -109,22 +103,55 @@ func validateAssignment(command string) (tail string, stat int, err error) {
 	return ``, status.No, nil
 }
 
-//func validateStr(command string) (tail string, stat int, err error) {
+func validateStr(command string) (tail string, stat int, err error) {
+	tail = command
 
-//}
+	re, err := regexp.Compile(`(?:[[:alnum:]|_]{1,}str\(.*?\))`)
+	locArr := re.FindAllIndex([]byte(command), -1)
+
+	for _, loc := range locArr {
+		err = validateCommand(command[loc[0]:loc[1]])
+		if nil != err {
+			return ``, status.Err, err
+		}
+	}
+
+	tail = string(re.ReplaceAll([]byte(tail), []byte(`val`)))
+
+	re, err = regexp.Compile(`(?m)(?:str\(.*\))`)
+	if nil != err {
+		panic(err)
+	}
+
+	if nil != re.FindIndex([]byte(tail)) {
+		tail = string(re.ReplaceAll([]byte(tail), []byte(`val`)))
+		return tail, status.Yes, nil
+	}
+
+	return tail, status.No, nil
+}
 
 func validateVar(command string) (tail string, stat int, err error) {
 	tail, stat = check(`(?:[[:alnum:]]+)`, command)
 	return tail, stat, nil
 }
 func validateString(command string) (tail string, stat int, err error) {
-	tail, stat = check(`"(\\.|[^"])*"`, command)
-	return tail, stat, nil
+	tail = command
+	re, err := regexp.Compile(`"(\\.|[^"])*"`)
+	if nil != err {
+		panic(err)
+	}
+	if nil != re.FindIndex([]byte(tail)) {
+		tail = string(re.ReplaceAll([]byte(command), []byte(`val`)))
+		return tail, status.Yes, nil
+	}
+
+	return tail, status.No, nil
 }
 
 func validateArithmetic(command string, isOp bool) (tail string, stat int, err error) {
 	if !isOp {
-		re, err := regexp.Compile(`(?m)(?:[^[[:alnum:],\)]\-([[:alpha:]]([[:alnum:]]+)?))`)
+		re, err := regexp.Compile(`(?m)(?:[^[[:alnum:]|_,\)]\-([[:alpha:]]([[:alnum:]|_]+)?))`)
 		if nil != err {
 			panic(err)
 		}
@@ -132,7 +159,7 @@ func validateArithmetic(command string, isOp bool) (tail string, stat int, err e
 			return ``, status.Err, errors.New(`unary minus before variable is not allowed, use expression like (-1)*var`)
 		}
 	}
-	re, err := regexp.Compile(`(?m)(?:\(([[[:alnum:]]|\[|])*[+|\-|*|/|^]([[[:alnum:]]|\[|])*\))`)
+	re, err := regexp.Compile(`(?m)(?:\(([[[:alnum:]|_]|\[|])*[+|\-|*|/|^]([[[:alnum:]|_]|\[|])*\))`)
 	if nil != err {
 		panic(err)
 	}
@@ -147,6 +174,17 @@ func validateArithmetic(command string, isOp bool) (tail string, stat int, err e
 	return validateArithmetic(command, true)
 }
 
+func validateFuncCall(command string) (tail string, stat int, err error) {
+	tail = command
+
+	re, err := regexp.Compile(`(?:[[:alnum:]]*\((([[:alnum:]]*\,){0,})[[:alnum:]]*\))`)
+	if nil != re.FindIndex([]byte(tail)) {
+		tail = string(re.ReplaceAll([]byte(tail), []byte(`val`)))
+		return tail, status.Yes, nil
+	}
+
+	return tail, status.No, nil
+}
 func validateCommand(command string) error {
 	if !isValidBracesNum(command) {
 		return errors.New("number of '(' doest not equal number of ')'")
@@ -200,7 +238,7 @@ func validateCommand(command string) error {
 		}
 	}
 
-	tail, stat, err = validateString(command)
+	command, stat, err = validateString(command)
 
 	if nil != err {
 		return err
@@ -229,6 +267,15 @@ func validateCommand(command string) error {
 			return validateCommand(command)
 		}
 	}
+	command, stat, err = validateFuncCall(command)
+	if nil != err {
+		return err
+	}
+
+	command, stat, err = validateStr(command)
+	if nil != err {
+		return err
+	}
 
 	tail, stat, err = validateArithmetic(command, false)
 
@@ -237,6 +284,10 @@ func validateCommand(command string) error {
 	}
 
 	if status.Yes == stat && "val" == tail {
+		return nil
+	}
+
+	if "val" == command {
 		return nil
 	}
 	return errors.New("unresolved command")
