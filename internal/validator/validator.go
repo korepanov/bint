@@ -111,6 +111,10 @@ func validateVar(command string) (tail string, stat int, err error) {
 	tail, stat = check(`(?:[[:alnum:]]+)`, command)
 	return tail, stat, nil
 }
+func validateString(command string) (tail string, stat int, err error) {
+	tail, stat = check(`"(\\.|[^"])*"`, command)
+	return tail, stat, nil
+}
 
 func validateArithmetic(command string, isOp bool) (tail string, stat int, err error) {
 	re, err := regexp.Compile(`(?m)(?:\(([[[:alnum:]]|\[|])*[+|\-|*|/|^]([[[:alnum:]]|\[|])*\))`)
@@ -170,6 +174,18 @@ func validateCommand(command string) error {
 		}
 	}
 	tail, stat, err = validateVar(command)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		if `` == tail {
+			return nil
+		}
+	}
+
+	tail, stat, err = validateString(command)
 
 	if nil != err {
 		return err
