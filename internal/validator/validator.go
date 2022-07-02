@@ -42,6 +42,12 @@ func validateFuncDefinition(command string) (tail string, stat int, err error) {
 		return tail, stat, nil
 	}
 
+	tail, stat = check(`(?m)(?:[[:alnum:]]*?\`+
+		`((?:((int|float|bool|string|stack))[[:alnum:]]*?\,)+)(int|float|bool|string|stack)[[:alnum:]]*?\){`, command)
+	if status.Yes == stat {
+		return ``, status.Err, errors.New(`missing return value in function definition`)
+	}
+
 	tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void).*?\`+
 		`((?:((int|float|bool|string|stack)).*?\,)+)(int|float|bool|string|stack).*?\){`, command)
 	if status.Yes == stat {
@@ -117,6 +123,15 @@ func validateString(command string) (tail string, stat int, err error) {
 }
 
 func validateArithmetic(command string, isOp bool) (tail string, stat int, err error) {
+	if !isOp {
+		re, err := regexp.Compile(`(?m)(?:[^[[:alnum:],\)]\-([[:alpha:]]([[:alnum:]]+)?))`)
+		if nil != err {
+			panic(err)
+		}
+		if nil != re.FindIndex([]byte(command)) {
+			return ``, status.Err, errors.New(`unary minus before variable is not allowed, use expression like (-1)*var`)
+		}
+	}
 	re, err := regexp.Compile(`(?m)(?:\(([[[:alnum:]]|\[|])*[+|\-|*|/|^]([[[:alnum:]]|\[|])*\))`)
 	if nil != err {
 		panic(err)
