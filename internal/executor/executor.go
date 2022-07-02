@@ -1,7 +1,7 @@
 package executor
 
 import (
-	"bint.com/internal/options"
+	"bint.com/internal/const/options"
 	. "bint.com/internal/transpiler"
 	. "bint.com/pkg/serviceTools"
 	"errors"

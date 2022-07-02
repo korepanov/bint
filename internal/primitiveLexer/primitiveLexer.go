@@ -1,7 +1,7 @@
 package primitiveLexer
 
 import (
-	"bint.com/internal/options"
+	"bint.com/internal/const/options"
 	"errors"
 	"strings"
 )

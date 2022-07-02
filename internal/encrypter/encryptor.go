@@ -1,7 +1,7 @@
 package encrypter
 
 import (
-	"bint.com/internal/options"
+	"bint.com/internal/const/options"
 	. "bint.com/pkg/serviceTools"
 	"fmt"
 	"math/rand"

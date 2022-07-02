@@ -1,7 +1,7 @@
 package decryptor
 
 import (
-	"bint.com/internal/options"
+	"bint.com/internal/const/options"
 	"strconv"
 	"strings"
 )

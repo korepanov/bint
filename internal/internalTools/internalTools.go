@@ -1,11 +1,11 @@
 package internalTools
 
 import (
+	"bint.com/internal/const/options"
 	"bint.com/internal/decryptor"
 	"bint.com/internal/encrypter"
 	"bint.com/internal/executor"
 	. "bint.com/internal/lexer"
-	"bint.com/internal/options"
 	"bint.com/internal/parser"
 	. "bint.com/internal/primitiveLexer"
 	. "bint.com/pkg/serviceTools"

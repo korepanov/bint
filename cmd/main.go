@@ -1,8 +1,8 @@
 package main
 
 import (
+	"bint.com/internal/const/options"
 	. "bint.com/internal/internalTools"
-	"bint.com/internal/options"
 	. "bint.com/internal/validator"
 	"bint.com/pkg/serviceTools"
 	"fmt"
