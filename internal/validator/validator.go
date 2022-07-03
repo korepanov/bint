@@ -91,44 +91,16 @@ func validateVarDef(command string) (tail string, stat int, err error) {
 }
 
 func validateAssignment(command string) (tail string, stat int, err error) {
-	tail, stat = check(`(?:[[:alnum:]]*=.*)`, command)
-	if status.Yes == stat && `` == tail {
+	tail, stat = check(`(?:[[:alnum:]]+[^=]={1}.+)`, command)
+	if status.Yes == stat {
 		return tail, stat, nil
 	}
-	tail, stat = check(`(?:.*=.*)`, command)
+	tail, stat = check(`(?:[^=]+={1}[^=]+)`, command)
 	if status.Yes == stat && `` == tail {
 		return ``, status.Err, errors.New(`unresolved reference`)
 	}
 
 	return ``, status.No, nil
-}
-
-func validateStr(command string) (tail string, stat int, err error) {
-	tail = command
-
-	re, err := regexp.Compile(`(?:[[:alnum:]|_]{1,}str\(.*?\))`)
-	locArr := re.FindAllIndex([]byte(command), -1)
-
-	for _, loc := range locArr {
-		err = validateCommand(command[loc[0]:loc[1]])
-		if nil != err {
-			return ``, status.Err, err
-		}
-	}
-
-	tail = string(re.ReplaceAll([]byte(tail), []byte(`val`)))
-
-	re, err = regexp.Compile(`(?m)(?:str\(.*\))`)
-	if nil != err {
-		panic(err)
-	}
-
-	if nil != re.FindIndex([]byte(tail)) {
-		tail = string(re.ReplaceAll([]byte(tail), []byte(`val`)))
-		return tail, status.Yes, nil
-	}
-
-	return tail, status.No, nil
 }
 
 func validateVar(command string) (tail string, stat int, err error) {
@@ -147,6 +119,73 @@ func validateString(command string) (tail string, stat int, err error) {
 	}
 
 	return tail, status.No, nil
+}
+
+func checkComparison(command string, reg string) (isComparison bool, newCommand string) {
+
+	re, err := regexp.Compile(reg)
+	if nil != err {
+		panic(err)
+	}
+	if nil != re.FindIndex([]byte(command)) {
+		isComparison = true
+	}
+	newCommand = string(re.ReplaceAll([]byte(command), []byte("val")))
+
+	return isComparison, newCommand
+}
+
+func validateComparison(command string, isOp bool) (tail string, stat int, err error) {
+	var isComparison bool
+
+	if !isOp {
+		re, err := regexp.Compile(`(?m)(?:[^[[:alnum:]|_,\)]\-([[:alpha:]]([[:alnum:]|_]+)?))`)
+		if nil != err {
+			panic(err)
+		}
+		if nil != re.FindIndex([]byte(command)) {
+			return ``, status.Err, errors.New(`unary minus before variable is not allowed, use expression like (-1)*var`)
+		}
+	}
+
+	temp, command := checkComparison(command, `(?:[^=(]+=={1}[^=)]+)`)
+
+	if temp {
+		isComparison = true
+	}
+
+	temp, command = checkComparison(command,
+		`(?m)(?:([[[:alnum:]|_])*(?:(>=|=<|>|<))([[[:alnum:]|_])*)`)
+
+	if temp {
+		isComparison = true
+	}
+
+	temp, command = checkComparison(command,
+		`(?m)(?:\(([[[:alpha:]|_])+[[:alnum:]]*\)(?:(AND|OR|XOR))\(([[[:alpha:]|_])+[[:alnum:]]*\))`)
+
+	if temp {
+		isComparison = true
+	}
+
+	temp, command = checkComparison(command, `(?:NOT\([[:alpha:]]+[[:alnum:]]*)\)`)
+
+	if temp {
+		isComparison = true
+	}
+
+	if `(val)` == command {
+		command = `val`
+	}
+
+	if !isComparison {
+		if isOp {
+			return command, status.Yes, nil
+		}
+		return ``, status.No, nil
+	}
+
+	return validateComparison(command, true)
 }
 
 func validateArithmetic(command string, isOp bool) (tail string, stat int, err error) {
@@ -168,23 +207,67 @@ func validateArithmetic(command string, isOp bool) (tail string, stat int, err e
 		if isOp {
 			return command, status.Yes, nil
 		}
-		return ``, status.No, nil
+		return command, status.No, nil
 	}
 	command = string(re.ReplaceAll([]byte(command), []byte("val")))
 	return validateArithmetic(command, true)
 }
 
-func validateFuncCall(command string) (tail string, stat int, err error) {
+func validateFuncCall(command string, isFunc bool) (tail string, stat int, err error) {
 	tail = command
+	re, err := regexp.Compile(`(?:[)][[:alpha:]|_]+[[:alnum:]|_]*\((([[:alnum:]]*\,){0,})[[:alnum:]]*\))`)
+	if nil != err {
+		panic(err)
+	}
+	notFuncLocArr := re.FindAllIndex([]byte(tail), -1)
 
-	re, err := regexp.Compile(`(?:[[:alnum:]]*\((([[:alnum:]]*\,){0,})[[:alnum:]]*\))`)
-	if nil != re.FindIndex([]byte(tail)) {
-		tail = string(re.ReplaceAll([]byte(tail), []byte(`val`)))
+	for _, loc := range notFuncLocArr {
+		loc[0]++
+	}
+
+	re, err = regexp.Compile(`(?:[[:alpha:]|_]+[[:alnum:]|_]*\((([[:alnum:]]*\,){0,})[[:alnum:]]*\))`)
+	if nil != err {
+		panic(err)
+	}
+
+	locArr := re.FindAllIndex([]byte(tail), -1)
+
+	var funcLocArr [][]int
+	toAppend := true
+
+	for _, loc := range locArr {
+		for _, notFuncLoc := range notFuncLocArr {
+			if (loc[0] == notFuncLoc[0]) && (loc[1] == notFuncLoc[1]) {
+				toAppend = false
+			}
+		}
+		if toAppend {
+			funcLocArr = append(funcLocArr, loc)
+		}
+
+		toAppend = true
+	}
+
+	var replacerArgs []string
+
+	for _, loc := range funcLocArr {
+		replacerArgs = append(replacerArgs, tail[loc[0]:loc[1]])
+		replacerArgs = append(replacerArgs, "val")
+	}
+
+	if nil != replacerArgs {
+		r := strings.NewReplacer(replacerArgs...)
+		tail = r.Replace(tail)
+		return validateFuncCall(tail, true)
+	}
+
+	if isFunc {
 		return tail, status.Yes, nil
 	}
 
 	return tail, status.No, nil
 }
+
 func validateCommand(command string) error {
 	if !isValidBracesNum(command) {
 		return errors.New("number of '(' doest not equal number of ')'")
@@ -267,12 +350,8 @@ func validateCommand(command string) error {
 			return validateCommand(command)
 		}
 	}
-	command, stat, err = validateFuncCall(command)
-	if nil != err {
-		return err
-	}
 
-	command, stat, err = validateStr(command)
+	command, stat, err = validateFuncCall(command, false)
 	if nil != err {
 		return err
 	}
@@ -282,6 +361,12 @@ func validateCommand(command string) error {
 	if nil != err {
 		return err
 	}
+
+	if status.Yes == stat && "val" == tail {
+		return nil
+	}
+
+	tail, stat, err = validateComparison(tail, false)
 
 	if status.Yes == stat && "val" == tail {
 		return nil
