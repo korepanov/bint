@@ -226,7 +226,7 @@ func validateFuncCall(command string, isFunc bool) (tail string, stat int, err e
 		loc[0]++
 	}
 
-	re, err = regexp.Compile(`(?:[[:alpha:]|_]+[[:alnum:]|_]*\((([[:alnum:]|_|\[|\]]*\,){0,})[[:alnum:]|_|\[|\]]*\))`)
+	re, err = regexp.Compile(`(?:[[:alpha:]|_]+[[:alnum:]|_]*\((([[:alnum:]|_|\[|\]]*\,[^,]){0,})[[:alnum:]|_|\[|\]]*\))`)
 	if nil != err {
 		panic(err)
 	}
@@ -351,8 +351,48 @@ func validateIndex(command string) (tail string, stat int, err error) {
 		panic(err)
 	}
 
-	if moreArgs || oneArg {
+	noArgs, err := CheckEntry(`(?:index\(\))`, tail)
+
+	if nil != err {
+		panic(err)
+	}
+
+	if moreArgs || oneArg || noArgs {
 		return ``, status.Err, errors.New(`index must have 2 arguments`)
+	}
+
+	return command, status.No, nil
+}
+
+func validateRegFind(command string) (tail string, stat int, err error) {
+	tail = command
+
+	tail, err = ReplaceFunc(`(?:reg_find\([[:alpha:]]+[[:alnum:]|_|\[|\]]*\,[[:alpha:]]+[[:alnum:]|_|\[|\]]*\))`, tail)
+
+	if nil != err {
+		panic(err)
+	}
+
+	moreArgs, err := CheckEntry(`(?:reg_find\(([[:alpha:]]+[[:alnum:]|_|\[|\]]*\,)+[[:alpha:]]+[[:alnum:]|_|\[|\]]*\))`, tail)
+
+	if nil != err {
+		panic(err)
+	}
+
+	oneArg, err := CheckEntry(`(?:reg_find\([[:alpha:]]+[[:alnum:]|_|\[|\]]*\,?\))`, tail)
+
+	if nil != err {
+		panic(err)
+	}
+
+	noArgs, err := CheckEntry(`(?:reg_find\(\))`, tail)
+
+	if nil != err {
+		panic(err)
+	}
+
+	if moreArgs || oneArg || noArgs {
+		return ``, status.Err, errors.New(`reg_find must have 2 arguments`)
 	}
 
 	return command, status.No, nil
@@ -513,6 +553,11 @@ func validateCommand(command string) error {
 	}
 
 	command, stat, err = validateIsLetterDigit(command)
+	if nil != err {
+		return err
+	}
+
+	command, stat, err = validateRegFind(command)
 	if nil != err {
 		return err
 	}

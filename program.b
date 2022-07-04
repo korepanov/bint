@@ -19,8 +19,17 @@ int f_index(string a, string b){
 void main(){
 	string buf; 
 	stack st;
+	stack poses;
+	int beg;
 	int t;
 	bool b;
+	
+	st = reg_find("a","b");
+	st.pop(poses);
+	poses.pop(beg);
+	buf = str(beg);
+	print(buf);
+	print("\n");
 
 	b = is_letter("f");
 	buf = str(b);
