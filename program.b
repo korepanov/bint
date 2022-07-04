@@ -15,7 +15,14 @@ string b_str(){
 };
 void main(){
 	string buf; 
-	print(buf[5]);
+	stack st;
+	int t;
+	push(10);
+	pop(t);	
+
+	st.push(5);
+	st.pop(t); 
+	
 	buf = str(s_um(1, 2));
 	buf = ((str(1) + str(2)) + b_str());
 	buf = ((str(1) + "lalaal") + str(2));

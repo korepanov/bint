@@ -273,6 +273,36 @@ func validateFuncCall(command string, isFunc bool) (tail string, stat int, err e
 	return tail, status.No, nil
 }
 
+func validateUserStackCall(command string) (tail string, stat int, err error) {
+	tail, stat = check(`(?:[[:alpha:]]+[[:alnum:]|_]*\.push\(.+\))`, command)
+	if status.Yes == stat && `` == tail {
+		return tail, stat, err
+	}
+
+	tail, stat = check(`(?:[[:alpha:]]+[[:alnum:]|_]*\.pop\([[:alpha:]]+[[:alnum:]|_]*\))`, command)
+	if status.Yes == stat && `` == tail {
+		return tail, stat, err
+	}
+
+	tail, stat = check(`(?:[[:alpha:]]+[[:alnum:]|_]*\.push\(.*\))`, command)
+	if status.Yes == stat && `` == tail {
+		return ``, status.Err, errors.New(`push must have an argument`)
+	}
+
+	tail, stat = check(`(?:[[:alpha:]]+[[:alnum:]|_]*\.pop\(.+\))`, command)
+	if status.Yes == stat && `` == tail {
+		return ``, status.Err, errors.New(`invalid pop argument`)
+	}
+
+	tail, stat = check(`(?:[[:alpha:]]+[[:alnum:]|_]*\.pop\(.*\))`, command)
+
+	if status.Yes == stat && `` == tail {
+		return ``, status.Err, errors.New(`pop must have an argument`)
+	}
+
+	return ``, status.No, nil
+}
+
 func validateCommand(command string) error {
 	if !isValidBracesNum(command) {
 		return errors.New("number of '(' doest not equal number of ')'")
@@ -327,6 +357,18 @@ func validateCommand(command string) error {
 	}
 
 	command, stat, err = validateString(command)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		if `` == tail {
+			return nil
+		}
+	}
+
+	tail, stat, err = validateUserStackCall(command)
 
 	if nil != err {
 		return err
