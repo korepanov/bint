@@ -40,7 +40,7 @@ func validateStandardFuncCall(command string, funcName string, argNum int,
 			}
 			tail, stat = check(`(?:`+funcName+`\(.+\))`, command)
 			if status.Yes == stat && `` == tail {
-				return tail, status.Err, errors.New(funcName + ` must not have any arguments`)
+				return tail, status.Err, errors.New(funcName + ` must have no arguments`)
 			}
 
 		} else if 1 == argNum {
@@ -65,6 +65,7 @@ func validateStandardFuncCall(command string, funcName string, argNum int,
 			panic(`validateStandardFuncCall: unsupported case`)
 		} else if 1 == argNum {
 			tail = command
+
 			tail, err = ReplaceFunc(`(?:`+funcName+`\([[:alpha:]]+[[:alnum:]|_]*\))`, tail)
 			if nil != err {
 				panic(err)
@@ -557,6 +558,38 @@ func validateInput(command string) (tail string, stat int, err error) {
 	return ``, status.No, nil
 }
 
+func validateGoto(command string) (tail string, stat int, err error) {
+	tail, stat = check(`(?:goto\([[:alpha:]|#]+[[:alnum:]|_]*\))`, command)
+
+	if status.Yes == stat && `` == tail {
+		return tail, stat, nil
+	}
+
+	tail, stat = check(`(?:(goto)\(.+\,.*\))`, command)
+	if status.Yes == stat && `` == tail {
+		return ``, status.Err, errors.New(`goto must have 1 argument`)
+	}
+
+	tail, stat = check(`(?:goto\(\))`, command)
+	if status.Yes == stat && `` == tail {
+		return ``, status.Err, errors.New(`goto must have 1 argument`)
+	}
+
+	return command, status.No, nil
+}
+
+func validateMark(command string) (tail string, stat int, err error) {
+	tail, stat = check(`(?:#[[:alpha:]|_]+[[:alnum:]]*:)`, command)
+	if status.Yes == stat {
+		return tail, stat, nil
+	}
+	tail, stat = check(`(?:#.+:)`, command)
+	if status.Yes == stat {
+		return ``, status.Err, errors.New(`invalid mark name`)
+	}
+
+	return command, stat, nil
+}
 func validateCommand(command string) error {
 	if !isValidBracesNum(command) {
 		return errors.New("number of '(' doest not equal number of ')'")
@@ -568,6 +601,15 @@ func validateCommand(command string) error {
 	if status.Yes == stat {
 		return validateCommand(tail)
 	}
+
+	tail, stat, err = validateMark(command)
+	if nil != err {
+		return err
+	}
+	if status.Yes == stat {
+		return validateCommand(tail)
+	}
+
 	tail, stat, err = validateReturn(command)
 	if nil != err {
 		return err
@@ -637,6 +679,138 @@ func validateCommand(command string) error {
 		if `` == tail {
 			return nil
 		}
+	}
+
+	command, stat, err = validateStandardFuncCall(command, "SET_DEST", 1, false)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		if `` == tail {
+			return nil
+		}
+	}
+
+	command, stat, err = validateStandardFuncCall(command, "next_command", 1, false)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		if `` == tail {
+			return nil
+		}
+	}
+
+	command, stat, err = validateStandardFuncCall(command, "send_command", 1, false)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		if `` == tail {
+			return nil
+		}
+	}
+
+	command, stat, err = validateStandardFuncCall(command, "UNSET_SOURCE", 0, false)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		if `` == tail {
+			return nil
+		}
+	}
+
+	command, stat, err = validateStandardFuncCall(command, "UNSET_DEST", 0, false)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		if `` == tail {
+			return nil
+		}
+	}
+
+	command, stat, err = validateStandardFuncCall(command, "DEL_DEST", 1, false)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		if `` == tail {
+			return nil
+		}
+	}
+
+	command, stat, err = validateStandardFuncCall(command, "SEND_DEST", 1, false)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		if `` == tail {
+			return nil
+		}
+	}
+
+	command, stat, err = validateStandardFuncCall(command, "REROUTE", 0, false)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		if `` == tail {
+			return nil
+		}
+	}
+
+	command, stat, err = validateStandardFuncCall(command, "get_root_source", 1, false)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		if `` == tail {
+			return nil
+		}
+	}
+
+	command, stat, err = validateStandardFuncCall(command, "get_root_dest", 1, false)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		if `` == tail {
+			return nil
+		}
+	}
+
+	command, stat, err = validateGoto(command)
+
+	if status.Yes == stat {
+		if `` == tail {
+			return nil
+		}
+	}
+
+	if nil != err {
+		return err
 	}
 
 	tail, stat, err = validateSystemStackCall(command)

@@ -25,13 +25,24 @@ void main(){
 	int t;
 	bool b;
 	string command;
+	string root_source;
+	string root_dest;
 
+	#mark2:
+	goto(#mark1);
+	#mark1:
+	goto(#mark2);
+	get_root_source(root_source);
+	get_root_dest(root_dest);
 	SET_SOURCE("program_old.b");
 	SET_DEST("p.b");
 	next_command(command);
 	send_command(command);
 	UNSET_SOURCE();
 	UNSET_DEST();
+	DEL_DEST("temp.b");
+	SEND_DEST("p.basm");
+	REROUTE();
 
 	input(buf);
 	print(buf);
