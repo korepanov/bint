@@ -17,7 +17,7 @@ void main(){
 	string buf; 
 	stack st;
 	int t;
-	push(10);
+	push(5);
 	pop(t);	
 
 	st.push(5);

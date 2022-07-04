@@ -303,6 +303,37 @@ func validateUserStackCall(command string) (tail string, stat int, err error) {
 	return ``, status.No, nil
 }
 
+func validateSystemStackCall(command string) (tail string, stat int, err error) {
+	tail, stat = check(`(?:push\(.+\))`, command)
+	if status.Yes == stat && `` == tail {
+		return tail, stat, nil
+	}
+	tail, stat = check(`(?:pop\([[:alpha:]]+[[:alnum:]|_]*\))`, command)
+	if status.Yes == stat && `` == tail {
+		return tail, stat, nil
+	}
+
+	tail, stat = check(`(?:push\(\))`, command)
+
+	if status.Yes == stat && `` == tail {
+		return ``, status.Err, errors.New(`push must have an argument`)
+	}
+
+	tail, stat = check(`(?:pop\(\))`, command)
+
+	if status.Yes == stat && `` == tail {
+		return ``, status.Err, errors.New(`pop must have an argument`)
+	}
+
+	tail, stat = check(`(?:pop\(.+\))`, command)
+
+	if status.Yes == stat && `` == tail {
+		return ``, status.Err, errors.New(`invalid pop argument`)
+	}
+
+	return command, status.No, nil
+}
+
 func validateCommand(command string) error {
 	if !isValidBracesNum(command) {
 		return errors.New("number of '(' doest not equal number of ')'")
@@ -357,6 +388,18 @@ func validateCommand(command string) error {
 	}
 
 	command, stat, err = validateString(command)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		if `` == tail {
+			return nil
+		}
+	}
+
+	tail, stat, err = validateSystemStackCall(command)
 
 	if nil != err {
 		return err
