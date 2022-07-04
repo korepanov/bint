@@ -91,13 +91,9 @@ func validateVarDef(command string) (tail string, stat int, err error) {
 }
 
 func validateAssignment(command string) (tail string, stat int, err error) {
-	tail, stat = check(`(?:[[:alnum:]]+[^=]={1}.+)`, command)
+	tail, stat = check(`(?:[[:alpha:]][[:alnum:]|_]*={1}[^=]+)`, command)
 	if status.Yes == stat {
 		return tail, stat, nil
-	}
-	tail, stat = check(`(?:[^=]+={1}[^=]+)`, command)
-	if status.Yes == stat && `` == tail {
-		return ``, status.Err, errors.New(`unresolved reference`)
 	}
 
 	return ``, status.No, nil
@@ -334,6 +330,34 @@ func validateSystemStackCall(command string) (tail string, stat int, err error) 
 	return command, status.No, nil
 }
 
+func validateIndex(command string) (tail string, stat int, err error) {
+	tail = command
+
+	tail, err = ReplaceFunc(`(?:index\([[:alpha:]]+[[:alnum:]|_|\[|\]]*\,[[:alpha:]]+[[:alnum:]|_|\[|\]]*\))`, tail)
+
+	if nil != err {
+		panic(err)
+	}
+
+	moreArgs, err := CheckEntry(`(?:index\(([[:alpha:]]+[[:alnum:]|_|\[|\]]*\,)+[[:alpha:]]+[[:alnum:]|_|\[|\]]*\))`, tail)
+
+	if nil != err {
+		panic(err)
+	}
+
+	oneArg, err := CheckEntry(`(?:index\([[:alpha:]]+[[:alnum:]|_|\[|\]]*\,?\))`, tail)
+
+	if nil != err {
+		panic(err)
+	}
+
+	if moreArgs || oneArg {
+		return ``, status.Err, errors.New(`index must have 2 arguments`)
+	}
+
+	return command, status.No, nil
+}
+
 func validateCommand(command string) error {
 	if !isValidBracesNum(command) {
 		return errors.New("number of '(' doest not equal number of ')'")
@@ -439,6 +463,11 @@ func validateCommand(command string) error {
 			command = command[pos:]
 			return validateCommand(command)
 		}
+	}
+
+	command, stat, err = validateIndex(command)
+	if nil != err {
+		return err
 	}
 
 	command, stat, err = validateFuncCall(command, false)

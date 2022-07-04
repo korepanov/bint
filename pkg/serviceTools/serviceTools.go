@@ -8,10 +8,97 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 var LineCounter = 0
 var CommandToExecute string
+
+func LookBehind(reg string, s string) ([]string, error) {
+	re, err := regexp.Compile(reg)
+	if nil != err {
+		return nil, err
+	}
+	locArr := re.FindAllIndex([]byte(s), -1)
+
+	var res []string
+
+	for _, loc := range locArr {
+		if loc[0] > 0 {
+			res = append(res, string(s[loc[0]-1]))
+		}
+	}
+
+	return res, nil
+}
+
+func CheckEntry(reg string, command string) (bool, error) {
+	behindSymbols, err := LookBehind(reg, command)
+	if nil != err {
+		return false, err
+	}
+
+	re, err := regexp.Compile(reg)
+
+	if nil != err {
+		return false, err
+	}
+
+	locArr := re.FindAllIndex([]byte(command), -1)
+
+	var funcLocArr [][]int
+
+	for i := 0; i < len(behindSymbols); i++ {
+		if !("_" == behindSymbols[i] || unicode.IsLetter(rune(behindSymbols[i][0]))) {
+			funcLocArr = append(funcLocArr, locArr[i])
+		}
+	}
+
+	if nil != funcLocArr {
+		return true, nil
+	}
+
+	return false, nil
+}
+
+func ReplaceFunc(reg string, command string) (string, error) {
+	behindSymbols, err := LookBehind(reg, command)
+	if nil != err {
+		return ``, err
+	}
+
+	re, err := regexp.Compile(reg)
+
+	if nil != err {
+		return ``, err
+	}
+
+	locArr := re.FindAllIndex([]byte(command), -1)
+
+	var funcLocArr [][]int
+
+	for i := 0; i < len(behindSymbols); i++ {
+		if !("_" == behindSymbols[i] || unicode.IsLetter(rune(behindSymbols[i][0]))) {
+			funcLocArr = append(funcLocArr, locArr[i])
+		}
+	}
+
+	var replacerArgs []string
+
+	for _, loc := range funcLocArr {
+		replacerArgs = append(replacerArgs, command[loc[0]:loc[1]])
+		replacerArgs = append(replacerArgs, "val")
+	}
+
+	newCommand := command
+
+	if nil != replacerArgs {
+		r := strings.NewReplacer(replacerArgs...)
+		newCommand = r.Replace(command)
+	}
+
+	return newCommand, nil
+}
 
 func FindExprListEnd(exprList [][]interface{}, exprBegin int) int {
 	openedBraces := 1

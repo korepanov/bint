@@ -13,6 +13,9 @@ bool is_equal(){
 string b_str(){
 	return "lalala";
 };
+int f_index(string a, string b){
+	return 10;
+};
 void main(){
 	string buf; 
 	stack st;
@@ -26,6 +29,13 @@ void main(){
 	buf = str(s_um(1, 2));
 	buf = ((str(1) + str(2)) + b_str());
 	buf = ((str(1) + "lalaal") + str(2));
+	print(buf);
+	print("\n");
+	string s;
+	s = "Hello world!";
+	t = ((index(s, "na") + index(s,"ka")) + f_index("1", "2"));
+	buf = str(t);
+	print("\n");
 	print(buf);
 	print("\n");
 };
