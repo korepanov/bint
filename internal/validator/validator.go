@@ -440,6 +440,26 @@ func validateIsLetterDigit(command string) (tail string, stat int, err error) {
 	return tail, status.No, nil
 }
 
+func validateInput(command string) (tail string, stat int, err error) {
+	tail, stat = check(`(?:input\([[:alpha:]]+[[:alnum:]|_]*\))`, command)
+
+	if status.Yes == stat && `` == tail {
+		return tail, stat, nil
+	}
+
+	tail, stat = check(`(?:(input)\(.+\,.*\))`, command)
+	if status.Yes == stat && `` == tail {
+		return ``, status.Err, errors.New(`input must have 1 argument`)
+	}
+
+	tail, stat = check(`(?:input\(\))`, command)
+	if status.Yes == stat && `` == tail {
+		return ``, status.Err, errors.New(`input must have 1 argument`)
+	}
+
+	return ``, status.No, nil
+}
+
 func validateCommand(command string) error {
 	if !isValidBracesNum(command) {
 		return errors.New("number of '(' doest not equal number of ')'")
@@ -483,6 +503,17 @@ func validateCommand(command string) error {
 	}
 	tail, stat, err = validateVar(command)
 
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		if `` == tail {
+			return nil
+		}
+	}
+
+	tail, stat, err = validateInput(command)
 	if nil != err {
 		return err
 	}

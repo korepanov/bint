@@ -3,7 +3,8 @@ int s_um (int a_g, int b_g){
 };
 
 bool bool_test(float a, float b, float c, float d){
-	println("bool_test");
+	print("bool_test");
+	print("\n");
 	return ((True)OR(False));
 };
 
@@ -23,9 +24,14 @@ void main(){
 	int beg;
 	int t;
 	bool b;
+
+	input(buf);
+	print(buf);
+	print("\n");
 	
 	st = reg_find("a","b");
-	st.pop(poses);
+	st.pop(buf);
+	print(buf);
 	poses.pop(beg);
 	buf = str(beg);
 	print(buf);
@@ -40,7 +46,7 @@ void main(){
 	print(buf);
 	print("\n");
 	push(5);
-	pop(t);	
+	pop(t);
 
 	st.push(5);
 	st.pop(t); 
