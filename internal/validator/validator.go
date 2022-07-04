@@ -174,11 +174,16 @@ func validateComparison(command string, isOp bool) (tail string, stat int, err e
 		isComparison = true
 	}
 
-	if `(val)` == command {
-		command = `val`
+	if `val` == command && isOp {
+		return ``, status.Err, errors.New(`there are no external brackets in logical expression`)
 	}
 
 	if !isComparison {
+
+		if `(val)` == command {
+			command = `val`
+		}
+
 		if isOp {
 			return command, status.Yes, nil
 		}
@@ -367,6 +372,10 @@ func validateCommand(command string) error {
 	}
 
 	tail, stat, err = validateComparison(tail, false)
+
+	if nil != err {
+		return err
+	}
 
 	if status.Yes == stat && "val" == tail {
 		return nil

@@ -1,10 +1,10 @@
 int s_um (int a_g, int b_g){
-	return (a_g + b_g);
+	return (a_g + (b_g - 4));
 };
 
 bool bool_test(float a, float b, float c, float d){
 	println("bool_test");
-	return (((NOT(1==1))AND(NOT(1>2)))XOR(arg));
+	return ((True)OR(False));
 };
 
 bool is_equal(){
