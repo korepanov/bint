@@ -20,6 +20,16 @@ void main(){
 	string buf; 
 	stack st;
 	int t;
+	bool b;
+
+	b = is_letter("f");
+	buf = str(b);
+	print(buf);
+	print("\n");
+	b = ((is_digit("a"))AND(is_letter("b")));
+	buf = str(b);
+	print(buf);
+	print("\n");
 	push(5);
 	pop(t);	
 
@@ -29,6 +39,7 @@ void main(){
 	buf = str(s_um(1, 2));
 	buf = ((str(1) + str(2)) + b_str());
 	buf = ((str(1) + "lalaal") + str(2));
+	
 	print(buf);
 	print("\n");
 	string s;

@@ -358,6 +358,48 @@ func validateIndex(command string) (tail string, stat int, err error) {
 	return command, status.No, nil
 }
 
+func validateIsLetterDigit(command string) (tail string, stat int, err error) {
+	tail = command
+	tail, err = ReplaceFunc(`(?:(is_letter|is_digit)\([[:alpha:]]+[[:alnum:]|_|\[|\]]*\))`, command)
+	if nil != err {
+		panic(err)
+	}
+
+	moreArgs, err := CheckEntry(`(?:(is_letter)\(.+\,.*\))`, command)
+
+	if nil != err {
+		panic(err)
+	}
+
+	noArgs, err := CheckEntry(`(?:(is_letter)\(\))`, command)
+
+	if nil != err {
+		panic(err)
+	}
+
+	if moreArgs || noArgs {
+		return ``, status.Err, errors.New(`is_letter must have 1 argument`)
+	}
+
+	moreArgs, err = CheckEntry(`(?:(is_digit)\(.+\,.*\))`, command)
+
+	if nil != err {
+		panic(err)
+	}
+
+	noArgs, err = CheckEntry(`(?:(is_digit)\(\))`, command)
+
+	if nil != err {
+		panic(err)
+	}
+
+	if moreArgs || noArgs {
+		return ``, status.Err, errors.New(`is_digit must have 1 argument`)
+	}
+
+	return tail, status.No, nil
+}
+
 func validateCommand(command string) error {
 	if !isValidBracesNum(command) {
 		return errors.New("number of '(' doest not equal number of ')'")
@@ -466,6 +508,11 @@ func validateCommand(command string) error {
 	}
 
 	command, stat, err = validateIndex(command)
+	if nil != err {
+		return err
+	}
+
+	command, stat, err = validateIsLetterDigit(command)
 	if nil != err {
 		return err
 	}

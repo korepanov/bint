@@ -26,6 +26,8 @@ func LookBehind(reg string, s string) ([]string, error) {
 	for _, loc := range locArr {
 		if loc[0] > 0 {
 			res = append(res, string(s[loc[0]-1]))
+		} else {
+			res = append(res, "$")
 		}
 	}
 
