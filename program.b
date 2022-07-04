@@ -24,6 +24,14 @@ void main(){
 	int beg;
 	int t;
 	bool b;
+	string command;
+
+	SET_SOURCE("program_old.b");
+	SET_DEST("p.b");
+	next_command(command);
+	send_command(command);
+	UNSET_SOURCE();
+	UNSET_DEST();
 
 	input(buf);
 	print(buf);

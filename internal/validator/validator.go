@@ -29,6 +29,103 @@ func isValidBracesNum(command string) bool {
 	return true
 }
 
+func validateStandardFuncCall(command string, funcName string, argNum int,
+	randomLocation bool) (tail string, stat int, err error) {
+
+	if !randomLocation {
+		if 0 == argNum {
+			tail, stat = check(`(?:`+funcName+`\(\))`, command)
+			if status.Yes == stat && `` == tail {
+				return tail, stat, nil
+			}
+			tail, stat = check(`(?:`+funcName+`\(.+\))`, command)
+			if status.Yes == stat && `` == tail {
+				return tail, status.Err, errors.New(funcName + ` must not have any arguments`)
+			}
+
+		} else if 1 == argNum {
+			tail, stat = check(`(?:`+funcName+`\([[:alpha:]]+[[:alnum:]|_]*\))`, command)
+			if status.Yes == stat && `` == tail {
+				return tail, stat, nil
+			}
+			tail, stat = check(`(?:(`+funcName+`)\(.+\,.*\))`, command)
+			if status.Yes == stat && `` == tail {
+				return tail, status.Err, errors.New(funcName + ` must have 1 argument`)
+			}
+
+			tail, stat = check(`(?:`+funcName+`\(\))`, command)
+			if status.Yes == stat && `` == tail {
+				return ``, status.Err, errors.New(`input must have 1 argument`)
+			}
+		} else {
+			panic(`validateStandardFuncCall: unsupported case`)
+		}
+	} else {
+		if 0 == argNum {
+			panic(`validateStandardFuncCall: unsupported case`)
+		} else if 1 == argNum {
+			tail = command
+			tail, err = ReplaceFunc(`(?:`+funcName+`\([[:alpha:]]+[[:alnum:]|_]*\))`, tail)
+			if nil != err {
+				panic(err)
+			}
+
+			moreArgs, err := CheckEntry(`(?:(`+funcName+`)\(.+\,.*\))`, tail)
+
+			if nil != err {
+				panic(err)
+			}
+
+			noArgs, err := CheckEntry(`(?:`+funcName+`\(\))`, tail)
+
+			if nil != err {
+				panic(err)
+			}
+
+			if moreArgs || noArgs {
+				return ``, status.Err, errors.New(funcName + ` must have 1 argument`)
+			}
+
+		} else if 2 == argNum {
+			tail = command
+			tail, err = ReplaceFunc(`(?:`+funcName+
+				`\([[:alpha:]]+[[:alnum:]|_|\[|\]]*\,[[:alpha:]]+[[:alnum:]|_|\[|\]]*\))`, tail)
+
+			if nil != err {
+				panic(err)
+			}
+
+			moreArgs, err := CheckEntry(`(?:`+funcName+
+				`\(([[:alpha:]]+[[:alnum:]|_|\[|\]]*\,)+[[:alpha:]]+[[:alnum:]|_|\[|\]]*\))`, tail)
+
+			if nil != err {
+				panic(err)
+			}
+
+			oneArg, err := CheckEntry(`(?:`+funcName+`\([[:alpha:]]+[[:alnum:]|_|\[|\]]*\,?\))`, tail)
+
+			if nil != err {
+				panic(err)
+			}
+
+			noArgs, err := CheckEntry(`(?:`+funcName+`\(\))`, tail)
+
+			if nil != err {
+				panic(err)
+			}
+
+			if moreArgs || oneArg || noArgs {
+				return ``, status.Err, errors.New(funcName + ` must have 2 arguments`)
+			}
+
+		} else {
+			panic(`validateStandardFuncCall: unsupported case`)
+		}
+	}
+
+	return command, status.No, nil
+}
+
 func validateFuncDefinition(command string) (tail string, stat int, err error) {
 	tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void)[[:alnum:]|_]*?\`+
 		`((?:((int|float|bool|string|stack))[[:alnum:]|_]+\,){0,})(int|float|bool|string|stack)[[:alnum:]|_]+\){`, command)
@@ -525,6 +622,12 @@ func validateCommand(command string) error {
 	}
 
 	command, stat, err = validateString(command)
+
+	if nil != err {
+		return err
+	}
+
+	command, stat, err = validateStandardFuncCall(command, "SET_SOURCE", 1, false)
 
 	if nil != err {
 		return err
