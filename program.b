@@ -15,6 +15,7 @@ string b_str(){
 };
 void main(){
 	string buf; 
+	print(buf[5]);
 	buf = str(s_um(1, 2));
 	buf = ((str(1) + str(2)) + b_str());
 	buf = ((str(1) + "lalaal") + str(2));

@@ -230,7 +230,7 @@ func validateFuncCall(command string, isFunc bool) (tail string, stat int, err e
 		loc[0]++
 	}
 
-	re, err = regexp.Compile(`(?:[[:alpha:]|_]+[[:alnum:]|_]*\((([[:alnum:]]*\,){0,})[[:alnum:]]*\))`)
+	re, err = regexp.Compile(`(?:[[:alpha:]|_]+[[:alnum:]|_]*\((([[:alnum:]|_|\[|\]]*\,){0,})[[:alnum:]|_|\[|\]]*\))`)
 	if nil != err {
 		panic(err)
 	}
