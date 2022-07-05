@@ -28,6 +28,7 @@ void main(){
 	string root_source;
 	string root_dest;
 	
+	[goto(#mark1), ("yes" == buf[1:5]), print("")];
 	send_command(buf[1:5]);
 	RESET_SOURCE();
 	UNDEFINE(buf);

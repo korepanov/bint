@@ -454,10 +454,16 @@ func validateInput(command string) (tail string, stat int, err error) {
 }
 
 func validateGoto(command string) (tail string, stat int, err error) {
-	tail, stat = check(`(?:goto\(.+\))`, command)
+	tail, stat = check(`(?:goto\([[:alpha:]|_|#]+[[:alnum:]|\]|\[|:|\)|\(|\,|_]*\))`, command)
 
 	if status.Yes == stat && `` == tail {
 		return tail, stat, nil
+	}
+
+	tail, stat = check(`(?:goto\(.+\))`, command)
+
+	if status.Yes == stat && `` == tail {
+		return ``, status.Err, errors.New(`unresolved symbols in goto`)
 	}
 
 	tail, stat = check(`(?:goto\(\))`, command)
@@ -487,6 +493,43 @@ func validatePrint(command string) (tail string, stat int, err error) {
 		return tail[:len(tail)-1], stat, nil
 	}
 	return command, status.No, nil
+}
+
+func validateCD(command string) (tail string, stat int, err error) {
+	tail, stat = check(`(?:\[(print|goto)\(.+?\)\,.+\,(print|goto)\(.+?\)\])`, command)
+
+	if status.Yes == stat && `` == tail {
+		re, err := regexp.Compile(`(?:(print|goto)\(.+?\))`)
+		if nil != err {
+			panic(err)
+		}
+		loc := re.FindAllIndex([]byte(command), -1)
+		if 2 != len(loc) {
+			return ``, status.Err, errors.New(`unresolved command`)
+		}
+		err = validateCommand(command[loc[0][0]:loc[0][1]])
+
+		if nil != err {
+			return ``, status.Err, err
+		}
+
+		err = validateCommand(command[loc[1][0]:loc[1][1]])
+		if nil != err {
+			return ``, status.Err, err
+		}
+
+		cond := string(re.ReplaceAll([]byte(command), []byte(``)))
+		cond = cond[2 : len(cond)-2]
+
+		err = validateCommand(cond)
+		if nil != err {
+			return ``, status.Err, err
+		}
+
+		return ``, status.Yes, nil
+	}
+
+	return ``, status.No, nil
 }
 
 func validateCommand(command string) error {
@@ -566,6 +609,18 @@ func validateCommand(command string) error {
 
 	if nil != err {
 		return err
+	}
+
+	tail, stat, err = validateCD(command)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		if `` == tail {
+			return nil
+		}
 	}
 
 	command, stat, err = validateStandardFuncCall(command, "next_command", 1, false)
