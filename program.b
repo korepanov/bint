@@ -27,7 +27,10 @@ void main(){
 	string command;
 	string root_source;
 	string root_dest;
-
+	
+	send_command(buf[1:5]);
+	RESET_SOURCE();
+	UNDEFINE(buf);
 	#mark2:
 	goto(#mark1);
 	#mark1:

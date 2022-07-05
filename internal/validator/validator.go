@@ -198,7 +198,7 @@ func validateAssignment(command string) (tail string, stat int, err error) {
 }
 
 func validateVar(command string) (tail string, stat int, err error) {
-	tail, stat = check(`(?:[[:alnum:]]+)`, command)
+	tail, stat = check(`(?:[[:alnum:]|_|\[|\]|:]+)`, command)
 	return tail, stat, nil
 }
 func validateString(command string) (tail string, stat int, err error) {
@@ -301,14 +301,25 @@ func validateArithmetic(command string, isOp bool) (tail string, stat int, err e
 	if nil != err {
 		panic(err)
 	}
+
+	reConc, err := regexp.Compile(`(?m)(?:\(([[[:alnum:]|_]|\[|]|:)*[+]([[[:alnum:]|_]|\[|]|:)*\))`)
+	if nil != err {
+		panic(err)
+	}
+
 	loc := re.FindIndex([]byte(command))
-	if nil == loc {
+	locConc := reConc.FindIndex([]byte(command))
+
+	if nil == loc && nil == locConc {
 		if isOp {
 			return command, status.Yes, nil
 		}
 		return command, status.No, nil
 	}
+
 	command = string(re.ReplaceAll([]byte(command), []byte("val")))
+	command = string(reConc.ReplaceAll([]byte(command), []byte("val")))
+
 	return validateArithmetic(command, true)
 }
 
@@ -324,7 +335,7 @@ func validateFuncCall(command string, isFunc bool) (tail string, stat int, err e
 		loc[0]++
 	}
 
-	re, err = regexp.Compile(`(?:[[:alpha:]|_]+[[:alnum:]|_]*\((([[:alnum:]|_|\[|\]]*\,[^,]){0,})[[:alnum:]|_|\[|\]]*\))`)
+	re, err = regexp.Compile(`(?:[[:alpha:]|_]+[[:alnum:]|_]*\((([[:alnum:]|_|\[|\]|:]*\,[^,]){0,})[[:alnum:]|_|\[|\]|:]*\))`)
 	if nil != err {
 		panic(err)
 	}
@@ -378,11 +389,6 @@ func validateUserStackCall(command string) (tail string, stat int, err error) {
 		return tail, stat, err
 	}
 
-	tail, stat = check(`(?:[[:alpha:]]+[[:alnum:]|_]*\.push\(.*\))`, command)
-	if status.Yes == stat && `` == tail {
-		return ``, status.Err, errors.New(`push must have an argument`)
-	}
-
 	tail, stat = check(`(?:[[:alpha:]]+[[:alnum:]|_]*\.pop\(.+\))`, command)
 	if status.Yes == stat && `` == tail {
 		return ``, status.Err, errors.New(`invalid pop argument`)
@@ -427,117 +433,6 @@ func validateSystemStackCall(command string) (tail string, stat int, err error) 
 
 	return command, status.No, nil
 }
-
-func validateIndex(command string) (tail string, stat int, err error) {
-	tail = command
-
-	tail, err = ReplaceFunc(`(?:index\([[:alpha:]]+[[:alnum:]|_|\[|\]]*\,[[:alpha:]]+[[:alnum:]|_|\[|\]]*\))`, tail)
-
-	if nil != err {
-		panic(err)
-	}
-
-	moreArgs, err := CheckEntry(`(?:index\(([[:alpha:]]+[[:alnum:]|_|\[|\]]*\,)+[[:alpha:]]+[[:alnum:]|_|\[|\]]*\))`, tail)
-
-	if nil != err {
-		panic(err)
-	}
-
-	oneArg, err := CheckEntry(`(?:index\([[:alpha:]]+[[:alnum:]|_|\[|\]]*\,?\))`, tail)
-
-	if nil != err {
-		panic(err)
-	}
-
-	noArgs, err := CheckEntry(`(?:index\(\))`, tail)
-
-	if nil != err {
-		panic(err)
-	}
-
-	if moreArgs || oneArg || noArgs {
-		return ``, status.Err, errors.New(`index must have 2 arguments`)
-	}
-
-	return command, status.No, nil
-}
-
-func validateRegFind(command string) (tail string, stat int, err error) {
-	tail = command
-
-	tail, err = ReplaceFunc(`(?:reg_find\([[:alpha:]]+[[:alnum:]|_|\[|\]]*\,[[:alpha:]]+[[:alnum:]|_|\[|\]]*\))`, tail)
-
-	if nil != err {
-		panic(err)
-	}
-
-	moreArgs, err := CheckEntry(`(?:reg_find\(([[:alpha:]]+[[:alnum:]|_|\[|\]]*\,)+[[:alpha:]]+[[:alnum:]|_|\[|\]]*\))`, tail)
-
-	if nil != err {
-		panic(err)
-	}
-
-	oneArg, err := CheckEntry(`(?:reg_find\([[:alpha:]]+[[:alnum:]|_|\[|\]]*\,?\))`, tail)
-
-	if nil != err {
-		panic(err)
-	}
-
-	noArgs, err := CheckEntry(`(?:reg_find\(\))`, tail)
-
-	if nil != err {
-		panic(err)
-	}
-
-	if moreArgs || oneArg || noArgs {
-		return ``, status.Err, errors.New(`reg_find must have 2 arguments`)
-	}
-
-	return command, status.No, nil
-}
-
-func validateIsLetterDigit(command string) (tail string, stat int, err error) {
-	tail = command
-	tail, err = ReplaceFunc(`(?:(is_letter|is_digit)\([[:alpha:]]+[[:alnum:]|_|\[|\]]*\))`, command)
-	if nil != err {
-		panic(err)
-	}
-
-	moreArgs, err := CheckEntry(`(?:(is_letter)\(.+\,.*\))`, command)
-
-	if nil != err {
-		panic(err)
-	}
-
-	noArgs, err := CheckEntry(`(?:(is_letter)\(\))`, command)
-
-	if nil != err {
-		panic(err)
-	}
-
-	if moreArgs || noArgs {
-		return ``, status.Err, errors.New(`is_letter must have 1 argument`)
-	}
-
-	moreArgs, err = CheckEntry(`(?:(is_digit)\(.+\,.*\))`, command)
-
-	if nil != err {
-		panic(err)
-	}
-
-	noArgs, err = CheckEntry(`(?:(is_digit)\(\))`, command)
-
-	if nil != err {
-		panic(err)
-	}
-
-	if moreArgs || noArgs {
-		return ``, status.Err, errors.New(`is_digit must have 1 argument`)
-	}
-
-	return tail, status.No, nil
-}
-
 func validateInput(command string) (tail string, stat int, err error) {
 	tail, stat = check(`(?:input\([[:alpha:]]+[[:alnum:]|_]*\))`, command)
 
@@ -559,15 +454,10 @@ func validateInput(command string) (tail string, stat int, err error) {
 }
 
 func validateGoto(command string) (tail string, stat int, err error) {
-	tail, stat = check(`(?:goto\([[:alpha:]|#]+[[:alnum:]|_]*\))`, command)
+	tail, stat = check(`(?:goto\(.+\))`, command)
 
 	if status.Yes == stat && `` == tail {
 		return tail, stat, nil
-	}
-
-	tail, stat = check(`(?:(goto)\(.+\,.*\))`, command)
-	if status.Yes == stat && `` == tail {
-		return ``, status.Err, errors.New(`goto must have 1 argument`)
 	}
 
 	tail, stat = check(`(?:goto\(\))`, command)
@@ -678,30 +568,6 @@ func validateCommand(command string) error {
 		return err
 	}
 
-	command, stat, err = validateStandardFuncCall(command, "SET_SOURCE", 1, false)
-
-	if nil != err {
-		return err
-	}
-
-	if status.Yes == stat {
-		if `` == tail {
-			return nil
-		}
-	}
-
-	command, stat, err = validateStandardFuncCall(command, "SET_DEST", 1, false)
-
-	if nil != err {
-		return err
-	}
-
-	if status.Yes == stat {
-		if `` == tail {
-			return nil
-		}
-	}
-
 	command, stat, err = validateStandardFuncCall(command, "next_command", 1, false)
 
 	if nil != err {
@@ -726,18 +592,6 @@ func validateCommand(command string) error {
 		}
 	}
 
-	command, stat, err = validateStandardFuncCall(command, "UNSET_SOURCE", 0, false)
-
-	if nil != err {
-		return err
-	}
-
-	if status.Yes == stat {
-		if `` == tail {
-			return nil
-		}
-	}
-
 	command, stat, err = validateStandardFuncCall(command, "UNSET_DEST", 0, false)
 
 	if nil != err {
@@ -751,18 +605,6 @@ func validateCommand(command string) error {
 	}
 
 	command, stat, err = validateStandardFuncCall(command, "DEL_DEST", 1, false)
-
-	if nil != err {
-		return err
-	}
-
-	if status.Yes == stat {
-		if `` == tail {
-			return nil
-		}
-	}
-
-	command, stat, err = validateStandardFuncCall(command, "SEND_DEST", 1, false)
 
 	if nil != err {
 		return err
@@ -809,6 +651,31 @@ func validateCommand(command string) error {
 			return nil
 		}
 	}
+
+	command, stat, err = validateStandardFuncCall(command, "UNDEFINE", 1, false)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		if `` == tail {
+			return nil
+		}
+	}
+
+	command, stat, err = validateStandardFuncCall(command, "RESET_SOURCE", 0, false)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		if `` == tail {
+			return nil
+		}
+	}
+
 	tail, stat, err = validatePrint(command)
 
 	if nil != err {
@@ -871,21 +738,6 @@ func validateCommand(command string) error {
 			command = command[pos:]
 			return validateCommand(command)
 		}
-	}
-
-	command, stat, err = validateIndex(command)
-	if nil != err {
-		return err
-	}
-
-	command, stat, err = validateIsLetterDigit(command)
-	if nil != err {
-		return err
-	}
-
-	command, stat, err = validateRegFind(command)
-	if nil != err {
-		return err
 	}
 
 	command, stat, err = validateFuncCall(command, false)
