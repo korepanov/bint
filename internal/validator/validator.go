@@ -590,6 +590,15 @@ func validateMark(command string) (tail string, stat int, err error) {
 
 	return command, stat, nil
 }
+
+func validatePrint(command string) (tail string, stat int, err error) {
+	tail, stat = check(`(?:print\()`, command)
+	if status.Yes == stat {
+		return tail[:len(tail)-1], stat, nil
+	}
+	return command, status.No, nil
+}
+
 func validateCommand(command string) error {
 	if !isValidBracesNum(command) {
 		return errors.New("number of '(' doest not equal number of ')'")
@@ -800,8 +809,17 @@ func validateCommand(command string) error {
 			return nil
 		}
 	}
+	tail, stat, err = validatePrint(command)
 
-	command, stat, err = validateGoto(command)
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		return validateCommand(tail)
+	}
+
+	tail, stat, err = validateGoto(command)
 
 	if status.Yes == stat {
 		if `` == tail {
