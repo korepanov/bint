@@ -42,7 +42,7 @@ void main(){
 			print("yes");
 			print("yes4");
 			print("yes5");
-		}else if (6 > 7){
+		}else if (True){
 			print("yes");
 			print("yes6");
 			print("yes7");	
@@ -56,7 +56,7 @@ void main(){
 				print("yes");
 				print("yes8");
 				print("yes9");
-			};		
+			};	
 		};	
 	};
 

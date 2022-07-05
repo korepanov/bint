@@ -559,6 +559,47 @@ func validateIf(command string) (tail string, stat int, err error) {
 	return command, status.No, nil
 }
 
+func validateSimpleClause(command string) (tail string, stat int, err error) {
+	tail, stat = check(`(?:\((False|True)\))`, command)
+	if status.Yes == stat && `` == tail {
+		return ``, stat, nil
+	}
+	return command, status.No, nil
+}
+
+func validateElseIf(command string) (tail string, stat int, err error) {
+	tail, stat = check(`(?:^}elseif\([^{]+\){)`, command)
+
+	if status.Yes == stat {
+		re, err := regexp.Compile(`(?:^}elseif\([^{]+\){)`)
+		if nil != err {
+			panic(err)
+		}
+		loc := re.FindIndex([]byte(command))
+		elseIfStruct := command[:loc[1]]
+
+		err = validateCommand(elseIfStruct[7 : len(elseIfStruct)-1])
+		if nil != err {
+			return ``, status.Err, err
+		}
+		return tail, status.Yes, nil
+	}
+
+	tail, stat = check(`(?:^}elseif\([^{]+\))`, command)
+
+	if status.Yes == stat && `` == tail {
+		return ``, status.Err, errors.New(`missing '{' in else if clause`)
+	}
+
+	tail, stat = check(`(?:^elseif\([^{]+\)){`, command)
+
+	if status.Yes == stat {
+		return ``, status.Err, errors.New(`missing '}' in else if clause`)
+	}
+
+	return command, status.No, nil
+}
+
 func validateCommand(command string) error {
 	if !isValidBracesNum(command) {
 		return errors.New("number of '(' doest not equal number of ')'")
@@ -660,6 +701,27 @@ func validateCommand(command string) error {
 		return validateCommand(tail)
 	}
 
+	tail, stat, err = validateElseIf(command)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		return validateCommand(tail)
+	}
+
+	tail, stat, err = validateSimpleClause(command)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		if `` == tail {
+			return nil
+		}
+	}
 	command, stat, err = validateStandardFuncCall(command, "next_command", 1, false)
 
 	if nil != err {
