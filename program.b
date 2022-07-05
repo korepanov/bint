@@ -1,3 +1,5 @@
+#import "stdlib/core.b"
+
 int s_um (int a_g, int b_g){
 	return (a_g + (b_g - 4));
 };
