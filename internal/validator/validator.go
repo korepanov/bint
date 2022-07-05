@@ -600,6 +600,15 @@ func validateElseIf(command string) (tail string, stat int, err error) {
 	return command, status.No, nil
 }
 
+func validateElse(command string) (tail string, stat int, err error) {
+	tail, stat = check(`(?:^}else{)`, command)
+
+	if status.Yes == stat {
+		return tail, stat, nil
+	}
+	return command, status.No, nil
+}
+
 func validateCommand(command string) error {
 	if !isValidBracesNum(command) {
 		return errors.New("number of '(' doest not equal number of ')'")
@@ -722,7 +731,18 @@ func validateCommand(command string) error {
 			return nil
 		}
 	}
-	command, stat, err = validateStandardFuncCall(command, "next_command", 1, false)
+
+	tail, stat, err = validateElse(command)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		return validateCommand(tail)
+	}
+
+	tail, stat, err = validateStandardFuncCall(command, "next_command", 1, false)
 
 	if nil != err {
 		return err
@@ -734,7 +754,7 @@ func validateCommand(command string) error {
 		}
 	}
 
-	command, stat, err = validateStandardFuncCall(command, "send_command", 1, false)
+	tail, stat, err = validateStandardFuncCall(command, "send_command", 1, false)
 
 	if nil != err {
 		return err
@@ -746,7 +766,7 @@ func validateCommand(command string) error {
 		}
 	}
 
-	command, stat, err = validateStandardFuncCall(command, "UNSET_DEST", 0, false)
+	tail, stat, err = validateStandardFuncCall(command, "UNSET_DEST", 0, false)
 
 	if nil != err {
 		return err
@@ -758,7 +778,7 @@ func validateCommand(command string) error {
 		}
 	}
 
-	command, stat, err = validateStandardFuncCall(command, "DEL_DEST", 1, false)
+	tail, stat, err = validateStandardFuncCall(command, "DEL_DEST", 1, false)
 
 	if nil != err {
 		return err
@@ -770,7 +790,7 @@ func validateCommand(command string) error {
 		}
 	}
 
-	command, stat, err = validateStandardFuncCall(command, "REROUTE", 0, false)
+	tail, stat, err = validateStandardFuncCall(command, "REROUTE", 0, false)
 
 	if nil != err {
 		return err
@@ -782,7 +802,7 @@ func validateCommand(command string) error {
 		}
 	}
 
-	command, stat, err = validateStandardFuncCall(command, "get_root_source", 1, false)
+	tail, stat, err = validateStandardFuncCall(command, "get_root_source", 1, false)
 
 	if nil != err {
 		return err
@@ -794,7 +814,7 @@ func validateCommand(command string) error {
 		}
 	}
 
-	command, stat, err = validateStandardFuncCall(command, "get_root_dest", 1, false)
+	tail, stat, err = validateStandardFuncCall(command, "get_root_dest", 1, false)
 
 	if nil != err {
 		return err
@@ -806,7 +826,7 @@ func validateCommand(command string) error {
 		}
 	}
 
-	command, stat, err = validateStandardFuncCall(command, "UNDEFINE", 1, false)
+	tail, stat, err = validateStandardFuncCall(command, "UNDEFINE", 1, false)
 
 	if nil != err {
 		return err
@@ -818,7 +838,7 @@ func validateCommand(command string) error {
 		}
 	}
 
-	command, stat, err = validateStandardFuncCall(command, "RESET_SOURCE", 0, false)
+	tail, stat, err = validateStandardFuncCall(command, "RESET_SOURCE", 0, false)
 
 	if nil != err {
 		return err
