@@ -532,6 +532,33 @@ func validateCD(command string) (tail string, stat int, err error) {
 	return ``, status.No, nil
 }
 
+func validateIf(command string) (tail string, stat int, err error) {
+	tail, stat = check(`(?:^if\([^{]+\){)`, command)
+
+	if status.Yes == stat {
+		re, err := regexp.Compile(`(?:^if\([^{]+\){)`)
+		if nil != err {
+			panic(err)
+		}
+		loc := re.FindIndex([]byte(command))
+		ifStruct := command[:loc[1]]
+
+		err = validateCommand(ifStruct[2 : len(ifStruct)-1])
+		if nil != err {
+			return ``, status.Err, err
+		}
+		return tail, status.Yes, nil
+	}
+
+	tail, stat = check(`(?:^if\([^{]+\))`, command)
+
+	if status.Yes == stat && `` == tail {
+		return ``, status.Err, errors.New(`missing '{' in if clause`)
+	}
+
+	return command, status.No, nil
+}
+
 func validateCommand(command string) error {
 	if !isValidBracesNum(command) {
 		return errors.New("number of '(' doest not equal number of ')'")
@@ -621,6 +648,16 @@ func validateCommand(command string) error {
 		if `` == tail {
 			return nil
 		}
+	}
+
+	tail, stat, err = validateIf(command)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		return validateCommand(tail)
 	}
 
 	command, stat, err = validateStandardFuncCall(command, "next_command", 1, false)
