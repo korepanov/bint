@@ -9,6 +9,21 @@ import (
 	"strings"
 )
 
+const (
+	funcDefinition = iota
+	ifCond         = iota
+	elseIfCond     = iota
+	elseCond       = iota
+)
+
+type brace struct {
+	T       int
+	line    int
+	command string
+}
+
+var closureHistory []brace
+
 func check(reg string, command string) (tail string, stat int) {
 	re, err := regexp.Compile(reg)
 	if nil != err {
@@ -131,12 +146,14 @@ func validateFuncDefinition(command string) (tail string, stat int, err error) {
 	tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void)[[:alnum:]|_]*?\`+
 		`((?:((int|float|bool|string|stack))[[:alnum:]|_]+\,){0,})(int|float|bool|string|stack)[[:alnum:]|_]+\){`, command)
 	if status.Yes == stat {
+		closureHistory = append(closureHistory, brace{funcDefinition, LineCounter, CommandToExecute})
 		return tail, stat, nil
 	}
 
 	tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void)[[:alnum:]|_]*?\`+
 		`(\){)`, command)
 	if status.Yes == stat {
+		closureHistory = append(closureHistory, brace{funcDefinition, LineCounter, CommandToExecute})
 		return tail, stat, nil
 	}
 
@@ -173,6 +190,16 @@ func validateReturn(command string) (tail string, stat int, err error) {
 
 func validateFigureBrace(command string) (tail string, stat int, err error) {
 	tail, stat = check(`(?m)(?:})`, command)
+
+	if status.Yes == stat {
+		if len(closureHistory) > 0 {
+			closureHistory = closureHistory[:len(closureHistory)-1]
+		} else {
+			return ``, status.Err, errors.New(`'{' is missing`)
+		}
+
+	}
+
 	return tail, stat, nil
 }
 
@@ -533,6 +560,7 @@ func validateCD(command string) (tail string, stat int, err error) {
 		err = validateCommand(cond)
 		if nil != err {
 			// здесь возникает проблема в внешними скобками
+			// поэтому делаем повторный запуск для уороченного cond
 			if "unresolved command" == err.Error() {
 				err2 := validateCommand(cond[1 : len(cond)-1])
 				if nil != err2 {
@@ -551,6 +579,7 @@ func validateIf(command string) (tail string, stat int, err error) {
 	tail, stat = check(`(?:^if\([^{]+\){)`, command)
 
 	if status.Yes == stat {
+		closureHistory = append(closureHistory, brace{ifCond, LineCounter, CommandToExecute})
 		re, err := regexp.Compile(`(?:^if\([^{]+\){)`)
 		if nil != err {
 			panic(err)
@@ -586,6 +615,7 @@ func validateElseIf(command string) (tail string, stat int, err error) {
 	tail, stat = check(`(?:^}elseif\([^{]+\){)`, command)
 
 	if status.Yes == stat {
+		closureHistory = append(closureHistory, brace{elseIfCond, LineCounter, CommandToExecute})
 		re, err := regexp.Compile(`(?:^}elseif\([^{]+\){)`)
 		if nil != err {
 			panic(err)
@@ -619,6 +649,7 @@ func validateElse(command string) (tail string, stat int, err error) {
 	tail, stat = check(`(?:^}else{)`, command)
 
 	if status.Yes == stat {
+		closureHistory = append(closureHistory, brace{elseCond, LineCounter, CommandToExecute})
 		return tail, stat, nil
 	}
 	return command, status.No, nil
@@ -1009,6 +1040,12 @@ func Validate(rootSource string) error {
 		}
 	}
 
+	if len(closureHistory) > 0 {
+		LineCounter = closureHistory[len(closureHistory)-1].line
+		CommandToExecute = closureHistory[len(closureHistory)-1].command
+
+		return errors.New(`'}' is missing`)
+	}
 	LineCounter = 0
 	return nil
 }
