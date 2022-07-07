@@ -145,7 +145,7 @@ stack func_ends(string command, stack func_begins, int func_len){
 	[goto(#func_ends_e), ("end" == buf), print("")];
 	i = int(buf);
 	command_len = len(command);
-	br_begin = (i + (func_len));
+	br_begin = (i + func_len);
 	opened_braces = 1;
 	br_end = (br_begin + 1);
 	#counter_s:

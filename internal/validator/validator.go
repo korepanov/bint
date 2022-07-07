@@ -4,7 +4,6 @@ import (
 	"bint.com/internal/const/status"
 	. "bint.com/pkg/serviceTools"
 	"errors"
-	"fmt"
 	"os"
 	"regexp"
 	"strings"
@@ -533,7 +532,13 @@ func validateCD(command string) (tail string, stat int, err error) {
 
 		err = validateCommand(cond)
 		if nil != err {
-			return ``, status.Err, err
+			// здесь возникает проблема в внешними скобками
+			if "unresolved command" == err.Error() {
+				err2 := validateCommand(cond[1 : len(cond)-1])
+				if nil != err2 {
+					return ``, status.Err, err
+				}
+			}
 		}
 
 		return ``, status.Yes, nil
@@ -626,9 +631,6 @@ func validateImport(command string) (tail string, stat int, err error) {
 }
 
 func validateCommand(command string) error {
-	if 401 == LineCounter {
-		fmt.Println("YES")
-	}
 	tail, stat, err := validateFuncDefinition(command)
 	if nil != err {
 		return err

@@ -1,9 +1,0 @@
-intsum(inta,intb){return(a+b);
-};
-voidmain(){stringbuf;
-buf=str(sum(1,2));
-print(buf);
-print("
-");
-};
-main();
