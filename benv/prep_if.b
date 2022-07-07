@@ -55,7 +55,7 @@ bool is_else(string command){
 	return False;
 };
 
-string add_nop(string command){
+void send_new_command(string command){
 	string op;
 	string buf;
 	string command_buf; 
@@ -63,27 +63,26 @@ string add_nop(string command){
 	int pos;
 	string new_command;
 	int command_len;
-	int num;
-	
 	op = "{";
-	num = 0;
 
-	#add_nop_s:
+	#send_new_command_s:
 	s = ops(command, op);
 	s.pop(buf);
-	[print(""), ("end" == buf), goto(#add_nop_e)];
+	
+	[goto(#send_new_command_e), ("end" == buf), print("")];
 	
 	pos = int(buf);
 	pos = (pos + 1);
 	command_buf = command[0:pos];
 	new_command = (command_buf + "print(\"\")");
+	println(new_command);
+
 	command_len = len(command);
 	command_buf = command[pos:command_len];
-	new_command = (new_command + command_len);
-	command = new_command; 
-
-	#add_nop_e:
-	return "plug";
+	command = command_buf;
+	goto(#send_new_command_s);
+	#send_new_command_e:
+	print("");
 };
 
 void main(){
@@ -94,7 +93,7 @@ void main(){
 	#main_s:
 	[goto(#main_e), ("end" == command), print("")];
 	[print(""), ((is_if(command)) OR (is_else(command))), goto(#not_cond)];
-	println(add_nop(command));
+	send_new_command(command);
 	#not_cond:
 	send_command(command);
 	next_command(command);
