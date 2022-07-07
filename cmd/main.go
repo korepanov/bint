@@ -10,7 +10,7 @@ import (
 
 func main() {
 	// эти опции можно менять для системной отладки
-	sysMode := options.UserTranslate
+	sysMode := options.ExecBasm
 	benvMode := options.ExecBenv
 
 	var filesListToExecute []string
@@ -35,6 +35,6 @@ func main() {
 		}
 	}
 
-	return
+	//return
 	Start(toTranslate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
 }
