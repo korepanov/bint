@@ -4,6 +4,7 @@ import (
 	"bint.com/internal/const/status"
 	. "bint.com/pkg/serviceTools"
 	"errors"
+	"fmt"
 	"os"
 	"regexp"
 	"strings"
@@ -181,7 +182,11 @@ func validateVarDef(command string) (tail string, stat int, err error) {
 	if status.Yes == stat && `` == tail {
 		return tail, stat, nil
 	}
-	tail, stat = check(`(?m)(?:(int|float|bool|string|stack).*)`, command)
+	tail, stat = check(`(?m)(?:(string|stack)[^(]*)`, command)
+	if status.Yes == stat && `` == tail {
+		return ``, status.Err, errors.New(`invalid variable name`)
+	}
+	tail, stat = check(`(?m)(?:(int|float|bool)[^(]*)`, command)
 	if status.Yes == stat && `` == tail {
 		return ``, status.Err, errors.New(`invalid variable name`)
 	}
@@ -197,8 +202,13 @@ func validateAssignment(command string) (tail string, stat int, err error) {
 	return ``, status.No, nil
 }
 
+func validateNumber(command string) (tail string, stat int, err error) {
+	tail, stat = check(`(?:\-?[[:digit:]]+\.?[[:digit:]]*)`, command)
+	return tail, stat, nil
+}
+
 func validateVar(command string) (tail string, stat int, err error) {
-	tail, stat = check(`(?:[[:alnum:]|_|\[|\]|:]+)`, command)
+	tail, stat = check(`(?:\(?[[:alnum:]|_|\[|\]|:]+\)?)`, command)
 	return tail, stat, nil
 }
 func validateString(command string) (tail string, stat int, err error) {
@@ -616,8 +626,8 @@ func validateImport(command string) (tail string, stat int, err error) {
 }
 
 func validateCommand(command string) error {
-	if !isValidBracesNum(command) {
-		return errors.New("number of '(' doest not equal number of ')'")
+	if 401 == LineCounter {
+		fmt.Println("YES")
 	}
 	tail, stat, err := validateFuncDefinition(command)
 	if nil != err {
@@ -694,6 +704,10 @@ func validateCommand(command string) error {
 		return err
 	}
 
+	if !isValidBracesNum(command) {
+		return errors.New("number of '(' doest not equal number of ')'")
+	}
+
 	tail, stat, err = validateImport(command)
 
 	if nil != err {
@@ -759,6 +773,18 @@ func validateCommand(command string) error {
 	}
 
 	tail, stat, err = validateStandardFuncCall(command, "next_command", 1, false)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		if `` == tail {
+			return nil
+		}
+	}
+
+	tail, stat, err = validateNumber(command)
 
 	if nil != err {
 		return err
