@@ -35,5 +35,6 @@ func main() {
 		}
 	}
 
+	//return
 	Start(toTranslate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
 }

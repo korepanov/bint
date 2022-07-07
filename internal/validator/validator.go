@@ -609,6 +609,12 @@ func validateElse(command string) (tail string, stat int, err error) {
 	return command, status.No, nil
 }
 
+func validateImport(command string) (tail string, stat int, err error) {
+	tail, stat = check(`(?:#importval)`, command)
+
+	return tail, stat, nil
+}
+
 func validateCommand(command string) error {
 	if !isValidBracesNum(command) {
 		return errors.New("number of '(' doest not equal number of ')'")
@@ -686,6 +692,16 @@ func validateCommand(command string) error {
 
 	if nil != err {
 		return err
+	}
+
+	tail, stat, err = validateImport(command)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		return validateCommand(tail)
 	}
 
 	tail, stat, err = validateCD(command)
