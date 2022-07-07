@@ -1,4 +1,6 @@
 void main(){
+	print("");
+	print("hello!\n");
 	if (1 > 2){
 		if (3 > 4){
 			print("yes");

@@ -37,6 +37,55 @@ bool is_if(string command){
 	print("");
 };
 
+bool is_else(string command){
+	string op;
+	stack s;
+	string buf;
+	int ibuf;
+	int start_pos;
+
+	op = "}else{";
+	s = ops(command, op); 
+	s.pop(buf);
+	[goto(#end_else_true), ("end" == buf), print("")];
+	ibuf = int(buf);
+	[print(""), (0 == ibuf), goto(#end_else_true)];
+	return True;
+	#end_else_true:
+	return False;
+};
+
+string add_nop(string command){
+	string op;
+	string buf;
+	string command_buf; 
+	stack s; 
+	int pos;
+	string new_command;
+	int command_len;
+	int num;
+	
+	op = "{";
+	num = 0;
+
+	#add_nop_s:
+	s = ops(command, op);
+	s.pop(buf);
+	[print(""), ("end" == buf), goto(#add_nop_e)];
+	
+	pos = int(buf);
+	pos = (pos + 1);
+	command_buf = command[0:pos];
+	new_command = (command_buf + "print(\"\")");
+	command_len = len(command);
+	command_buf = command[pos:command_len];
+	new_command = (new_command + command_len);
+	command = new_command; 
+
+	#add_nop_e:
+	return "plug";
+};
+
 void main(){
 	string command;
 
@@ -44,6 +93,9 @@ void main(){
 	next_command(command);
 	#main_s:
 	[goto(#main_e), ("end" == command), print("")];
+	[print(""), ((is_if(command)) OR (is_else(command))), goto(#not_cond)];
+	println(add_nop(command));
+	#not_cond:
 	send_command(command);
 	next_command(command);
 	goto(#main_s);
