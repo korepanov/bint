@@ -75,7 +75,7 @@ void send_new_command(string command){
 	pos = (pos + 1);
 	command_buf = command[0:pos];
 	new_command = (command_buf + "print(\"\")");
-	println(new_command);
+	send_command(new_command);
 
 	command_len = len(command);
 	command_buf = command[pos:command_len];
@@ -94,6 +94,8 @@ void main(){
 	[goto(#main_e), ("end" == command), print("")];
 	[print(""), ((is_if(command)) OR (is_else(command))), goto(#not_cond)];
 	send_new_command(command);
+	next_command(command);
+	goto(#main_s);
 	#not_cond:
 	send_command(command);
 	next_command(command);
