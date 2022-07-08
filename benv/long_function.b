@@ -18,6 +18,7 @@ int finish(){
 	return 0;
 };
 
+
 stack reverse(stack s){
 	string buf;
 	stack res; 
@@ -32,6 +33,35 @@ stack reverse(stack s){
 	return res;
 };
 
+
+stack indexes(string s, string sub_s){
+	stack res;
+	
+	int i;
+	int pointer; 
+	int s_len;
+	int s_len_old;
+	int sub_len;
+ 	
+	s_len = len(s);
+	sub_len = len(sub_s);
+	s_len_old = s_len;
+	i = index(s, sub_s);
+	pointer = i;
+	#indexes_s:
+	[goto(#indexes_e), (-1 == i), print("")];
+	i = (i + (s_len_old - s_len));
+	res.push(i);
+	pointer = (pointer + sub_len);
+	s = s[pointer:s_len];
+	s_len = len(s);
+	i = index(s, sub_s);
+	pointer = i;
+	goto(#indexes_s);
+	#indexes_e:
+	res = reverse(res);
+	return res;
+};
 
 stack look_behind(string reg, string s){
 	stack st;
@@ -63,21 +93,40 @@ stack look_behind(string reg, string s){
 int func_call_index(string command, string func_name){
 	string reg;
 	stack st;
+	stack ist;
+	int res;
+	string buf;
 	string symbol;
-	
+	bool letter;
+	bool digit;
+
 	reg = (("(?:" + func_name) + ")");
 
 	st = look_behind(reg, command);
+	ist = indexes(command, func_name);
 	
+	#func_call_index_s:
 	st.pop(symbol);
-	print(command);
-	print("\n");
-	print(func_name);
-	print("\n");
-	print(symbol);
-	print("\n");
-	return 0;
+	
+	if ("end" == symbol){
+		return -1;	
+	};
 
+	ist.pop(buf);
+
+	if ("end" == buf){
+		print("func_call_index ERROR\n");	
+	}; 
+
+	res = int(buf);
+	letter = is_letter(symbol);
+	digit = is_digit(symbol);	
+
+	if (NOT(((letter)OR(digit))OR("_" == symbol))){
+		return res;		
+	};
+
+	goto(#func_call_index_s);
 };
 
 stack next_func(){
@@ -144,35 +193,6 @@ stack get_funcs(){
 	RESET_SOURCE();
 	return res_stack;
 		
-};
-
-stack indexes(string s, string sub_s){
-	stack res;
-	
-	int i;
-	int pointer; 
-	int s_len;
-	int s_len_old;
-	int sub_len;
- 	
-	s_len = len(s);
-	sub_len = len(sub_s);
-	s_len_old = s_len;
-	i = index(s, sub_s);
-	pointer = i;
-	#indexes_s:
-	[goto(#indexes_e), (-1 == i), print("")];
-	i = (i + (s_len_old - s_len));
-	res.push(i);
-	pointer = (pointer + sub_len);
-	s = s[pointer:s_len];
-	s_len = len(s);
-	i = index(s, sub_s);
-	pointer = i;
-	goto(#indexes_s);
-	#indexes_e:
-	res = reverse(res);
-	return res;
 };
 
 stack func_ends(string command, stack func_begins, int func_len){
@@ -262,6 +282,7 @@ void replace(){
 	int itemp;
 	string temp;
 	int stemp_len;
+	string debug_var;
 
 	func_entry = 0;
 	offset = 0;
@@ -282,6 +303,13 @@ void replace(){
 	[goto(#next_end), ("end" == command), print("")];
 	number = index(command, func_name);
 	itemp = func_call_index(command, func_name);
+	debug_var = str(itemp);
+	print(command);
+	print("\n");
+	print(func_name);
+	print("\n");
+	print(debug_var);
+	print("\n");
 	[print(""), (-1 == number), goto(#not_send)];
 	send_command(command);
 	goto(#next);

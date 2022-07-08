@@ -482,11 +482,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 			// значит, цикл должен выполниться хотя бы один раз
 			varFlag := true
 			endPos := FindExprListEnd(exprList, i)
-			endPos -= 1 // возвращаемся на закрывающуюся скобку
-			for ")" == exprList[endPos][1] {
-				endPos -= 1
-			}
-			endPos += 2 // устанавливаем endPos за скобку
+
 			for (CanBePartOfBoolExpr(fmt.Sprintf("%v", exprList[i][1])) || varFlag || "VAL" == fmt.Sprintf("%v", exprList[i][0])) &&
 				i < endPos {
 				varFlag = false
@@ -504,7 +500,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 				}
 			}
 
-			i -= 1 // возвращаемся на единицу назад, т. к. справа от NOT внешняя скобка
+			i -= 2 // возвращаемся на две единицы назад: на внешнюю скобку NOT и символ за ней
 
 			exprList = Insert(exprList, i, []interface{}{"BR", ")"})
 			i += 1
