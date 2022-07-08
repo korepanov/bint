@@ -103,8 +103,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 		toTranslate = toTranslateInternal
 
 		if options.Internal == toTranslate {
-			rootSource = "benv/prep_if.b"
-			rootDest = "benv/prep_if.basm"
+			rootSource = "benv/program.b"
+			rootDest = "benv/prog.basm"
 			if execBenv {
 				filesListToExecute = []string{"benv/internal/build/import",
 					"benv/internal/build/if",
@@ -115,8 +115,9 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 
 			} else {
 				filesListToExecute = []string{"benv/internal/import.basm",
-					"benv/internal/if.basm",
 					"benv/internal/prep_func.basm",
+					"benv/internal/prep_if.basm",
+					"benv/internal/if.basm",
 					"benv/internal/long_function.basm",
 					"benv/internal/func.basm",
 					"benv/internal/print_format.basm"}
@@ -173,7 +174,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 		} else if options.ExecBasm == toTranslate {
 			//rootSource = "program.b"
 			//rootDest = "benv/prep_if.basm"
-			rootDest = "program.basm"
+			rootDest = "benv/prog.basm"
 			filesListToExecute = []string{rootDest}
 		} else if options.Primitive == toTranslate {
 			rootSource = "bendBenv/func.basm"

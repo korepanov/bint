@@ -11,7 +11,7 @@ import (
 func main() {
 	// эти опции можно менять для системной отладки
 	sysMode := options.ExecBasm
-	benvMode := options.ExecBenv
+	benvMode := options.InterpBenv
 
 	var filesListToExecute []string
 
