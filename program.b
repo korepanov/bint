@@ -1,7 +1,6 @@
 void main(){
-	print("");
 	print("hello!\n");
-	if (1 > 2){
+	if (2 > 1){
 		if (3 > 4){
 			print("yes");
 			print("yes2");
@@ -14,10 +13,10 @@ void main(){
 			print("yes");
 			print("yes6");
 			print("yes7");	
-		}else if (False){
-			print("1");
-			print("2");
-			print("3");	
+		}else if (True){
+			print("1\n");
+			print("2\n");
+			print("3\n");	
 		}else{
 			print("Hello from else!\n");
 			if (7 > 8){
@@ -28,10 +27,10 @@ void main(){
 		};	
 	};
 
-	if (9 > 10){
-		print("yes");
-		print("yes10");
-		print("yes11");
+	if (10 > 9){
+		print("yes\n");
+		print("yes10\n");
+		print("yes11\n");
 	}else{
 		print("yes12");
 		print("yes13");

@@ -307,7 +307,7 @@ string$init_return_var;
 goto(#init_end);
 #init:print("");
 print("");
-root_source="benv/import_program.b";
+root_source="benv/prep_if_program.b";
 SET_SOURCE(root_source);
 SET_DEST("benv/if_program.b");
 goto($init_return_var);
