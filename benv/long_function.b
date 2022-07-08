@@ -3,18 +3,81 @@ string return_type;
 string func_name;
 stack func_stack;
 bool bool_res;
+string root_source;
 
 int init(){
-	SET_SOURCE("benv/prep_func_program.b");
+	get_root_source(root_source);
+	SET_SOURCE(root_source);
 	SET_DEST("benv/long_function_program.b");
 	
 	return 0;
 };
 
 int finish(){
-	DEL_DEST("benv/prep_func_program.b");
-
+	
 	return 0;
+};
+
+stack reverse(stack s){
+	string buf;
+	stack res; 
+	
+	s.pop(buf);
+	#reverse_s:
+	[goto(#reverse_e), ("end" == buf), print("")];
+	res.push(buf);
+	s.pop(buf);
+	goto(#reverse_s);
+	#reverse_e:
+	return res;
+};
+
+
+stack look_behind(string reg, string s){
+	stack st;
+	stack this;
+	stack res;  
+	string buf;
+	int pos;
+	string symbol;
+
+	st = reg_find(reg, s);
+
+	#look_behind_s:
+	st.pop(this);
+	this.pop(buf);
+	[goto(#look_behind_e), ("end" == buf), print("")];
+	pos = int(buf);
+	[print(""), (0 == pos), goto(#is_not_zero)];
+	res.push("$");
+	goto(#look_behind_s);
+	#is_not_zero:
+	pos = (pos - 1);
+	symbol = s[pos];
+	res.push(symbol);
+	goto(#look_behind_s);
+	#look_behind_e:
+	return reverse(res);
+};
+
+int func_call_index(string command, string func_name){
+	string reg;
+	stack st;
+	string symbol;
+	
+	reg = (("(?:" + func_name) + ")");
+
+	st = look_behind(reg, command);
+	
+	st.pop(symbol);
+	print(command);
+	print("\n");
+	print(func_name);
+	print("\n");
+	print(symbol);
+	print("\n");
+	return 0;
+
 };
 
 stack next_func(){
@@ -83,20 +146,6 @@ stack get_funcs(){
 		
 };
 
-stack reverse(stack s){
-	string buf;
-	stack res; 
-	
-	s.pop(buf);
-	#reverse_s:
-	[goto(#reverse_e), ("end" == buf), print("")];
-	res.push(buf);
-	s.pop(buf);
-	goto(#reverse_s);
-	#reverse_e:
-	return res;
-};
-
 stack indexes(string s, string sub_s){
 	stack res;
 	
@@ -145,7 +194,7 @@ stack func_ends(string command, stack func_begins, int func_len){
 	[goto(#func_ends_e), ("end" == buf), print("")];
 	i = int(buf);
 	command_len = len(command);
-	br_begin = (i + (func_len));
+	br_begin = (i + func_len);
 	opened_braces = 1;
 	br_end = (br_begin + 1);
 	#counter_s:
@@ -210,6 +259,7 @@ void replace(){
 	int right_border_reserv;
 	string func_call;
 	string stemp;
+	int itemp;
 	string temp;
 	int stemp_len;
 
@@ -231,6 +281,7 @@ void replace(){
 	next_command(command);
 	[goto(#next_end), ("end" == command), print("")];
 	number = index(command, func_name);
+	itemp = func_call_index(command, func_name);
 	[print(""), (-1 == number), goto(#not_send)];
 	send_command(command);
 	goto(#next);
