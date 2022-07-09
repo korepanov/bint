@@ -9,6 +9,7 @@ void test_sum(string t){
 
 void main(){
 	test_sum(sum(1, 2));
+	test_sum(sum(3, 4) + sum(5, 6));
 
 };
 

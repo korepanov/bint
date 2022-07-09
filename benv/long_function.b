@@ -129,6 +129,35 @@ int func_call_index(string command, string func_name){
 	goto(#func_call_index_s);
 };
 
+stack func_calls(string s, string sub_s){
+	stack res;
+	
+	int i;
+	int pointer; 
+	int s_len;
+	int s_len_old;
+	int sub_len;
+ 	
+	s_len = len(s);
+	sub_len = len(sub_s);
+	s_len_old = s_len;
+	i = func_call_index(s, sub_s);
+	pointer = i;
+	#findexes_s:
+	[goto(#findexes_e), (-1 == i), print("")];
+	i = (i + (s_len_old - s_len));
+	res.push(i);
+	pointer = (pointer + sub_len);
+	s = s[pointer:s_len];
+	s_len = len(s);
+	i = func_call_index(s, sub_s);
+	pointer = i;
+	goto(#findexes_s);
+	#findexes_e:
+	res = reverse(res);
+	return res;
+};
+
 stack next_func(){
 	int number;
 	int left_border;
@@ -282,7 +311,6 @@ void replace(){
 	int itemp;
 	string temp;
 	int stemp_len;
-	string debug_var;
 
 	func_entry = 0;
 	offset = 0;
@@ -301,15 +329,8 @@ void replace(){
 	#next:
 	next_command(command);
 	[goto(#next_end), ("end" == command), print("")];
-	number = index(command, func_name);
-	itemp = func_call_index(command, func_name);
-	debug_var = str(itemp);
-	print(command);
-	print("\n");
-	print(func_name);
-	print("\n");
-	print(debug_var);
-	print("\n");
+	number = func_call_index(command, func_name);
+	
 	[print(""), (-1 == number), goto(#not_send)];
 	send_command(command);
 	goto(#next);
@@ -342,7 +363,7 @@ void replace(){
 	goto(#next);
 	#to_next_end:
 	
-	func_pos_stack = indexes(command, func_name);	
+	func_pos_stack = func_calls(command, func_name);	
 	func_ends_stack = func_ends(command, func_pos_stack, func_len);
 
 	func_pos_stack.pop(sleft_border);
