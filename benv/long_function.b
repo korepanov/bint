@@ -6,7 +6,7 @@ bool bool_res;
 string root_source;
 
 int init(){
-	get_root_source(root_source);
+	root_source = "benv/if_program.b";
 	SET_SOURCE(root_source);
 	SET_DEST("benv/long_function_program.b");
 	
@@ -14,7 +14,7 @@ int init(){
 };
 
 int finish(){
-	
+	DEL_DEST(root_source);
 	return 0;
 };
 
@@ -311,6 +311,7 @@ void replace(){
 	int itemp;
 	string temp;
 	int stemp_len;
+	string arg_type;
 
 	func_entry = 0;
 	offset = 0;
@@ -368,6 +369,7 @@ void replace(){
 
 	func_pos_stack.pop(sleft_border);
 	func_ends_stack.pop(sright_border);
+	
 	replaced_command = command;
 	itemp = len(command);
 	stemp_len = 0;

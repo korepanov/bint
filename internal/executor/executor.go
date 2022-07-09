@@ -892,11 +892,13 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 						if nil == transpileVar {
 							transpileVar = RO[0]
 							stranspileVar = fmt.Sprintf("%v", transpileVar)
+
 							if len(stranspileVar) > 7 && "\"getVar" == stranspileVar[0:7] {
 								stranspileVar = stranspileVar[1 : len(stranspileVar)-1]
 							} else if "\"" != string(stranspileVar[0]) &&
 								!(len(stranspileVar) > 6 && "string" == stranspileVar[0:6]) &&
-								!(len(stranspileVar) > 6 && "getVar" == stranspileVar[0:6]) {
+								!(len(stranspileVar) > 6 && "getVar" == stranspileVar[0:6]) &&
+								!(len(stranspileVar) > 8 && "unicode." == stranspileVar[0:8]) {
 								stranspileVar = "\"" + stranspileVar + "\""
 							}
 

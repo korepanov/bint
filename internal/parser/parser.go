@@ -275,6 +275,8 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 		wasUndefine = true
 	}
 	if "push" == fmt.Sprintf("%v", exprList[0][1]) {
+		//exprList = Insert(exprList, 1, []interface{}{"BR", "("})
+		//exprList = append(exprList, []interface{}{"BR", ")"})
 		exprList = makeOperationBinary(exprList)
 		wasPush = true
 	}
