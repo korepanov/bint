@@ -362,6 +362,12 @@ func_name_br = (func_name + "(");
 [goto(#again_end), ("end" == command), print("")];
 number = index(command, func_name_br);
 [goto(#mod_end), (-1 == number), print("")];
+push(command);
+push(func_name);
+goto(#func_call_index);
+#func_call_index_ret:
+pop(func_pos);
+[goto(#mod_end), (-1 == func_pos), print("")];
 
 number = (number + func_name_len);
 buf4 = command[number];
@@ -375,19 +381,6 @@ left_border = (br_number + 1);
 buf2 = buf;
 
 #call_start:
-print(buf);
-print("\n");
-print(func_name);
-print("\n");
-push(buf);
-push(func_name);
-goto(#func_call_index);
-#func_call_index_ret:
-pop(func_pos);
-string deb;
-deb = str(func_pos);
-print(deb);
-print("\n");
 [goto(#call_end), ("" == buf), print("")];
 comma_pos = index(buf, ",");
 [print(""), (-1 == comma_pos), goto(#comma_end)];
@@ -631,7 +624,7 @@ res = int(buf);
 letter = is_letter(symbol);
 digit = is_digit(symbol);	
 
-[print(""), (NOT(((letter)OR(digit))OR("_" == symbol))), goto(#not_func)];
+[print(""), (NOT((((letter)OR(digit))OR("_" == symbol))OR("$" == symbol))), goto(#not_func)];
 push(res);
 UNDEFINE(reg);
 UNDEFINE(st);
