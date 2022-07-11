@@ -10,7 +10,7 @@ import (
 
 func main() {
 	// эти опции можно менять для системной отладки
-	sysMode := options.Internal
+	sysMode := options.UserTranslate
 	benvMode := options.InterpBenv
 
 	var filesListToExecute []string

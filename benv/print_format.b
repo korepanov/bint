@@ -40,10 +40,7 @@ void replace_print(string command){
 	command_len = len(command);
 	num = 0;
 	snum = str(num);
-	print(command);
-	print("\n");
-	print(op);
-	print("\n");
+	
 	s = ops(command, op);
 	
 	s.pop(buf);

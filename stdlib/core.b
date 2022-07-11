@@ -63,6 +63,7 @@ stack ops(string command, string op){
 
 	op_nums = indexes(command, op);
 	op_nums.pop(buf);
+
 	#_op_nums_s:
 	[goto(#_op_nums_e), ("end" == buf), print("")];
 	op_num = int(buf);

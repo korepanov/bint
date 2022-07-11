@@ -342,12 +342,6 @@ i=0;
 command_len=len(command);
 num=0;
 snum=str(num);
-print(command);
-print("
-");
-print(op);
-print("
-");
 stack$ops_res2;
 push(command);
 push(op);

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"strings"
 )
 
 func maxBraces(exprList [][]interface{}) int {
@@ -477,6 +478,13 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 		}
 		// если справа null, значит NOT уже заменен
 		if "NOT" == fmt.Sprintf("%v", exprList[i][1]) && "null" != fmt.Sprintf("%v", exprList[i+1][1]) {
+			var buf string
+			for i := 0; i < len(exprList); i++ {
+				buf += fmt.Sprintf("%v", exprList[i][1])
+			}
+			if "[goto(#_push_op_end),(was_quoteAND(NOTto_add)),print(\"\")]" == strings.TrimSpace(buf) {
+				fmt.Println("YES")
+			}
 			exprList = Pop(exprList, i) // выталкиваем NOT
 			exprList = Insert(exprList, i, []interface{}{"BR", "("})
 			i += 1
@@ -511,7 +519,9 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 			exprList = Insert(exprList, i, []interface{}{"VAL", "null", "null"})
 
 			//exprList = Insert(exprList, i - 1, []interface{}{"BR", ")"})
-
+			if "[goto(#_push_op_end),(was_quoteAND(NOTto_add)),print(\"\")]" == strings.TrimSpace(buf) {
+				fmt.Println(exprList)
+			}
 		}
 		i += 1
 	}
