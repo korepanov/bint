@@ -4,6 +4,7 @@ import (
 	"bint.com/internal/const/status"
 	. "bint.com/pkg/serviceTools"
 	"errors"
+	"fmt"
 	"os"
 	"regexp"
 	"strings"
@@ -317,7 +318,7 @@ func validateComparison(command string, isOp bool) (tail string, stat int, err e
 		if isOp {
 			return command, status.Yes, nil
 		}
-		return ``, status.No, nil
+		return command, status.No, nil
 	}
 
 	return validateComparison(command, true)
@@ -662,6 +663,11 @@ func validateImport(command string) (tail string, stat int, err error) {
 }
 
 func validateCommand(command string) error {
+	oldCommand := command
+
+	if LineCounter == 13 {
+		fmt.Println("YES")
+	}
 	tail, stat, err := validateFuncDefinition(command)
 	if nil != err {
 		return err
@@ -1017,6 +1023,11 @@ func validateCommand(command string) error {
 	if "val" == command {
 		return nil
 	}
+
+	if oldCommand != command {
+		return validateCommand(command)
+	}
+
 	return errors.New("unresolved command")
 }
 

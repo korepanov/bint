@@ -10,7 +10,7 @@ void test_sum(int t){
 };
 
 void main(){
-	test_sum(sum(1, 2));
+	test_sum((sum(1, 2) + sum(3, 4)));
 
 };
 
