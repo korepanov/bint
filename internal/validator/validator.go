@@ -4,7 +4,6 @@ import (
 	"bint.com/internal/const/status"
 	. "bint.com/pkg/serviceTools"
 	"errors"
-	"fmt"
 	"os"
 	"regexp"
 	"strings"
@@ -665,9 +664,6 @@ func validateImport(command string) (tail string, stat int, err error) {
 func validateCommand(command string) error {
 	oldCommand := command
 
-	if LineCounter == 13 {
-		fmt.Println("YES")
-	}
 	tail, stat, err := validateFuncDefinition(command)
 	if nil != err {
 		return err
@@ -1024,6 +1020,7 @@ func validateCommand(command string) error {
 		return nil
 	}
 
+	command = tail
 	if oldCommand != command {
 		return validateCommand(command)
 	}
