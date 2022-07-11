@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"strings"
 )
 
 func maxBraces(exprList [][]interface{}) int {
@@ -478,13 +477,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 		}
 		// если справа null, значит NOT уже заменен
 		if "NOT" == fmt.Sprintf("%v", exprList[i][1]) && "null" != fmt.Sprintf("%v", exprList[i+1][1]) {
-			var buf string
-			for i := 0; i < len(exprList); i++ {
-				buf += fmt.Sprintf("%v", exprList[i][1])
-			}
-			if "[goto(#_push_op_end),(was_quoteAND(NOTto_add)),print(\"\")]" == strings.TrimSpace(buf) {
-				fmt.Println("YES")
-			}
+
 			exprList = Pop(exprList, i) // выталкиваем NOT
 			exprList = Insert(exprList, i, []interface{}{"BR", "("})
 			i += 1
@@ -510,7 +503,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 				}
 			}
 
-			i -= 2 // возвращаемся на две единицы назад: на внешнюю скобку NOT и символ за ней
+			i -= 1 // возвращаемся единицу назад: на символ за внешней скобкой NOT
 
 			exprList = Insert(exprList, i, []interface{}{"BR", ")"})
 			i += 1
@@ -518,10 +511,6 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 			i += 1
 			exprList = Insert(exprList, i, []interface{}{"VAL", "null", "null"})
 
-			//exprList = Insert(exprList, i - 1, []interface{}{"BR", ")"})
-			if "[goto(#_push_op_end),(was_quoteAND(NOTto_add)),print(\"\")]" == strings.TrimSpace(buf) {
-				fmt.Println(exprList)
-			}
 		}
 		i += 1
 	}
@@ -787,6 +776,21 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 					exprList = Pop(exprList, 0)
 					exprList = Pop(exprList, len(exprList)-1)
 				}
+
+				i = 0
+				// убираем скобки непосредственно рядом с подвыражениями
+				for i < len(exprList) {
+					if ("SUBEXPR" == fmt.Sprintf("%v", exprList[i][1])) &&
+						(i-1 >= 0 && i+1 < len(exprList)) &&
+						("(" == fmt.Sprintf("%v", exprList[i-1][1]) && ")" == fmt.Sprintf("%v", exprList[i+1][1])) {
+						if (i-2 < 0) || ("OP" != exprList[i-2][0] || !IsUnaryOperation(fmt.Sprintf("%v", exprList[i-2][1]))) {
+							exprList = Pop(exprList, i-1)
+							exprList = Pop(exprList, i)
+						}
+					}
+					i++
+				}
+
 			}
 
 			treeStructure, infoList = codeTree(exprList, "", nil)
