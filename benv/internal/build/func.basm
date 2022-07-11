@@ -12,6 +12,7 @@ string buf2;
 string buf3; 
 string buf4;
 string symbol; 
+string $reverse_ret;
 int int_buf;
 int int_buf2;
 int int_buf3; 
@@ -26,6 +27,7 @@ int func_len;
 int func_name_len;
 int br_number;
 int fig_br_number;
+int func_pos;
 string func_name;
 string arg_type;
 string arg_name;
@@ -360,6 +362,12 @@ func_name_br = (func_name + "(");
 [goto(#again_end), ("end" == command), print("")];
 number = index(command, func_name_br);
 [goto(#mod_end), (-1 == number), print("")];
+push(command);
+push(func_name);
+goto(#func_call_index);
+#func_call_index_ret:
+pop(func_pos);
+[goto(#mod_end), (-1 == func_pos), print("")];
 
 number = (number + func_name_len);
 buf4 = command[number];
@@ -454,4 +462,182 @@ DEL_DEST("benv/internal/long_function_program.b");
 #end:
 UNSET_SOURCE();
 UNSET_DEST();
+goto(#end_func);
 
+#reverse:
+string buf;
+stack res; 
+stack s;
+
+pop(s);
+s.pop(buf);
+#reverse_s:
+[goto(#reverse_e), ("end" == buf), print("")];
+res.push(buf);
+s.pop(buf);
+goto(#reverse_s);
+#reverse_e:
+push(res);
+UNDEFINE(buf);
+UNDEFINE(res);
+UNDEFINE(s);
+goto($reverse_ret);
+
+
+#look_behind:
+stack st;
+stack this;
+stack res;  
+string buf;
+int pos;
+string symbol;
+string reg;
+string s;
+
+pop(reg);
+pop(s);
+st = reg_find(reg, s);
+
+#look_behind_s:
+st.pop(this);
+this.pop(buf);
+[goto(#look_behind_e), ("end" == buf), print("")];
+pos = int(buf);
+[print(""), (0 == pos), goto(#is_not_zero)];
+res.push("$");
+goto(#look_behind_s);
+#is_not_zero:
+pos = (pos - 1);
+symbol = s[pos];
+res.push(symbol);
+goto(#look_behind_s);
+#look_behind_e:
+push(res);
+$reverse_ret = "#look_ret";
+#look_ret:
+pop(res);
+push(res);
+UNDEFINE(st);
+UNDEFINE(this);
+UNDEFINE(res);
+UNDEFINE(buf);
+UNDEFINE(pos);
+UNDEFINE(symbol);
+UNDEFINE(reg);
+UNDEFINE(s);
+goto(#look_behind_ret);
+
+#indexes:
+stack res;
+	
+int i;
+int pointer; 
+int s_len;
+int s_len_old;
+int sub_len;
+string s;
+string sub_s;
+
+pop(s);
+pop(sub_s);
+s_len = len(s);
+sub_len = len(sub_s);
+s_len_old = s_len;
+i = index(s, sub_s);
+pointer = i;
+#indexes_s:
+[goto(#indexes_e), (-1 == i), print("")];
+i = (i + (s_len_old - s_len));
+res.push(i);
+pointer = (pointer + sub_len);
+s = s[pointer:s_len];
+s_len = len(s);
+i = index(s, sub_s);
+pointer = i;
+goto(#indexes_s);
+#indexes_e:
+push(res);
+$reverse_ret = "#iret";
+#iret:
+pop(res);
+push(res);
+UNDEFINE(res);
+UNDEFINE(i);
+UNDEFINE(pointer);
+UNDEFINE(s_len);
+UNDEFINE(s_len_old);
+UNDEFINE(sub_len);
+UNDEFINE(s);
+UNDEFINE(sub_s);
+goto(#indexes_ret);
+
+#func_call_index:
+string reg;
+stack st;
+stack ist;
+int res;
+string buf;
+string symbol;
+bool letter;
+bool digit;
+string command;
+string func_name;
+
+pop(command);
+pop(func_name);
+
+reg = (("(?:" + func_name) + ")");
+
+push(reg);
+push(command);
+goto(#look_behind);
+#look_behind_ret:
+pop(st);
+push(command);
+push(func_name);
+goto(#indexes);
+#indexes_ret:
+pop(ist);	
+#func_call_index_s:
+st.pop(symbol);
+	
+[print(""), ("end" == symbol), goto(#is_found)];
+UNDEFINE(reg);
+UNDEFINE(st);
+UNDEFINE(ist);
+UNDEFINE(res);
+UNDEFINE(buf);
+UNDEFINE(symbol);
+UNDEFINE(letter);
+UNDEFINE(digit);
+UNDEFINE(command);
+UNDEFINE(func_name);
+push(-1);
+goto(#func_call_index_ret);
+#is_found:
+
+ist.pop(buf);
+
+[print("func_call_index ERROR\n"), ("end" == buf), print("")];
+	
+res = int(buf);
+letter = is_letter(symbol);
+digit = is_digit(symbol);	
+
+[print(""), (NOT((((letter)OR(digit))OR("_" == symbol))OR("$" == symbol))), goto(#not_func)];
+push(res);
+UNDEFINE(reg);
+UNDEFINE(st);
+UNDEFINE(ist);
+UNDEFINE(res);
+UNDEFINE(buf);
+UNDEFINE(symbol);
+UNDEFINE(letter);
+UNDEFINE(digit);
+UNDEFINE(command);
+UNDEFINE(func_name);
+goto(#func_call_index_ret);	
+#not_func:
+goto(#func_call_index_s);
+#end_func:
+print("");
