@@ -25,6 +25,7 @@ int limit_border;
 int number;
 int func_len;
 int func_name_len;
+int buf_len;
 int br_number;
 int fig_br_number;
 int func_pos;
@@ -384,7 +385,8 @@ buf2 = buf;
 [goto(#call_end), ("" == buf), print("")];
 comma_pos = index(buf, ",");
 [print(""), (-1 == comma_pos), goto(#comma_end)];
-comma_pos = index(buf, ")");
+buf_len = len(buf);
+comma_pos = (buf_len - 1);
 #comma_end:
 arg_name = buf[left_border:comma_pos];
 command = (("push(" + arg_name) + ")");
