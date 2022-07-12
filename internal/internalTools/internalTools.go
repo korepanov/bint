@@ -137,14 +137,13 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/build/func",
 					"benv/build/print_format"}
 			} else {
-				filesListToExecute = []string{"benv/import.basm",
-					"benv/prep_func.basm",
-					"benv/prep_if.basm",
-					"benv/if.basm",
-					"benv/long_function.basm",
-					"benv/func.basm",
-					"benv/print_format.basm"}
-				//filesListToExecute = []string{"bendBenv/import.basm"}
+				filesListToExecute = []string{"benv/import.basm"}
+				//"benv/prep_func.basm",
+				//"benv/prep_if.basm",
+				//"benv/if.basm",
+				//"benv/long_function.basm",
+				//"benv/func.basm",
+				//"benv/print_format.basm"}
 			}
 		} else if options.Transpile == toTranslate {
 			rootSource = "benv/internal/build/import_plug.basm"

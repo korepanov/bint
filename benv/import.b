@@ -1,7 +1,7 @@
 string root_source;
 string first_command;
 string file;
-bool isDebug;
+bool is_debug;
 
 void init(){
 	string symbol;
@@ -13,10 +13,10 @@ void init(){
 	symbol = root_source[pos];
 
 	if ("d" == symbol){
-		isDebug = True;
+		is_debug = True;
 		root_source = root_source[0:pos];	
 	}else{
-		isDebug = False; 
+		is_debug = False; 
 	};
 	
 	SET_SOURCE(root_source);
@@ -91,7 +91,12 @@ void file_union(){
 	[goto(#file_union_e), ("end" == import), print("")];
 	UNSET_SOURCE();
 	SET_SOURCE(import);
-	
+
+	if (is_debug){
+		file = ("$file$ " + import);
+		send_command(file);
+	};
+
 	next_command(command);
 	#import_s:
 	[goto(#import_e), ("end" == command), print("")];
@@ -103,6 +108,12 @@ void file_union(){
 	goto(#file_union_s);
 	#file_union_e:
 	SET_SOURCE(root_source);
+
+	if (is_debug){
+		file = ("$file$ " + root_source);
+		send_command(file);
+	};
+
 	next_command(command);
 	send_command(first_command);
 	next_command(command);
@@ -117,17 +128,6 @@ void file_union(){
 
 void main(){
 	init();
-
-	if (isDebug){
-		print("debug\n");
-		print(root_source);
-		print("\n");
-	}else{
-		print("release\n");
-		print(root_source);
-		print("\n");
-	};
-
 	file_union();	
 	finish();
 };
