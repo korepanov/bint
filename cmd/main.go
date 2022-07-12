@@ -10,8 +10,8 @@ import (
 
 func main() {
 	// эти опции можно менять для системной отладки
-	sysMode := options.ExecBasm
-	benvMode := options.ExecBenv
+	sysMode := options.UserTranslate
+	benvMode := options.InterpBenv
 
 	var filesListToExecute []string
 
@@ -25,7 +25,7 @@ func main() {
 
 	if options.UserTranslate == toTranslate ||
 		(options.Internal == toTranslate && (options.Internal == sysMode || options.UserTranslate == sysMode)) {
-		err = Validate(rootSource)
+		err = StaticValidate(rootSource)
 		if nil != err {
 			fmt.Println("ERROR in " + rootSource + " at near line " +
 				fmt.Sprintf("%v", serviceTools.LineCounter))

@@ -1,8 +1,24 @@
 string root_source;
 string first_command;
+string file;
+bool isDebug;
 
 void init(){
+	string symbol;
+	int pos; 
+
 	get_root_source(root_source);
+	pos = len(root_source);
+	pos = (pos - 1);
+	symbol = root_source[pos];
+
+	if ("d" == symbol){
+		isDebug = True;
+		root_source = root_source[0:pos];	
+	}else{
+		isDebug = False; 
+	};
+	
 	SET_SOURCE(root_source);
 	SET_DEST("benv/import_program.b");
 };
@@ -75,6 +91,7 @@ void file_union(){
 	[goto(#file_union_e), ("end" == import), print("")];
 	UNSET_SOURCE();
 	SET_SOURCE(import);
+	
 	next_command(command);
 	#import_s:
 	[goto(#import_e), ("end" == command), print("")];
@@ -100,6 +117,17 @@ void file_union(){
 
 void main(){
 	init();
+
+	if (isDebug){
+		print("debug\n");
+		print(root_source);
+		print("\n");
+	}else{
+		print("release\n");
+		print(root_source);
+		print("\n");
+	};
+
 	file_union();	
 	finish();
 };

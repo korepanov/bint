@@ -1028,7 +1028,7 @@ func validateCommand(command string) error {
 	return errors.New("unresolved command")
 }
 
-func Validate(rootSource string) error {
+func StaticValidate(rootSource string) error {
 	f, err := os.Open(rootSource)
 
 	if nil != err {

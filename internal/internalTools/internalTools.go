@@ -30,6 +30,7 @@ var ciFlag = "-ci"
 var coFlag = "-co"
 var ceFlag = "-ce"
 var kFlag = "-k"
+var rFlag = flag.Bool("r", false, "Translation from B to Basm without debug information")
 
 var FileToExecute string
 
@@ -103,8 +104,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 		toTranslate = toTranslateInternal
 
 		if options.Internal == toTranslate {
-			rootSource = "benv/program.b"
-			rootDest = "benv/prog.basm"
+			rootSource = "benv/import.b"
+			rootDest = "benv/import.basm"
 			if execBenv {
 				filesListToExecute = []string{"benv/internal/build/import",
 					"benv/internal/build/prep_func",
@@ -146,7 +147,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 				//filesListToExecute = []string{"bendBenv/import.basm"}
 			}
 		} else if options.Transpile == toTranslate {
-			rootSource = "benv/internal/build/func.basm"
+			rootSource = "benv/internal/build/import_plug.basm"
 			rootDest = "benv/internal/build/main.go"
 
 			source, err := os.Open("benv/build/pattern.p")
@@ -617,7 +618,13 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 						newVariable := EachVariable(variables)
 						for v := newVariable(); "end" != v[0]; v = newVariable() {
 							if fmt.Sprintf("%v", varName) == fmt.Sprintf("%v", v[1]) {
-								v[2] = rootSource
+
+								if *rFlag {
+									v[2] = rootSource
+								} else {
+									v[2] = rootSource + "d"
+								}
+
 								if options.Transpile == sysMod {
 									_, err = transpileDest.WriteString("setVar(" +
 										fmt.Sprintf("%v", varName) + ", " + v[2].(string))
