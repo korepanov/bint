@@ -10,6 +10,7 @@ SET_SOURCE(root_source);
 SET_DEST("benv/prep_func_program.b");
 
 next_command(command);
+
 #begin:
 [goto(#end), ("end" == command), print("")];
 number = index(command, "#");

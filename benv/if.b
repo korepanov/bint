@@ -8,7 +8,7 @@ int num;
 int exit_num;
 
 void init(){
-	root_source = "benv/import_program.b";
+	root_source = "benv/prep_if_program.b";
 	SET_SOURCE(root_source);
 	SET_DEST("benv/if_program.b");
 };
@@ -293,7 +293,7 @@ void replace_elseif(string cond, int stop_pos){
 	switch_command();
 	#else_end:
 	sexit_num = str(exit_num);
-	buf = ((("#_cond_exit") + sexit_num) + ":print(\"\")");
+	buf = (("#_cond_exit" + sexit_num) + ":print(\"\")");
 	exit_num = (exit_num + 1);
 	send_command(buf);
 	#ts:
@@ -338,7 +338,7 @@ void replace_else(string cond, int stop_pos){
 	#add_replace_else_mark:
 	[print(""), (pos == COMMAND_COUNTER), goto(#figure_brace_end)];
 	sexit_num = str(exit_num);
-	buf = ((("#_cond_exit") + sexit_num) + ":print(\"\")");
+	buf = (("#_cond_exit" + sexit_num) + ":print(\"\")");
 	exit_num = (exit_num + 1);
 	send_command(buf);
 	switch_command();
