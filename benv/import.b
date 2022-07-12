@@ -18,9 +18,14 @@ void init(){
 	}else{
 		is_debug = False; 
 	};
-	
+
 	SET_SOURCE(root_source);
 	SET_DEST("benv/import_program.b");
+
+	if ("d" == symbol){
+		send_command("$debug$");	
+	};
+	
 };
 
 void finish(){
