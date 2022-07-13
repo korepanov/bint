@@ -12,6 +12,7 @@ const (
 	ExecBasm        = iota
 	Encrypt         = iota
 	ExecEncrypt     = iota
+	Validate        = iota
 	ShowTree        = true
 	ExecBenv        = true
 	InterpBenv      = false

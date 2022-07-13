@@ -1,7 +1,7 @@
 string root_source;
 string first_command;
 string file;
-bool is_debug;
+string translate_mode;
 
 void init(){
 	string symbol;
@@ -13,17 +13,24 @@ void init(){
 	symbol = root_source[pos];
 
 	if ("d" == symbol){
-		is_debug = True;
+		translate_mode = "debug";
 		root_source = root_source[0:pos];	
+	}else if ("v" == symbol){
+		translate_mode = "validate";
+		root_source = root_source[0:pos];
 	}else{
-		is_debug = False; 
+		translate_mode = "release"; 
 	};
 
 	SET_SOURCE(root_source);
 	SET_DEST("benv/import_program.b");
 
-	if ("d" == symbol){
+	if ("debug" == translate_mode){
 		send_command("$debug$");	
+	};
+
+	if ("validate" == translate_mode){
+		send_command("$validate$");	
 	};
 	
 };
@@ -97,7 +104,7 @@ void file_union(){
 	UNSET_SOURCE();
 	SET_SOURCE(import);
 
-	if (is_debug){
+	if (("debug" == translate_mode) OR ("validate" == translate_mode)){
 		file = ("$file$ " + import);
 		send_command(file);
 	};
@@ -114,7 +121,7 @@ void file_union(){
 	#file_union_e:
 	SET_SOURCE(root_source);
 
-	if (is_debug){
+	if (("debug" == translate_mode) OR ("validate" == translate_mode)){
 		file = ("$file$ " + root_source);
 		send_command(file);
 	};

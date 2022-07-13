@@ -104,13 +104,13 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 		toTranslate = toTranslateInternal
 
 		if options.Internal == toTranslate {
-			rootSource = "benv/if.b"
-			rootDest = "benv/if.basm"
+			rootSource = "benv/trace.b"
+			rootDest = "benv/trace.basm"
 			if execBenv {
 				filesListToExecute = []string{"benv/internal/build/import",
 					"benv/internal/build/prep_func",
 					"benv/internal/build/prep_if",
-					"benv/internal/build/if_plug",
+					"benv/internal/build/if",
 					"benv/internal/build/long_function",
 					"benv/internal/build/func",
 					"benv/internal/build/print_format"}
@@ -138,9 +138,10 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/build/print_format"}
 			} else {
 				filesListToExecute = []string{"benv/import.basm",
-					"benv/prep_func.basm",
-					"benv/prep_if.basm",
-					"benv/if.basm"}
+					"benv/trace.basm"}
+				//	"benv/prep_func.basm",
+				//	"benv/prep_if.basm",
+				//	"benv/if.basm"}
 				//"benv/long_function.basm",
 				//"benv/func.basm",
 				//"benv/print_format.basm"}
@@ -305,6 +306,28 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	}()
 
 	var err error
+
+	if options.Validate == toTranslate {
+		rootDest = ".temp.b"
+		if execBenv {
+			filesListToExecute = []string{"benv/build/import",
+				"benv/build/prep_func",
+				"benv/build/prep_if",
+				"benv/build/if",
+				"benv/build/long_function",
+				"benv/build/func",
+				"benv/build/print_format"}
+		} else {
+			filesListToExecute = []string{"benv/import.basm",
+				"benv/trace.basm"}
+			//	"benv/prep_func.basm",
+			//	"benv/prep_if.basm",
+			//	"benv/if.basm"}
+			//"benv/long_function.basm",
+			//"benv/func.basm",
+			//"benv/print_format.basm"}
+		}
+	}
 
 	if options.Internal != toTranslate {
 		sysMod = toTranslate
@@ -618,7 +641,9 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 						for v := newVariable(); "end" != v[0]; v = newVariable() {
 							if fmt.Sprintf("%v", varName) == fmt.Sprintf("%v", v[1]) {
 
-								if *rFlag {
+								if options.Validate == toTranslate {
+									v[2] = rootSource + "v"
+								} else if *rFlag {
 									v[2] = rootSource
 								} else {
 									v[2] = rootSource + "d"

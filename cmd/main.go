@@ -33,8 +33,8 @@ func main() {
 			fmt.Println(err)
 			return
 		}
+		Start(options.Validate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
 	}
 
-	//return
-	Start(toTranslate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
+	//Start(toTranslate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
 }
