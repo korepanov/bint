@@ -166,7 +166,6 @@ func makePrintBinary(exprListInput [][]interface{}, variables [][]interface{}, u
 }
 
 func codeTree(exprList [][]interface{}, treeStructure string, infoList []interface{}) (string, []interface{}) {
-
 	if "" == treeStructure {
 		treeStructure = "1"
 	}

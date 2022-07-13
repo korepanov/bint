@@ -14,6 +14,31 @@ import (
 var LineCounter = 0
 var CommandToExecute string
 
+func IsValidString(s string) bool {
+	if "$" == string(s[0]) {
+		s = s[1:]
+	}
+	for _, symbol := range s {
+		if !IsValidSymbol(symbol) {
+			return false
+		}
+	}
+	return true
+}
+
+func IsValidSymbol(symbol rune) bool {
+	if unicode.IsLetter(symbol) {
+		return true
+	}
+	if unicode.IsDigit(symbol) {
+		return true
+	}
+	if "_" == string(symbol) {
+		return true
+	}
+	return false
+}
+
 func LookBehind(reg string, s string) ([]string, error) {
 	re, err := regexp.Compile(reg)
 	if nil != err {

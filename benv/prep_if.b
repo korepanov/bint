@@ -178,15 +178,55 @@ void send_new_command(string command){
 	print("");
 };
 
+string var_type(string command){
+	string buf;
+	stack s;
+	
+	s = reg_find("(?:^int)", command);
+	s.pop(buf);
+	[goto(#int_type_end), ("end" == buf), print("")];
+	return "int";
+	#int_type_end:
+
+	s = reg_find("(?:^float)", command);
+	s.pop(buf);
+	[goto(#float_type_end), ("end" == buf), print("")];
+	return "float";
+	#float_type_end:
+
+	s = reg_find("(?:^bool)", command);
+	s.pop(buf);
+	[goto(#bool_type_end), ("end" == buf), print("")];
+	return "bool";
+	#bool_type_end:
+
+	s = reg_find("(?:^stack)", command);
+	s.pop(buf);
+	[goto(#stack_type_end), ("end" == buf), print("")];
+	return "stack";
+	#stack_type_end:
+
+	s = reg_find("(?:^string)", command);
+	s.pop(buf);
+	[goto(#string_type_end), ("end" == buf), print("")];
+	return "string";
+	#string_type_end:
+	return "";
+};
+
 void undefine_vars(){
 	int old_COMMAND_COUNTER;
 	int counter;
+	int internal_counter;
 	int pos;
 	string op;
 	string buf; 
 	string this_command;
 	int command_len;
 	stack s;
+	string T;
+	string var;
+	stack vars;
 
 	this_command = command;
 	old_COMMAND_COUNTER = COMMAND_COUNTER;
@@ -205,8 +245,39 @@ void undefine_vars(){
 	this_command = command[pos:command_len];
 	goto(#undefine_vars_loop_s);
 	#undefine_vars_loop_e:
-	println(this_command);
-	
+	T = var_type(this_command);
+	pos = len(T);
+	command_len = len(this_command);
+	[print(""), (pos > 0), goto(#not_var)];
+	var = this_command[pos:command_len];
+	vars.push(var);	
+	#not_var:
+	print("");
+	#vars_loop_s:
+	[print(""), (COMMAND_COUNTER < counter), goto(#vars_loop_e)];
+	switch_command();
+	[print(""), ((is_if(command)) OR (is_else(command))), goto(#not_internal)];
+	internal_counter = block_end();
+	SET_COMMAND_COUNTER(internal_counter);
+	#not_internal:
+	T = var_type(command);
+	pos = len(T);
+	command_len = len(command);
+	[print(""), (pos > 0), goto(#not_var2)];
+	var = command[pos:command_len];
+	vars.push(var);	
+	#not_var2:
+	goto(#vars_loop_s);
+	#vars_loop_e:
+	vars.pop(var);
+	#get_var_s:
+	[goto(#get_var_e), ("end" == var), print("")];
+	println(var);
+	vars.pop(var);	
+	goto(#get_var_s);
+	#get_var_e:
+	println(command);
+	SET_COMMAND_COUNTER(old_COMMAND_COUNTER);
 };
 
 void main(){	
