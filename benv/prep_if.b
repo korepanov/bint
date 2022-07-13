@@ -269,18 +269,32 @@ void undefine_vars(){
 	#not_var2:
 	goto(#vars_loop_s);
 	#vars_loop_e:
+	
+	SET_COMMAND_COUNTER(old_COMMAND_COUNTER);
+	switch_command();
+
+	#modify_s:
+	[print(""), (COMMAND_COUNTER < counter), goto(#modify_e)];
+	send_command(command);
+	switch_command();	
+	goto(#modify_s);
+	#modify_e:
+
 	vars.pop(var);
 	#get_var_s:
 	[goto(#get_var_e), ("end" == var), print("")];
-	println(var);
+	this_command = (("UNDEFINE(" + var) + ")");
+	send_command(this_command);
 	vars.pop(var);	
 	goto(#get_var_s);
 	#get_var_e:
-	println(command);
-	SET_COMMAND_COUNTER(old_COMMAND_COUNTER);
+	print("");
+	
 };
 
-void main(){	
+void main(){
+	int counter; 
+	
 	init();
 	switch_command();
 	#main_s:
@@ -288,7 +302,6 @@ void main(){
 	[print(""), ((is_if(command)) OR (is_else(command))), goto(#not_cond)];
 	send_new_command(command);
 	undefine_vars();
-	switch_command();
 	goto(#main_s);
 	#not_cond:
 	send_command(command);

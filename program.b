@@ -26,25 +26,27 @@ void main(){
 	}else if (3 > 4){
 		print("YES");
 		print("YES");
-		float b;	
+		float bb;	
 	}else if (5 > 6){
 		print("YES");
-		bool c;
+		bool ccc;
 		print("YES");	
 	};
 
 	if (7 > 8){
 		print("YES");
-		stack c; 
+		stack dddd; 
 		print("YES");	
 	}else if (9 > 10){
 		print("YES");
+		int y;
 		if (11 > 12){
 			print("YES");
-			string d;
-			bool b;
+			string eeeee;
+			bool ffffff;
 			print("YES");
 		};	
+		float u;
 	}else{
 		println("OK");
 	};
