@@ -1,9 +1,13 @@
 int factorial(int n){
+	int res;
+
 	if (0 == n){
 		return 1;	
 	};
 	
-	return (n * factorial(n - 1));
+	res = (n * factorial((n - 1)));	
+	
+	return res;
 };
 
 void main(){
