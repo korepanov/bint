@@ -1,3 +1,7 @@
+void hello(){
+	print("Hello!\n");
+};
+
 int factorial(int n){
 	int res;
 
@@ -10,13 +14,20 @@ int factorial(int n){
 	return res;
 };
 
+void buy(string s){
+	print(s);
+	print("\n");
+};
+
 void main(){
 	int res;
+	hello();
 	res = factorial(5);
 	string buf;
 	buf = str(res);
 	print(buf);
 	print("\n");
+	buy("buy!");
 };
 
 main();
