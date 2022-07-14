@@ -1,33 +1,37 @@
-void hello(){
-	print("Hello!\n");
+goto(#factorial_end);
+#factorial:
+int n;
+string $ret;
+pop(n);
+if (0 == n){
+	push(1);
+	$recurs_stack.pop($ret);
+	goto($ret);	
 };
+push(n - 1);
+$recurs_stack.push("#recurs_ret");
+goto(#factorial);
+#recurs_ret:
+int n2;
+pop(n2);
+push(n * n2);
+$recurs_stack.pop($ret);
+goto($ret);
 
-int factorial(int n){
-	int res;
-
-	if (0 == n){
-		return 1;	
-	};
-	
-	res = (n * factorial((n - 1)));	
-	
-	return res;
-};
-
-void buy(string s){
-	print(s);
-	print("\n");
-};
-
-void main(){
-	int res;
-	hello();
-	res = factorial(5);
-	string buf;
-	buf = str(res);
-	print(buf);
-	print("\n");
-	buy("buy!");
-};
-
-main();
+#factorial_end:
+goto(#main_end);
+#main:
+int n; 
+stack $recurs_stack;
+push(5);
+$recurs_stack.push("#here");
+goto(#factorial);
+#here:
+pop(n)
+string buf;
+buf = str(n);
+print(buf);
+print("\n");
+print("");
+#main_end:
+goto(#main);
