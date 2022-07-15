@@ -34,6 +34,49 @@ bool is_func_definition(string command){
 	return (NOT("end" == buf));
 };
 
+string T(string command){
+	stack s;
+	string buf;
+
+	s = reg_find("(?:(^int))", command);
+	s.pop(buf);
+	if (NOT("end" == buf)){
+		return "int";	
+	};
+
+	s = reg_find("(?:(^float))", command);
+	s.pop(buf);
+	if (NOT("end" == buf)){
+		return "float";	
+	};
+
+	s = reg_find("(?:(^bool))", command);
+	s.pop(buf);
+	if (NOT("end" == buf)){
+		return "bool";	
+	};
+
+	s = reg_find("(?:(^stack))", command);
+	s.pop(buf);
+	if (NOT("end" == buf)){
+		return "stack";	
+	};
+
+	s = reg_find("(?:(^string))", command);
+	s.pop(buf);
+	if (NOT("end" == buf)){
+		return "string";	
+	};
+
+	s = reg_find("(?:(^void))", command);
+	s.pop(buf);
+	if (NOT("end" == buf)){
+		return "void";	
+	};
+
+	return "T: ERROR";	
+};
+
 void main(){
 	init();
 	string command;
@@ -43,7 +86,7 @@ void main(){
 	print("");
 	if (NOT("end" == command)){
 		if (is_func_definition(command)){
-			print(command);
+			print(T(command));
 			print("\n");		
 		};
 		send_command(command);
