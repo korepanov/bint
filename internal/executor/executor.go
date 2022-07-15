@@ -967,7 +967,8 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 					for rightVar := newRightVar(); "end" != fmt.Sprintf("%v", rightVar[0]); rightVar = newRightVar() {
 						if fmt.Sprintf("%v", RO[0].([]string)[1]) == fmt.Sprintf("%v", rightVar[1]) {
 
-							if "string" == fmt.Sprintf("%T", ValueFoldInterface(rightVar[2])) {
+							if "string" == fmt.Sprintf("%T", ValueFoldInterface(rightVar[2])) &&
+								"stack" != fmt.Sprintf("%v", rightVar[0]) {
 								if !toTranspile {
 									RO[0].([]string)[1] = fmt.Sprintf("%v", rightVar[2].([]interface{})[0])
 								} else {
@@ -1051,7 +1052,8 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 
 							v[2] = VFI
 
-							if "end" != fmt.Sprintf("%v", ValueFoldInterface(VFI.([]interface{})[len(VFI.([]interface{}))-1])) {
+							//if "end" != fmt.Sprintf("%v", ValueFoldInterface(VFI.([]interface{})[len(VFI.([]interface{}))-1])) {
+							if len(VFI.([]interface{})) > 1 {
 								v[2] = v[2].([]interface{})[:len(v[2].([]interface{}))-1]
 							}
 							breakFlag = true

@@ -406,6 +406,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			//ввод команд
 			CommandToExecute = strings.TrimSpace(chunk)
 			inputedCode = CodeInput(chunk, !wasGetCommandCounterByMark)
+
 			if options.ExecEncrypt == sysMod {
 				inputedCode = decryptor.Decrypt(inputedCode, newKey())
 			}

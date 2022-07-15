@@ -3,6 +3,9 @@ package main
 import (
 	"bint.com/internal/const/options"
 	. "bint.com/internal/internalTools"
+	. "bint.com/internal/validator"
+	"bint.com/pkg/serviceTools"
+	"fmt"
 )
 
 func main() {
@@ -20,7 +23,7 @@ func main() {
 
 	rootSource, rootDest, keyDest, filesListToExecute = SetConf(toTranslate, rootSource, rootDest, keyDest, sysMode, benvMode)
 
-	/*if options.UserTranslate == toTranslate ||
+	if options.UserTranslate == toTranslate ||
 		(options.Internal == toTranslate && (options.Internal == sysMode || options.UserTranslate == sysMode)) {
 		err = StaticValidate(rootSource)
 		if nil != err {
@@ -31,7 +34,7 @@ func main() {
 			return
 		}
 		//Start(options.Validate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
-	}*/
+	}
 
 	Start(toTranslate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
 }
