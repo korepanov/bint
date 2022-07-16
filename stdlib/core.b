@@ -1,7 +1,6 @@
-void println(string s){
-	print(s);
-	print("\n");
-};
+int COMMAND_COUNTER;
+string command; 
+COMMAND_COUNTER = 0;
 
 stack reverse(stack s){
 	string buf;
@@ -44,6 +43,43 @@ stack indexes(string s, string sub_s){
 	#_indexes_e:
 	res = reverse(res);
 	return res;
+};
+
+
+void SET_COMMAND_COUNTER(int counter){
+	int i;
+	i = 0;
+	string command;
+	RESET_SOURCE();
+	COMMAND_COUNTER = counter;
+
+	#_set_start:
+	[print(""), (i < counter), goto(#_set_end)];
+	next_command(command);
+	i = (i + 1);
+	goto(#_set_start);
+	#_set_end:
+	print("");
+};
+
+void switch_command(){
+	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
+	next_command(command);
+};
+
+int stack_len(stack s){
+	int res;
+	string buf; 
+	res = 0; 
+	
+	s.pop(buf);
+	#_stack_len_s:
+	[goto(#_stack_len_e), ("end" == buf), print("")];
+	res = (res + 1);
+	s.pop(buf);
+	goto(#_stack_len_s);
+	#_stack_len_e:
+	return res; 
 };
 
 stack ops(string command, string op){
@@ -101,6 +137,63 @@ stack ops(string command, string op){
 	#_op_nums_e:
 	res = reverse(res);
 	return res;
+};
+
+
+int block_end(){
+	string op1;
+	string op2;
+	string code;
+	string command_buf;
+	int o_sum;
+	int c_sum;
+	int command_len;
+	stack obraces;
+	stack cbraces;
+	string buf;
+	string spos;
+	int counter;
+	int buf_counter;
+	int pos; 
+
+	counter = COMMAND_COUNTER;
+	command_len = len(command);
+	command = command[1:command_len];
+	code = command;
+	next_command(command);
+	counter = (counter + 1);
+	code = (code + command[0]);
+	o_sum = 1;
+	c_sum = 0;
+	
+	#_block_s:
+	[goto(#_block_e), (o_sum == c_sum), print("")];
+	obraces = ops(code, "{");
+	cbraces = ops(code, "}");
+	
+	o_sum = stack_len(obraces);
+	c_sum = stack_len(cbraces);
+	
+	command_len = len(command);
+	command_buf = command[1:command_len];
+	code = (code + command_buf);
+	next_command(command); 
+	counter = (counter + 1);
+	command_buf = command[0]; 
+	code = (code + command_buf);
+	
+	goto(#_block_s);
+	#_block_e:
+	buf_counter = (COMMAND_COUNTER - 1);
+	SET_COMMAND_COUNTER(buf_counter);
+	next_command(command);
+	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
+	return (counter - 1); 
+};
+
+void println(string s){
+	print(s);
+	print("\n");
 };
 
 bool in_stack(stack s, string el){

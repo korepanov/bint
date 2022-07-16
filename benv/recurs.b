@@ -188,15 +188,16 @@ stack args_to_accept(string command){
 
 void main(){
 	init();
-	string command;
 	string name;
 	stack accepted_args;
 	string t;
 	stack arg;
 	string arg_name;
 	string arg_type;
-
-	next_command(command);
+	int counter;
+	string buf;
+	
+	switch_command();
 	
 	#main_s:
 	print("");
@@ -226,21 +227,20 @@ void main(){
 
 			#args:
 			if (NOT("end" == arg_name)){
-				print(arg_type);
-				print(" ");
-				print(arg_name);
-				print("\n");
-				
 				accepted_args.pop(arg);
 				arg.pop(arg_type);
 				arg.pop(arg_name);
 				
 				goto(#args);
 			};
+			
+			counter = block_end();
+			buf = str(counter);
+			println(buf);
 
 		};
 		send_command(command);
-		next_command(command);
+		switch_command();
 		goto(#main_s);
 	};
 	finish();
