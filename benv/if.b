@@ -117,11 +117,6 @@ void switch_files(){
 	print("");
 };
 
-void switch_command(){
-	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
-	next_command(command);
-};
-
 void replace_if(string cond, int stop_pos){
 	string buf;
 	string snum;
