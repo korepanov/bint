@@ -186,6 +186,27 @@ stack args_to_accept(string command){
 	goto(#parse_s);
 };
 
+int func_call(string fname, string command){
+	string reg;
+	stack s; 
+	string buf;
+	int pos;
+	
+	reg = (("(?:" + fname) + "\(.*\))");
+	s = reg_find(reg, command);
+	s.pop(buf);
+	
+	if ("end" == buf){
+		pos = -1;
+	}else{
+		pos = int(buf);
+	};
+	
+	
+	return pos;
+};
+
+
 void main(){
 	init();
 	string name;
@@ -196,6 +217,8 @@ void main(){
 	string arg_type;
 	int counter;
 	string buf;
+	int old_COMMAND_COUNTER;
+	int pos;
 	
 	switch_command();
 	
@@ -216,8 +239,7 @@ void main(){
 			accepted_args.pop(arg);
 
 			arg.pop(arg_type);
-			print(name);
-			print("\n");
+			
 
 			if ("end" == arg_type){
 				print("no args\n");			
@@ -235,9 +257,18 @@ void main(){
 			};
 			
 			counter = block_end();
-			buf = str(counter);
-			println(buf);
-
+			old_COMMAND_COUNTER = COMMAND_COUNTER;
+			
+			#is_recurs:
+			if (COMMAND_COUNTER < counter){
+				switch_command();
+				pos = func_call(name, command);
+				if (NOT(-1 == pos)){
+					println(command);
+				};
+				goto(#is_recurs);
+			};
+			
 		};
 		send_command(command);
 		switch_command();
