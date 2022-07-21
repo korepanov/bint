@@ -189,12 +189,14 @@ stack args_to_accept(string command){
 int func_call(string fname, string command){
 	string reg;
 	stack s; 
+	stack this_s;
 	string buf;
 	int pos;
 	
 	reg = (("(?:" + fname) + "\(.*\))");
 	s = reg_find(reg, command);
-	s.pop(buf);
+	s.pop(this_s);
+	this_s.pop(buf);
 	
 	if ("end" == buf){
 		pos = -1;
@@ -239,12 +241,6 @@ void main(){
 			accepted_args.pop(arg);
 
 			arg.pop(arg_type);
-			
-
-			if ("end" == arg_type){
-				print("no args\n");			
-			};
-			
 			arg.pop(arg_name);
 
 			#args:
