@@ -6,6 +6,18 @@ string f2(string t){
 	return "lalala";
 };
 
+int factorial(int n){
+	int res;
+
+	if (0 == n){
+		return 1;	
+	};
+	
+	res = (n * factorial((n - 1)));	
+	
+	return res;
+};
+
 stack f3(int y, int t){
 	stack res;
 	res.push(1);
@@ -21,23 +33,25 @@ void hello(){
 	print("Hello!\n");
 };
 
-int factorial(int n){
-	int res;
-
-	if (0 == n){
-		return 1;	
+int world(int num){
+	if (5 == num){
+		print("Hello world!\n");
+		return num; 
 	};
 	
-	res = (n * factorial((n - 1)));	
+	num = (num + 1);
+	world(num);
+};
+
+int buy(int num){
+	if (5 == num){
+		print("Hello world!\n");
+		return num; 
+	};
 	
-	return res;
+	num = (num + 1);
+	buy(num);
 };
-
-void buy(string s){
-	print(s);
-	print("\n");
-};
-
 void main(){
 	int res;
 	hello();
@@ -46,7 +60,8 @@ void main(){
 	buf = str(res);
 	print(buf);
 	print("\n");
-	buy("buy!");
+	res = world(0);
+	res = buy(0);
 };
 
 main();

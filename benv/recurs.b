@@ -221,6 +221,11 @@ void main(){
 	string buf;
 	int old_COMMAND_COUNTER;
 	int pos;
+	int call_counter;
+	int old_call_counter;
+	string new_command;
+	
+	call_counter = 0;
 	
 	switch_command();
 	
@@ -260,15 +265,47 @@ void main(){
 				switch_command();
 				pos = func_call(name, command);
 				if (NOT(-1 == pos)){
-					println(command);
+					old_call_counter = call_counter;
+					call_counter = COMMAND_COUNTER;
+					SET_COMMAND_COUNTER(old_call_counter);
+					
+					switch_command();
+					#block_begin:
+					if (COMMAND_COUNTER < old_COMMAND_COUNTER){
+						send_command(command);
+						switch_command();
+						goto(#block_begin);
+					};
+					
+					new_command = ("stack" + ("$" + (name + "_stack")));
+					send_command(new_command);
+					
+					#before_recurs:
+					if (COMMAND_COUNTER < call_counter){
+						send_command(command);
+						switch_command();
+						goto(#before_recurs);
+					};
+					send_command(command); 
+					
 				};
 				goto(#is_recurs);
 			};
 			
 		};
-		send_command(command);
 		switch_command();
 		goto(#main_s);
+	};
+	
+	SET_COMMAND_COUNTER(call_counter);
+	switch_command();
+	
+	#rest:	
+	if (NOT("end" == command)){
+		send_command(command);
+		switch_command();
+		goto(#rest);
+		
 	};
 	finish();
 };
