@@ -1,7 +1,9 @@
 #import "stdlib/core.b"
+bool first_file; 
 
 void init(){
 	string root_source;
+	first_file = True;
 	get_root_source(root_source);
 	SET_SOURCE(root_source);
 	SET_DEST("benv/recurs_program.b");
@@ -208,6 +210,38 @@ int func_call(string fname, string command){
 	return pos;
 };
 
+void switch_files(){
+	finish();
+	[print(""), (first_file), goto(#first_end)];
+	SET_SOURCE("benv/recurs_program.b");
+	SET_DEST("benv/recurs_program2.b");
+	first_file = False;
+	goto(#switch_files_e);
+	#first_end:
+	SET_SOURCE("benv/recurs_program2.b");
+	SET_DEST("benv/recurs_program.b");
+	first_file = True; 
+	#switch_files_e:
+	print("");
+};
+
+void clear_files(){
+	[goto(#first_file), (first_file), print("")];
+	switch_files();
+	switch_command();
+	#clear_files_s:
+	[goto(#clear_files_e), ("end" == command), print("")];
+	send_command(command);
+	switch_command();
+	goto(#clear_files_s);
+
+	#first_file:
+	print("");
+	#clear_files_e:
+	finish();
+	DEL_DEST("benv/recurs_program2.b");
+};
+
 
 void main(){
 	init();
@@ -224,8 +258,12 @@ void main(){
 	int call_counter;
 	int old_call_counter;
 	string new_command;
+	bool was_recurs;
+	bool first_recurs_call;
 	
 	call_counter = 0;
+	was_recurs = False;
+	first_recurs_call = True;
 	
 	switch_command();
 	
@@ -249,6 +287,7 @@ void main(){
 			arg.pop(arg_name);
 
 			#args:
+			print("");
 			if (NOT("end" == arg_name)){
 				accepted_args.pop(arg);
 				arg.pop(arg_type);
@@ -261,26 +300,33 @@ void main(){
 			old_COMMAND_COUNTER = COMMAND_COUNTER;
 			
 			#is_recurs:
+			print("");
 			if (COMMAND_COUNTER < counter){
 				switch_command();
 				pos = func_call(name, command);
 				if (NOT(-1 == pos)){
+					was_recurs = True;
 					old_call_counter = call_counter;
 					call_counter = COMMAND_COUNTER;
 					SET_COMMAND_COUNTER(old_call_counter);
 					
 					switch_command();
 					#block_begin:
+					print("");
 					if (COMMAND_COUNTER < old_COMMAND_COUNTER){
 						send_command(command);
 						switch_command();
 						goto(#block_begin);
 					};
 					
-					new_command = ("stack" + ("$" + (name + "_stack")));
-					send_command(new_command);
+					if (first_recurs_call){
+						first_recurs_call = False;
+						new_command = ("stack" + ("$" + (name + "_stack")));
+						send_command(new_command);
+					};
 					
 					#before_recurs:
+					print("");
 					if (COMMAND_COUNTER < call_counter){
 						send_command(command);
 						switch_command();
@@ -292,22 +338,52 @@ void main(){
 				goto(#is_recurs);
 			};
 			
+			if (was_recurs){
+				was_recurs = False; 
+				first_recurs_call = True;
+				
+				SET_COMMAND_COUNTER(call_counter);
+				
+				switch_command();
+				
+				#rest:	
+				print("");
+				if (COMMAND_COUNTER < counter){
+					send_command(command);
+					switch_command();
+					goto(#rest);
+					
+				}; 
+				send_command(command);
+				
+				switch_command();
+				
+				#external_call:
+				print("");
+				if(NOT("end" == command)){
+					pos = func_call(name, command);
+					if (NOT(-1 == pos)){
+						println(command);
+					};
+					send_command(command);
+					switch_command();
+					goto(#external_call);
+				};
+				switch_files();
+				call_counter = 0;
+				SET_COMMAND_COUNTER(0);
+			};
+			
 		};
 		switch_command();
+		println(command);
 		goto(#main_s);
 	};
 	
-	SET_COMMAND_COUNTER(call_counter);
-	switch_command();
 	
-	#rest:	
-	if (NOT("end" == command)){
-		send_command(command);
-		switch_command();
-		goto(#rest);
-		
-	};
-	finish();
+	new_command = "#_exit:print(\"\")";
+	send_command(new_command);
+	clear_files();
 };
 
 main();
