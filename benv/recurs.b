@@ -247,6 +247,7 @@ void main(){
 	init();
 	string name;
 	stack accepted_args;
+	stack raccepted_args;
 	string t;
 	stack arg;
 	string arg_name;
@@ -279,23 +280,9 @@ void main(){
 			if ("ERROR" == name){
 				print("recurs ERROR\n");			
 			};
-			accepted_args = args_to_accept(command);
- 			
-			accepted_args.pop(arg);
-
-			arg.pop(arg_type);
-			arg.pop(arg_name);
-
-			#args:
-			print("");
-			if (NOT("end" == arg_name)){
-				accepted_args.pop(arg);
-				arg.pop(arg_type);
-				arg.pop(arg_name);
-				
-				goto(#args);
-			};
 			
+			raccepted_args = args_to_accept(command);
+ 			
 			counter = block_end();
 			old_COMMAND_COUNTER = COMMAND_COUNTER;
 			
@@ -323,6 +310,11 @@ void main(){
 						first_recurs_call = False;
 						new_command = ("stack" + ("$" + (name + "_stack")));
 						send_command(new_command);
+						
+						new_command = (("#" + name) + ":");
+						new_command = (new_command + "print(\"\")");
+						send_command(new_command); 
+						switch_command();
 					};
 					
 					#before_recurs:
@@ -332,7 +324,26 @@ void main(){
 						switch_command();
 						goto(#before_recurs);
 					};
-					send_command(command); 
+					
+					accepted_args = raccepted_args;
+					accepted_args.pop(arg);
+
+					arg.pop(arg_type);
+					arg.pop(arg_name);
+
+					#args:
+					print("");
+					if (NOT("end" == arg_name)){
+						new_command = (("push(" + arg_name) + ")");
+						send_command(new_command);
+						
+						accepted_args.pop(arg);
+						arg.pop(arg_type);
+						arg.pop(arg_name);
+				
+						goto(#args);
+					};
+					
 					
 				};
 				goto(#is_recurs);
@@ -376,14 +387,22 @@ void main(){
 			
 		};
 		switch_command();
-		println(command);
 		goto(#main_s);
 	};
 	
+	switch_command();
+	
+	#final_rest:
+	if (NOT("end" == command)){
+		send_command(command);
+		switch_command();
+		goto(#final_rest);
+	};
 	
 	new_command = "#_exit:print(\"\")";
 	send_command(new_command);
-	clear_files();
+	clear_files(); 
+	
 };
 
 main();
