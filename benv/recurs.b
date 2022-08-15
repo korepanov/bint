@@ -262,7 +262,10 @@ void main(){
 	string new_command;
 	bool was_recurs;
 	bool first_recurs_call;
-	
+	int call_num;
+	string scall_num;
+	string res;
+
 	call_counter = 0;
 	was_recurs = False;
 	first_recurs_call = True;
@@ -281,12 +284,12 @@ void main(){
 			if ("ERROR" == name){
 				print("recurs ERROR\n");			
 			};
-			
+			call_num = 0;
 			raccepted_args = args_to_accept(command);
  			
 			counter = block_end();
 			old_COMMAND_COUNTER = COMMAND_COUNTER;
-			
+
 			#is_recurs:
 			print("");
 			if (COMMAND_COUNTER < counter){
@@ -325,7 +328,10 @@ void main(){
 						switch_command();
 						goto(#before_recurs);
 					};
-					
+					scall_num = str(call_num);
+					res = (("#" + name) + scall_num);
+					call_num = (call_num + 1);
+					println(res);
 					accepted_args = raccepted_args;
 					accepted_args.pop(arg);
 
@@ -375,7 +381,10 @@ void main(){
 				if(NOT("end" == command)){
 					pos = func_call(name, command);
 					if (NOT(-1 == pos)){
-						println(command);
+						scall_num = str(call_num);
+						res = (("#" + name) + scall_num);
+						call_num = (call_num + 1);
+						println(res);
 					};
 					send_command(command);
 					switch_command();
