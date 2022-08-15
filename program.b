@@ -39,7 +39,7 @@ void hello(){
 	print("Hello!\n");
 };
 
-int world(int num){
+int world(int num, float y, int z){
 	print("");
 	if (5 == num){
 		print("Hello world!\n");
@@ -47,10 +47,10 @@ int world(int num){
 	};
 	
 	num = (num + 1);
-	num = world(num);
+	num = world(num, 5.5, 6);
 };
 
-int buy(int num){
+int buy(int num, float y){
 	print("");
 	int t;
 	
@@ -59,14 +59,14 @@ int buy(int num){
 		return num; 
 	};
 	
-	t = world(5);
+	t = world(5, 7.7, 7);
 	
 	num = (num + 1);
-	num = buy(num);
+	num = buy(num, 0);
 	
 	if (4 == num){
 		num = (num + 1);
-		return buy(num);
+		return buy(num, 0);
 	};
 };
 
@@ -86,6 +86,12 @@ int test(int num){
 	};
 };
 
+void inf(){
+	print("inf");
+	print("\n");
+	inf();
+};
+
 void main(){
 	print("");
 	int res;
@@ -95,8 +101,9 @@ void main(){
 	buf = str(res);
 	print(buf);
 	print("\n");
-	res = world(0);
-	res = buy(0);
+	res = world(0, 0, 0);
+	res = buy(0, 0);
+	inf();
 };
 
 main();

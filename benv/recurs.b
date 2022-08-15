@@ -188,6 +188,40 @@ stack args_to_accept(string command){
 	goto(#parse_s);
 };
 
+stack args_to_pass(string command){
+	int pos1;
+	int pos2;
+	int command_len;
+	string buf;
+	stack res; 
+
+	pos1 = index(command, "(");
+	pos1 = (pos1 + 1);
+	pos2 = index(command, ")");
+
+	if (pos1 == pos2){
+		return res;	
+	};
+
+	#next_arg:
+	pos2 = index(command, ",");
+
+	if (-1 == pos2){
+		pos2 = index(command, ")");
+		buf = command[pos1:pos2];
+		res.push(buf);
+		return res;
+	};
+
+	buf = command[pos1:pos2];
+	res.push(buf);
+	pos2 = (pos2 + 1);
+	command_len = len(command);
+	command = command[pos2:command_len];
+	pos1 = 0;
+	goto(#next_arg);
+};
+
 int func_call(string fname, string command){
 	string reg;
 	stack s; 
@@ -248,6 +282,7 @@ void main(){
 	init();
 	string name;
 	stack accepted_args;
+	stack passed_args;
 	stack raccepted_args;
 	string t;
 	stack arg;
@@ -334,10 +369,11 @@ void main(){
 					println(res);
 					accepted_args = raccepted_args;
 					accepted_args.pop(arg);
-
+				
 					arg.pop(arg_type);
 					arg.pop(arg_name);
 
+					
 					#args:
 					print("");
 					if (NOT("end" == arg_name)){
@@ -381,10 +417,28 @@ void main(){
 				if(NOT("end" == command)){
 					pos = func_call(name, command);
 					if (NOT(-1 == pos)){
+						println(command);
+						passed_args = args_to_pass(command);
+						
+						passed_args.pop(arg_name);
+
+						#passed:
+						if (NOT("end" == arg_name)){
+							res = (("push(" + arg_name) + ")");
+							send_command(res);
+							passed_args.pop(arg_name);
+							goto(#passed);						
+						};
+
 						scall_num = str(call_num);
-						res = (("#" + name) + scall_num);
+						res = ((("#" + name) + "_res") + scall_num);
 						call_num = (call_num + 1);
-						println(res);
+						res = (res + ":print(\"\")");
+						send_command(res);
+						res = ((((((("$" + name) + "_stack.push(") + "#") + name) + "_res") + scall_num) + ")");
+						send_command(res);
+						res = (((("goto(#" + name) + "_res") + scall_num) + ")");
+						send_command(res); 
 					};
 					send_command(command);
 					switch_command();
@@ -417,5 +471,3 @@ void main(){
 };
 
 main();
-
-
