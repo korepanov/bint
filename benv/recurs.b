@@ -226,7 +226,10 @@ void switch_files(){
 };
 
 void clear_files(){
-	[goto(#first_file), (first_file), print("")];
+	finish();
+	[goto(#first), (first_file), print("")];
+	SET_SOURCE("benv/recurs_program2.b");
+	SET_DEST("benv/recurs_program.b");
 	switch_files();
 	switch_command();
 	#clear_files_s:
@@ -235,13 +238,11 @@ void clear_files(){
 	switch_command();
 	goto(#clear_files_s);
 
-	#first_file:
+	#first:
 	print("");
 	#clear_files_e:
-	finish();
 	DEL_DEST("benv/recurs_program2.b");
 };
-
 
 void main(){
 	init();
@@ -390,18 +391,19 @@ void main(){
 		goto(#main_s);
 	};
 	
+	SET_COMMAND_COUNTER(0);
 	switch_command();
-	
 	#final_rest:
+	print("");
 	if (NOT("end" == command)){
 		send_command(command);
 		switch_command();
 		goto(#final_rest);
 	};
-	
+
 	new_command = "#_exit:print(\"\")";
 	send_command(new_command);
-	clear_files(); 
+	clear_files();
 	
 };
 
