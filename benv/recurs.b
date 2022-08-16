@@ -369,22 +369,33 @@ void main(){
 					println(res);
 					accepted_args = raccepted_args;
 					accepted_args.pop(arg);
-				
+
+					stack buf_args;
+					#args:
 					arg.pop(arg_type);
 					arg.pop(arg_name);
-
+					print("");
+					if (NOT("end" == arg_name)){
+						arg.push(arg_name);
+						arg.push(arg_type);
+						buf_args.push(arg);
+						accepted_args.pop(arg);				
+						goto(#args);
+					};
 					
-					#args:
+					buf_args.pop(arg);
+					arg.pop(arg_type);
+					arg.pop(arg_name);
+					#bargs:
 					print("");
 					if (NOT("end" == arg_name)){
 						new_command = (("push(" + arg_name) + ")");
 						send_command(new_command);
 						
-						accepted_args.pop(arg);
+						buf_args.pop(arg);
 						arg.pop(arg_type);
-						arg.pop(arg_name);
-				
-						goto(#args);
+						arg.pop(arg_name);	
+						goto(#bargs);				
 					};
 					
 					

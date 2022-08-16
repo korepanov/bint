@@ -101,8 +101,8 @@ void main(){
 	buf = str(res);
 	print(buf);
 	print("\n");
-	res = world(0, 0, 0);
-	res = buy(0, 0);
+	res = world(1, 2, 3);
+	res = buy(1, 2);
 	inf();
 };
 
