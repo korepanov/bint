@@ -188,16 +188,20 @@ stack args_to_accept(string command){
 	goto(#parse_s);
 };
 
-stack args_to_pass(string command){
+stack args_to_pass(string fcall){
 	int pos1;
 	int pos2;
 	int command_len;
 	string buf;
 	stack res; 
+	string command;
+
+	command = fcall;
 
 	pos1 = index(command, "(");
-	pos1 = (pos1 + 1);
-	pos2 = index(command, ")");
+	pos2 = func_end(command, 0);
+	command = command[pos1:pos2];
+	pos1 = 1;
 
 	if (pos1 == pos2){
 		return res;	
@@ -207,7 +211,8 @@ stack args_to_pass(string command){
 	pos2 = index(command, ",");
 
 	if (-1 == pos2){
-		pos2 = index(command, ")");
+		command_len = len(command);
+		pos2 = (command_len - 1);
 		buf = command[pos1:pos2];
 		res.push(buf);
 		return res;
@@ -292,6 +297,8 @@ void main(){
 	string buf;
 	int old_COMMAND_COUNTER;
 	int pos;
+	int pos1;
+	int pos2;
 	int call_counter;
 	int old_call_counter;
 	string new_command;
@@ -366,38 +373,22 @@ void main(){
 					scall_num = str(call_num);
 					res = (("#" + name) + scall_num);
 					call_num = (call_num + 1);
-					println(res);
-					accepted_args = raccepted_args;
-					accepted_args.pop(arg);
+					pos1 = func_call(name, command);
+					pos2 = func_end(command, pos1);
+	
+					command = command[pos1:pos2];
+					passed_args = args_to_pass(command);
+					
+					passed_args.pop(arg_name);
 
-					stack buf_args;
-					#args:
-					arg.pop(arg_type);
-					arg.pop(arg_name);
+					#internal_passed:
 					print("");
 					if (NOT("end" == arg_name)){
-						arg.push(arg_name);
-						arg.push(arg_type);
-						buf_args.push(arg);
-						accepted_args.pop(arg);				
-						goto(#args);
+						res = (("push(" + arg_name) + ")");
+						send_command(res);
+						passed_args.pop(arg_name);
+						goto(#internal_passed);						
 					};
-					
-					buf_args.pop(arg);
-					arg.pop(arg_type);
-					arg.pop(arg_name);
-					#bargs:
-					print("");
-					if (NOT("end" == arg_name)){
-						new_command = (("push(" + arg_name) + ")");
-						send_command(new_command);
-						
-						buf_args.pop(arg);
-						arg.pop(arg_type);
-						arg.pop(arg_name);	
-						goto(#bargs);				
-					};
-					
 					
 				};
 				goto(#is_recurs);
@@ -428,12 +419,16 @@ void main(){
 				if(NOT("end" == command)){
 					pos = func_call(name, command);
 					if (NOT(-1 == pos)){
-						println(command);
+						pos1 = pos;
+						pos2 = func_end(command, pos1);
+						command = command[pos1:pos2];
+
 						passed_args = args_to_pass(command);
 						
 						passed_args.pop(arg_name);
 
 						#passed:
+						print("");
 						if (NOT("end" == arg_name)){
 							res = (("push(" + arg_name) + ")");
 							send_command(res);
@@ -442,14 +437,14 @@ void main(){
 						};
 
 						scall_num = str(call_num);
-						res = ((("#" + name) + "_res") + scall_num);
-						call_num = (call_num + 1);
-						res = (res + ":print(\"\")");
-						send_command(res);
 						res = ((((((("$" + name) + "_stack.push(") + "#") + name) + "_res") + scall_num) + ")");
 						send_command(res);
-						res = (((("goto(#" + name) + "_res") + scall_num) + ")");
+						res = (("goto(#" + name) + ")");
 						send_command(res); 
+						res = ((("#" + name) + "_res") + scall_num);
+						res = (res + ":print(\"\")");
+						send_command(res);
+						call_num = (call_num + 1);
 					};
 					send_command(command);
 					switch_command();
