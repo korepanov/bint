@@ -13,6 +13,7 @@ int factorial(int n){
 	int res;
 
 	if (0 == n){
+		print("");
 		return 1;	
 	};
 	
@@ -42,6 +43,7 @@ void hello(){
 int world(int num, float y, int z){
 	print("");
 	if (5 == num){
+		print("");
 		print("Hello world!\n");
 		return num; 
 	};
@@ -55,6 +57,7 @@ int buy(int num, float y){
 	int t;
 	
 	if (5 == num){
+		print("");
 		print("Hello world!\n");
 		return num; 
 	};
@@ -65,6 +68,7 @@ int buy(int num, float y){
 	num = buy(num, 0);
 	
 	if (4 == num){
+		print("");
 		num = (num + 1);
 		return buy(num, 0);
 	};
@@ -73,6 +77,7 @@ int buy(int num, float y){
 int test(int num){
 	print("");
 	if (5 == num){
+		print("");
 		print("Hello world!\n");
 		return num; 
 	};
@@ -81,6 +86,7 @@ int test(int num){
 	num = test(num);
 	
 	if (4 == num){
+		print("");
 		num = (num + 1);
 		return test(num);
 	};

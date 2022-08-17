@@ -297,6 +297,7 @@ void main(){
 	int counter;
 	string buf;
 	int old_COMMAND_COUNTER;
+	int buf_COMMAND_COUNTER;
 	int pos;
 	int pos1;
 	int pos2;
@@ -308,11 +309,13 @@ void main(){
 	int call_num;
 	string scall_num;
 	string res;
+	int command_len;
+	string command_buf;
 
 	call_counter = 0;
 	was_recurs = False;
 	first_recurs_call = True;
-	
+	send_command("string $ret");
 	switch_command();
 	
 	#main_s:
@@ -362,23 +365,62 @@ void main(){
 						new_command = (new_command + "print(\"\")");
 						send_command(new_command); 
 						switch_command();
+						
 					};
 					
+					accepted_args = raccepted_args;
+					accepted_args.pop(arg);
+					arg.pop(arg_type);
+					arg.pop(arg_name);
+					#ax:
+					if (NOT("end" == arg_name)){
+						new_command = (arg_type + arg_name);
+						send_command(new_command);
+						new_command = (("pop(" + arg_name) + ")");
+						send_command(new_command);
+						accepted_args.pop(arg);
+						arg.pop(arg_type);
+						arg.pop(arg_name);
+						goto(#ax); 					
+					};
+					bool is_ret;
+					is_ret = False;
 					#before_recurs:
 					print("");
 					if (COMMAND_COUNTER < call_counter){
-						send_command(command);
+						command_len = len(command);
+						if (command_len > 6){
+							command_buf = command[0:6];
+							if ("return" == command_buf){
+								string ret_arg;
+								ret_arg = command[6:command_len];
+								new_command = (("push(" + ret_arg) + ")");
+								send_command(new_command);
+								new_command = (("$" + name) + "_stack.pop($ret)");
+								send_command(new_command);
+								new_command = "goto($ret)";
+								send_command(new_command); 	
+								is_ret = True;						
+							};						
+						};
+						if (NOT(is_ret)){
+							send_command(command);
+						};
+						is_ret = False;
 						switch_command();
 						goto(#before_recurs);
 					};
 					scall_num = str(call_num);
-					res = (("#" + name) + scall_num);
+					res = ((("#" + name) + "_res") + scall_num);
+					new_command = ((("$" + (name + "_stack.push(")) + res) + ")");
+					send_command(new_command);
+					
 					call_num = (call_num + 1);
 					pos1 = func_call(name, command);
 					pos2 = func_end(command, pos1);
 	
-					command = command[pos1:pos2];
-					passed_args = args_to_pass(command);
+					new_command = command[pos1:pos2];
+					passed_args = args_to_pass(new_command);
 					
 					passed_args.pop(arg_name);
 
@@ -389,6 +431,37 @@ void main(){
 						send_command(res);
 						passed_args.pop(arg_name);
 						goto(#internal_passed);						
+					};
+					
+					new_command = (("goto(#" + name) + ")");
+					send_command(new_command);
+					res = ((("#" + name) + "_res") + scall_num);
+					res = (res + ":print(\"\")");
+					send_command(res);
+					new_command = ((((t + "$") + name) + "_res") + scall_num); 
+					send_command(new_command);
+					new_command = (("pop(" + ((("$" + name) + "_res") + scall_num)) + ")");
+					send_command(new_command);
+					new_command = command[0:pos1];
+					new_command = ((((new_command + "$") + name) + "_res") + scall_num);
+					command_len = len(command);
+					command = command[pos2:command_len];
+					new_command = (new_command + command);
+					command_len = len(new_command);
+					if (command_len > 6){
+						command = new_command[0:6];
+						if ("return" == command){
+							string ret_arg;
+							ret_arg = new_command[6:command_len];
+							command = (("push(" + ret_arg) + ")");
+							send_command(command);
+							command = (("$" + name) + "_stack.pop($ret)");
+							send_command(command);
+							command = "goto($ret)";
+							send_command(command); 
+						};					
+					}else{
+						send_command(new_command);
 					};
 					
 				};
@@ -403,10 +476,30 @@ void main(){
 				
 				switch_command();
 				
+				bool is_ret;
+				is_ret = False;
 				#rest:	
 				print("");
 				if (COMMAND_COUNTER < counter){
-					send_command(command);
+					command_len = len(command);
+					if (command_len > 6){
+						command_buf = command[0:6];
+						if ("return" == command_buf){
+							string ret_arg;
+							ret_arg = command[6:command_len];
+							new_command = (("push(" + ret_arg) + ")");
+							send_command(new_command);
+							new_command = (("$" + name) + "_stack.pop($ret)");
+							send_command(new_command);
+							new_command = "goto($ret)";
+							send_command(new_command);
+							is_ret = True; 							
+						};							
+					};
+					if (NOT(is_ret)){
+						send_command(command);
+					};
+					is_ret = False;
 					switch_command();
 					goto(#rest);
 					
