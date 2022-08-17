@@ -447,7 +447,11 @@ void main(){
 						send_command(res);
 						call_num = (call_num + 1);
 					};
-					send_command(command);
+
+					if (-1 == pos){
+						send_command(command);
+					};
+
 					switch_command();
 					goto(#external_call);
 				};
