@@ -202,8 +202,9 @@ stack args_to_pass(string fcall){
 	pos2 = func_end(command, 0);
 	command = command[pos1:pos2];
 	pos1 = 1;
-
-	if (pos1 == pos2){
+	command_len = len(command);
+	
+	if (pos1 == (command_len - 1)){
 		return res;	
 	};
 
