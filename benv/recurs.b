@@ -14,6 +14,16 @@ void finish(){
 	UNSET_DEST();
 };
 
+bool is_var_def(string command){
+	stack s;
+	string buf;
+
+	s = reg_find("^(?:(int|float|bool|stack|string)[^\(]*)", command);
+	s.pop(buf);
+	
+	return (NOT("end" == buf)); 
+};
+
 bool is_func_definition(string command){
 	stack s;
 	string buf;
@@ -403,7 +413,19 @@ void main(){
 								new_command = "goto($ret)";
 								send_command(new_command); 	
 								is_ret = True;						
-							};						
+							};	
+							
+							if (is_var_def(command)){
+								arg_type = T(command);
+								int type_len; 
+								type_len = len(arg_type);
+								command_len = len(command);
+								arg_name = command[type_len:command_len];
+								print(arg_type);
+								print(" ");
+								print(arg_name);
+								print("\n");
+							};					
 						};
 						if (NOT(is_ret)){
 							send_command(command);
