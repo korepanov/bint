@@ -360,10 +360,12 @@ void main(){
 						first_recurs_call = False;
 						new_command = ("stack" + ("$" + (name + "_stack")));
 						send_command(new_command);
-						
+						new_command = (("goto(#" + name) + "_end)");
+						send_command(new_command);
 						new_command = (("#" + name) + ":");
 						new_command = (new_command + "print(\"\")");
 						send_command(new_command); 
+
 						switch_command();
 						
 					};
@@ -508,8 +510,10 @@ void main(){
 					goto(#rest);
 					
 				}; 
-				send_command(command);
-				
+				new_command = ("#" + (name + "_end:"));
+				new_command = (new_command + "print(\"\")");
+				send_command(new_command);				
+
 				switch_command();
 				
 				#external_call:
