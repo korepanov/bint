@@ -448,8 +448,10 @@ void main(){
 					command = command[pos2:command_len];
 					new_command = (new_command + command);
 					command_len = len(new_command);
+					
 					if (command_len > 6){
 						command = new_command[0:6];
+						
 						if ("return" == command){
 							string ret_arg;
 							ret_arg = new_command[6:command_len];
@@ -459,7 +461,9 @@ void main(){
 							send_command(command);
 							command = "goto($ret)";
 							send_command(command); 
-						};					
+						}else{
+							send_command(new_command);
+						};				
 					}else{
 						send_command(new_command);
 					};
