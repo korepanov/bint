@@ -98,6 +98,7 @@ int test(int num){
 
 void inf(){
 	print("inf");
+	string p;
 	print("\n");
 	inf();
 };

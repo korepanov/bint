@@ -331,6 +331,9 @@ void main(){
 	stack accepted_args;
 	stack passed_args;
 	stack raccepted_args;
+	stack args_to_undefine;
+	stack null; 
+	stack buf_stack;
 	string t;
 	stack arg;
 	string arg_name;
@@ -373,7 +376,7 @@ void main(){
 			};
 			call_num = 0;
 			raccepted_args = args_to_accept(command);
- 			
+
 			counter = block_end();
 			old_COMMAND_COUNTER = COMMAND_COUNTER;
 
@@ -407,6 +410,21 @@ void main(){
 						new_command = (new_command + "print(\"\")");
 						send_command(new_command); 
 
+						accepted_args = raccepted_args;
+						
+						accepted_args.pop(arg);			
+						arg.pop(arg_type);
+						arg.pop(arg_name);
+
+						#append_args:
+						if (NOT("end" == arg_name)){
+							args_to_undefine.push(arg_name);
+							accepted_args.pop(arg);			
+							arg.pop(arg_type);
+							arg.pop(arg_name);
+							goto(#append_args);		
+						};
+
 						switch_command();
 						
 					};
@@ -439,6 +457,18 @@ void main(){
 								ret_arg = command[6:command_len];
 								new_command = (("push(" + ret_arg) + ")");
 								send_command(new_command);
+
+								buf_stack = args_to_undefine;
+								args_to_undefine.pop(arg_name);
+								#un:
+								if (NOT("end" == arg_name)){
+									new_command = (("UNDEFINE(" + arg_name) + ")");
+									send_command(new_command);
+									args_to_undefine.pop(arg_name);
+									goto(#un);
+								};
+								args_to_undefine = buf_stack;
+		
 								new_command = (("$" + name) + "_stack.pop($ret)");
 								send_command(new_command);
 								new_command = "goto($ret)";
@@ -456,10 +486,7 @@ void main(){
 							type_len = len(arg_type);
 							command_len = len(command);
 							arg_name = command[type_len:command_len];
-							print(arg_type);
-							print(" ");
-							print(arg_name);
-							print("\n");
+							args_to_undefine.push(arg_name);
 						};
 
 						if (NOT(is_ret)){
@@ -497,34 +524,51 @@ void main(){
 					res = ((("#" + name) + "_res") + scall_num);
 					res = (res + ":print(\"\")");
 					send_command(res);
-					new_command = ((((t + "$") + name) + "_res") + scall_num); 
-					send_command(new_command);
-					new_command = (("pop(" + ((("$" + name) + "_res") + scall_num)) + ")");
-					send_command(new_command);
-					new_command = command[0:pos1];
-					new_command = ((((new_command + "$") + name) + "_res") + scall_num);
-					command_len = len(command);
-					command = command[pos2:command_len];
-					new_command = (new_command + command);
-					command_len = len(new_command);
+
+					if (NOT("void"==t)){
+						new_command = ((((t + "$") + name) + "_res") + scall_num); 
+						send_command(new_command);
+						new_command = (("pop(" + ((("$" + name) + "_res") + scall_num)) + ")");
+						send_command(new_command);
+						new_command = command[0:pos1];
+						new_command = ((((new_command + "$") + name) + "_res") + scall_num);
+						command_len = len(command);
+						command = command[pos2:command_len];
+						new_command = (new_command + command);
 					
-					if (command_len > 6){
-						command = new_command[0:6];
+
+						command_len = len(new_command);
 						
-						if ("return" == command){
-							string ret_arg;
-							ret_arg = new_command[6:command_len];
-							command = (("push(" + ret_arg) + ")");
-							send_command(command);
-							command = (("$" + name) + "_stack.pop($ret)");
-							send_command(command);
-							command = "goto($ret)";
-							send_command(command); 
+						if (command_len > 6){
+							command = new_command[0:6];
+							
+							if ("return" == command){
+								string ret_arg;
+								ret_arg = new_command[6:command_len];
+								command = (("push(" + ret_arg) + ")");
+								send_command(command);
+
+								buf_stack = args_to_undefine;
+								args_to_undefine.pop(arg_name);
+								#un2:
+								if (NOT("end" == arg_name)){
+									new_command = (("UNDEFINE(" + arg_name) + ")");
+									send_command(new_command);
+									args_to_undefine.pop(arg_name);
+									goto(#un2);
+								};
+								args_to_undefine = buf_stack;
+								
+								command = (("$" + name) + "_stack.pop($ret)");
+								send_command(command);
+								command = "goto($ret)";
+								send_command(command); 
+							}else{
+								send_command(new_command);
+							};				
 						}else{
 							send_command(new_command);
-						};				
-					}else{
-						send_command(new_command);
+						};
 					};
 					
 				};
@@ -552,6 +596,18 @@ void main(){
 							ret_arg = command[6:command_len];
 							new_command = (("push(" + ret_arg) + ")");
 							send_command(new_command);
+							
+							buf_stack = args_to_undefine;
+							args_to_undefine.pop(arg_name);
+							#un4:
+							if (NOT("end" == arg_name)){
+								new_command = (("UNDEFINE(" + arg_name) + ")");
+								send_command(new_command);
+								args_to_undefine.pop(arg_name);
+								goto(#un4);
+							};
+							args_to_undefine = buf_stack;
+
 							new_command = (("$" + name) + "_stack.pop($ret)");
 							send_command(new_command);
 							new_command = "goto($ret)";
@@ -568,10 +624,7 @@ void main(){
 						type_len = len(arg_type);
 						command_len = len(command);
 						arg_name = command[type_len:command_len];
-						print(arg_type);
-						print(" ");
-						print(arg_name);
-						print("\n");
+						args_to_undefine.push(arg_name);
 					};
 
 					if (NOT(is_ret)){
@@ -582,6 +635,21 @@ void main(){
 					goto(#rest);
 					
 				}; 
+				if ("void" == t){
+					args_to_undefine.pop(arg_name);
+					#un3:
+					if (NOT("end" == arg_name)){
+						new_command = (("UNDEFINE(" + arg_name) + ")");
+						send_command(new_command);
+						args_to_undefine.pop(arg_name);
+						goto(#un3);
+					};		
+					
+					new_command = (("$" + name) + "_stack.pop($ret)");
+					send_command(new_command);
+					new_command = "goto($ret)";
+					send_command(new_command);		
+				};
 				new_command = ("#" + (name + "_end:"));
 				new_command = (new_command + "print(\"\")");
 				send_command(new_command);				
@@ -635,6 +703,7 @@ void main(){
 			
 		};
 		reset_br();
+		args_to_undefine = null; 
 		switch_command();
 		goto(#main_s);
 	};
