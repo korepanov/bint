@@ -59,7 +59,7 @@ func validateStandardFuncCall(command string, funcName string, argNum int,
 			}
 
 		} else if 1 == argNum {
-			tail, stat = check(`(?:`+funcName+`\([[:alpha:]]+[[:alnum:]|_]*\))`, command)
+			tail, stat = check(`(?:`+funcName+`\([[:alpha:]]+[[:alnum:]|_|\.]*\))`, command)
 			if status.Yes == stat && `` == tail {
 				return tail, stat, nil
 			}
@@ -81,7 +81,7 @@ func validateStandardFuncCall(command string, funcName string, argNum int,
 		} else if 1 == argNum {
 			tail = command
 
-			tail, err = ReplaceFunc(`(?:`+funcName+`\([[:alpha:]]+[[:alnum:]|_]*\))`, tail)
+			tail, err = ReplaceFunc(`(?:`+funcName+`\([[:alpha:]]+[[:alnum:]|_|\.]*\))`, tail)
 			if nil != err {
 				panic(err)
 			}
@@ -105,20 +105,20 @@ func validateStandardFuncCall(command string, funcName string, argNum int,
 		} else if 2 == argNum {
 			tail = command
 			tail, err = ReplaceFunc(`(?:`+funcName+
-				`\([[:alpha:]]+[[:alnum:]|_|\[|\]]*\,[[:alpha:]]+[[:alnum:]|_|\[|\]]*\))`, tail)
+				`\([[:alpha:]]+[[:alnum:]|_|\[|\]|\.]*\,[[:alpha:]]+[[:alnum:]|_|\[|\]|\.]*\))`, tail)
 
 			if nil != err {
 				panic(err)
 			}
 
 			moreArgs, err := CheckEntry(`(?:`+funcName+
-				`\(([[:alpha:]]+[[:alnum:]|_|\[|\]]*\,)+[[:alpha:]]+[[:alnum:]|_|\[|\]]*\))`, tail)
+				`\(([[:alpha:]]+[[:alnum:]|_|\[|\]|\.]*\,)+[[:alpha:]]+[[:alnum:]|_|\[|\]|\.]*\))`, tail)
 
 			if nil != err {
 				panic(err)
 			}
 
-			oneArg, err := CheckEntry(`(?:`+funcName+`\([[:alpha:]]+[[:alnum:]|_|\[|\]]*\,?\))`, tail)
+			oneArg, err := CheckEntry(`(?:`+funcName+`\([[:alpha:]]+[[:alnum:]|_|\[|\]|\.]*\,?\))`, tail)
 
 			if nil != err {
 				panic(err)
@@ -371,7 +371,7 @@ func validateFuncCall(command string, isFunc bool) (tail string, stat int, err e
 		loc[0]++
 	}
 
-	re, err = regexp.Compile(`(?:[[:alpha:]|_]+[[:alnum:]|_]*\((([[:alnum:]|_|\[|\]|:]*\,[^,]){0,})[[:alnum:]|_|\[|\]|:]*\))`)
+	re, err = regexp.Compile(`(?:[[:alpha:]|_]+[[:alnum:]|_|\.]*\((([[:alnum:]|_|\[|\]|:|\.]*\,[^,]){0,})[[:alnum:]|_|\[|\]|:|\.]*\))`)
 	if nil != err {
 		panic(err)
 	}

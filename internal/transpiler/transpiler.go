@@ -255,6 +255,14 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 				string(fmt.Sprintf("%v", RO[0])[len(fmt.Sprintf("%v", RO[0]))-1])
 		}
 
+		if len(fmt.Sprintf("%v", LO[0])) > 0 && "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
+			LO[0] = "`" + fmt.Sprintf("%v", LO[0])[1:len(fmt.Sprintf("%v", LO[0]))-1] + "`"
+		}
+
+		if len(fmt.Sprintf("%v", RO[0])) > 0 && "\"" == string(fmt.Sprintf("%v", RO[0])[0]) {
+			RO[0] = "`" + fmt.Sprintf("%v", RO[0])[1:len(fmt.Sprintf("%v", RO[0]))-1] + "`"
+		}
+
 		return []interface{}{"sum(" + fmt.Sprintf("%v", LO[0]) + ", " + fmt.Sprintf("%v", RO[0]) + ")"}, systemStack, nil
 	} else if "-" == OP {
 		var floatLO float64

@@ -8,9 +8,9 @@ void init(){
 	first_file = True;
 	br_closed = 0;
 	br_opened = 0;
-	get_root_source(root_source);
+	root_source = "benv/internal/prep_if_program.b";
 	SET_SOURCE(root_source);
-	SET_DEST("benv/recurs_program.b");
+	SET_DEST("benv/internal/recurs_program.b");
 };
 
 void finish(){
@@ -267,13 +267,13 @@ int func_call(string fname, string command){
 void switch_files(){
 	finish();
 	[print(""), (first_file), goto(#first_end)];
-	SET_SOURCE("benv/recurs_program.b");
-	SET_DEST("benv/recurs_program2.b");
+	SET_SOURCE("benv/internal/recurs_program.b");
+	SET_DEST("benv/internal/recurs_program2.b");
 	first_file = False;
 	goto(#switch_files_e);
 	#first_end:
-	SET_SOURCE("benv/recurs_program2.b");
-	SET_DEST("benv/recurs_program.b");
+	SET_SOURCE("benv/internal/recurs_program2.b");
+	SET_DEST("benv/internal/recurs_program.b");
 	first_file = True; 
 	#switch_files_e:
 	print("");
@@ -282,8 +282,8 @@ void switch_files(){
 void clear_files(){
 	finish();
 	[goto(#first), (first_file), print("")];
-	SET_SOURCE("benv/recurs_program2.b");
-	SET_DEST("benv/recurs_program.b");
+	SET_SOURCE("benv/internal/recurs_program2.b");
+	SET_DEST("benv/internal/recurs_program.b");
 	switch_files();
 	switch_command();
 	#clear_files_s:
@@ -295,7 +295,7 @@ void clear_files(){
 	#first:
 	print("");
 	#clear_files_e:
-	DEL_DEST("benv/recurs_program2.b");
+	DEL_DEST("benv/internal/recurs_program2.b");
 };
 
 void check_br(string command){

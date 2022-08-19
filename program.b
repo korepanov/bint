@@ -44,7 +44,6 @@ int world(int num, float y, int z){
 	print("");
 	if (5 == num){
 		print("");
-		stack r; 
 		print("Hello world!\n");
 		return num; 
 	};

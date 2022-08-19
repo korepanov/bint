@@ -902,6 +902,8 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 								!(len(stranspileVar) > 6 && "getVar" == stranspileVar[0:6]) &&
 								!(len(stranspileVar) > 8 && "unicode." == stranspileVar[0:8]) {
 								stranspileVar = "\"" + stranspileVar + "\""
+							} else if "\"" == string(stranspileVar[0]) {
+								stranspileVar = "\"" + stranspileVar[1:len(stranspileVar)-1] + "\""
 							}
 
 							if len(stranspileVar) > 4 && ("\"sum" == stranspileVar[0:4] || "\"len" == stranspileVar[0:4]) {
@@ -916,6 +918,10 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 								stranspileVar = string(stranspileVar[0]) +
 									strings.Replace(stranspileVar[1:len(stranspileVar)-1], "\"", `\"`, -1) +
 									string(stranspileVar[len(stranspileVar)-1])
+							}
+
+							if "\"" == string(stranspileVar[0]) {
+								stranspileVar = "`" + stranspileVar[1:len(stranspileVar)-1] + "`"
 							}
 
 							_, err := transpileDest.WriteString("setVar(\"" + fmt.Sprintf("%v", LO[0]) +
