@@ -1,9 +1,13 @@
 #import "stdlib/core.b"
 bool first_file; 
+int br_closed;
+int br_opened;
 
 void init(){
 	string root_source;
 	first_file = True;
+	br_closed = 0;
+	br_opened = 0;
 	get_root_source(root_source);
 	SET_SOURCE(root_source);
 	SET_DEST("benv/recurs_program.b");
@@ -294,6 +298,33 @@ void clear_files(){
 	DEL_DEST("benv/recurs_program2.b");
 };
 
+void check_br(string command){
+	string symbol;
+	stack s;
+	string buf;
+
+	symbol = "{";
+	s = ops(command, symbol);
+	s.pop(buf);
+	
+	if (NOT("end" == buf)){
+		br_opened = (br_opened + 1);
+	};
+
+	symbol = "}";
+	s = ops(command, symbol);
+	s.pop(buf);
+	
+	if (NOT("end" == buf)){
+		br_closed = (br_closed + 1);
+	};
+};
+
+void reset_br(){
+	br_opened = 0;
+	br_closed = 0;
+};
+
 void main(){
 	init();
 	string name;
@@ -414,19 +445,23 @@ void main(){
 								send_command(new_command); 	
 								is_ret = True;						
 							};	
-							
-							if (is_var_def(command)){
-								arg_type = T(command);
-								int type_len; 
-								type_len = len(arg_type);
-								command_len = len(command);
-								arg_name = command[type_len:command_len];
-								print(arg_type);
-								print(" ");
-								print(arg_name);
-								print("\n");
-							};					
+												
 						};
+
+						check_br(command);
+						
+						if ((is_var_def(command))AND(br_closed == br_opened)){
+							arg_type = T(command);
+							int type_len; 
+							type_len = len(arg_type);
+							command_len = len(command);
+							arg_name = command[type_len:command_len];
+							print(arg_type);
+							print(" ");
+							print(arg_name);
+							print("\n");
+						};
+
 						if (NOT(is_ret)){
 							send_command(command);
 						};
@@ -524,6 +559,21 @@ void main(){
 							is_ret = True; 							
 						};							
 					};
+					
+					check_br(command);
+					
+					if ((is_var_def(command))AND(br_closed == br_opened)){
+						arg_type = T(command);
+						int type_len; 
+						type_len = len(arg_type);
+						command_len = len(command);
+						arg_name = command[type_len:command_len];
+						print(arg_type);
+						print(" ");
+						print(arg_name);
+						print("\n");
+					};
+
 					if (NOT(is_ret)){
 						send_command(command);
 					};
@@ -584,6 +634,7 @@ void main(){
 			};
 			
 		};
+		reset_br();
 		switch_command();
 		goto(#main_s);
 	};

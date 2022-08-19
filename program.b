@@ -44,9 +44,12 @@ int world(int num, float y, int z){
 	print("");
 	if (5 == num){
 		print("");
+		stack r; 
 		print("Hello world!\n");
 		return num; 
 	};
+
+	string t;
 	
 	num = (num + 1);
 	num = world(num, 5.5, 6);
@@ -66,7 +69,8 @@ int buy(int num, float y){
 	
 	num = (num + 1);
 	num = buy(num, 0);
-	
+	bool p;
+
 	if (4 == num){
 		print("");
 		num = (num + 1);
