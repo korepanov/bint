@@ -803,7 +803,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 	}
 
 	/*if showTree {
-		DrawTree(treeStructure, infoList)
+		drawModule.DrawTree(treeStructure, infoList)
 	}*/
 
 	treeStructureList = append(treeStructureList, treeStructure)
