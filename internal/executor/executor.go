@@ -1028,9 +1028,6 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 					newPopVariable := EachVariable(variables)
 					for popVar := newPopVariable(); "end" != fmt.Sprintf("%v", popVar[0]); popVar = newPopVariable() {
 						if popVar[1] == RO[0].([]string)[1] {
-							if 791 == LineCounter {
-								fmt.Println("YES")
-							}
 							if "end" == fmt.Sprintf("%v", v[2].([]interface{})[0]) {
 								v[2].([]interface{})[0] = []interface{}{"end"}
 							}
