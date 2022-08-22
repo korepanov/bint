@@ -613,6 +613,7 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 		if nil != err {
 			return []interface{}{-1}, systemStack, err
 		}
+
 		_, err = transpileDest.WriteString("setVar(\"$CODE\", " +
 			"CodeInput(fmt.Sprintf(\"%v\", getVar(\"$sourceNewChunk\").(func () string)()), false))\n")
 

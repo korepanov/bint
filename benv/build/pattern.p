@@ -119,7 +119,7 @@ resA, errA := strconv.ParseFloat(fmt.Sprintf("%v", a), 64)
 resB, errB := strconv.ParseFloat(fmt.Sprintf("%v", b), 64)
 
 if nil != errA || nil != errB{
-return fmt.Sprintf("%v", a) + fmt.Sprintf("%v", b)
+return strings.Replace(fmt.Sprintf("%v", a), `\"`, `"`, -1) + strings.Replace(fmt.Sprintf("%v", b), `\"`, `"`, -1)
 }
 
 return resA + resB
@@ -314,7 +314,6 @@ func CodeInput(expr string, lineIncrement bool) string {
 			startFlag = true
 		}
 	}
-
 
 	expr = strings.Replace(expr, " ", "", -1)
 	expr = strings.Replace(expr, "\t", "", -1)
