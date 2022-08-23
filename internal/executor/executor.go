@@ -997,8 +997,10 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 				}
 
 				if "push" == fmt.Sprintf("%v", RO[0].([]string)[0]) {
+
 					if 1 == len(RO) {
 						v[2] = append(v[2].([]interface{}), []interface{}{RO[0].([]string)[1]})
+
 						if toTranspile && nil != transpileVar {
 							_, err := transpileDest.WriteString("setVar(\"" +
 								fmt.Sprintf("%v", v[1]) + "\", append(getVar(\"" +
@@ -1016,6 +1018,7 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 						}
 					} else {
 						v[2] = append(v[2].([]interface{}), RO[1].([]interface{})[2])
+
 						if toTranspile {
 							if "stack" == transpileVarT {
 
@@ -1078,18 +1081,36 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 
 							v[2] = VFI
 
-							//if "end" != fmt.Sprintf("%v", ValueFoldInterface(VFI.([]interface{})[len(VFI.([]interface{}))-1])) {
 							if len(VFI.([]interface{})) > 1 {
 								v[2] = v[2].([]interface{})[:len(v[2].([]interface{}))-1]
 							}
 							breakFlag = true
 							if toTranspile {
-								_, err := transpileDest.WriteString("setVar(\"" + fmt.Sprintf("%v", RO[0].([]string)[1]) + "\", getVar(\"" +
-									fmt.Sprintf("%v", v[1]) + "\").([]interface{})[len(getVar(\"" + fmt.Sprintf("%v", v[1]) +
-									"\").([]interface{})) - 1])\n")
+								_, err := transpileDest.WriteString("if len(getVar(\"" +
+									fmt.Sprintf("%v", v[1]) + "\").([]interface{})) > 1{\n")
 								if nil != err {
 									panic(err)
 								}
+								_, err = transpileDest.WriteString("setVar(\"" + fmt.Sprintf("%v", RO[0].([]string)[1]) + "\", getVar(\"" +
+									fmt.Sprintf("%v", v[1]) + "\").([]interface{})[len(getVar(\"" + fmt.Sprintf("%v", v[1]) +
+									"\").([]interface{})) - 1])\n}")
+								if nil != err {
+									panic(err)
+								}
+
+								_, err = transpileDest.WriteString("else if fmt.Sprintf(\"%T\", getVar(\"" +
+									fmt.Sprintf("%v", RO[0].([]string)[1]) + "\")) == \"[]interface {}\"{\nsetVar(\"" +
+									fmt.Sprintf("%v", RO[0].([]string)[1]) + "\", []interface{}{[]interface{}{\"end\"}})\n}else{\n")
+								if nil != err {
+									panic(err)
+								}
+
+								_, err = transpileDest.WriteString("setVar(\"" + fmt.Sprintf("%v", RO[0].([]string)[1]) + "\", \"end\")\n}\n")
+
+								if nil != err {
+									panic(err)
+								}
+
 								_, err = transpileDest.WriteString("if !isEqual(\"end\", " + "getVar(\"" +
 									fmt.Sprintf("%v", v[1]) + "\").([]interface{})[len(getVar(\"" + fmt.Sprintf("%v", v[1]) +
 									"\").([]interface{})) - 1]) && " + "!isEqual(\"[end]\", " + "getVar(\"" +

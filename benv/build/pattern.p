@@ -185,7 +185,7 @@ func mySplit(buffer string, pattern *regexp.Regexp) [2]string {
 }
 
 func EachChunk(file *os.File) func() string {
-	const chunkSize = 100
+	const chunkSize = 256
 	chunk := make([]byte, chunkSize)
 	var buffer string
 	var resList [2]string
