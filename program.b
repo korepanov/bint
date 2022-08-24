@@ -52,6 +52,7 @@ int world(int num, float y, int z){
 	
 	num = (num + 1);
 	num = world(num, 5.5, 6);
+	return num;
 };
 
 int buy(int num, float y){
@@ -67,6 +68,10 @@ int buy(int num, float y){
 	t = world(5, 7.7, 7);
 	
 	num = (num + 1);
+	string buf;
+	buf = str(num);
+	print(buf);
+	print("\n");
 	num = buy(num, 0);
 	bool p;
 
@@ -75,6 +80,8 @@ int buy(int num, float y){
 		num = (num + 1);
 		return buy(num, 0);
 	};
+	
+	return num;
 };
 
 int test(int num){
@@ -113,7 +120,7 @@ void main(){
 	print("\n");
 	res = world(1, 2, 3);
 	res = buy(1, 2);
-	inf();
+	
 };
 
 main();

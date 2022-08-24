@@ -48,7 +48,7 @@ bool void_flag;
 is_first = True;
 was_here = False;
  
-SET_SOURCE("benv/long_function_program.b");
+SET_SOURCE("benv/recurs_program.b");
 SET_DEST("benv/func_program.b");
 next_command(command);
 
@@ -460,7 +460,7 @@ next_command(command);
 goto(#again_begin);
 #del_file:
 DEL_DEST("benv/func_program2.b");
-DEL_DEST("benv/long_function_program.b");
+DEL_DEST("benv/recurs_program.b");
 #end:
 UNSET_SOURCE();
 UNSET_DEST();

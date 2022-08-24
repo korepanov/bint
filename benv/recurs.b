@@ -8,7 +8,7 @@ void init(){
 	first_file = True;
 	br_closed = 0;
 	br_opened = 0;
-	get_root_source(root_source);
+	root_source = "benv/long_function_program.b";
 	SET_SOURCE(root_source);
 	SET_DEST("benv/recurs_program.b");
 };
@@ -355,6 +355,7 @@ void main(){
 	string res;
 	int command_len;
 	string command_buf;
+	string original_command;
 
 	call_counter = 0;
 	was_recurs = False;
@@ -526,12 +527,12 @@ void main(){
 					send_command(res);
 
 					if (NOT("void"==t)){
-						new_command = ((((t + "$") + name) + "_res") + scall_num); 
+						new_command = ((((t + "$") + name) + "_recurs_res") + scall_num); 
 						send_command(new_command);
-						new_command = (("pop(" + ((("$" + name) + "_res") + scall_num)) + ")");
+						new_command = (("pop(" + ((("$" + name) + "_recurs_res") + scall_num)) + ")");
 						send_command(new_command);
 						new_command = command[0:pos1];
-						new_command = ((((new_command + "$") + name) + "_res") + scall_num);
+						new_command = ((((new_command + "$") + name) + "_recurs_res") + scall_num);
 						command_len = len(command);
 						command = command[pos2:command_len];
 						new_command = (new_command + command);
@@ -663,6 +664,7 @@ void main(){
 					if (NOT(-1 == pos)){
 						pos1 = pos;
 						pos2 = func_end(command, pos1);
+						original_command = command;
 						command = command[pos1:pos2];
 
 						passed_args = args_to_pass(command);
@@ -686,6 +688,20 @@ void main(){
 						res = ((("#" + name) + "_res") + scall_num);
 						res = (res + ":print(\"\")");
 						send_command(res);
+
+						if (NOT("void" == t)){
+							res = (t + ((("$" + name) + "_recurs_res") + scall_num));
+							send_command(res);
+							res = (((("pop($" + name) + "_recurs_res") + scall_num) + ")");
+							send_command(res);
+							command = original_command[0:pos1];
+							command = (command + ((("$" + name) + "_recurs_res") + scall_num));
+							command_len = len(original_command);
+							original_command = original_command[pos2:command_len];
+							command = (command + original_command);
+							send_command(command);
+						};
+
 						call_num = (call_num + 1);
 					};
 
@@ -718,8 +734,6 @@ void main(){
 		goto(#final_rest);
 	};
 
-	new_command = "#_exit:print(\"\")";
-	send_command(new_command);
 	clear_files();
 	
 };

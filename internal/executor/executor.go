@@ -924,8 +924,28 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 							/*if "\"" == string(stranspileVar[0]) {
 								stranspileVar = "`" + stranspileVar[1:len(stranspileVar)-1] + "`"
 							}*/
+							//re, err := regexp.Compile(`(?:\".*?\\[^\"n].*?\")`)
+							re, err := regexp.Compile(`\"(\\.|[^\"])*\"`)
 
-							_, err := transpileDest.WriteString("setVar(\"" + fmt.Sprintf("%v", LO[0]) +
+							if nil != err {
+								panic(err)
+							}
+
+							locs := re.FindAllIndex([]byte(stranspileVar), -1)
+
+							for _, loc := range locs {
+								re, err := regexp.Compile(`\\[^\"nt]`)
+								if nil != err {
+									panic(err)
+								}
+								if nil != re.FindIndex([]byte(stranspileVar[loc[0]:loc[1]])) {
+									stranspileVar = stranspileVar[:loc[0]] + "`" +
+										stranspileVar[loc[0]+1:loc[1]-1] + "`" + stranspileVar[loc[1]:]
+								}
+
+							}
+
+							_, err = transpileDest.WriteString("setVar(\"" + fmt.Sprintf("%v", LO[0]) +
 								"\"," + stranspileVar + ")\n")
 							if nil != err {
 								panic(err)
