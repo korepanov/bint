@@ -921,9 +921,9 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 									string(stranspileVar[len(stranspileVar)-1])
 							}
 
-							if "\"" == string(stranspileVar[0]) {
+							/*if "\"" == string(stranspileVar[0]) {
 								stranspileVar = "`" + stranspileVar[1:len(stranspileVar)-1] + "`"
-							}
+							}*/
 
 							_, err := transpileDest.WriteString("setVar(\"" + fmt.Sprintf("%v", LO[0]) +
 								"\"," + stranspileVar + ")\n")

@@ -119,7 +119,7 @@ resA, errA := strconv.ParseFloat(fmt.Sprintf("%v", a), 64)
 resB, errB := strconv.ParseFloat(fmt.Sprintf("%v", b), 64)
 
 if nil != errA || nil != errB{
-return strings.Replace(fmt.Sprintf("%v", a), `\"`, `"`, -1) + strings.Replace(fmt.Sprintf("%v", b), `\"`, `"`, -1)
+return fmt.Sprintf("%v", a)+ fmt.Sprintf("%v", b)
 }
 
 return resA + resB
