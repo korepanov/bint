@@ -62,6 +62,25 @@ void SET_COMMAND_COUNTER(int counter){
 	print("");
 };
 
+string get_command(int counter){
+	int i;
+	string buf;
+	string command;
+
+	i = 0;
+	RESET_SOURCE();
+
+	#_get_command_s:
+	[print(""), (i < counter), goto(#_get_command_e)];
+	next_command(command);
+	i = (i + 1);
+	goto(#_get_command_s);
+	#_get_command_e:
+	SET_COMMAND_COUNTER(COMMAND_COUNTER);
+	
+	return command;
+};
+
 void switch_command(){
 	COMMAND_COUNTER = (COMMAND_COUNTER + 1);
 	next_command(command);

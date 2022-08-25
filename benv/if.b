@@ -60,25 +60,6 @@ string get_cond(string command){
 	return buf;
 };
 
-string get_command(int counter){
-	int i;
-	string buf;
-	string command;
-
-	i = 0;
-	RESET_SOURCE();
-
-	#get_command_s:
-	[print(""), (i < counter), goto(#get_command_e)];
-	next_command(command);
-	i = (i + 1);
-	goto(#get_command_s);
-	#get_command_e:
-	SET_COMMAND_COUNTER(COMMAND_COUNTER);
-	
-	return command;
-};
-
 string if_type(string command){
 	int command_len;
 	string prefix; 
