@@ -634,6 +634,12 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 			return []interface{}{-1}, systemStack, err
 		}
 		return []interface{}{0}, systemStack, nil
+	} else if "exit" == OP {
+		_, err := transpileDest.WriteString("os.Exit(" + fmt.Sprintf("%v", LO[0]) + ")\n")
+		if nil != err {
+			panic(err)
+		}
+		return []interface{}{0}, systemStack, nil
 	} else if "get_root_source" == OP {
 		_, err := transpileDest.WriteString("setVar(" + fmt.Sprintf("%v", LO[0])[7:len(fmt.Sprintf("%v", LO[0]))-1] + ", iFlag)\n")
 		if nil != err {

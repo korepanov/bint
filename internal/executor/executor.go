@@ -577,6 +577,20 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		return []interface{}{"goto", LO[0]}, systemStack, nil
+	} else if "exit" == OP {
+		if "int" != WhatsType(fmt.Sprintf("%v", LO[0])) {
+			err := errors.New("executor: exit: error: data type mismatch")
+			return LO, systemStack, err
+		}
+		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
+			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
+		}
+		code, err := strconv.Atoi(fmt.Sprintf("%v", LO[0]))
+		if nil != err {
+			panic(err)
+		}
+
+		os.Exit(code)
 	} else if "is_letter" == OP {
 		if "string" != WhatsType(fmt.Sprintf("%v", LO[0])) {
 			err := errors.New("executor: is_letter : error: data type mismatch")

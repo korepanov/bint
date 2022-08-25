@@ -55,12 +55,12 @@ int buy(int num, float y){
 	};
 	
 	t = world(5, 7.7, 7);
-	
 	num = (num + 1);
 	string buf;
 	buf = str(num);
 	
 	num = buy(num, 0);
+	num = buy(num, 1);
 	bool p;
 
 	if (4 == num){
@@ -97,15 +97,11 @@ void inf(){
 void main(){
 	int res;
 	hello();
-	res = factorial(5);
+	res = factorial(10);
 	string buf;
 	buf = str(res);
 	print(buf);
 	print("\n");
-	res = world(1, 2, 3);
-	res = buy(1, 2);
-	inf();
-	
 };
 
 main();

@@ -18,7 +18,6 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool,
 	isType := false
 
 	for i < len(expr) {
-
 		newVariable := EachVariable(variables)
 		for v := newVariable(); "end" != v[0]; v = newVariable() {
 			if len(expr) > i+len(v[1].(string)) {
@@ -110,6 +109,9 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool,
 			i += 11
 		} else if len(expr) > i+4 && "goto" == expr[i:i+4] {
 			res = append(res, []interface{}{"OP", "goto"})
+			i += 3
+		} else if len(expr) > i+5 && "exit(" == expr[i:i+5] {
+			res = append(res, []interface{}{"OP", "exit"})
 			i += 3
 		} else if len(expr) > i && "#" == string(expr[i]) {
 			mark := string(expr[i])

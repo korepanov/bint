@@ -248,10 +248,15 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 	wasIndex := false
 	wasIsLetter := false
 	wasIsDigit := false
+	wasExit := false
 
 	if "goto" == fmt.Sprintf("%v", exprList[0][1]) {
 		exprList = makeOperationBinary(exprList)
 		wasGoto = true
+	}
+	if "exit" == fmt.Sprintf("%v", exprList[0][1]) {
+		exprList = makeOperationBinary(exprList)
+		wasExit = true
 	}
 	if "SET_SOURCE" == fmt.Sprintf("%v", exprList[0][1]) {
 		exprList = makeOperationBinary(exprList)
@@ -714,7 +719,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 	if maxNbraces > 0 || wasCd || wasAssignment || wasNOT || wasGoto || wasSetSource ||
 		wasNextCommand || wasSendCommand || wasUndefine || wasPop || wasPush || wasSetDest || wasDelDest ||
 		wasSendDest || wasPoint || wasLen || wasIndex || wasGetRootSource || wasGetRootDest ||
-		wasIsLetter || wasIsDigit {
+		wasIsLetter || wasIsDigit || wasExit {
 		if !wasCd {
 			if !wasAssignment {
 				//if not was_NOT:

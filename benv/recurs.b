@@ -2,9 +2,9 @@
 bool first_file; 
 int br_closed;
 int br_opened;
+string root_source;
 
 void init(){
-	string root_source;
 	first_file = True;
 	br_closed = 0;
 	br_opened = 0;
@@ -98,8 +98,7 @@ string T(string command){
 	print(command);
 	print("\n");
 	print("T: ERROR\n");
-
-	return "ERROR";	
+	exit(1);
 };
 
 string func_name(string command){
@@ -109,9 +108,6 @@ string func_name(string command){
 	int command_len;
 
 	t = T(command);
-	if ("ERROR" == command){
-		return "ERROR";	
-	};
 	
 	pos = len(t);
 	command_len = len(command);
@@ -120,7 +116,8 @@ string func_name(string command){
 	epos = index(command, "(");
 
 	if (-1 == epos){
-		return "ERROR";	
+		println("recurs: func_name: ERROR");
+		exit(1);
 	};
 
 	command = command[0:epos];
@@ -150,9 +147,8 @@ stack args_to_accept(string command){
 	};
 
 	if ((-1 == pos1) OR (-1 == pos2)){
-		print(command);
-		print("\n");
-		print("recurs: args_to_accept: ERROR\n");	
+		print("recurs: args_to_accept: ERROR\n");
+		exit(1);	
 	};
 
 	s_to_parse = command[pos1:pos2];
@@ -356,7 +352,10 @@ void main(){
 	int command_len;
 	string command_buf;
 	string original_command;
+	int exit_num;
+	string sexit_num;
 
+	exit_num = 0;
 	call_counter = 0;
 	was_recurs = False;
 	first_recurs_call = True;
@@ -368,13 +367,7 @@ void main(){
 	if (NOT("end" == command)){
 		if (is_func_definition(command)){
 			t = T(command);
-			if ("ERROR" == t){
-				print("recurs ERROR\n");			
-			};
 			name = func_name(command);
-			if ("ERROR" == name){
-				print("recurs ERROR\n");			
-			};
 			call_num = 0;
 			raccepted_args = args_to_accept(command);
 
@@ -405,12 +398,25 @@ void main(){
 						first_recurs_call = False;
 						new_command = ("stack" + ("$" + (name + "_stack")));
 						send_command(new_command);
+						new_command = (("int $" + name) + "_counter");
+						send_command(new_command);
 						new_command = (("goto(#" + name) + "_end)");
 						send_command(new_command);
 						new_command = (("#" + name) + ":");
 						new_command = (new_command + "print(\"\")");
 						send_command(new_command); 
-
+						new_command = (((("$" + name) + "_counter = ($") + name) + "_counter + 1)");
+						send_command(new_command);
+						sexit_num = str(exit_num);
+						new_command = ((((("[print(\"\"), (" + "$") + name) + "_counter > 128),goto(#_recurs_exit_end" ) + sexit_num) + ")]");
+						exit_num = (exit_num + 1);
+						send_command(new_command);
+						new_command = "print(\"ERROR: maximum recursion stack depth reached\")";
+						send_command(new_command);
+						new_command = "exit(1)";
+						send_command(new_command);
+						new_command = (("#_recurs_exit_end" + sexit_num) + ":print(\"\")");
+						send_command(new_command); 
 						accepted_args = raccepted_args;
 						
 						accepted_args.pop(arg);			
@@ -684,6 +690,8 @@ void main(){
 						scall_num = str(call_num);
 						res = ((((((("$" + name) + "_stack.push(") + "#") + name) + "_res") + scall_num) + ")");
 						send_command(res);
+						res = (("$" + name) + "_counter= 0");
+						send_command(res); 
 						res = (("goto(#" + name) + ")");
 						send_command(res); 
 						res = ((("#" + name) + "_res") + scall_num);
@@ -736,6 +744,7 @@ void main(){
 	};
 
 	clear_files();
+	DEL_DEST(root_source);
 	
 };
 
