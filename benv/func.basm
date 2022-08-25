@@ -44,11 +44,13 @@ bool is_first;
 bool was_func;
 bool was_here; 
 bool void_flag;
+string root_source; 
 
 is_first = True;
 was_here = False;
  
-SET_SOURCE("benv/long_function_program.b");
+get_root_source(root_source);
+SET_SOURCE(root_source);
 SET_DEST("benv/func_program.b");
 next_command(command);
 

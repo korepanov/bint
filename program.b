@@ -1,22 +1,24 @@
-int factorial(int n){
-	int res;
-
-	if (0 == n){
-		return 1;	
+void hello(){
+	print("");
+	int t;
+	if (True){
+		print("");
+		print("YES!\n");
+		string r;	
 	};
-	
-	res = (n * factorial((n - 1)));	
-	
-	return res;
+	stack k;
+	print("");
 };
 
 void main(){
 	int res;
-	res = factorial(5);
-	string buf;
-	buf = str(res);
-	print(buf);
-	print("\n");
+	hello();
+	
+	if (False){
+		print("");
+		string r;
+		print("NO\n");			
+	};
 };
 
 main();
