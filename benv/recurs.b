@@ -427,24 +427,25 @@ void main(){
 						};
 
 						switch_command();
-						
-					};
-					
-					accepted_args = raccepted_args;
-					accepted_args.pop(arg);
-					arg.pop(arg_type);
-					arg.pop(arg_name);
-					#ax:
-					if (NOT("end" == arg_name)){
-						new_command = (arg_type + arg_name);
-						send_command(new_command);
-						new_command = (("pop(" + arg_name) + ")");
-						send_command(new_command);
+							
+						accepted_args = raccepted_args;
 						accepted_args.pop(arg);
 						arg.pop(arg_type);
 						arg.pop(arg_name);
-						goto(#ax); 					
+						#ax:
+						if (NOT("end" == arg_name)){
+							new_command = (arg_type + arg_name);
+							send_command(new_command);
+							new_command = (("pop(" + arg_name) + ")");
+							send_command(new_command);
+							accepted_args.pop(arg);
+							arg.pop(arg_type);
+							arg.pop(arg_name);
+							goto(#ax); 					
+						};
 					};
+					
+				
 					bool is_ret;
 					is_ret = False;
 					#before_recurs:

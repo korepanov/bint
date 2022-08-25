@@ -1,19 +1,15 @@
 float f1(){
-	print("");
 	return 5.5;
 };
 
 string f2(string t){
-	print("");
 	return "lalala";
 };
 
 int factorial(int n){
-	print("");
 	int res;
 
 	if (0 == n){
-		print("");
 		return 1;	
 	};
 	
@@ -23,27 +19,22 @@ int factorial(int n){
 };
 
 stack f3(int y, int t){
-	print("");
 	stack res;
 	res.push(1);
 	return res;
 };
 
 bool f4(bool a, bool b, bool c){
-	print("");
 	return True; 
 };
 
 
 void hello(){
-	print("");
 	print("Hello!\n");
 };
 
 int world(int num, float y, int z){
-	print("");
 	if (5 == num){
-		print("");
 		print("Hello world!\n");
 		return num; 
 	};
@@ -56,11 +47,9 @@ int world(int num, float y, int z){
 };
 
 int buy(int num, float y){
-	print("");
 	int t;
 	
 	if (5 == num){
-		print("");
 		print("Hello world!\n");
 		return num; 
 	};
@@ -70,13 +59,11 @@ int buy(int num, float y){
 	num = (num + 1);
 	string buf;
 	buf = str(num);
-	print(buf);
-	print("\n");
+	
 	num = buy(num, 0);
 	bool p;
 
 	if (4 == num){
-		print("");
 		num = (num + 1);
 		return buy(num, 0);
 	};
@@ -85,7 +72,6 @@ int buy(int num, float y){
 };
 
 int test(int num){
-	print("");
 	if (5 == num){
 		print("");
 		print("Hello world!\n");
@@ -96,7 +82,6 @@ int test(int num){
 	num = test(num);
 	
 	if (4 == num){
-		print("");
 		num = (num + 1);
 		return test(num);
 	};
@@ -110,7 +95,6 @@ void inf(){
 };
 
 void main(){
-	print("");
 	int res;
 	hello();
 	res = factorial(5);
@@ -120,6 +104,7 @@ void main(){
 	print("\n");
 	res = world(1, 2, 3);
 	res = buy(1, 2);
+	inf();
 	
 };
 
