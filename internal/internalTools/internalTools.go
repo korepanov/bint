@@ -104,13 +104,13 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 		toTranslate = toTranslateInternal
 
 		if options.Internal == toTranslate {
-			rootSource = "benv/if_var.b"
-			rootDest = "benv/if_var.basm"
+			rootSource = "benv/if.b"
+			rootDest = "benv/if.basm"
 			if execBenv {
 				filesListToExecute = []string{"benv/internal/build/import",
 					"benv/internal/build/prep_func",
 					"benv/internal/build/prep_if",
-					"benv/internal/build/if",
+					"benv/internal/build/if_plug",
 					"benv/internal/build/long_function",
 					"benv/internal/build/recurs",
 					"benv/internal/build/func",
