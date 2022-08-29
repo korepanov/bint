@@ -177,7 +177,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 			filesListToExecute = []string{rootSource}
 		} else if options.ExecBasm == toTranslate {
 			rootSource = "program.b"
-			rootDest = "benv/if_var.basm"
+			rootDest = "benv/if.basm"
 			//rootDest = "benv/program.basm"
 			filesListToExecute = []string{rootDest}
 		} else if options.Primitive == toTranslate {

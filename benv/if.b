@@ -5,9 +5,13 @@ string command;
 bool first_file;
 int num;
 int exit_num;
+int br_closed;
+int br_opened;
 
 void init(){
-	root_source = "benv/prep_if_program.b";
+	br_closed = 0;
+	br_opened = 0;
+	get_root_source(root_source);
 	SET_SOURCE(root_source);
 	SET_DEST("benv/if_program.b");
 };
@@ -15,6 +19,92 @@ void init(){
 void finish(){
 	UNSET_SOURCE();
 	UNSET_DEST();
+};
+
+bool is_var_def(string command){
+	stack s;
+	string buf;
+
+	s = reg_find("^(?:(int|float|bool|stack|string)[^\(]*)", command);
+	s.pop(buf);
+	
+	return (NOT("end" == buf)); 
+};
+
+string Type(string command){
+	stack s;
+	string buf;
+
+	s = reg_find("(?:(^int))", command);
+	s.pop(buf);
+	
+	[goto(#int_end), ("end" == buf), print("")];
+	return "int";	
+	#int_end:
+
+	s = reg_find("(?:(^float))", command);
+	s.pop(buf);
+	[goto(#float_end), ("end" == buf), print("")];
+	return "float";	
+	#float_end:
+
+	s = reg_find("(?:(^bool))", command);
+	s.pop(buf);
+	[goto(#bool_end), ("end" == buf), print("")];
+	return "bool";	
+	#bool_end:
+
+	s = reg_find("(?:(^stack))", command);
+	s.pop(buf);
+	[goto(#stack_end), ("end" == buf), print("")];
+	return "stack";	
+	#stack_end:
+
+	s = reg_find("(?:(^string))", command);
+	s.pop(buf);
+	[goto(#string_end), ("end" == buf), print("")];
+	return "string";	
+	#string_end:
+
+	s = reg_find("(?:(^void))", command);
+	s.pop(buf);
+	[goto(#void_end), ("end" == buf), print("")];
+	return "void";	
+	#void_end:
+	
+	print(command);
+	print("\n");
+	print("Type: ERROR\n");
+	exit(1);
+};
+
+void check_br(string command){
+	string symbol;
+	stack s;
+	string buf;
+
+	symbol = "{";
+	s = ops(command, symbol);
+	s.pop(buf);
+	
+	[goto(#br_opened_end), ("end" == buf), print("")];
+	br_opened = (br_opened + 1);
+	#br_opened_end:
+
+	symbol = "}";
+	s = ops(command, symbol);
+	s.pop(buf);
+	
+	[goto(#br_closed_end), ("end" == buf), print("")];
+	br_closed = (br_closed + 1);
+	
+	#br_closed_end:
+	print("");
+};
+
+void reset_br(){
+	br_opened = 0;
+	br_closed = 0;
 };
 
 bool is_if(string command){
@@ -101,6 +191,10 @@ void switch_files(){
 void replace_if(string cond, int stop_pos){
 	string buf;
 	string snum;
+	stack args_to_undefine;
+	string arg_type;
+	int command_len;
+	string arg_name;
 	
 	snum = str(num);
 	buf = (((("[print(\"\"), " + cond) + ", goto(#_cond") + snum) + "_end)]");
@@ -110,10 +204,31 @@ void replace_if(string cond, int stop_pos){
 	#replace_clear_if_s:
 	[goto(#replace_clear_if_e), ("end" == command), print("")];
 	[print(""), (stop_pos == COMMAND_COUNTER), goto(#add_replace_clear_if_mark)];
+	
+	args_to_undefine.pop(arg_name);
+	#un:
+	[goto(#un_end), ("end" == arg_name), print("")];
+	buf = (("UNDEFINE(" + arg_name) + ")");
+	send_command(buf);
+	args_to_undefine.pop(arg_name); 
+	goto(#un);
+	#un_end:
+	
 	buf = (("#_cond" + snum) + "_end:print(\"\")");
 	send_command(buf);
 	switch_command();
 	#add_replace_clear_if_mark:
+	check_br(command);
+
+	[print(""), ((is_var_def(command))AND(br_closed == br_opened)), goto(#pop_e)];
+	arg_type = Type(command);
+	int type_len;
+	type_len = len(arg_type);
+	command_len = len(command);
+	arg_name = command[type_len:command_len];
+	args_to_undefine.push(arg_name);
+	#pop_e:
+
 	send_command(command);
 	switch_command();
 	goto(#replace_clear_if_s);
@@ -266,7 +381,6 @@ void clear_files(){
 	#clear_files_e:
 	finish();
 	DEL_DEST("benv/if_program2.b");
-	DEL_DEST(root_source);
 };
 
 void main(){
