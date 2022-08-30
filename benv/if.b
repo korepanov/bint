@@ -11,7 +11,7 @@ int br_opened;
 void init(){
 	br_closed = 0;
 	br_opened = 0;
-	get_root_source(root_source);
+	root_source = "benv/prep_if_program.b";
 	SET_SOURCE(root_source);
 	SET_DEST("benv/if_program.b");
 };
@@ -463,6 +463,7 @@ void clear_files(){
 	#clear_files_e:
 	finish();
 	DEL_DEST("benv/if_program2.b");
+	DEL_DEST(root_source);
 };
 
 void main(){
