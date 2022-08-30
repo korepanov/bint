@@ -13,6 +13,7 @@ string buf3;
 string buf4;
 string symbol; 
 string $reverse_ret;
+string indexes_ret;
 int int_buf;
 int int_buf2;
 int int_buf3; 
@@ -466,7 +467,7 @@ DEL_DEST("benv/long_function_program.b");
 #end:
 UNSET_SOURCE();
 UNSET_DEST();
-goto(#end_func);
+exit(0);
 
 #reverse:
 string buf;
@@ -573,7 +574,7 @@ UNDEFINE(s_len_old);
 UNDEFINE(sub_len);
 UNDEFINE(s);
 UNDEFINE(sub_s);
-goto(#indexes_ret);
+goto(indexes_ret);
 
 #func_call_index:
 string reg;
@@ -599,6 +600,7 @@ goto(#look_behind);
 pop(st);
 push(command);
 push(func_name);
+indexes_ret="#indexes_ret";
 goto(#indexes);
 #indexes_ret:
 pop(ist);	
@@ -645,3 +647,4 @@ goto(#func_call_index_ret);
 goto(#func_call_index_s);
 #end_func:
 print("");
+
