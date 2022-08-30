@@ -233,6 +233,7 @@ void replace_if(string cond, int stop_pos){
 	switch_command();
 	goto(#replace_clear_if_s);
 	#replace_clear_if_e:
+	reset_br();
 	COMMAND_COUNTER = 0;
 	switch_files();
 };

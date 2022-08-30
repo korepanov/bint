@@ -14,6 +14,18 @@ void main(){
 	int res;
 	hello();
 	
+	if (True){
+		print("");
+		print("lalala");
+		string g;
+		print("g");
+		if (False){
+			print("");
+			print("o");
+			stack d;
+			print("t");
+		};	
+	};
 	if (False){
 		print("");
 		string r;
