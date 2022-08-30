@@ -246,16 +246,30 @@ void replace_elseif(string cond, int stop_pos){
 	string bcommand;
 	int this_stop_pos;
 	string sexit_num;
+	int command_len;
+	string arg_name;
+	string arg_type;
+	stack args_to_undefine;
 	
 	sexit_num = str(exit_num);
 	snum = str(num);
 	buf = (((("[print(\"\"), " + cond) + ", goto(#_cond") + snum) + "_end)]");
 	send_command(buf);
 	switch_command(); 
+	check_br(command);
 	
 	#replace_elseif_s:
 	[goto(#replace_elseif_e), ("end" == command), print("")];
 	[print(""), (stop_pos == COMMAND_COUNTER), goto(#add_replace_elseif_mark)];
+	args_to_undefine.pop(arg_name);
+	#un2:
+	[goto(#un_end2), ("end" == arg_name), print("")];
+	buf = (("UNDEFINE(" + arg_name) + ")");
+	send_command(buf);
+	args_to_undefine.pop(arg_name); 
+	goto(#un2);
+	#un_end2:
+	reset_br();
 	sexit_num = str(exit_num);
 	buf = (("goto(#_cond_exit" + sexit_num) + ")");
 	send_command(buf);
@@ -268,6 +282,7 @@ void replace_elseif(string cond, int stop_pos){
 	#find_block_e:
 	bcommand = command;
 	switch_command();
+	check_br(command);
 	[goto(#replace_elseif_e), (NOT("elseif" == t)), print("")];
 	[print(""), ("elseif" == t), goto(#elif_end)];
 	cond = get_cond(bcommand);
@@ -279,8 +294,19 @@ void replace_elseif(string cond, int stop_pos){
 	#elif_end:
 	print("");
 	#add_replace_elseif_mark:
+	print("");
+	[print(""), ((is_var_def(command))AND(br_closed == br_opened)), goto(#pop_e2)];
+	arg_type = Type(command);
+	int type_len;
+	type_len = len(arg_type);
+	command_len = len(command);
+	arg_name = command[type_len:command_len];
+	args_to_undefine.push(arg_name);
+	#pop_e2:
+
 	send_command(command);
 	switch_command();
+	check_br(command);
 	goto(#replace_elseif_s);
 	#replace_elseif_e:
 	t = if_type(bcommand);
@@ -290,17 +316,40 @@ void replace_elseif(string cond, int stop_pos){
 	switch_command();
 	stop_pos = block_end();
 	switch_command();
+	check_br(command);
 	#restore_end:
 	[print(""), ("else" == t), goto(#final_cond_end)];
 	#final_cond_s:
 	[goto(#final_cond_end), (stop_pos == COMMAND_COUNTER), print("")];
+	print("");
+	[print(""), ((is_var_def(command))AND(br_closed == br_opened)), goto(#pop_e3)];
+	arg_type = Type(command);
+	int type_len;
+	type_len = len(arg_type);
+	command_len = len(command);
+	arg_name = command[type_len:command_len];
+	args_to_undefine.push(arg_name);
+	#pop_e3:
+
 	send_command(command);
 	switch_command();
+	check_br(command);
 	goto(#final_cond_s);
 	#final_cond_end:
 	[print(""), ("else" == t), goto(#else_end)];
 	switch_command();
+	check_br(command);
 	#else_end:
+	args_to_undefine.pop(arg_name);
+	#un3:
+	[goto(#un_end3), ("end" == arg_name), print("")];
+	buf = (("UNDEFINE(" + arg_name) + ")");
+	send_command(buf);
+	args_to_undefine.pop(arg_name); 
+	goto(#un3);
+	#un_end3:
+	reset_br();
+
 	sexit_num = str(exit_num);
 	buf = (("#_cond_exit" + sexit_num) + ":print(\"\")");
 	exit_num = (exit_num + 1);
@@ -312,6 +361,7 @@ void replace_elseif(string cond, int stop_pos){
 	goto(#ts);
 	#te:
 	COMMAND_COUNTER = 0;
+	reset_br();
 	switch_files();
 };
 

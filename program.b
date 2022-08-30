@@ -53,6 +53,7 @@ void main(){
 		print("");
 		int t;
 	}else if (5 > 4){
+		print("");
 		int u;
 		if (False){
 			print("");
@@ -64,10 +65,6 @@ void main(){
 			print("");
 			float q;
 		};
-	}else{
-		print("");
-		int y;
-		stack j;
 	};
 };
 
