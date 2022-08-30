@@ -371,17 +371,30 @@ void replace_else(string cond, int stop_pos){
 	string sexit_num;
 	int ibuf; 
 	int pos; 
+	int command_len;
+	string arg_name;
+	string arg_type;
+	stack args_to_undefine;
 	
 	pos = -1;
 	snum = str(num);
 	buf = (((("[print(\"\"), " + cond) + ", goto(#_cond") + snum) + "_end)]");
 	send_command(buf);
 	switch_command(); 
-
+	check_br(command);
 	#replace_else_s:
 	[goto(#replace_else_e), ("end" == command), print("")];
 	[print(""), (stop_pos == COMMAND_COUNTER), goto(#add_replace_else_mark)];
 	sexit_num = str(exit_num);
+	args_to_undefine.pop(arg_name);
+	#un4:
+	[goto(#un_end4), ("end" == arg_name), print("")];
+	buf = (("UNDEFINE(" + arg_name) + ")");
+	send_command(buf);
+	args_to_undefine.pop(arg_name); 
+	goto(#un4);
+	#un_end4:
+	reset_br();
 	buf = (("goto(#_cond_exit" + sexit_num) + ")");
 	send_command(buf); 
 	buf = (("#_cond" + snum) + "_end:print(\"\")");
@@ -393,9 +406,17 @@ void replace_else(string cond, int stop_pos){
 	switch_command();
 	pos = block_end();
 	switch_command();
-	
+	check_br(command);
 	#add_replace_else_mark:
 	[print(""), (pos == COMMAND_COUNTER), goto(#figure_brace_end)];
+	args_to_undefine.pop(arg_name);
+	#un5:
+	[goto(#un_end5), ("end" == arg_name), print("")];
+	buf = (("UNDEFINE(" + arg_name) + ")");
+	send_command(buf);
+	args_to_undefine.pop(arg_name); 
+	goto(#un5);
+	#un_end5:
 	sexit_num = str(exit_num);
 	buf = (("#_cond_exit" + sexit_num) + ":print(\"\")");
 	exit_num = (exit_num + 1);
@@ -409,11 +430,21 @@ void replace_else(string cond, int stop_pos){
 	#ete:
 	goto(#replace_else_e);
 	#figure_brace_end:
+	[print(""), ((is_var_def(command))AND(br_closed == br_opened)), goto(#pop_e4)];
+	arg_type = Type(command);
+	int type_len;
+	type_len = len(arg_type);
+	command_len = len(command);
+	arg_name = command[type_len:command_len];
+	args_to_undefine.push(arg_name);
+	#pop_e4:
 	send_command(command);
 	switch_command();
+	check_br(command);
 	goto(#replace_else_s);
 	#replace_else_e:
 	COMMAND_COUNTER = 0;
+	reset_br();
 	switch_files();
 };
 
