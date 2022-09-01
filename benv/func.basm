@@ -58,9 +58,9 @@ is_first = True;
 was_here = False;
 undefine_checked = False;
  
-get_root_source(root_source);
+root_source = "benv/internal/recurs_program.b";
 SET_SOURCE(root_source);
-dest = "benv/func_program.b";
+dest = "benv/internal/func_program.b";
 SET_DEST(dest);
 next_command(command);
 
@@ -489,9 +489,9 @@ goto(#begin);
 [print(""), (is_first), goto(#not_is_first)];
 UNSET_SOURCE();
 UNSET_DEST();
-SET_SOURCE("benv/func_program.b");
-dest = "benv/func_program2.b";
-SET_DEST("benv/func_program2.b");
+SET_SOURCE("benv/internal/func_program.b");
+dest = "benv/internal/func_program2.b";
+SET_DEST("benv/internal/func_program2.b");
 is_first = False;
 was_func = False;
 next_command(command);
@@ -503,8 +503,8 @@ REROUTE();
 next_command(command);
 goto(#again_begin);
 #del_file:
-DEL_DEST("benv/func_program2.b");
-DEL_DEST("benv/long_function_program.b");
+DEL_DEST("benv/internal/func_program2.b");
+DEL_DEST("benv/internal/recurs_program.b");
 #end:
 UNSET_SOURCE();
 UNSET_DEST();
