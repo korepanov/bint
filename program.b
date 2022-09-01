@@ -1,78 +1,55 @@
-voidhello(){print("");
-intt;
-[print(""),(True),goto(#_cond0_end)];
-print("YES!\n");
-stringr;
-UNDEFINE(r);
-#_cond0_end:print("");
-stackk;
-print("");
+void hello(){
+	int t;
+	if (True){
+		print("YES!\n");
+		string r;	
+	};
+	stack k;
 };
-print("");
-voidmain(){print("");
-intres;
-hello();
-[print(""),(True),goto(#_cond1_end)];
-print("lalala");
-stringg;
-print("g");
-[print(""),(False),goto(#_cond2_end)];
-print("o");
-stackd;
-print("t");
-UNDEFINE(d);
-#_cond2_end:print("");
-UNDEFINE(g);
-#_cond1_end:print("");
-[print(""),(False),goto(#_cond3_end)];
-stringr;
-[print(""),(True),goto(#_cond4_end)];
-intt;
-inty;
-UNDEFINE(y);
-UNDEFINE(t);
-#_cond4_end:print("");
-print("NO\n");
-UNDEFINE(r);
-goto(#_cond_exit0);
-#_cond3_end:print("");
-print("YES!\n");
-intt;
-[print(""),(True),goto(#_cond5_end)];
-floatp;
-UNDEFINE(p);
-goto(#_cond_exit1);
-#_cond5_end:print("");
-floatk;
-UNDEFINE(k);
-#_cond_exit1:print("");
-print("");
-UNDEFINE(t);
-#_cond_exit0:print("");
-[print(""),(False),goto(#_cond6_end)];
-intt;
-UNDEFINE(t);
-goto(#_cond_exit2);
-#_cond6_end:print("");
-[print(""),(5>4),goto(#_cond7_end)];
-intu;
-[print(""),(False),goto(#_cond8_end)];
-intl;
-UNDEFINE(l);
-goto(#_cond_exit3);
-#_cond8_end:print("");
-[print(""),(4>5),goto(#_cond9_end)];
-stacky;
-UNDEFINE(y);
-goto(#_cond_exit3);
-#_cond9_end:print("");
-floatq;
-UNDEFINE(q);
-#_cond_exit3:print("");
-UNDEFINE(u);
-goto(#_cond_exit2);
-#_cond7_end:print("");
-#_cond_exit2:print("");
+
+void main(){
+	int res;
+	hello();
+	
+	if (True){
+		print("lalala");
+		string g;
+		print("g");
+		if (False){
+			print("o");
+			stack d;
+			print("t");
+		};	
+	};
+	if (False){
+		string r;
+		if (True){
+			int t;
+			int y;		
+		};
+		print("NO\n");			
+	}else{
+		print("YES!\n");
+		int t; 
+		if (True){
+			float p;		
+		}else{
+			float k;
+		};
+	};
+
+	if (False){
+		int t;
+	}else if (5 > 4){
+		int u;
+		if (False){
+			int l;
+		}else if (4 > 5){
+			stack y;		
+		}else{
+			float q;
+		};
+	};
 };
-print("");
+
 main();

@@ -494,7 +494,8 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 			panic(err)
 		}
 
-		_, err = transpileDest.WriteString("setVar(\"$DEST\", createFile(getRootSource(" + fmt.Sprintf("%v", LO[0]) + ")))\n")
+		_, err = transpileDest.WriteString("setVar(\"$DEST\", createFile(getRootSource(fmt.Sprintf(\"%v\", " +
+			fmt.Sprintf("%v", LO[0]) + "))))\n")
 		if nil != err {
 			panic(err)
 		}
