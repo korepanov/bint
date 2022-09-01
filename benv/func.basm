@@ -14,6 +14,7 @@ string buf4;
 string symbol; 
 string $reverse_ret;
 string indexes_ret;
+string dest;
 int int_buf;
 int int_buf2;
 int int_buf3; 
@@ -33,6 +34,7 @@ int func_pos;
 string func_name;
 string arg_type;
 string arg_name;
+string $in_stack_ret;
 int left_border;
 int comma_pos;
 stack buf_stack;
@@ -41,20 +43,25 @@ stack buf_stack2;
 stack inside_vars_stack;
 stack inside_vars_stack_reserv;
 stack null;
+stack undefined_args;
 bool is_first;
 bool was_func;
 bool was_here; 
 bool void_flag;
+bool in_stack_res;
+bool undefine_checked;
 string root_source; 
 string ops_ret;
 string temp_buf;
 
 is_first = True;
 was_here = False;
+undefine_checked = False;
  
 get_root_source(root_source);
 SET_SOURCE(root_source);
-SET_DEST("benv/func_program.b");
+dest = "benv/func_program.b";
+SET_DEST(dest);
 next_command(command);
 
 #again_begin:
@@ -230,6 +237,28 @@ command = "";
 goto(#pop_start);
 #pop_end:
 
+[goto(#check_undefine_end0), (undefine_checked), print("")];
+undefine_checked = True;
+#check_begin:
+[goto(#check_again), ("}" == buf), print("")];
+command_len = len(buf);
+[print(""), (command_len > 8), goto(#check_next)];
+temp_buf = buf[0:8];
+[print(""), ("UNDEFINE" == temp_buf), goto(#check_next)];
+command_len = (command_len - 1);
+temp_buf = buf[9:command_len];
+undefined_args.push(temp_buf);
+#check_next:
+next_command(buf);
+goto(#check_begin);
+#check_again:
+RESET_SOURCE(); 
+UNSET_DEST();
+SET_DEST(dest);
+goto(#again_begin);
+#check_undefine_end0:
+
+undefine_checked = False;
 left_border = 0;
 
 #inside_args:
@@ -268,6 +297,14 @@ arg_type = "no_args";
 type_len = len(arg_type); 
 command_len = len(buf);
 arg_name = buf[type_len:command_len];
+
+$in_stack_ret="#undef_ret";
+push(arg_name);
+push(undefined_args);
+goto(#in_stack);
+#undef_ret:
+pop(in_stack_res);
+[goto(#no_args), (in_stack_res), print("")];
 inside_vars_stack.push(arg_name);
 #no_args:
 command_len = len(buf);
@@ -311,14 +348,7 @@ send_command(command);
 
 goto(#inside_args);
 #not_send_return_end:
-[print(""), (command_len > 8), goto(#check_undefine_end)];
-temp_buf = buf[0:8];
-[print(""), ("UNDEFINE" == temp_buf), goto(#check_undefine_end)];
-command_len = (command_len - 1);
-temp_buf = buf[9:command_len];
-print(temp_buf);
-print("\n");
-#check_undefine_end:
+
 send_command(buf);
 next_command(buf);
 
@@ -460,6 +490,7 @@ goto(#begin);
 UNSET_SOURCE();
 UNSET_DEST();
 SET_SOURCE("benv/func_program.b");
+dest = "benv/func_program2.b";
 SET_DEST("benv/func_program2.b");
 is_first = False;
 was_func = False;
@@ -658,76 +689,31 @@ goto(#func_call_index_s);
 #end_func:
 print("");
 
-#ops:
-string command;
-string op;
-stack quotes;
-stack these_quotes; 
-stack op_nums;
+
+
+#in_stack:
+stack s;
+string el;
 string buf;
-stack res;
-int num1;
-int num2; 
-int op_num;
-bool was_quote;
-bool to_add;
+bool res;
 
-pop(command);
-pop(op);
-
-was_quote = False;
-to_add = True;
-
-
-indexes_ret="#ops_indexes_ret";
-push(command);
-push(op);
-goto(#indexes);
-#ops_indexes_ret:
-pop(op_nums);
-op_nums.pop(buf);
-
-#_op_nums_s:
-[goto(#_op_nums_e), ("end" == buf), print("")];
-op_num = int(buf);
-quotes = reg_find("\"(\\.|[^\"])*\"", command);
-
-#_quotes_s:
-quotes.pop(these_quotes);
-these_quotes.pop(buf);
-[goto(#_quotes_e), ("end" == buf), print("")];
-#_these_quotes_s:
-[goto(#_these_quotes_e), ("end" == buf), print("")];
-num1 = int(buf);
-these_quotes.pop(buf);
-num2 = int(buf);
-these_quotes.pop(buf);
-was_quote = True;
-goto(#_these_quotes_s);
-#_these_quotes_e:
-[print(""), ((op_num > num1)AND(op_num < num2)), goto(#_is_op_end)];
-to_add = False;
-goto(#_push_op_end);
-#_is_op_end:	
-goto(#_quotes_s);
-#_quotes_e:
-[goto(#_push_op_end), ((was_quote)AND(NOT(to_add))), print("")];
-res.push(op_num);
-was_quote = False;
-to_add = True;
-#_push_op_end:
-print("");
-op_nums.pop(buf);
-was_quote = False;
-to_add = True;
-goto(#_op_nums_s);
-#_op_nums_e:
-$reverse_ret="#ops_reverse_ret";
+pop(s);
+pop(el);
+res = False;
+s.pop(buf);
+#_in_stack_s:
+[goto(#_in_stack_e), ("end" == buf), print("")];
+[print(""), (el == buf), goto(#_no)];
+res = True;
+goto(#_in_stack_e);
+#_no:
+s.pop(buf);
+goto(#_in_stack_s);	
+#_in_stack_e:
 push(res);
-goto(#reverse);
-#ops_reverse_ret:
-pop(res);
-push(res);
-goto(ops_ret);
-
+UNDEFINE(s);
+UNDEFINE(el);
+UNDEFINE(buf);
+UNDEFINE(res);
+goto($in_stack_ret);
 
