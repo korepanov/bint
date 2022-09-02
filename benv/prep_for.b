@@ -25,14 +25,43 @@ bool is_for(string command){
 };
 
 void main(){
+	string buf;
+	int pos;
+	int command_len;
+	stack s;
+
 	init();
 	#next:
 	switch_command();
 	if (NOT("end" == command)){
 		if (is_for(command)){
-			println(command);		
+			send_command(command);
+			switch_command();
+			send_command(command);
+			switch_command();
+			buf = "{";
+			s = ops(command, buf);
+			s.pop(buf);
+			if ("end" == buf){
+				println("prep_for: ERROR");
+				exit(1);			
+			};
+			pos = int(buf); 
+			s.pop(buf);
+			if (NOT("end" == buf)){
+				println("prep_for: ERROR");
+				exit(1);			
+			};
+			pos = (pos + 1);
+			buf = command[0:pos];
+			buf = (buf + "print(\"\")");
+			send_command(buf);
+			command_len = len(command);
+			buf = command[pos:command_len];
+			send_command(buf);		
+		}else{
+			send_command(command);
 		};
-		send_command(command);
 		goto(#next);	
 	};
 	finish();
