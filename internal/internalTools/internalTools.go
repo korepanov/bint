@@ -176,7 +176,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 			}
 			filesListToExecute = []string{rootSource}
 		} else if options.ExecBasm == toTranslate {
-			//rootSource = "program.b"
+			//rootSource = "benv/internal/recurs_program.b"
 			//rootDest = "benv/func.basm"
 			rootDest = "benv/for.basm"
 			filesListToExecute = []string{rootDest}
@@ -304,6 +304,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			fmt.Println("ERROR in " + FileToExecute + " at near line " + fmt.Sprintf("%v", LineCounter))
 			fmt.Println(CommandToExecute)
 			fmt.Println(r)
+			os.Exit(1)
 		}
 	}()
 
