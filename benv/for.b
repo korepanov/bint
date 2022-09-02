@@ -77,11 +77,15 @@ void main(){
 	string buf;
 	string inc;
 	int pos;
+	bool was_for;
+	
+	was_for = False;
 	
 	#next:
 	switch_command();
 	if (NOT("end" == command)){
 		if (is_for(command)){
+			was_for = True;
 			command_len = len(command);
 			command = command[4:command_len];
 			send_command(command);
@@ -112,12 +116,21 @@ void main(){
 			buf = (("goto(#for" + snum) + ")");
 			send_command(buf); 
 			num = (num + 1);
+			send_command(command);
 		}else{
 			send_command(command);
 		};
 		goto(#next);	
 	};
-	finish();
+
+	if (was_for){
+		was_for = False;
+		switch_files();
+		COMMAND_COUNTER = 0;
+		goto(#next); 
+	};
+
+	clear_files(); 
 };
 
 main();

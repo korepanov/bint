@@ -6,7 +6,7 @@ void main(){
 		si = str(i);
 		s = (("i = " + si) + "\n");
 		print(s);
-		for (int j; j = 0; j < 10; j = (j + 1){
+		for (int j; j = 0; j < 10; j = (j + 1)){
 			print("");
 			string sj; 
 			sj = str(j); 
