@@ -51,6 +51,8 @@ bool void_flag;
 bool in_stack_res;
 bool undefine_checked;
 string root_source; 
+string source;
+string temp_dir;
 string ops_ret;
 string temp_buf;
 
@@ -60,6 +62,7 @@ undefine_checked = False;
  
 root_source = "benv/recurs_program.b";
 SET_SOURCE(root_source);
+source = root_source;
 dest = "benv/func_program.b";
 SET_DEST(dest);
 next_command(command);
@@ -252,9 +255,12 @@ undefined_args.push(temp_buf);
 next_command(buf);
 goto(#check_begin);
 #check_again:
-RESET_SOURCE(); 
+was_func = False;
+RESET_SOURCE();
 UNSET_DEST();
+DEL_DEST(dest);
 SET_DEST(dest);
+next_command(command);
 goto(#again_begin);
 #check_undefine_end0:
 
@@ -489,6 +495,7 @@ goto(#begin);
 [print(""), (is_first), goto(#not_is_first)];
 UNSET_SOURCE();
 UNSET_DEST();
+source = "benv/func_program.b";
 SET_SOURCE("benv/func_program.b");
 dest = "benv/func_program2.b";
 SET_DEST("benv/func_program2.b");
@@ -500,6 +507,9 @@ goto(#again_begin);
 [print(""), (was_func), goto(#del_file)];
 was_func = False;
 REROUTE();
+temp_dir = source; 
+source = dest;
+dest = temp_dir;
 next_command(command);
 goto(#again_begin);
 #del_file:
