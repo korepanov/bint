@@ -176,9 +176,9 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 			}
 			filesListToExecute = []string{rootSource}
 		} else if options.ExecBasm == toTranslate {
-			//rootSource = "benv/internal/recurs_program.b"
-			//rootDest = "benv/func.basm"
-			rootDest = "for.basm"
+			rootSource = "program.b"
+			rootDest = "benv/for.basm"
+			//rootDest = "benv/for.basm"
 			filesListToExecute = []string{rootDest}
 		} else if options.Primitive == toTranslate {
 			rootSource = "bendBenv/func.basm"
