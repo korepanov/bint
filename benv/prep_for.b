@@ -38,6 +38,8 @@ void main(){
 			send_command(command);
 			switch_command();
 			send_command(command);
+			switch_command(); 
+			send_command(command);
 			switch_command();
 			buf = "{";
 			s = ops(command, buf);

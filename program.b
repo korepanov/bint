@@ -1,13 +1,13 @@
 void main(){
-	int i;
-
-	for (i = 0; i < 5; i = (i + 1)){
-		int j;
+	print("");
+	for (int i; i = 0; i < 5; i = (i + 1)){
+		print("");
 		string si;
 		si = str(i);
 		s = (("i = " + si) + "\n");
 		print(s);
-		for (j = 0; j < 10; j = (j + 1){
+		for (int j; j = 0; j < 10; j = (j + 1){
+			print("");
 			string sj; 
 			sj = str(j); 
 			s = (("j = " + sj) + "\n");
