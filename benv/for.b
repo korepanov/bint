@@ -7,7 +7,7 @@ bool first_file;
 void init(){
 	num = 0;
 	first_file = True; 
-	get_root_source(root_source);
+	root_source = "benv/prep_for_program.b";
 	SET_SOURCE(root_source);
 	SET_DEST("benv/for_program.b");
 };
@@ -67,6 +67,7 @@ void clear_files(){
 	#clear_files_e:
 	finish();
 	DEL_DEST("benv/for_program2.b");
+	DEL_DEST(root_source);
 };
 
 void main(){

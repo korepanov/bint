@@ -3,7 +3,7 @@
 string root_source;
 
 void init(){
-	get_root_source(root_source);
+	root_source = "benv/prep_func_program.b";
 	SET_SOURCE(root_source);
 	SET_DEST("benv/prep_for_program.b");
 };
@@ -11,6 +11,7 @@ void init(){
 void finish(){
 	UNSET_SOURCE();
 	UNSET_DEST();
+	DEL_DEST(root_source);
 };
 
 bool is_for(string command){

@@ -126,12 +126,14 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/internal/print_format.basm"}
 			}
 		} else if options.UserTranslate == toTranslate {
-			rootSource = "for.b"
-			rootDest = "for.basm"
+			rootSource = "program.b"
+			rootDest = "program.basm"
 			//filesListToExecute = []string{"benv/import.basm"}
 			if execBenv {
 				filesListToExecute = []string{"benv/build/import",
 					"benv/build/prep_func",
+					"benv/build/prep_for",
+					"benv/build/for",
 					"benv/build/prep_if",
 					"benv/build/if",
 					"benv/build/long_function",
@@ -149,7 +151,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/print_format.basm"}
 			}
 		} else if options.Transpile == toTranslate {
-			rootSource = "benv/build/func.basm"
+			rootSource = "benv/build/prep_if.basm"
 			rootDest = "benv/build/main.go"
 
 			source, err := os.Open("benv/build/pattern.p")

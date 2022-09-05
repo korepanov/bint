@@ -37,6 +37,7 @@ func check(reg string, command string) (tail string, stat int) {
 	}
 	return ``, status.No
 }
+
 func isValidBracesNum(command string) bool {
 	if strings.Count(command, "(") != strings.Count(command, ")") {
 		return false
@@ -305,7 +306,7 @@ func validateComparison(command string, isOp bool) (tail string, stat int, err e
 	}
 
 	if `val` == command && isOp {
-		return ``, status.Err, errors.New(`there are no external brackets in logical expression`)
+		return command, status.Yes, nil
 	}
 
 	if !isComparison {
@@ -661,6 +662,28 @@ func validateImport(command string) (tail string, stat int, err error) {
 	return tail, stat, nil
 }
 
+func validateFor(command string) (tail string, stat int, err error) {
+	tail, stat = check(`^for\(`, command)
+	if status.Yes == stat {
+		return tail, stat, nil
+	}
+	re, err := regexp.Compile(`\){`)
+
+	loc := re.FindIndex([]byte(command))
+
+	if nil != loc {
+		err = validateCommand(command[0:loc[0]])
+		if nil != err {
+			return command, status.No, nil
+		}
+		tail = command[loc[1]:]
+
+		return tail, status.Yes, nil
+	}
+
+	return command, status.No, nil
+
+}
 func validateCommand(command string) error {
 	oldCommand := command
 
@@ -739,8 +762,18 @@ func validateCommand(command string) error {
 		return err
 	}
 
+	tail, stat, err = validateFor(command)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		return validateCommand(tail)
+	}
+
 	if !isValidBracesNum(command) {
-		return errors.New("number of '(' doest not equal number of ')'")
+		return errors.New("number of '(' does not equal number of ')'")
 	}
 
 	tail, stat, err = validateImport(command)
@@ -1041,6 +1074,7 @@ func StaticValidate(rootSource string) error {
 	for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
 		CommandToExecute = strings.TrimSpace(chunk)
 		inputedCode := CodeInput(chunk, true)
+
 		err = validateCommand(inputedCode)
 
 		if nil != err {
