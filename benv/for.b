@@ -78,14 +78,17 @@ void main(){
 	string inc;
 	int pos;
 	bool was_for;
+	bool was_internal_for;
 	
 	was_for = False;
+	was_internal_for = False;
 	
 	#next:
 	switch_command();
 	if (NOT("end" == command)){
 		if (is_for(command)){
 			was_for = True;
+			was_internal_for = False;
 			command_len = len(command);
 			command = command[4:command_len];
 			buf = "if(True){print(\"\")";
@@ -111,16 +114,24 @@ void main(){
 			#next_internal:
 			switch_command(); 
 			if (COMMAND_COUNTER < counter){
+				if (is_for(command)){
+					was_internal_for = True;				
+				};
+				if (("break" == command) AND (NOT(was_internal_for))){
+					command = (("goto(#for" + snum) + "_end)");				
+				};
 				send_command(command);
 				goto(#next_internal);			
 			};
 			send_command(inc);
 			buf = (("goto(#for" + snum) + ")");
 			send_command(buf); 
-			num = (num + 1);
 			send_command(command);
+			command = (("#for" + snum) + "_end:print(\"\")");
+			send_command(command); 
 			command = "}";
 			send_command(command);
+			num = (num + 1);
 		}else{
 			send_command(command);
 		};

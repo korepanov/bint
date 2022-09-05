@@ -10,6 +10,10 @@ void main(){
 			print("");
 			string sj; 
 			sj = str(j); 
+			if (j > 5){
+				print("");
+				break; 			
+			};
 			sj = (("j = " + sj) + "\n");
 			print(sj);		
 		};
