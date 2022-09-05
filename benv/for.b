@@ -88,6 +88,8 @@ void main(){
 			was_for = True;
 			command_len = len(command);
 			command = command[4:command_len];
+			buf = "if(True){print(\"\")";
+			send_command(buf);
 			send_command(command);
 			switch_command();
 			send_command(command);
@@ -116,6 +118,8 @@ void main(){
 			buf = (("goto(#for" + snum) + ")");
 			send_command(buf); 
 			num = (num + 1);
+			send_command(command);
+			command = "}";
 			send_command(command);
 		}else{
 			send_command(command);
