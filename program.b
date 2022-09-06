@@ -8,7 +8,7 @@ void main(){
 		};
 		int j;
 		j = 0;
-		while (j < 7){
+		do{
 			string si;
 			string sj; 
 
@@ -20,7 +20,7 @@ void main(){
 			print(sj);
 			print("\n");
 			j = (j + 1); 
-		};
+		}while(j < 7);
 		break; 
 		i = (i + 1);
 	};
