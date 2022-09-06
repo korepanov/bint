@@ -46,15 +46,10 @@ void main(){
 			s = ops(command, buf);
 			s.pop(buf);
 			if ("end" == buf){
-				println("prep_for: ERROR");
+				println("prep_for: ERROR: no { after for");
 				exit(1);			
 			};
 			pos = int(buf); 
-			s.pop(buf);
-			if (NOT("end" == buf)){
-				println("prep_for: ERROR");
-				exit(1);			
-			};
 			pos = (pos + 1);
 			buf = command[0:pos];
 			buf = (buf + "print(\"\")");
