@@ -1,18 +1,24 @@
 void main(){
-	for (int i; i = 0; i < 5; i = (i + 1)){
-		string si;
-		si = str(i);
-		si = (("i = " + si) + "\n");
-		print(si);
-		for (int j; j = 0; j < 10; j = (j + 1)){
+	int i;
+	i = 0;
+	
+	while (i < 6){
+		int j;
+		j = 0;
+		while (j < 4){
+			string si;
 			string sj; 
-			sj = str(j); 
-			if (j > 5){
-				break; 			
-			};
-			sj = (("j = " + sj) + "\n");
-			print(sj);		
+
+			si = str(i);
+			sj = str(j);
+			print("i = ");
+			print(si);
+			print("; j = ");
+			print(sj);
+			print("\n");
+			j = (j + 1);
 		};
+		i = (i + 1);
 	};
 };
 
