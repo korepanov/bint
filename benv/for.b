@@ -73,6 +73,7 @@ void clear_files(){
 void main(){
 	init();
 	int counter;
+	int internal_counter;
 	int command_len;
 	string snum;
 	string buf;
@@ -116,8 +117,24 @@ void main(){
 			switch_command(); 
 			if (COMMAND_COUNTER < counter){
 				if (is_for(command)){
-					was_internal_for = True;				
+					was_internal_for = True;
+					send_command(command); 
+					switch_command();
+					send_command(command);
+					switch_command();
+					send_command(command);
+					switch_command();
+					send_command(command);	
+					internal_counter = block_end();	
+					switch_command(); 			
 				};
+				
+				if (was_internal_for){
+					if (COMMAND_COUNTER > internal_counter){
+						was_internal_for = False; 					
+					};				
+				};
+
 				if (("break" == command) AND (NOT(was_internal_for))){
 					command = (("goto(#for" + snum) + "_end)");				
 				};

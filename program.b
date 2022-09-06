@@ -3,11 +3,7 @@ void main(){
 	i = 0;
 	
 	while (i < 6){
-		print("");
-		int j;
-		j = 0;
-		while (j < 4){
-			print("");
+		for (int j; j = 0; j < 4; j = (j + 1)){
 			string si;
 			string sj; 
 
@@ -18,8 +14,8 @@ void main(){
 			print(", j = ");
 			print(sj);
 			print("\n");
-			j = (j + 1);
 		};
+		break; 
 		i = (i + 1);
 	};
 };
