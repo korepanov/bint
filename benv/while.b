@@ -37,7 +37,7 @@ string get_cond(string command){
 	start_pos = int(buf);
 	start_pos = (start_pos + 5);
 	end_pos = func_end(command, start_pos);
-	end_pos = (end_pos + 1);
+	start_pos = (start_pos + 1); 
 	buf = command[start_pos:end_pos];
 
 	return buf;
@@ -49,7 +49,8 @@ void main(){
 
 	for (print(""); print(""); NOT(command == "end"); switch_command()){
 		if (is_while(command)){
-			println(get_cond(command));
+			command = (("for (print(\"\"), print(\"\"), " + get_cond(command)) + ", print(\"\")){print(\"\")");
+			send_command(command); 
 		}else{
 			send_command(command); 
 		};

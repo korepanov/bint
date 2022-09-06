@@ -3,9 +3,11 @@ void main(){
 	i = 0;
 	
 	while (i < 6){
+		print("");
 		int j;
 		j = 0;
 		while (j < 4){
+			print("");
 			string si;
 			string sj; 
 
