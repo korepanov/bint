@@ -15,7 +15,7 @@ void main(){
 			sj = str(j);
 			print("i = ");
 			print(si);
-			print("; j = ");
+			print(", j = ");
 			print(sj);
 			print("\n");
 			j = (j + 1);

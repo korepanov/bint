@@ -687,6 +687,12 @@ func validateFor(command string) (tail string, stat int, err error) {
 	return command, status.No, nil
 
 }
+
+func validateWhile(command string) (tail string, stat int, err error) {
+	tail, stat = check(`^while\(`, command)
+	return tail, stat, nil
+}
+
 func validateCommand(command string) error {
 	oldCommand := command
 
@@ -763,6 +769,16 @@ func validateCommand(command string) error {
 
 	if nil != err {
 		return err
+	}
+
+	tail, stat, err = validateWhile(command)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		return validateCommand(tail)
 	}
 
 	tail, stat, err = validateFor(command)

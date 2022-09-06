@@ -3,7 +3,7 @@
 string root_source;
 
 void init(){
-	get_root_source(root_source);
+	root_source = "benv/prep_if_program.b";
 	SET_SOURCE(root_source);
 	SET_DEST("benv/while_program.b");
 };
@@ -11,6 +11,7 @@ void init(){
 void finish(){
 	UNSET_SOURCE();
 	UNSET_DEST();
+	DEL_DEST(root_source); 
 };
 
 bool is_while(string command){
@@ -44,13 +45,20 @@ string get_cond(string command){
 };
 
 void main(){
+	string buf; 
+
 	init();
 	switch_command();
 
 	for (print(""); print(""); NOT(command == "end"); switch_command()){
 		if (is_while(command)){
-			command = (("for (print(\"\"), print(\"\"), " + get_cond(command)) + ", print(\"\")){print(\"\")");
-			send_command(command); 
+			buf = "for (print(\"\")";
+			send_command(buf); 
+			buf = "print(\"\")";
+			send_command(buf);
+			send_command(get_cond(command)); 
+			buf = "print(\"\")){print(\"\")";
+			send_command(buf); 
 		}else{
 			send_command(command); 
 		};
