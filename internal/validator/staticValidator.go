@@ -14,6 +14,7 @@ const (
 	ifCond         = iota
 	elseIfCond     = iota
 	elseCond       = iota
+	loop           = iota
 )
 
 type brace struct {
@@ -677,6 +678,8 @@ func validateFor(command string) (tail string, stat int, err error) {
 			return command, status.No, nil
 		}
 		tail = command[loc[1]:]
+
+		closureHistory = append(closureHistory, brace{loop, LineCounter, CommandToExecute})
 
 		return tail, status.Yes, nil
 	}

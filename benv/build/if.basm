@@ -499,7 +499,7 @@ goto(#init_end);
 print("");
 br_closed=0;
 br_opened=0;
-root_source="benv/prep_if_program.b";
+root_source="benv/for_program.b";
 SET_SOURCE(root_source);
 SET_DEST("benv/if_program.b");
 goto($init_return_var);
