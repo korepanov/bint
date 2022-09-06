@@ -3,12 +3,15 @@ void main(){
 	i = 0;
 	
 	while (i < 6){
+		print("");
 		if (True){
+			print("");
 			print("YES!\n");		
 		};
 		int j;
 		j = 0;
 		do{
+			print("");
 			string si;
 			string sj; 
 
@@ -24,6 +27,11 @@ void main(){
 		break; 
 		i = (i + 1);
 	};
+
+	do{
+		print("");
+		print("Hello!\n");
+	}while(False);
 };
 
 main();
