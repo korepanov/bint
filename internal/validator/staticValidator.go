@@ -693,6 +693,24 @@ func validateWhile(command string) (tail string, stat int, err error) {
 	return tail, stat, nil
 }
 
+func validateDoWhile(command string) (tail string, stat int, err error) {
+	tail, stat = check(`^do{`, command)
+	if stat == status.Yes {
+		closureHistory = append(closureHistory, brace{loop, LineCounter, CommandToExecute})
+		return tail, stat, nil
+	}
+	tail, stat = check(`^}while\(`, command)
+	if stat == status.Yes {
+		if len(closureHistory) > 0 {
+			closureHistory = closureHistory[:len(closureHistory)-1]
+		} else {
+			return ``, status.Err, errors.New(`'{' is missing`)
+		}
+		return tail[:len(tail)-1], stat, nil
+	}
+	return command, status.No, nil
+}
+
 func validateCommand(command string) error {
 	oldCommand := command
 
@@ -769,6 +787,16 @@ func validateCommand(command string) error {
 
 	if nil != err {
 		return err
+	}
+
+	tail, stat, err = validateDoWhile(command)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		return validateCommand(tail)
 	}
 
 	tail, stat, err = validateWhile(command)

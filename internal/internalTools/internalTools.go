@@ -137,6 +137,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 				filesListToExecute = []string{"benv/build/import",
 					"benv/build/prep_func",
 					"benv/build/prep_for",
+					"benv/build/prep_dowhile",
+					"benv/build/dowhile",
 					"benv/build/prep_while",
 					"benv/build/prep_if",
 					"benv/build/while",
