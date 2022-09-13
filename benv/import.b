@@ -11,18 +11,28 @@ void init(){
 	pos = len(root_source);
 	pos = (pos - 1);
 	symbol = root_source[pos];
-	translate_mode = "debug";
 
 	if ("d" == symbol){
+		translate_mode = "debug";
 		root_source = root_source[0:pos];	
 	}else if ("v" == symbol){
+		translate_mode = "validate";
 		root_source = root_source[0:pos];
+	}else{
+		translate_mode = "release";
 	};
 
 	SET_SOURCE(root_source);
 	SET_DEST("benv/import_program.b");
-	
-	send_command("$debug$");	
+
+	if ("validate" == translate_mode){
+		send_command("$validate$");	
+	};
+
+	if ("debug" == translate_mode){
+		send_command("$debug$");	
+	};
+		
 };
 
 void finish(){

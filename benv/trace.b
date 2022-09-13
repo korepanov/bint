@@ -9,13 +9,7 @@ void init(){
 	SET_SOURCE("benv/import_program.b");
 	SET_DEST("benv/trace_program.b");
 	next_command(command);
-	
-	if (NOT(("$debug$" == command)OR("$validate$" == command))){
-		is_release = True;
-	}else{
-		send_command(command);
-	};
-
+	send_command(command);
 };
 
 void finish(){
@@ -42,6 +36,7 @@ void switch_command(){
 void modify(){
 	string trace; 
 	string scommand_counter;
+	int command_len;
 
 	#modify_s:
 	switch_command();
@@ -49,13 +44,17 @@ void modify(){
 		goto(#modify_e);	
 	};
 	
-	trace = command[0:6];
+	command_len = len(command);
+	
+	if (command_len > 6){
+		trace = command[0:6];
+	};
 	if ("$file$" == trace){
 		send_command(command);
 		COMMAND_COUNTER = 0;
 	}else{
 		scommand_counter = str(COMMAND_COUNTER);
-		trace = ("$trace$" + scommand_counter);
+		trace = (("$trace" + scommand_counter) + "$");
 		send_command(trace);
 		send_command(command);
 	};

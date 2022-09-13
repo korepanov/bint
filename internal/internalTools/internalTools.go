@@ -161,7 +161,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/print_format.basm"}
 			}
 		} else if options.Transpile == toTranslate {
-			rootSource = "benv/build/prep_func.basm"
+			rootSource = "benv/build/import.basm"
 			rootDest = "benv/build/main.go"
 
 			source, err := os.Open("benv/build/pattern.p")
@@ -190,7 +190,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 		} else if options.ExecBasm == toTranslate {
 			//rootSource = "program.b"
 			//rootDest = "benv/dowhile.basm"
-			rootDest = "benv/prog.basm"
+			rootDest = "program.basm"
 			filesListToExecute = []string{rootDest}
 		} else if options.Primitive == toTranslate {
 			rootSource = "bendBenv/func.basm"
@@ -330,19 +330,8 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 		if execBenv {
 
 			filesListToExecute = []string{"benv/internal/build/import",
-				"benv/internal/build/prep_func",
-				"benv/internal/build/prep_for",
-				"benv/internal/build/prep_dowhile",
-				"benv/internal/build/dowhile",
-				"benv/internal/build/prep_while",
-				"benv/internal/build/prep_if",
-				"benv/internal/build/while",
-				"benv/internal/build/for",
-				"benv/internal/build/if",
-				"benv/internal/build/long_function",
-				"benv/internal/build/recurs",
-				"benv/internal/build/func",
-				"benv/internal/build/print_format"}
+				"benv/internal/build/trace",
+			}
 
 		} else {
 			filesListToExecute = []string{"benv/internal/import.basm",
@@ -354,27 +343,13 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	}
 
 	if options.UserValidate == toTranslate {
-		if *rFlag {
-			rootDest = ".temp.basm"
-		}
+		rootDest = "benv/.temp.basm"
 
 		if execBenv {
 
 			filesListToExecute = []string{"benv/build/import",
 				"benv/build/trace",
-				"benv/build/prep_func",
-				"benv/build/prep_for",
-				"benv/build/prep_dowhile",
-				"benv/build/dowhile",
-				"benv/build/prep_while",
-				"benv/build/prep_if",
-				"benv/build/while",
-				"benv/build/for",
-				"benv/build/if",
-				"benv/build/long_function",
-				"benv/build/recurs",
-				"benv/build/func",
-				"benv/build/print_format"}
+			}
 
 		} else {
 			filesListToExecute = []string{"benv/import.basm",
@@ -699,7 +674,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 						for v := newVariable(); "end" != v[0]; v = newVariable() {
 							if fmt.Sprintf("%v", varName) == fmt.Sprintf("%v", v[1]) {
 
-								if options.UserValidate == toTranslate {
+								if options.UserValidate == toTranslate || options.InternalValidate == toTranslate {
 									v[2] = rootSource + "v"
 								} else if *rFlag {
 									v[2] = rootSource

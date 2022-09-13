@@ -10,7 +10,7 @@ import (
 
 func main() {
 	// эти опции можно менять для системной отладки
-	sysMode := options.Internal
+	sysMode := options.UserTranslate
 	benvMode := options.ExecBenv
 
 	var filesListToExecute []string
@@ -33,14 +33,12 @@ func main() {
 			fmt.Println(err)
 			return
 		}
-		/*if options.UserTranslate == toTranslate || (options.Internal == toTranslate && options.UserTranslate == sysMode) {
+		if options.UserTranslate == toTranslate || (options.Internal == toTranslate && options.UserTranslate == sysMode) {
 			Start(options.UserValidate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
-		}else{
+		} else {
 			Start(options.InternalValidate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
-		}*/
+		}
 	}
 
-	//if options.Internal == toTranslate && options.Transpile == sysMode {
-	Start(toTranslate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
-	//}
+	//Start(toTranslate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
 }
