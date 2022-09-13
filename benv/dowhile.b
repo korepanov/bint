@@ -72,7 +72,7 @@ void main(){
 				switch_command();		
 			}; 
 
-			buf = (("if (NOT(" + cond) + ")){print(\"\"");
+			buf = (("if (NOT(" + cond) + ")){print(\"\")");
 			send_command(buf); 
 			send_command("break");
 			buf = "}"; 

@@ -562,7 +562,7 @@ func validateCD(command string) (tail string, stat int, err error) {
 		err = validateCommand(cond)
 		if nil != err {
 			// здесь возникает проблема в внешними скобками
-			// поэтому делаем повторный запуск для уороченного cond
+			// поэтому делаем повторный запуск для укороченного cond
 			if "unresolved command" == err.Error() {
 				err2 := validateCommand(cond[1 : len(cond)-1])
 				if nil != err2 {
@@ -701,11 +701,6 @@ func validateDoWhile(command string) (tail string, stat int, err error) {
 	}
 	tail, stat = check(`^}while\(`, command)
 	if stat == status.Yes {
-		if len(closureHistory) > 0 {
-			closureHistory = closureHistory[:len(closureHistory)-1]
-		} else {
-			return ``, status.Err, errors.New(`'{' is missing`)
-		}
 		return tail[:len(tail)-1], stat, nil
 	}
 	return command, status.No, nil

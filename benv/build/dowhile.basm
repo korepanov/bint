@@ -652,7 +652,7 @@ goto(#for1);
 #for1_end:print("");
 #_cond3_end:print("");
 print("");
-buf=(("if (NOT("+cond)+")){print(\"\"");
+buf=(("if (NOT("+cond)+")){print(\"\")");
 send_command(buf);
 send_command("break");
 buf="}";

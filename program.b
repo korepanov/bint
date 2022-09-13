@@ -24,7 +24,7 @@ void main(){
 			print("\n");
 			j = (j + 1); 
 		}while(j < 7);
-		break; 
+		
 		i = (i + 1);
 	};
 
