@@ -673,7 +673,9 @@ func validateFor(command string) (tail string, stat int, err error) {
 	loc := re.FindIndex([]byte(command))
 
 	if nil != loc {
+		tempHistory := closureHistory
 		err = validateCommand(command[0:loc[0]])
+		closureHistory = tempHistory
 		if nil != err {
 			return command, status.No, nil
 		}

@@ -5,7 +5,7 @@ string left_part;
 string right_part;
 int command_len;
  
-root_source = "benv/import_program.b";
+root_source = "benv/trace_program.b";
 SET_SOURCE(root_source);
 SET_DEST("benv/prep_func_program.b");
 
