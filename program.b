@@ -1,3 +1,6 @@
+int y;
+stack r;
+
 int func0(){
 	return 1; 
 };
