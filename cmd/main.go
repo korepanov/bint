@@ -35,8 +35,20 @@ func main() {
 		}
 		if options.UserTranslate == toTranslate || (options.Internal == toTranslate && options.UserTranslate == sysMode) {
 			Start(options.UserValidate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
+			validatingFile := "benv/trace_program.b"
+			err = DynamicValidate(validatingFile, rootSource)
 		} else {
 			Start(options.InternalValidate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
+			validatingFile := "benv/internal/trace_program.b"
+			err = DynamicValidate(validatingFile, rootSource)
+		}
+
+		if nil != err {
+			fmt.Println("ERROR in " + rootSource + " at near line " +
+				fmt.Sprintf("%v", serviceTools.LineCounter))
+			fmt.Println(serviceTools.CommandToExecute)
+			fmt.Println(err)
+			return
 		}
 	}
 

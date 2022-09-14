@@ -1133,5 +1133,11 @@ func StaticValidate(rootSource string) error {
 		return errors.New(`'}' is missing`)
 	}
 	LineCounter = 0
+
+	err = f.Close()
+	if nil != err {
+		panic(err)
+	}
+
 	return nil
 }

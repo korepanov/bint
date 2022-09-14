@@ -1,3 +1,18 @@
+int func0(){
+	return 1; 
+};
+
+void func1(float g, stack jkk){
+	print("Hello world!\n");
+};
+
+int factorial(int n){
+	if (0 == n){
+		return 1;	
+	};
+	return (factorial((n - 1)) * n);
+};
+
 void main(){
 	int i;
 	i = 0;
