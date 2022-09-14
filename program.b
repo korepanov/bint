@@ -7,6 +7,26 @@ int func0(){
 
 void func1(float g, stack jkk){
 	print("Hello world!\n");
+	if ((True)AND(False)){
+		int foo;
+		if(False){
+			stack foo;
+			float r;
+			print("");
+		};
+	}else if (5 > 4){
+		int k;
+		print("");	
+	}else{
+		float t;
+		print("");
+	};
+
+	if (True){
+		print("");
+	}else if (False){
+		print("");
+	};
 };
 
 int factorial(int n){

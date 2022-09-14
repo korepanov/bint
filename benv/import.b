@@ -122,7 +122,7 @@ void file_union(){
 	SET_SOURCE(root_source);
 
 	if (("debug" == translate_mode) OR ("validate" == translate_mode)){
-		file = ("$file$ " + root_source);
+		file = (("$file " + root_source) + "$");
 		send_command(file);
 	};
 
