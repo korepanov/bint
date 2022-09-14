@@ -254,10 +254,15 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 
 	return rootSource, rootDest, keyDest, filesListToExecute
 }
-func ExecBenv(filesListToExecute []string, rootSource string, rootDest string) {
+func ExecBenv(filesListToExecute []string, rootSource string, rootDest string, toTranslate int) {
 	FileToExecute = filesListToExecute[0]
+	var bufRootSource string
 
-	cmd := exec.Command(filesListToExecute[0], "-i", rootSource)
+	if options.UserValidate == toTranslate || options.InternalValidate == toTranslate {
+		bufRootSource = rootSource + "v"
+	}
+
+	cmd := exec.Command(filesListToExecute[0], "-i", bufRootSource)
 
 	err := cmd.Start()
 	if nil != err {
@@ -367,7 +372,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 
 	if (options.Internal == toTranslate && (options.UserTranslate == sysMod || options.Internal == sysMod) && execBenv) ||
 		options.UserTranslate == toTranslate || options.UserValidate == toTranslate || options.InternalValidate == toTranslate {
-		ExecBenv(filesListToExecute, rootSource, rootDest)
+		ExecBenv(filesListToExecute, rootSource, rootDest, toTranslate)
 		return
 	}
 
