@@ -202,19 +202,19 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool,
 			res = append(res, []interface{}{"SEP", ","})
 		} else if len(expr) > i+3 && "int" == expr[i:i+3] && "_" != string(expr[i+3]) && IsValidString(expr[i+3:]) && !isType {
 			isType = true
-			variables = append(variables, []interface{}{"int", "var_name", []interface{}{"var_val"}})
+			variables = append(variables, []interface{}{"int", "var_name", []interface{}{"0"}})
 			i += 2
 		} else if len(expr) > i+5 && "float" == expr[i:i+5] && "_" != string(expr[i+5]) && IsValidString(expr[i+5:]) && !isType {
 			isType = true
-			variables = append(variables, []interface{}{"float", "var_name", []interface{}{"var_val"}})
+			variables = append(variables, []interface{}{"float", "var_name", []interface{}{"0"}})
 			i += 4
 		} else if len(expr) > i+4 && "bool" == expr[i:i+4] && "_" != string(expr[i+4]) && IsValidString(expr[i+4:]) && !isType {
 			isType = true
-			variables = append(variables, []interface{}{"bool", "var_name", []interface{}{"var_val"}})
+			variables = append(variables, []interface{}{"bool", "var_name", []interface{}{"False"}})
 			i += 3
 		} else if len(expr) > i+6 && "string" == expr[i:i+6] && "_" != string(expr[i+6]) && IsValidString(expr[i+6:]) && !isType {
 			isType = true
-			variables = append(variables, []interface{}{"string", "var_name", []interface{}{"var_val"}})
+			variables = append(variables, []interface{}{"string", "var_name", []interface{}{""}})
 			i += 5
 		} else if len(expr) > i+5 && "stack" == expr[i:i+5] && "_" != string(expr[i+5]) && IsValidString(expr[i+5:]) && !isType {
 			isType = true

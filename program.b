@@ -1,12 +1,22 @@
 int y;
 stack r;
 
-int func0(){
-	int t;
-	return "blabla"; 
+float foo(){
+	return 5.5;
 };
 
-void func1(float g, stack jkk){
+int func1(){
+	return 1;
+};
+
+int func0(){
+	int t;
+	int k;
+	
+	return (func1() + foo());  
+};
+
+void func2(float g, stack jkk){
 	print("Hello world!\n");
 	if ((True)AND(False)){
 		int foo;
