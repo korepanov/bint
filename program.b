@@ -2,7 +2,8 @@ int y;
 stack r;
 
 int func0(){
-	return 1; 
+	int t;
+	return "blabla"; 
 };
 
 void func1(float g, stack jkk){

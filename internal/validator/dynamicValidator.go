@@ -18,6 +18,7 @@ var COMMAND_COUNTER int
 var sourceCommandCounter int
 var fileName string
 var sourceFile string
+var retVal string
 
 func getExprType(command string, variables [][][]interface{}) string {
 	var exprList [][]interface{}
@@ -38,14 +39,13 @@ func getExprType(command string, variables [][][]interface{}) string {
 
 	var res []interface{}
 
-	if 1 == len(infoListList) {
+	if 1 == len(infoListList[0]) {
 		res = infoListList[0]
 	} else {
 		res, _, _ = executor.ExecuteTree(infoListList[0], allVariables, nil, false, false, nil, nil)
 	}
 
-	fmt.Println(res[0])
-	return "bool"
+	return WhatsType(fmt.Sprintf("%v", res[0]))
 }
 
 func filter(command string) bool {
@@ -143,8 +143,6 @@ func handleError(errMessage string) {
 	os.Exit(1)
 }
 func dValidateFuncDefinition(command string, variables [][][]interface{}) (string, int, [][][]interface{}) {
-	var retVal string
-
 	tail, stat := check(`(?m)(?:(int|float|bool|string|stack|void)[[:alnum:]|_]*?\`+
 		`((?:((int|float|bool|string|stack))[[:alnum:]|_]+\,){0,})(int|float|bool|string|stack)[[:alnum:]|_]+\){`, command)
 	if status.Yes == stat {
@@ -155,11 +153,10 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 		}
 		loc := reg.FindIndex([]byte(command))
 		retVal = command[loc[0]:loc[1]]
-		fmt.Println(retVal)
 
 		tail, stat = check(`^(?:(int|float|bool|string|stack|void)[[:alnum:]|_]+)`, command)
 		if status.Yes != stat {
-			handleError("err")
+			handleError("is not valid func definition")
 		}
 
 		reg, err = regexp.Compile(`(?:(int|float|bool|string|stack|void)[[:alnum:]|_]+)`)
@@ -191,7 +188,6 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 		}
 		loc := reg.FindIndex([]byte(command))
 		retVal = command[loc[0]:loc[1]]
-		fmt.Println(retVal)
 
 		return tail, stat, variables
 	}
@@ -229,6 +225,23 @@ func dValidateIf(command string, variables [][][]interface{}) (string, int, [][]
 	}
 	return tail, stat, variables
 }
+
+func dValidateReturn(command string, variables [][][]interface{}) (string, int, [][][]interface{}) {
+	tail, stat := check(`(?m)(?:return)`, command)
+	if status.Yes == stat {
+		if len(closureHistory) < 1 {
+			handleError("illegal position of return")
+		}
+
+		exprType := getExprType(tail, variables)
+
+		if retVal != exprType {
+			handleError("data type mismatch in func definition and return statement: " + retVal + " and " + exprType)
+		}
+	}
+	return "", stat, variables
+}
+
 func dynamicValidateCommand(command string, variables [][][]interface{}) error {
 	tail, stat, variables := dValidateFuncDefinition(command, variables)
 	if status.Yes == stat {
@@ -244,6 +257,12 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) error {
 	}
 
 	tail, stat, variables = dValidateIf(command, variables)
+
+	tail, stat, variables = dValidateReturn(command, variables)
+
+	if status.Yes == stat {
+		return nil
+	}
 
 	if status.Yes == stat {
 		return dynamicValidateCommand(tail, variables)
