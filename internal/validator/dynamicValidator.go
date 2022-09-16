@@ -85,7 +85,7 @@ func handleError(errMessage string) {
 		}
 	}
 
-	/*for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
+	for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
 		CommandToExecute = strings.TrimSpace(chunk)
 		errorFile = CodeInput(chunk, false)
 
@@ -96,13 +96,13 @@ func handleError(errMessage string) {
 				panic(err)
 			}
 		} else {
-			if len(errorFile) > 6 && "$file$" == errorFile[0:6]{
-				errorFile = errorFile[6:]
+			if len(errorFile) > 5 && "$file" == errorFile[0:5] {
+				errorFile = errorFile[5 : len(errorFile)-1]
 				break
 			}
 		}
-	}*/
-	fmt.Println(errorFile)
+	}
+
 	if "$trace" != inputedCode[0:6] {
 		sourceCommandCounter = 1
 	} else {
@@ -112,31 +112,35 @@ func handleError(errMessage string) {
 		}
 	}
 
-	fmt.Println(sourceCommandCounter)
+	f, err = os.Open(sourceFile)
+	if nil != err {
+		panic(err)
+	}
+
+	var chunk string
+
+	newChunk = EachChunk(f)
+
+	if nil != err {
+		panic(err)
+	}
+
+	for counter := 0; counter < sourceCommandCounter; counter++ {
+		chunk = newChunk()
+		CodeInput(chunk, true)
+	}
+
+	fmt.Println("ERROR in " + errorFile + " at near line " +
+		fmt.Sprintf("%v", LineCounter))
+	fmt.Println(strings.TrimSpace(chunk))
+	fmt.Println(errMessage)
+
 	err = f.Close()
 	if nil != err {
 		panic(err)
 	}
 
-	/*f, err = os.Open(sourceFile)
-	if nil != err {
-		panic(err)
-	}
-	newChunk, err = SetCommandCounter(f, sourceCommandCounter)
-	if nil != err{
-		panic(err)
-	}
-	chunk := newChunk()
-
-	fmt.Println("ERROR in " + rootSource + " at near line " +
-		fmt.Sprintf("%v", serviceTools.LineCounter))
-	fmt.Println(serviceTools.CommandToExecute)
-	fmt.Println(err)*/
-
-	err = f.Close()
-	if nil != err {
-		panic(err)
-	}
+	os.Exit(1)
 }
 func dValidateFuncDefinition(command string, variables [][][]interface{}) (string, int, [][][]interface{}) {
 	var retVal string
