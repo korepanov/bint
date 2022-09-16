@@ -49,8 +49,7 @@ func getExprType(command string, variables [][][]interface{}) string {
 		newVariable := EachVariable(allVariables)
 		for v := newVariable(); "end" != v[0]; v = newVariable() {
 			if fmt.Sprintf("%v", res[0]) == fmt.Sprintf("%v", v[1]) {
-				res[0] = ValueFoldInterface(v[2])
-				break
+				return fmt.Sprintf("%v", v[0])
 			}
 		}
 	} else {
@@ -349,7 +348,7 @@ func dValidateFuncCall(command string, variables [][][]interface{}, isFunc bool)
 	return tail, status.No, variables
 }
 
-func dynamicValidateCommand(command string, variables [][][]interface{}) error {
+func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]interface{}, error) {
 
 	if isFunc && "void" != retVal && !wasRet && len(closureHistory) < 1 {
 		COMMAND_COUNTER = funcCommandCounter
@@ -371,7 +370,7 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) error {
 
 	if status.Yes == stat {
 		if `` == tail {
-			return nil
+			return variables, nil
 		}
 	}
 
@@ -390,7 +389,7 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) error {
 	_, stat, variables = dValidateReturn(command, variables)
 
 	if status.Yes == stat {
-		return nil
+		return variables, nil
 	}
 
 	tail, stat, err := validateFigureBrace(command)
@@ -400,11 +399,11 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) error {
 	if status.Yes == stat {
 		variables = variables[:len(variables)-1]
 		if tail == `` {
-			return nil
+			return variables, nil
 		}
 	}
 
-	return errors.New("unresolved command")
+	return variables, errors.New("unresolved command")
 }
 
 func DynamicValidate(validatingFile string, rootSource string) {
@@ -437,7 +436,7 @@ func DynamicValidate(validatingFile string, rootSource string) {
 		COMMAND_COUNTER++
 
 		if filter(inputedCode) {
-			err = dynamicValidateCommand(inputedCode, variables)
+			variables, err = dynamicValidateCommand(inputedCode, variables)
 			if nil != err {
 				handleError(err.Error())
 			}

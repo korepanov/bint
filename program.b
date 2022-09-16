@@ -1,19 +1,20 @@
 int y;
 stack r;
 
-float foo(){
-	return 5.5;
+bool foo(){
+	return False;
 };
 
-int func1(){
-	return 1;
+stack func1(){
+	stack s;
+	return s;
 };
 
-int func0(){
+stack func0(){
 	int t;
 	int k;
 	
-	return (func1() + foo());  
+	return func1();  
 };
 
 void func2(float g, stack jkk){
