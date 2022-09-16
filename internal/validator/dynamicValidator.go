@@ -22,6 +22,7 @@ var sourceFile string
 var retVal string
 var isFunc bool
 var wasRet bool
+
 var funcTable map[string]string
 
 func getExprType(command string, variables [][][]interface{}) string {
@@ -348,6 +349,18 @@ func dValidateFuncCall(command string, variables [][][]interface{}, isFunc bool)
 	return tail, status.No, variables
 }
 
+func dValidatePrint(command string, variables [][][]interface{}) (string, int, [][][]interface{}) {
+	tail, stat := check(`(?:print\()`, command)
+	if status.Yes == stat {
+		T := getExprType(tail[:len(tail)-1], variables)
+		if "string" != T {
+			handleError("print: data type mismatch: string and " + T)
+		}
+		return "", stat, nil
+	}
+	return command, status.No, nil
+}
+
 func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]interface{}, error) {
 
 	if isFunc && "void" != retVal && !wasRet && len(closureHistory) < 1 {
@@ -391,13 +404,20 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 	if status.Yes == stat {
 		return variables, nil
 	}
+	_, stat, variables = dValidatePrint(command, variables)
+
+	if status.Yes == stat {
+		return variables, nil
+	}
 
 	tail, stat, err := validateFigureBrace(command)
 	if nil != err {
 		panic(err)
 	}
 	if status.Yes == stat {
+
 		variables = variables[:len(variables)-1]
+
 		if tail == `` {
 			return variables, nil
 		}
@@ -409,12 +429,12 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 func DynamicValidate(validatingFile string, rootSource string) {
 	funcTable = make(map[string]string)
 
-	defer func() {
+	/*defer func() {
 		if r := recover(); nil != r {
 			handleError(fmt.Sprintf("%v", r))
 			os.Exit(1)
 		}
-	}()
+	}()*/
 
 	sourceFile = rootSource
 	COMMAND_COUNTER = 1

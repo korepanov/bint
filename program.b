@@ -7,14 +7,16 @@ bool foo(){
 
 stack func1(){
 	stack s;
-	return s;
+	if (True){
+		return s;
+	};
 };
 
 stack func0(){
 	int t;
 	int k;
 	
-	return func1();  
+	return func0();  
 };
 
 void func2(float g, stack jkk){
