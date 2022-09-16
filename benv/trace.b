@@ -39,6 +39,7 @@ void modify(){
 	int command_len;
 
 	#modify_s:
+	trace = "";
 	switch_command();
 	if ("end" == command){
 		goto(#modify_e);	
@@ -46,10 +47,10 @@ void modify(){
 	
 	command_len = len(command);
 	
-	if (command_len > 6){
-		trace = command[0:6];
+	if (command_len > 5){
+		trace = command[0:5];
 	};
-	if ("$file$" == trace){
+	if ("$file" == trace){
 		send_command(command);
 		COMMAND_COUNTER = 0;
 	}else{
