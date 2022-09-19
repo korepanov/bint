@@ -356,9 +356,9 @@ func dValidatePrint(command string, variables [][][]interface{}) (string, int, [
 		if "string" != T {
 			handleError("print: data type mismatch: string and " + T)
 		}
-		return "", stat, nil
+		return "", stat, variables
 	}
-	return command, status.No, nil
+	return command, status.No, variables
 }
 
 func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]interface{}, error) {
