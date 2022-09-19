@@ -193,9 +193,12 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 		tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void)[[:alnum:]|_]*?\`+
 			`((?:((int|float|bool|string|stack))[[:alnum:]|_]+\,){0,})(int|float|bool|string|stack)[[:alnum:]|_]+\){`, command)
 	}
-	tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void)[[:alnum:]|_]*?\`+
+	tail2, stat2 := check(`(?m)(?:(int|float|bool|string|stack|void)[[:alnum:]|_]*?\`+
 		`(\){)`, command)
-	if status.Yes == stat {
+	if "" != tail2 {
+		tail = tail2
+	}
+	if status.Yes == stat2 {
 		funcCommandCounter = COMMAND_COUNTER
 		isFunc = true
 		wasDef = true
@@ -222,6 +225,12 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 		} else {
 			funcTable[funcName] = retVal
 		}
+	}
+
+	if status.Yes == stat || status.Yes == stat2 {
+		stat = status.Yes
+	} else {
+		stat = status.No
 	}
 
 	return tail, stat, variables
@@ -429,12 +438,12 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 func DynamicValidate(validatingFile string, rootSource string) {
 	funcTable = make(map[string]string)
 
-	/*defer func() {
+	defer func() {
 		if r := recover(); nil != r {
 			handleError(fmt.Sprintf("%v", r))
 			os.Exit(1)
 		}
-	}()*/
+	}()
 
 	sourceFile = rootSource
 	COMMAND_COUNTER = 1
