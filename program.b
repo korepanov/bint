@@ -27,6 +27,9 @@ bool foo(){
 
 stack func1(){
 	stack s;
+	stack c;
+	s = c;
+	
 	if (True){
 		return s;
 	};

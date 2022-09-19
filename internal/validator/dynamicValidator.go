@@ -407,6 +407,36 @@ func dValidatePrint(command string, variables [][][]interface{}) (string, int, [
 	return command, status.No, variables
 }
 
+func dValidateAssignment(command string, variables [][][]interface{}) (string, int, [][][]interface{}) {
+	_, stat := check(`(?:[[:alpha:]][[:alnum:]|_]*={1}[^=]+)`, command)
+	if status.Yes == stat {
+
+		thisVar := command[0:strings.Index(command, "=")]
+		expr := command[strings.Index(command, "=")+1:]
+
+		var allVariables [][]interface{}
+
+		for _, v := range variables {
+			allVariables = append(allVariables, v...)
+		}
+
+		newVariable := EachVariable(allVariables)
+		for v := newVariable(); "end" != v[0]; v = newVariable() {
+			if thisVar == fmt.Sprintf("%v", v[1]) {
+				T := getExprType(expr, variables)
+				if v[0] != T {
+					handleError("data type mismatch: " + fmt.Sprintf("%v", v[0]) + " and " + T)
+				} else {
+					return ``, status.Yes, variables
+				}
+			}
+		}
+		handleError("unresolved reference: " + thisVar)
+	}
+
+	return ``, status.No, variables
+}
+
 func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]interface{}, error) {
 
 	if isFunc && "void" != retVal && !wasRet && len(closureHistory) < 1 {
@@ -467,6 +497,11 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 
 	if status.Yes == stat {
 		return dynamicValidateCommand(tail, variables)
+	}
+
+	_, stat, variables = dValidateAssignment(command, variables)
+	if status.Yes == stat {
+		return variables, nil
 	}
 
 	tail, stat, err := validateFigureBrace(command)
