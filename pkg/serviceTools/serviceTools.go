@@ -59,6 +59,26 @@ func LookBehind(reg string, s string) ([]string, error) {
 	return res, nil
 }
 
+func LookAhead(reg string, s string) ([]string, error) {
+	re, err := regexp.Compile(reg)
+	if nil != err {
+		return nil, err
+	}
+	locArr := re.FindAllIndex([]byte(s), -1)
+
+	var res []string
+
+	for _, loc := range locArr {
+		if loc[1] < len(s)-1 {
+			res = append(res, string(s[loc[1]]))
+		} else {
+			res = append(res, "$")
+		}
+	}
+
+	return res, nil
+}
+
 func CheckEntry(reg string, command string) (bool, error) {
 	behindSymbols, err := LookBehind(reg, command)
 	if nil != err {
@@ -76,7 +96,7 @@ func CheckEntry(reg string, command string) (bool, error) {
 	var funcLocArr [][]int
 
 	for i := 0; i < len(behindSymbols); i++ {
-		if !("_" == behindSymbols[i] || unicode.IsLetter(rune(behindSymbols[i][0]))) {
+		if !("_" == behindSymbols[i] || unicode.IsLetter(rune(behindSymbols[i][0])) || unicode.IsDigit(rune(behindSymbols[i][0]))) {
 			funcLocArr = append(funcLocArr, locArr[i])
 		}
 	}
@@ -86,6 +106,40 @@ func CheckEntry(reg string, command string) (bool, error) {
 	}
 
 	return false, nil
+}
+
+func GetFuncNameEntry(funcName string, command string) [][]int {
+	reg := funcName
+
+	behindSymbols, err := LookBehind(reg, command)
+	if nil != err {
+		panic(err)
+	}
+
+	aheadSymbols, err := LookAhead(reg, command)
+	if nil != err {
+		panic(err)
+	}
+
+	re, err := regexp.Compile(reg)
+
+	if nil != err {
+		panic(err)
+	}
+
+	locArr := re.FindAllIndex([]byte(command), -1)
+
+	var funcLocArr [][]int
+
+	for i := 0; i < len(behindSymbols); i++ {
+		if !("_" == behindSymbols[i] || unicode.IsLetter(rune(behindSymbols[i][0])) || unicode.IsDigit(rune(behindSymbols[i][0]))) {
+			if !("_" == aheadSymbols[i] || unicode.IsLetter(rune(aheadSymbols[i][0])) || unicode.IsDigit(rune(aheadSymbols[i][0]))) {
+				funcLocArr = append(funcLocArr, locArr[i])
+			}
+		}
+	}
+
+	return funcLocArr
 }
 
 func ReplaceFunc(reg string, command string) (string, error) {

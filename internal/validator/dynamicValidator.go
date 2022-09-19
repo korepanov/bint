@@ -25,19 +25,41 @@ var wasRet bool
 
 var funcTable map[string]string
 
+func getExprEnd(command string, startPos int) int {
+	brOpened := 1
+	brClosed := 0
+	pos := startPos + 1
+
+	for i := pos; i < len(command); i++ {
+		if "(" == string(command[i]) {
+			brOpened++
+		}
+		if ")" == string(command[i]) {
+			brClosed++
+		}
+
+		if brOpened == brClosed {
+			return i + 1
+		}
+	}
+
+	panic(errors.New("invalid brace number"))
+}
+
 func getExprType(command string, variables [][][]interface{}) string {
 	var exprList [][]interface{}
 	var err error
 
-	exprList, variables[len(variables)-1], err = lexer.LexicalAnalyze(command,
-		variables[len(variables)-1], false, nil, false, nil)
-	if nil != err {
-		handleError(err.Error())
-	}
 	var allVariables [][]interface{}
 
 	for _, v := range variables {
 		allVariables = append(allVariables, v...)
+	}
+
+	exprList, allVariables, err = lexer.LexicalAnalyze(command,
+		allVariables, false, nil, false, nil)
+	if nil != err {
+		handleError(err.Error())
 	}
 
 	_, infoListList, _ := parser.Parse(exprList, allVariables, nil, false, false, false, nil, nil)
@@ -154,6 +176,21 @@ func handleError(errMessage string) {
 
 	os.Exit(1)
 }
+
+func dValidateString(command string) (string, int) {
+	tail := command
+	re, err := regexp.Compile(`"(\\.|[^"])*"`)
+	if nil != err {
+		panic(err)
+	}
+	if nil != re.FindIndex([]byte(tail)) {
+		tail = string(re.ReplaceAll([]byte(command), []byte(`$$val`)))
+		return tail, status.Yes
+	}
+
+	return tail, status.No
+}
+
 func dValidateFuncDefinition(command string, variables [][][]interface{}) (string, int, [][][]interface{}) {
 	var wasDef bool
 
@@ -224,6 +261,20 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 			handleError("function polymorphism is not allowed")
 		} else {
 			funcTable[funcName] = retVal
+			var err error
+
+			_, variables[0], err = lexer.LexicalAnalyze(funcTable[funcName]+"$"+funcName,
+				variables[0], false, nil, false, nil)
+			if nil != err {
+				handleError(err.Error())
+			}
+
+			if "float" == funcTable[funcName] {
+				variables[0][len(variables[0])-1][2] = "0.1"
+			}
+			if "int" == funcTable[funcName] {
+				variables[0][len(variables[0])-1][2] = "1"
+			}
 		}
 	}
 
@@ -253,6 +304,7 @@ func dValidateIf(command string, variables [][][]interface{}) (string, int, [][]
 
 	if status.Yes == stat {
 		closureHistory = append(closureHistory, brace{ifCond, LineCounter, CommandToExecute})
+		variables = append(variables, [][]interface{}{})
 		re, err := regexp.Compile(`(?:^if\([^{]+\){)`)
 		if nil != err {
 			panic(err)
@@ -267,6 +319,37 @@ func dValidateIf(command string, variables [][][]interface{}) (string, int, [][]
 	return tail, stat, variables
 }
 
+func dValidateElseIf(command string, variables [][][]interface{}) (string, int, [][][]interface{}) {
+	tail, stat := check(`(?:^}elseif\([^{]+\){)`, command)
+
+	if status.Yes == stat {
+		closureHistory = append(closureHistory, brace{elseIfCond, LineCounter, CommandToExecute})
+		variables = append(variables, [][]interface{}{})
+		re, err := regexp.Compile(`(?:^}elseif\([^{]+\){)`)
+		if nil != err {
+			panic(err)
+		}
+		loc := re.FindIndex([]byte(command))
+		elseIfStruct := command[:loc[1]]
+
+		if "bool" != getExprType(elseIfStruct[7:len(elseIfStruct)-1], variables) {
+			handleError("the expression inside if is not a boolean expression")
+		}
+	}
+
+	return tail, stat, variables
+}
+
+func dValidateElse(command string, variables [][][]interface{}) (string, int, [][][]interface{}) {
+	tail, stat := check(`(?:^}else{)`, command)
+
+	if status.Yes == stat {
+		closureHistory = append(closureHistory, brace{elseCond, LineCounter, CommandToExecute})
+		variables = append(variables, [][]interface{}{})
+	}
+	return tail, stat, variables
+}
+
 func dValidateReturn(command string, variables [][][]interface{}) (string, int, [][][]interface{}) {
 	tail, stat := check(`(?m)(?:return)`, command)
 	if status.Yes == stat {
@@ -275,6 +358,7 @@ func dValidateReturn(command string, variables [][][]interface{}) (string, int, 
 		if len(closureHistory) < 1 {
 			handleError("illegal position of return")
 		}
+		tail, _, variables = dValidateFuncCall(tail, variables)
 
 		exprType := getExprType(tail, variables)
 
@@ -285,73 +369,26 @@ func dValidateReturn(command string, variables [][][]interface{}) (string, int, 
 	return "", stat, variables
 }
 
-func dValidateFuncCall(command string, variables [][][]interface{}, isFunc bool) (string, int, [][][]interface{}) {
-	tail := command
-	re, err := regexp.Compile(`(?:[)][[:alpha:]|_]+[[:alnum:]|_]*\((([[:alnum:]]*\,){0,})[[:alnum:]]*\))`)
-	if nil != err {
-		panic(err)
-	}
-	notFuncLocArr := re.FindAllIndex([]byte(tail), -1)
-
-	for _, loc := range notFuncLocArr {
-		loc[0]++
-	}
-
-	re, err = regexp.Compile(`(?:[[:alpha:]|_]+[[:alnum:]|_|\.]*\((([[:alnum:]|_|\[|\]|:|\.]*\,[^,]){0,})[[:alnum:]|_|\[|\]|:|\.]*\))`)
-	if nil != err {
-		panic(err)
-	}
-
-	locArr := re.FindAllIndex([]byte(tail), -1)
-
-	var funcLocArr [][]int
-	toAppend := true
-
-	for _, loc := range locArr {
-		for _, notFuncLoc := range notFuncLocArr {
-			if (loc[0] == notFuncLoc[0]) && (loc[1] == notFuncLoc[1]) {
-				toAppend = false
-			}
-		}
-		if toAppend {
-			funcLocArr = append(funcLocArr, loc)
-		}
-
-		toAppend = true
-	}
-
+func dValidateFuncCall(command string, variables [][][]interface{}) (string, int, [][][]interface{}) {
 	var replacerArgs []string
 
-	for _, loc := range funcLocArr {
-		funcName := tail[loc[0]:loc[1]]
-		funcName = funcName[:strings.Index(funcName, "(")]
+	tail := command
 
-		if len(funcName) > 6 && "return" == funcName[0:6] {
-			funcName = funcName[6:]
-			loc[0] += 6
+	for funcName := range funcTable {
+		locArr := GetFuncNameEntry(funcName, tail)
+
+		for _, loc := range locArr {
+			loc[1] = getExprEnd(tail, loc[1])
+
+			replacerArgs = append(replacerArgs, tail[loc[0]:loc[1]])
+			replacerArgs = append(replacerArgs, "$"+funcName)
 		}
 
-		replacerArgs = append(replacerArgs, tail[loc[0]:loc[1]])
-
-		_, variables[len(variables)-1], err = lexer.LexicalAnalyze(funcTable[funcName]+"$"+funcName,
-			variables[len(variables)-1], false, nil, false, nil)
-		if nil != err {
-			handleError(err.Error())
-		}
-
-		if "float" == funcTable[funcName] {
-			variables[len(variables)-1][len(variables[len(variables)-1])-1][2] = "0.1"
-		}
-		replacerArgs = append(replacerArgs, "$"+funcName)
 	}
 
 	if nil != replacerArgs {
 		r := strings.NewReplacer(replacerArgs...)
 		tail = r.Replace(tail)
-		return dValidateFuncCall(tail, variables, true)
-	}
-
-	if isFunc {
 		return tail, status.Yes, variables
 	}
 
@@ -382,6 +419,7 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		isFunc = false
 		wasRet = false
 	}
+	command, _ = dValidateString(command)
 
 	tail, stat, variables := dValidateFuncDefinition(command, variables)
 	if status.Yes == stat {
@@ -402,7 +440,13 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		return dynamicValidateCommand(tail, variables)
 	}
 
-	tail, stat, variables = dValidateFuncCall(command, variables, false)
+	tail, stat, variables = dValidateElseIf(command, variables)
+
+	if status.Yes == stat {
+		return dynamicValidateCommand(tail, variables)
+	}
+
+	tail, stat, variables = dValidateElse(command, variables)
 
 	if status.Yes == stat {
 		return dynamicValidateCommand(tail, variables)
@@ -417,6 +461,12 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 
 	if status.Yes == stat {
 		return variables, nil
+	}
+
+	tail, stat, variables = dValidateFuncCall(command, variables)
+
+	if status.Yes == stat {
+		return dynamicValidateCommand(tail, variables)
 	}
 
 	tail, stat, err := validateFigureBrace(command)
@@ -436,6 +486,7 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 }
 
 func DynamicValidate(validatingFile string, rootSource string) {
+	fileName = validatingFile
 	funcTable = make(map[string]string)
 
 	defer func() {
@@ -445,12 +496,19 @@ func DynamicValidate(validatingFile string, rootSource string) {
 		}
 	}()
 
+	var variables [][][]interface{}
+	variables = append(variables, [][]interface{}{})
+	var err error
+
+	_, variables[len(variables)-1], err = lexer.LexicalAnalyze("string$val",
+		variables[len(variables)-1], false, nil, false, nil)
+	if nil != err {
+		panic(err)
+	}
+	variables[0][0][2] = "val"
+
 	sourceFile = rootSource
 	COMMAND_COUNTER = 1
-	var variables [][][]interface{}
-
-	variables = append(variables, [][]interface{}{})
-	fileName = validatingFile
 
 	f, err := os.Open(validatingFile)
 

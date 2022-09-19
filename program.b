@@ -1,6 +1,26 @@
 int y;
 stack r;
 
+int a(){
+	return 1;
+};
+
+int aba(){
+	return 3;
+};
+
+int a_ba(){
+	return 4; 
+};
+
+int b(int a, int c, int k){
+	return 2; 
+};
+
+int c(){
+	return (((((a() + b(1, 2, 3))^a())*b(1, 2, 3)) / aba()) - a_ba());
+};
+
 bool foo(){
 	return False;
 };
