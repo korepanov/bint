@@ -77,7 +77,6 @@ void main(){
 	int i;
 	i = 0;
 	
-
 	while (i < 6){
 		print("");
 		if (True){
@@ -97,6 +96,7 @@ void main(){
 			print(si);
 			print(", j = ");
 			print(sj);
+			break; 
 			print("\n");
 			j = (j + 1); 
 		}while(j < 7);
@@ -108,6 +108,10 @@ void main(){
 		print("");
 		print("Hello!\n");
 	}while(False);
+
+	for (int i; i = 0; i < 5; i = (i + 1)){
+		print("Hello world!\n");
+	};
 };
 
 main();
