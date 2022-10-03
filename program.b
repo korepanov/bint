@@ -91,7 +91,6 @@ void main(){
 			string sj; 
 			si = ((str(55) + str(6.7)) + str("lala"));
 			si = str(i);
-			si = ((si + su) + si);
 			sj = str(j);
 			print("i = ");
 			print(si);

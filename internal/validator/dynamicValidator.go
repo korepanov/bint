@@ -24,6 +24,7 @@ var isFunc bool
 var wasRet bool
 
 var funcTable map[string]string
+var forCounter int
 
 func checkVars(exprList interface{}, allVariables [][]interface{}) {
 	var isVar bool
@@ -566,36 +567,52 @@ func dValidateDoWhile(command string, variables [][][]interface{}) (string, int,
 	return tail, stat, variables
 }
 
-func dValidateFor(command string, variables [][][]interface{}) (string, int, [][][]interface{}) {
+func dValidateFor(command string, variables [][][]interface{}) (string, [][][]interface{}) {
 	tail, stat := check(`^for\(`, command)
 	if status.Yes == stat {
-		return tail, stat, variables
-	}
-	re, err := regexp.Compile(`\){`)
-
-	loc := re.FindIndex([]byte(command))
-
-	if nil != loc {
+		closureHistory = append(closureHistory, brace{loop, LineCounter, CommandToExecute})
 		variables = append(variables, [][]interface{}{})
+		forCounter = 1
+		return tail, variables
+	}
+	if 1 == forCounter {
+		forCounter++
+		return command, variables
+	}
+	if 2 == forCounter {
+		forCounter++
+		t := getExprType("("+command+")", variables)
+		if "bool" != t {
+			handleError("data type mismatch in for: bool and " + t)
+		}
+		return ``, variables
+	}
+	if 3 == forCounter {
+		forCounter = 0
+
+		re, err := regexp.Compile(`\){`)
+
+		loc := re.FindIndex([]byte(command))
+
+		if nil == loc {
+			handleError("invalid for syntax")
+		}
+
 		tempHistory := closureHistory
 		variables, err = dynamicValidateCommand(command[0:loc[0]], variables)
 		closureHistory = tempHistory
 		if nil != err {
-			return command, status.No, variables
+			return command, variables
 		}
 		tail = command[loc[1]:]
 
-		closureHistory = append(closureHistory, brace{loop, LineCounter, CommandToExecute})
-
-		return tail, status.Yes, variables
+		return tail, variables
 	}
 
-	return command, status.No, variables
-
+	return command, variables
 }
 
 func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]interface{}, error) {
-
 	if isFunc && "void" != retVal && !wasRet && len(closureHistory) < 1 {
 		COMMAND_COUNTER = funcCommandCounter
 		handleError("missing return statement in function")
@@ -607,14 +624,21 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		wasRet = false
 	}
 
+	command, _ = dValidateString(command)
+	command, variables = dValidateStr(command, variables)
+
+	var tail string
+	var stat int
+
+	if forCounter > 0 {
+		command, variables = dValidateFor(command, variables)
+	}
+
 	if "" == command {
 		return variables, nil
 	}
 
-	command, _ = dValidateString(command)
-	command, variables = dValidateStr(command, variables)
-
-	tail, stat, variables := dValidateFuncDefinition(command, variables)
+	tail, stat, variables = dValidateFuncDefinition(command, variables)
 	if status.Yes == stat {
 		return dynamicValidateCommand(tail, variables)
 	}
@@ -640,11 +664,6 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		return dynamicValidateCommand(tail, variables)
 	}
 
-	tail, stat, variables = dValidateFor(command, variables)
-
-	if status.Yes == stat {
-		return dynamicValidateCommand(tail, variables)
-	}
 	tail, stat, variables = dValidateDoWhile(command, variables)
 
 	if status.Yes == stat {
@@ -702,6 +721,12 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		if tail == `` {
 			return variables, nil
 		}
+	}
+
+	tail, variables = dValidateFor(command, variables)
+
+	if forCounter > 0 {
+		return dynamicValidateCommand(tail, variables)
 	}
 
 	return variables, errors.New("unresolved command")
