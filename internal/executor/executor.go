@@ -306,10 +306,10 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 		if "string" == WhatsType(fmt.Sprintf("%v", LO[0])) {
 			if "string" == WhatsType(fmt.Sprintf("%v", RO[0])) {
-				if len(LO) > 0 && "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
+				if len(LO) > 2 && "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
 					LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
 				}
-				if len(RO) > 0 && "\"" == string(fmt.Sprintf("%v", RO[0])[0]) {
+				if len(RO) > 2 && "\"" == string(fmt.Sprintf("%v", RO[0])[0]) {
 					RO[0] = RO[0].(string)[1 : len(RO[0].(string))-1]
 				}
 

@@ -25,6 +25,32 @@ var wasRet bool
 
 var funcTable map[string]string
 
+func checkVars(exprList interface{}, allVariables [][]interface{}) {
+	var isVar bool
+
+	for _, expr := range exprList.([][]interface{}) {
+		if "SUBEXPR" == fmt.Sprintf("%v", expr[0]) {
+			checkVars(expr, allVariables)
+		}
+		if "VAR" == fmt.Sprintf("%v", expr[0]) {
+			newVariable := EachVariable(allVariables)
+			for v := newVariable(); "end" != v[0]; v = newVariable() {
+				if fmt.Sprintf("%v", expr[1]) == fmt.Sprintf("%v", v[1]) {
+					isVar = true
+					break
+				}
+			}
+			if !isVar {
+				handleError("unresolved reference: " + fmt.Sprintf("%v", expr[1]))
+			} else {
+				isVar = false
+			}
+
+		}
+
+	}
+}
+
 func getExprEnd(command string, startPos int) int {
 	brOpened := 1
 	brClosed := 0
@@ -61,6 +87,8 @@ func getExprType(command string, variables [][][]interface{}) string {
 	if nil != err {
 		handleError(err.Error())
 	}
+
+	checkVars(exprList, allVariables)
 
 	_, infoListList, _ := parser.Parse(exprList, allVariables, nil, false, false, false, nil, nil)
 
@@ -538,6 +566,34 @@ func dValidateDoWhile(command string, variables [][][]interface{}) (string, int,
 	return tail, stat, variables
 }
 
+func dValidateFor(command string, variables [][][]interface{}) (string, int, [][][]interface{}) {
+	tail, stat := check(`^for\(`, command)
+	if status.Yes == stat {
+		return tail, stat, variables
+	}
+	re, err := regexp.Compile(`\){`)
+
+	loc := re.FindIndex([]byte(command))
+
+	if nil != loc {
+		variables = append(variables, [][]interface{}{})
+		tempHistory := closureHistory
+		variables, err = dynamicValidateCommand(command[0:loc[0]], variables)
+		closureHistory = tempHistory
+		if nil != err {
+			return command, status.No, variables
+		}
+		tail = command[loc[1]:]
+
+		closureHistory = append(closureHistory, brace{loop, LineCounter, CommandToExecute})
+
+		return tail, status.Yes, variables
+	}
+
+	return command, status.No, variables
+
+}
+
 func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]interface{}, error) {
 
 	if isFunc && "void" != retVal && !wasRet && len(closureHistory) < 1 {
@@ -584,6 +640,11 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		return dynamicValidateCommand(tail, variables)
 	}
 
+	tail, stat, variables = dValidateFor(command, variables)
+
+	if status.Yes == stat {
+		return dynamicValidateCommand(tail, variables)
+	}
 	tail, stat, variables = dValidateDoWhile(command, variables)
 
 	if status.Yes == stat {
