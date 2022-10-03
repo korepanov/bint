@@ -27,8 +27,8 @@ bool foo(){
 
 stack func1(){
 	stack s;
-	stack c;
-	s = c;
+	stack d;
+	s = d;
 	
 	if (True){
 		return s;

@@ -437,6 +437,26 @@ func dValidateAssignment(command string, variables [][][]interface{}) (string, i
 	return ``, status.No, variables
 }
 
+func dValidateWhile(command string, variables [][][]interface{}) (string, int, [][][]interface{}) {
+	tail, stat := check(`(?:^while\([^{]+\){)`, command)
+
+	if status.Yes == stat {
+		closureHistory = append(closureHistory, brace{ifCond, LineCounter, CommandToExecute})
+		variables = append(variables, [][]interface{}{})
+		re, err := regexp.Compile(`(?:^while\([^{]+\){)`)
+		if nil != err {
+			panic(err)
+		}
+		loc := re.FindIndex([]byte(command))
+		whileStruct := command[:loc[1]]
+
+		if "bool" != getExprType(whileStruct[5:len(whileStruct)-1], variables) {
+			handleError("the expression inside while is not a boolean expression")
+		}
+	}
+	return tail, stat, variables
+}
+
 func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]interface{}, error) {
 
 	if isFunc && "void" != retVal && !wasRet && len(closureHistory) < 1 {
@@ -462,6 +482,12 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		if `` == tail {
 			return variables, nil
 		}
+	}
+
+	tail, stat, variables = dValidateWhile(command, variables)
+
+	if status.Yes == stat {
+		return dynamicValidateCommand(tail, variables)
 	}
 
 	tail, stat, variables = dValidateIf(command, variables)
