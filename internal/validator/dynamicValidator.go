@@ -191,6 +191,32 @@ func dValidateString(command string) (string, int) {
 	return tail, status.No
 }
 
+func dValidateStr(command string, variables [][][]interface{}) (string, [][][]interface{}) {
+	tail := command
+	re, err := regexp.Compile(`str\(`)
+	if nil != err {
+		panic(err)
+	}
+	if nil != re.FindIndex([]byte(tail)) {
+		var poses [][]int
+		poses = re.FindAllIndex([]byte(tail), -1)
+		var replacerArgs []string
+		for _, pos := range poses {
+			exprEnd := getExprEnd(tail, pos[1]-1)
+			t := getExprType(tail[pos[0]+4:exprEnd-1], variables)
+			if "stack" == t {
+				handleError("data type mismatch in str: stack")
+			}
+			replacerArgs = append(replacerArgs, tail[pos[0]:exprEnd])
+			replacerArgs = append(replacerArgs, `$val`)
+		}
+
+		r := strings.NewReplacer(replacerArgs...)
+		tail = r.Replace(tail)
+	}
+	return tail, variables
+}
+
 func dValidateFuncDefinition(command string, variables [][][]interface{}) (string, int, [][][]interface{}) {
 	var wasDef bool
 
@@ -262,9 +288,13 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 		} else {
 			funcTable[funcName] = retVal
 			var err error
+			if "void" != retVal {
+				_, variables[0], err = lexer.LexicalAnalyze(funcTable[funcName]+"$"+funcName,
+					variables[0], false, nil, false, nil)
+			} else {
+				variables[0] = append(variables[0], []interface{}{"void", funcName, []interface{}{"func"}})
+			}
 
-			_, variables[0], err = lexer.LexicalAnalyze(funcTable[funcName]+"$"+funcName,
-				variables[0], false, nil, false, nil)
 			if nil != err {
 				handleError(err.Error())
 			}
@@ -374,6 +404,7 @@ func dValidateReturn(command string, variables [][][]interface{}) (string, int, 
 
 func dValidateFuncCall(command string, variables [][][]interface{}) (string, int, [][][]interface{}) {
 	var replacerArgs []string
+	var thisFuncName string
 
 	tail := command
 
@@ -381,6 +412,7 @@ func dValidateFuncCall(command string, variables [][][]interface{}) (string, int
 		locArr := GetFuncNameEntry(funcName, tail)
 
 		for _, loc := range locArr {
+			thisFuncName = funcName
 			loc[1] = getExprEnd(tail, loc[1])
 
 			replacerArgs = append(replacerArgs, tail[loc[0]:loc[1]])
@@ -392,6 +424,9 @@ func dValidateFuncCall(command string, variables [][][]interface{}) (string, int
 	if nil != replacerArgs {
 		r := strings.NewReplacer(replacerArgs...)
 		tail = r.Replace(tail)
+		if tail[1:] == thisFuncName && "void" == funcTable[thisFuncName] {
+			return ``, status.Yes, variables
+		}
 		return tail, status.Yes, variables
 	}
 
@@ -460,6 +495,33 @@ func dValidateWhile(command string, variables [][][]interface{}) (string, int, [
 	return tail, stat, variables
 }
 
+func dValidateDoWhile(command string, variables [][][]interface{}) (string, int, [][][]interface{}) {
+	tail, stat := check(`^do{`, command)
+	if stat == status.Yes {
+		closureHistory = append(closureHistory, brace{loop, LineCounter, CommandToExecute})
+		variables = append(variables, [][]interface{}{})
+		return tail, stat, variables
+	}
+	tail, stat = check(`(?:^}while\([^{]+\))`, command)
+
+	if status.Yes == stat {
+		variables = variables[:len(variables)-1]
+		re, err := regexp.Compile(`(?:^}while\([^{]+\))`)
+		if nil != err {
+			panic(err)
+		}
+		loc := re.FindIndex([]byte(command))
+		doWhileStruct := command[:loc[1]]
+
+		if "bool" != getExprType(doWhileStruct[6:], variables) {
+			handleError("the expression inside while is not a boolean expression")
+		}
+
+	}
+
+	return tail, stat, variables
+}
+
 func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]interface{}, error) {
 
 	if isFunc && "void" != retVal && !wasRet && len(closureHistory) < 1 {
@@ -472,7 +534,13 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		isFunc = false
 		wasRet = false
 	}
+
+	if "" == command {
+		return variables, nil
+	}
+
 	command, _ = dValidateString(command)
+	command, variables = dValidateStr(command, variables)
 
 	tail, stat, variables := dValidateFuncDefinition(command, variables)
 	if status.Yes == stat {
@@ -488,6 +556,12 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 	}
 
 	tail, stat, variables = dValidateWhile(command, variables)
+
+	if status.Yes == stat {
+		return dynamicValidateCommand(tail, variables)
+	}
+
+	tail, stat, variables = dValidateDoWhile(command, variables)
 
 	if status.Yes == stat {
 		return dynamicValidateCommand(tail, variables)

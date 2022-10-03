@@ -77,8 +77,7 @@ void main(){
 	int i;
 	i = 0;
 	
-	int k;
-	k = 6;
+
 	while (i < 6){
 		print("");
 		if (True){
@@ -91,7 +90,7 @@ void main(){
 			print("");
 			string si;
 			string sj; 
-
+			si = ((str(55) + str(6.7)) + str("lala"));
 			si = str(i);
 			sj = str(j);
 			print("i = ");
