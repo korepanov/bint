@@ -324,6 +324,7 @@ func dValidateElseIf(command string, variables [][][]interface{}) (string, int, 
 
 	if status.Yes == stat {
 		closureHistory = append(closureHistory, brace{elseIfCond, LineCounter, CommandToExecute})
+		variables = variables[:len(variables)-1]
 		variables = append(variables, [][]interface{}{})
 		re, err := regexp.Compile(`(?:^}elseif\([^{]+\){)`)
 		if nil != err {
@@ -335,6 +336,7 @@ func dValidateElseIf(command string, variables [][][]interface{}) (string, int, 
 		if "bool" != getExprType(elseIfStruct[7:len(elseIfStruct)-1], variables) {
 			handleError("the expression inside if is not a boolean expression")
 		}
+
 	}
 
 	return tail, stat, variables
@@ -345,6 +347,7 @@ func dValidateElse(command string, variables [][][]interface{}) (string, int, []
 
 	if status.Yes == stat {
 		closureHistory = append(closureHistory, brace{elseCond, LineCounter, CommandToExecute})
+		variables = variables[:len(variables)-1]
 		variables = append(variables, [][]interface{}{})
 	}
 	return tail, stat, variables
