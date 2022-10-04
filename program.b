@@ -104,11 +104,14 @@ void main(){
 		i = (i + 1);
 	};
 	stack s;
-	
-	s.push("a");
 	string buf;
+	s = func0();
 	s.pop(buf);
+	s.push("a");
 	
+	s.pop(buf);
+	int r;
+	r = factorial(5);
 	input(buf);
 	do{
 		print("");

@@ -700,6 +700,8 @@ func dValidateFor(command string, variables [][][]interface{}) (string, [][][]in
 }
 
 func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]interface{}, error) {
+	var again bool
+
 	if isFunc && "void" != retVal && !wasRet && len(closureHistory) < 1 {
 		COMMAND_COUNTER = funcCommandCounter
 		handleError("missing return statement in function")
@@ -796,10 +798,10 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		return variables, nil
 	}
 
-	tail, stat, variables = dValidateFuncCall(command, variables)
+	command, stat, variables = dValidateFuncCall(command, variables)
 
 	if status.Yes == stat {
-		return dynamicValidateCommand(tail, variables)
+		again = true
 	}
 
 	_, stat, variables = dValidateAssignment(command, variables)
@@ -821,6 +823,10 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 	}
 
 	tail, variables = dValidateFor(command, variables)
+
+	if again {
+		return dynamicValidateCommand(tail, variables)
+	}
 
 	return variables, errors.New("unresolved command")
 }
