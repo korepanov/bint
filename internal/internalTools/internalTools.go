@@ -190,7 +190,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 		} else if options.ExecBasm == toTranslate {
 			//rootSource = "program.b"
 			//rootDest = "benv/dowhile.basm"
-			rootDest = "benv/prog.basm"
+			rootDest = "program.basm"
 			filesListToExecute = []string{rootDest}
 		} else if options.Primitive == toTranslate {
 			rootSource = "bendBenv/func.basm"
@@ -329,41 +329,13 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	var err error
 
 	if options.InternalValidate == toTranslate {
-		if *rFlag {
-			rootDest = ".temp.basm"
-		}
-
-		if execBenv {
-
-			filesListToExecute = []string{"benv/internal/build/import",
-				"benv/internal/build/trace",
-			}
-
-		} else {
-			filesListToExecute = []string{"benv/internal/import.basm",
-				"benv/internal/trace.basm",
-				"benv/internal/prep_func.basm",
-				"benv/internal/prep_for.basm",
-			}
+		filesListToExecute = []string{"benv/internal/build/import",
+			"benv/internal/build/trace",
 		}
 	}
-
 	if options.UserValidate == toTranslate {
-		rootDest = "benv/.temp.basm"
-
-		if execBenv {
-
-			filesListToExecute = []string{"benv/build/import",
-				"benv/build/trace",
-			}
-
-		} else {
-			filesListToExecute = []string{"benv/import.basm",
-				"benv/trace.basm",
-				"benv/prep_func.basm",
-				"benv/prep_for.basm",
-			}
-
+		filesListToExecute = []string{"benv/build/import",
+			"benv/build/trace",
 		}
 	}
 
