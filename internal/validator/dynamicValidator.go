@@ -630,9 +630,7 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 	var tail string
 	var stat int
 
-	if forCounter > 0 {
-		command, variables = dValidateFor(command, variables)
-	}
+	command, variables = dValidateFor(command, variables)
 
 	if "" == command {
 		return variables, nil
@@ -724,10 +722,6 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 	}
 
 	tail, variables = dValidateFor(command, variables)
-
-	if forCounter > 0 {
-		return dynamicValidateCommand(tail, variables)
-	}
 
 	return variables, errors.New("unresolved command")
 }
