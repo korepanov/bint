@@ -89,7 +89,6 @@ void main(){
 			print("");
 			string si;
 			string sj; 
-			si = ((str(55) + str(6.7)) + str("lala"));
 			si = str(i);
 			sj = str(j);
 			print("i = ");
@@ -105,7 +104,7 @@ void main(){
 	};
 	stack s;
 	string buf;
-	s = func0();
+	
 	s.pop(buf);
 	s.push("a");
 	
