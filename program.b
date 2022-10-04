@@ -109,7 +109,7 @@ void main(){
 		print("Hello!\n");
 	}while(False);
 
-	for (int i; i = 0; i < 5; i = (i + 1)){
+	for (int i; i = 0; print(""); i = (i + 1)){
 		print("Hello world!\n");
 	};
 };

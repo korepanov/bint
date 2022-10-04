@@ -12,6 +12,7 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
+	"time"
 )
 
 var COMMAND_COUNTER int
@@ -73,7 +74,7 @@ func getExprEnd(command string, startPos int) int {
 	panic(errors.New("invalid brace number"))
 }
 
-func getExprType(command string, variables [][][]interface{}) string {
+func sysGetExprType(command string, variables [][][]interface{}) string {
 	var exprList [][]interface{}
 	var err error
 
@@ -109,6 +110,21 @@ func getExprType(command string, variables [][][]interface{}) string {
 	}
 
 	return WhatsType(fmt.Sprintf("%v", res[0]))
+}
+
+func getExprType(command string, variables [][][]interface{}) string {
+	c1 := make(chan string, 1)
+	go func() {
+		text := sysGetExprType(command, variables)
+		c1 <- text
+	}()
+
+	select {
+	case res := <-c1:
+		return res
+	case <-time.After(3 * time.Second):
+		fmt.Println("out of time :(")
+	}
 }
 
 func filter(command string) bool {
