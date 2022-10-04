@@ -159,6 +159,25 @@ func dValidateUserStackCall(command string, variables [][][]interface{}) (string
 	return command, status.No, variables
 }
 
+func dValidateInput(command string, variables [][][]interface{}) (string, int, [][][]interface{}) {
+	tail, stat := check(`(?:input\([[:alpha:]]+[[:alnum:]|_]*\))`, command)
+
+	if status.Yes == stat && `` == tail {
+		tail, _ = check(`(?:input\()`, command)
+		tail = tail[:len(tail)-1]
+		t, err := getExprType(tail, variables)
+		if nil != err {
+			handleError(err.Error())
+		}
+		if "string" != t {
+			handleError("data type mismatch in input: string and " + t)
+		}
+		return ``, status.Yes, variables
+	}
+
+	return command, status.No, variables
+}
+
 func handleError(errMessage string) {
 	var inputedCode string
 	var errorFile string
@@ -705,6 +724,12 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 	}
 
 	command, stat, variables = dValidateUserStackCall(command, variables)
+
+	if status.Yes == stat {
+		return variables, nil
+	}
+
+	command, stat, variables = dValidateInput(command, variables)
 
 	if status.Yes == stat {
 		return variables, nil

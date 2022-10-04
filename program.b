@@ -104,9 +104,12 @@ void main(){
 		i = (i + 1);
 	};
 	stack s;
+	
 	s.push("a");
 	string buf;
 	s.pop(buf);
+	
+	input(buf);
 	do{
 		print("");
 		print("Hello!\n");
@@ -117,9 +120,11 @@ void main(){
 		break;
 		for (int j; j=10; j > 0; j = (j - 1)){
 			print("OPA!\n");
-			print("OPA!\n");		
+			print("OPA!\n");	
 		};
+		
 	};
+	
 	print("YES");
 };
 
