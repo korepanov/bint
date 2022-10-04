@@ -327,7 +327,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 				if fmt.Sprintf("%v", v[1]) == varName {
 					varVal = fmt.Sprintf("%v", ValueFoldInterface(v[2]))
 
-					if `"` == string([]rune(varVal)[0]) && `"` == string([]rune(varVal)[len(varVal)-1]) {
+					if len(varVal) > 2 && `"` == string([]rune(varVal)[0]) && `"` == string([]rune(varVal)[len(varVal)-1]) {
 						varVal = string([]rune(varVal)[1 : len([]rune(varVal))-1])
 					}
 					//if "\"" == string(varVal[0]) {
