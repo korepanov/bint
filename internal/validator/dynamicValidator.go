@@ -112,7 +112,7 @@ func sysGetExprType(command string, variables [][][]interface{}) string {
 	return WhatsType(fmt.Sprintf("%v", res[0]))
 }
 
-func getExprType(command string, variables [][][]interface{}) string {
+func getExprType(command string, variables [][][]interface{}) (string, error) {
 	c1 := make(chan string, 1)
 	go func() {
 		text := sysGetExprType(command, variables)
@@ -121,9 +121,9 @@ func getExprType(command string, variables [][][]interface{}) string {
 
 	select {
 	case res := <-c1:
-		return res
-	case <-time.After(3 * time.Second):
-		fmt.Println("out of time :(")
+		return res, nil
+	case <-time.After(time.Second):
+		return ``, errors.New("unresolved command")
 	}
 }
 
@@ -248,7 +248,10 @@ func dValidateStr(command string, variables [][][]interface{}) (string, [][][]in
 		var replacerArgs []string
 		for _, pos := range poses {
 			exprEnd := getExprEnd(tail, pos[1]-1)
-			t := getExprType(tail[pos[0]+4:exprEnd-1], variables)
+			t, err := getExprType(tail[pos[0]+4:exprEnd-1], variables)
+			if nil != err {
+				handleError(err.Error())
+			}
 			if "stack" == t {
 				handleError("data type mismatch in str: stack")
 			}
@@ -386,8 +389,11 @@ func dValidateIf(command string, variables [][][]interface{}) (string, int, [][]
 		}
 		loc := re.FindIndex([]byte(command))
 		ifStruct := command[:loc[1]]
-
-		if "bool" != getExprType(ifStruct[2:len(ifStruct)-1], variables) {
+		t, err := getExprType(ifStruct[2:len(ifStruct)-1], variables)
+		if nil != err {
+			handleError(err.Error())
+		}
+		if "bool" != t {
 			handleError("the expression inside if is not a boolean expression")
 		}
 	}
@@ -407,8 +413,11 @@ func dValidateElseIf(command string, variables [][][]interface{}) (string, int, 
 		}
 		loc := re.FindIndex([]byte(command))
 		elseIfStruct := command[:loc[1]]
-
-		if "bool" != getExprType(elseIfStruct[7:len(elseIfStruct)-1], variables) {
+		t, err := getExprType(elseIfStruct[7:len(elseIfStruct)-1], variables)
+		if nil != err {
+			handleError(err.Error())
+		}
+		if "bool" != t {
 			handleError("the expression inside if is not a boolean expression")
 		}
 
@@ -438,7 +447,10 @@ func dValidateReturn(command string, variables [][][]interface{}) (string, int, 
 		}
 		tail, _, variables = dValidateFuncCall(tail, variables)
 
-		exprType := getExprType(tail, variables)
+		exprType, err := getExprType(tail, variables)
+		if nil != err {
+			handleError(err.Error())
+		}
 
 		if retVal != exprType {
 			handleError("data type mismatch in func definition and return statement: " + retVal + " and " + exprType)
@@ -481,7 +493,10 @@ func dValidateFuncCall(command string, variables [][][]interface{}) (string, int
 func dValidatePrint(command string, variables [][][]interface{}) (string, int, [][][]interface{}) {
 	tail, stat := check(`(?:print\()`, command)
 	if status.Yes == stat {
-		T := getExprType(tail[:len(tail)-1], variables)
+		T, err := getExprType(tail[:len(tail)-1], variables)
+		if nil != err {
+			handleError(err.Error())
+		}
 		if "string" != T {
 			handleError("print: data type mismatch: string and " + T)
 		}
@@ -506,7 +521,10 @@ func dValidateAssignment(command string, variables [][][]interface{}) (string, i
 		newVariable := EachVariable(allVariables)
 		for v := newVariable(); "end" != v[0]; v = newVariable() {
 			if thisVar == fmt.Sprintf("%v", v[1]) {
-				T := getExprType(expr, variables)
+				T, err := getExprType(expr, variables)
+				if nil != err {
+					handleError(err.Error())
+				}
 				if v[0] != T {
 					handleError("data type mismatch: " + fmt.Sprintf("%v", v[0]) + " and " + T)
 				} else {
@@ -532,8 +550,11 @@ func dValidateWhile(command string, variables [][][]interface{}) (string, int, [
 		}
 		loc := re.FindIndex([]byte(command))
 		whileStruct := command[:loc[1]]
-
-		if "bool" != getExprType(whileStruct[5:len(whileStruct)-1], variables) {
+		t, err := getExprType(whileStruct[5:len(whileStruct)-1], variables)
+		if nil != err {
+			handleError(err.Error())
+		}
+		if "bool" != t {
 			handleError("the expression inside while is not a boolean expression")
 		}
 	}
@@ -573,8 +594,11 @@ func dValidateDoWhile(command string, variables [][][]interface{}) (string, int,
 		}
 		loc := re.FindIndex([]byte(command))
 		doWhileStruct := command[:loc[1]]
-
-		if "bool" != getExprType(doWhileStruct[6:], variables) {
+		t, err := getExprType(doWhileStruct[6:], variables)
+		if nil != err {
+			handleError(err.Error())
+		}
+		if "bool" != t {
 			handleError("the expression inside while is not a boolean expression")
 		}
 
@@ -597,7 +621,10 @@ func dValidateFor(command string, variables [][][]interface{}) (string, [][][]in
 	}
 	if 2 == forCounter {
 		forCounter++
-		t := getExprType("("+command+")", variables)
+		t, err := getExprType("("+command+")", variables)
+		if nil != err {
+			handleError(err.Error())
+		}
 		if "bool" != t {
 			handleError("data type mismatch in for: bool and " + t)
 		}

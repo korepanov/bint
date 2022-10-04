@@ -108,10 +108,16 @@ void main(){
 		print("");
 		print("Hello!\n");
 	}while(False);
-
-	for (int i; i = 0; print(""); i = (i + 1)){
+	
+	for (int i; i = 0; i < 5; i = (i + 1)){
 		print("Hello world!\n");
+		break;
+		for (int j; j=10; j > 0; j = (j - 1)){
+			print("OPA!\n");
+			print("OPA!\n");		
+		};
 	};
+	print("YES");
 };
 
 main();
