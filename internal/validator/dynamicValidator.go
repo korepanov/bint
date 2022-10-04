@@ -133,6 +133,31 @@ func filter(command string) bool {
 	}
 	return true
 }
+func dValidateUserStackCall(command string, variables [][][]interface{}) (string, int, [][][]interface{}) {
+	tail, stat := check(`(?:[[:alpha:]]+[[:alnum:]|_]*\.push\(.+\))`, command)
+
+	tail2, stat2 := check(`(?:[[:alpha:]]+[[:alnum:]|_]*\.pop\([[:alpha:]]+[[:alnum:]|_]*\))`, command)
+	if (status.Yes == stat && `` == tail) || (status.Yes == stat2 && `` == tail2) {
+		var exprList [][]interface{}
+		var err error
+
+		var allVariables [][]interface{}
+
+		for _, v := range variables {
+			allVariables = append(allVariables, v...)
+		}
+
+		exprList, allVariables, err = lexer.LexicalAnalyze(command,
+			allVariables, false, nil, false, nil)
+		if nil != err {
+			handleError(err.Error())
+		}
+
+		checkVars(exprList, allVariables)
+		return ``, status.Yes, variables
+	}
+	return command, status.No, variables
+}
 
 func handleError(errMessage string) {
 	var inputedCode string
@@ -676,6 +701,12 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 	command, variables = dValidateFor(command, variables)
 
 	if "" == command {
+		return variables, nil
+	}
+
+	command, stat, variables = dValidateUserStackCall(command, variables)
+
+	if status.Yes == stat {
 		return variables, nil
 	}
 

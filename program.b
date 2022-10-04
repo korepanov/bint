@@ -103,7 +103,10 @@ void main(){
 		
 		i = (i + 1);
 	};
-
+	stack s;
+	s.push("a");
+	string buf;
+	s.pop(buf);
 	do{
 		print("");
 		print("Hello!\n");
