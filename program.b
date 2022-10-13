@@ -75,6 +75,11 @@ int factorial(int n){
 
 void main(){
 	int i;
+	stack s;
+	s.push("A");
+	string buf;
+	s.pop(buf); 
+	
 	i = 0;
 	
 	while (i < 6){

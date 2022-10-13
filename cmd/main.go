@@ -8,7 +8,7 @@ import (
 
 func main() {
 	// эти опции можно менять для системной отладки
-	sysMode := options.ExecBasm
+	sysMode := options.UserTranslate
 	benvMode := options.ExecBenv
 	var filesListToExecute []string
 	toTranslate, rootSource, rootDest, keyDest, err := ParseArgs()
@@ -19,5 +19,5 @@ func main() {
 
 	rootSource, rootDest, keyDest, filesListToExecute = SetConf(toTranslate, rootSource, rootDest, keyDest, sysMode, benvMode)
 	validator.Validate(toTranslate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
-	Start(toTranslate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
+	//Start(toTranslate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
 }
