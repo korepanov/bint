@@ -230,6 +230,7 @@ func CanBePartOfBoolExpr(subExpr string) bool {
 
 func mySplit(buffer string, pattern *regexp.Regexp) [2]string {
 	findList := pattern.FindAllString(buffer, -1)
+
 	var resList [2]string
 	resList[0] = findList[0]
 	for i := 1; i < len(findList); i++ {
@@ -326,7 +327,7 @@ func EachChunk(file *os.File) func() string {
 				wasSemicolon = true
 			}
 			resList = mySplit(buffer, pattern)
-
+			fmt.Println(resList[0])
 		}
 		part = resList[0]
 		buffer = resList[1]
