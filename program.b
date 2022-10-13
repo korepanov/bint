@@ -76,6 +76,7 @@ int factorial(int n){
 void main(){
 	int i;
 	stack s;
+	st = 5;
 	s.push("A");
 	string buf;
 	s.pop(buf); 
