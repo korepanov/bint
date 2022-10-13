@@ -484,8 +484,9 @@ func dValidateElse(command string, variables [][][]interface{}) (string, int, []
 func dValidateReturn(command string, variables [][][]interface{}) (string, int, [][][]interface{}) {
 	tail, stat := check(`(?m)(?:return)`, command)
 	if status.Yes == stat {
-		wasRet = true
-
+		if 1 == len(closureHistory) && funcDefinition == closureHistory[0].T {
+			wasRet = true
+		}
 		if len(closureHistory) < 1 {
 			handleError("illegal position of return")
 		}
@@ -704,7 +705,7 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 
 	if isFunc && "void" != retVal && !wasRet && len(closureHistory) < 1 {
 		COMMAND_COUNTER = funcCommandCounter
-		handleError("missing return statement in function")
+		handleError("function must have unconditional return")
 	}
 
 	if isFunc && len(closureHistory) < 1 {

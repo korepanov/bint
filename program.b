@@ -28,11 +28,14 @@ bool foo(){
 stack func1(){
 	stack s;
 	stack d;
+	stack null;
 	s = d;
 	
 	if (True){
 		return s;
 	};
+
+	return null;
 };
 
 stack func0(){
@@ -76,7 +79,7 @@ int factorial(int n){
 void main(){
 	int i;
 	stack s;
-	st = 5;
+	
 	s.push("A");
 	string buf;
 	s.pop(buf); 
