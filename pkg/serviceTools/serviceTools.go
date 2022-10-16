@@ -1,7 +1,6 @@
 package serviceTools
 
 import (
-	"bint.com/internal/internalTools"
 	"errors"
 	"fmt"
 	"io"
@@ -329,7 +328,7 @@ func EachChunk(file *os.File) func() string {
 			}
 			resList = mySplit(buffer, pattern)
 			if "" == resList[1] {
-				fmt.Println("ERROR in " + internalTools.FileToExecute + " at near line " + fmt.Sprintf("%v", LineCounter))
+				//fmt.Println("ERROR in " + internalTools.FileToExecute + " at near line " + fmt.Sprintf("%v", LineCounter))
 				fmt.Println(CommandToExecute)
 				fmt.Println("too long command")
 				os.Exit(1)
