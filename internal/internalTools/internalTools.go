@@ -310,9 +310,9 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	var key *os.File
 	var transpileDest *os.File
 	var primitiveDest *os.File
-	var sourceNewChunk func() string
+	var sourceNewChunk func() (string, error)
 	var wasGetCommandCounterByMark bool
-	var newKey func() string
+	var newKey func() (string, error)
 
 	systemStack := []interface{}{"end"}
 	sourceCommandCounter := 1
@@ -373,6 +373,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			panic(err)
 		}
 		newKey = EachChunk(key)
+
 	}
 
 	for _, FileToExecute = range filesListToExecute {
@@ -391,9 +392,13 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			panic(err)
 		}
 		newChunk := EachChunk(f)
+
 		// собираем все метки файла в marks
 		if options.Transpile == sysMod {
-			for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
+			for chunk, err := newChunk(); "end" != chunk; chunk, err = newChunk() {
+				if nil != err {
+					panic(err)
+				}
 				CommandToExecute = strings.TrimSpace(chunk)
 				inputedCode = CodeInput(chunk, false)
 
@@ -412,13 +417,20 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 
 			newChunk = EachChunk(f)
 		}
-		for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
+		for chunk, err := newChunk(); "end" != chunk; chunk, err = newChunk() {
+			if nil != err {
+				panic(err)
+			}
 			//ввод команд
 			CommandToExecute = strings.TrimSpace(chunk)
 			inputedCode = CodeInput(chunk, !wasGetCommandCounterByMark)
 
 			if options.ExecEncrypt == sysMod {
-				inputedCode = decryptor.Decrypt(inputedCode, newKey())
+				k, err := newKey()
+				if nil != err {
+					panic(err)
+				}
+				inputedCode = decryptor.Decrypt(inputedCode, k)
 			}
 
 			if options.Transpile == sysMod {
@@ -636,7 +648,10 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 						for v := newVariable(); "end" != v[0]; v = newVariable() {
 							if fmt.Sprintf("%v", varName) == fmt.Sprintf("%v", v[1]) {
 								var code string
-								code = sourceNewChunk()
+								code, err = sourceNewChunk()
+								if nil != err {
+									panic(err)
+								}
 								v[2] = CodeInput(code, false)
 								break
 							}

@@ -251,7 +251,7 @@ func mySplit(buffer string, pattern *regexp.Regexp) [2]string {
 	return resList
 }
 
-func EachChunk(file *os.File) func() string {
+func EachChunk(file *os.File) func() (string, error) {
 	const chunkSize = 256
 	chunk := make([]byte, chunkSize)
 	var buffer string
@@ -272,7 +272,7 @@ func EachChunk(file *os.File) func() string {
 	}
 	buffer = string(chunk)
 
-	return func() string {
+	return func() (string, error) {
 		var wasSemicolon bool
 
 		trimBuffer := strings.TrimSpace(buffer)
@@ -287,7 +287,7 @@ func EachChunk(file *os.File) func() string {
 			_, err := file.Read(chunk)
 
 			if io.EOF == err {
-				return "end"
+				return "end", nil
 			}
 			if nil != err && io.EOF != err {
 				panic(err)
@@ -314,7 +314,7 @@ func EachChunk(file *os.File) func() string {
 			_, err := file.Read(chunk)
 
 			if io.EOF == err {
-				return "end"
+				return "end", nil
 			}
 			if nil != err && io.EOF != err {
 				panic(err)
@@ -328,10 +328,7 @@ func EachChunk(file *os.File) func() string {
 			}
 			resList = mySplit(buffer, pattern)
 			if "" == resList[1] {
-				//fmt.Println("ERROR in " + internalTools.FileToExecute + " at near line " + fmt.Sprintf("%v", LineCounter))
-				fmt.Println(CommandToExecute)
-				fmt.Println("too long command")
-				os.Exit(1)
+				return "", errors.New("too long command")
 			}
 		}
 		part = resList[0]
@@ -344,24 +341,28 @@ func EachChunk(file *os.File) func() string {
 
 			part += ";"
 
-			return part[:len(part)-1]
+			return part[:len(part)-1], nil
 		}
 
-		return part
+		return part, nil
 	}
 }
 
-func SetCommandCounter(file *os.File, COMMAND_COUNTER int) (func() string, error) {
+func SetCommandCounter(file *os.File, COMMAND_COUNTER int) (func() (string, error), error) {
 	_, err := file.Seek(0, 0)
-	newChunk := EachChunk(file)
 
 	if nil != err {
-		return newChunk, err
+		return nil, err
 	}
+
+	newChunk := EachChunk(file)
 
 	i := 1
 
-	for _ = newChunk(); i < COMMAND_COUNTER-1; _ = newChunk() {
+	for _, err = newChunk(); i < COMMAND_COUNTER-1; _, err = newChunk() {
+		if nil != err {
+			return nil, err
+		}
 		i++
 	}
 
@@ -378,7 +379,11 @@ func GetCommandCounterByMark(f *os.File, mark string) (int, *os.File, error) {
 		return i, f, err
 	}
 	newChunk := EachChunk(f)
-	for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
+
+	for chunk, err := newChunk(); "end" != chunk; chunk, err = newChunk() {
+		if nil != err {
+			return i, f, err
+		}
 		expr := CodeInput(chunk, true)
 		if len(expr) > len(mark) && expr[0:len(mark)] == mark && ":" == string(expr[len(mark)]) {
 			return i, f, nil

@@ -53,10 +53,14 @@ func Encrypt(rootSource string, rootDest string, keyDest string) {
 		}
 
 		newChunk := EachChunk(f)
+
 		var trashNumbersList []int
 		var trashNumber int
 
-		for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
+		for chunk, err := newChunk(); "end" != chunk; chunk, err = newChunk() {
+			if nil != err {
+				panic(err)
+			}
 			splitedChunk = strings.Split(chunk, options.BendSep)
 			trashLen := rand.Intn(options.MaxTrashLen)
 			encryptedChunkLen := trashLen + len(splitedChunk)

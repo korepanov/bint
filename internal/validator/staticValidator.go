@@ -1115,7 +1115,10 @@ func StaticValidate(rootSource string) error {
 
 	LineCounter = 1
 
-	for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
+	for chunk, err := newChunk(); "end" != chunk; chunk, err = newChunk() {
+		if nil != err {
+			handleError(err.Error())
+		}
 		CommandToExecute = strings.TrimSpace(chunk)
 		inputedCode := CodeInput(chunk, true)
 

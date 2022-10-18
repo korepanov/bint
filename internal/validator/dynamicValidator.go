@@ -193,7 +193,10 @@ func handleError(errMessage string) {
 		panic(err)
 	}
 
-	for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
+	for chunk, err := newChunk(); "end" != chunk; chunk, err = newChunk() {
+		if nil != err {
+			panic(err)
+		}
 		CommandToExecute = strings.TrimSpace(chunk)
 		inputedCode = CodeInput(chunk, false)
 
@@ -208,7 +211,10 @@ func handleError(errMessage string) {
 		}
 	}
 
-	for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
+	for chunk, err := newChunk(); "end" != chunk; chunk, err = newChunk() {
+		if nil != err {
+			panic(err)
+		}
 		CommandToExecute = strings.TrimSpace(chunk)
 		errorFile = CodeInput(chunk, false)
 
@@ -244,12 +250,11 @@ func handleError(errMessage string) {
 
 	newChunk = EachChunk(f)
 
-	if nil != err {
-		panic(err)
-	}
-
 	for counter := 0; counter < sourceCommandCounter; counter++ {
-		chunk = newChunk()
+		chunk, err = newChunk()
+		if nil != err {
+			panic(err)
+		}
 		CodeInput(chunk, true)
 	}
 
@@ -864,7 +869,10 @@ func DynamicValidate(validatingFile string, rootSource string) {
 	}
 	newChunk := EachChunk(f)
 
-	for chunk := newChunk(); "end" != chunk; chunk = newChunk() {
+	for chunk, err := newChunk(); "end" != chunk; chunk, err = newChunk() {
+		if nil != err {
+			handleError(err.Error())
+		}
 		CommandToExecute = strings.TrimSpace(chunk)
 		inputedCode := CodeInput(chunk, false)
 		COMMAND_COUNTER++
