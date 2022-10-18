@@ -509,19 +509,23 @@ func CodeInput(expr string, lineIncrement bool) string {
 	var startFlag bool
 	var stringInside string
 
-	// базовые комментарии в одну строку
-	lineComPos := strings.Index(expr, "//")
-
 	var i int
+	// комментарии в одну строку
+	reg, err := regexp.Compile(`^//.*`)
+	if nil != err {
+		panic(err)
+	}
+	expr = string(reg.ReplaceAll([]byte(strings.TrimSpace(expr)), []byte("")))
 
-	if -1 != lineComPos {
-		i = lineComPos
-		for i < len(expr) && "\n" != string(expr[i]) {
-			expr = expr[:i] + expr[i+1:]
-		}
+	// комментарии в несколько строк
+	reg, err = regexp.Compile(`^/(?s).*.*/`)
+	if nil != err {
+		panic(err)
 	}
 
-	//запоминаем стоки, чтобы оставить в них пробелы
+	expr = string(reg.ReplaceAll([]byte(strings.TrimSpace(expr)), []byte("")))
+
+	//запоминаем строки, чтобы оставить в них пробелы
 	for i = 0; i < len([]rune(expr)); i++ {
 		if startFlag {
 			if `"` != string([]rune(expr)[i]) || (i > 0 && string([]rune(expr)[i-1]) == `\` && `"` == string([]rune(expr)[i])) {
