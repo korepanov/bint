@@ -313,7 +313,42 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 		wasPoint = true
 	}
 
-	i := 1
+	// заменяем NOT на стандартную бинарную операцию
+	i := 0
+	wasNOT := false
+	var newNotList [][]interface{}
+	for i < len(exprList) {
+		if "NOT" == fmt.Sprintf("%v", exprList[i][1]) && "OP" == fmt.Sprintf("%v", exprList[i][0]) &&
+			"null" != fmt.Sprintf("%v", exprList[i+1][1]) {
+			wasNOT = true
+			endNOT := FindExprListEnd(exprList, i+2)
+
+			newNotList = nil
+			for _, el := range makeOperationBinary(exprList[i:endNOT]) {
+				newNotList = append(newNotList, el)
+			}
+
+			newNotList = Insert(newNotList, len(newNotList)-2, []interface{}{"BR", ")"})
+			newNotList = Insert(newNotList, 0, []interface{}{"BR", "("})
+			//exprList = newNotList
+			var tempList [][]interface{}
+			for _, el := range exprList[:i] {
+				tempList = append(tempList, el)
+			}
+			tempList = append(tempList, newNotList...)
+			exprList = append(tempList, exprList[endNOT:]...)
+
+			/*var res string
+			for _, el := range exprList{
+				res += el[1].(string)
+			}
+			fmt.Println(res)*/
+			i = 0
+		}
+		i++
+	}
+
+	i = 1
 
 	for i < len(exprList) {
 		// режем строку
@@ -469,54 +504,6 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 			}
 			i++
 		}
-	}
-
-	// заменяем NOT на стандартную бинарную операцию
-	i = 0
-	wasNOT := false
-
-	for i < len(exprList) {
-		if "NOT" == fmt.Sprintf("%v", exprList[i][1]) {
-			wasNOT = true
-		}
-		// если справа null, значит NOT уже заменен
-		if "NOT" == fmt.Sprintf("%v", exprList[i][1]) && "null" != fmt.Sprintf("%v", exprList[i+1][1]) {
-
-			exprList = Pop(exprList, i) // выталкиваем NOT
-			exprList = Insert(exprList, i, []interface{}{"BR", "("})
-			i += 1
-			// проверяем скобочку рядом с NOT; она всегда может быть частью логического выражения;
-			// значит, цикл должен выполниться хотя бы один раз
-			varFlag := true
-			endPos := FindExprListEnd(exprList, i)
-
-			for (CanBePartOfBoolExpr(fmt.Sprintf("%v", exprList[i][1])) || varFlag || "VAL" == fmt.Sprintf("%v", exprList[i][0])) &&
-				i < endPos {
-				varFlag = false
-				i += 1
-				if i < len(exprList) {
-					// проверяем, встретили ли мы переменную
-					newVariable := EachVariable(variables)
-					for v := newVariable(); "end" != v[0]; v = newVariable() {
-						if v[1] == fmt.Sprintf("%v", exprList[i][1]) {
-							varFlag = true
-						}
-					}
-				} else {
-					break
-				}
-			}
-
-			i -= 1 // возвращаемся единицу назад: на символ за внешней скобкой NOT
-
-			exprList = Insert(exprList, i, []interface{}{"BR", ")"})
-			i += 1
-			exprList = Insert(exprList, i, []interface{}{"OP", "NOT"})
-			i += 1
-			exprList = Insert(exprList, i, []interface{}{"VAL", "null", "null"})
-
-		}
-		i += 1
 	}
 
 	i = 0

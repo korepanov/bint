@@ -708,6 +708,20 @@ func validateDoWhile(command string) (tail string, stat int, err error) {
 	return command, status.No, nil
 }
 
+func replaceVals(command string) (tail string, stat int) {
+	var wasReplace bool
+
+	tail = command
+	if -1 != strings.Index(tail, "(val)") {
+		wasReplace = true
+		tail = strings.ReplaceAll(tail, "(val)", "val")
+	}
+	if wasReplace {
+		return tail, status.Yes
+	}
+	return tail, status.No
+}
+
 func validateCommand(command string) error {
 	oldCommand := command
 
@@ -1100,6 +1114,11 @@ func validateCommand(command string) error {
 	command = tail
 	if oldCommand != command {
 		return validateCommand(command)
+	}
+
+	tail, stat = replaceVals(command)
+	if status.Yes == stat {
+		return validateCommand(tail)
 	}
 
 	return errors.New("unresolved command")
