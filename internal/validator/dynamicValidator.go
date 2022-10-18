@@ -43,7 +43,7 @@ func checkVars(exprList interface{}, allVariables [][]interface{}) {
 				}
 			}
 			if !isVar {
-				handleError("unresolved reference: " + fmt.Sprintf("%v", expr[1]))
+				handleError(errors.New("unresolved reference: " + fmt.Sprintf("%v", expr[1])))
 			} else {
 				isVar = false
 			}
@@ -87,7 +87,7 @@ func sysGetExprType(command string, variables [][][]interface{}) string {
 	exprList, allVariables, err = lexer.LexicalAnalyze(command,
 		allVariables, false, nil, false, nil)
 	if nil != err {
-		handleError(err.Error())
+		handleError(err)
 	}
 
 	checkVars(exprList, allVariables)
@@ -150,7 +150,7 @@ func dValidateUserStackCall(command string, variables [][][]interface{}) (string
 		exprList, allVariables, err = lexer.LexicalAnalyze(command,
 			allVariables, false, nil, false, nil)
 		if nil != err {
-			handleError(err.Error())
+			handleError(err)
 		}
 
 		checkVars(exprList, allVariables)
@@ -167,10 +167,10 @@ func dValidateInput(command string, variables [][][]interface{}) (string, int, [
 		tail = tail[:len(tail)-1]
 		t, err := getExprType(tail, variables)
 		if nil != err {
-			handleError(err.Error())
+			handleError(err)
 		}
 		if "string" != t {
-			handleError("data type mismatch in input: string and " + t)
+			handleError(errors.New("data type mismatch in input: string and " + t))
 		}
 		return ``, status.Yes, variables
 	}
@@ -178,7 +178,7 @@ func dValidateInput(command string, variables [][][]interface{}) (string, int, [
 	return command, status.No, variables
 }
 
-func handleError(errMessage string) {
+func handleError(newError error) {
 	var inputedCode string
 	var errorFile string
 
@@ -261,7 +261,7 @@ func handleError(errMessage string) {
 	fmt.Println("ERROR in " + errorFile + " at near line " +
 		fmt.Sprintf("%v", LineCounter))
 	fmt.Println(strings.TrimSpace(chunk))
-	fmt.Println(errMessage)
+	fmt.Println(newError.Error())
 
 	err = f.Close()
 	if nil != err {
@@ -299,10 +299,10 @@ func dValidateStr(command string, variables [][][]interface{}) (string, [][][]in
 			exprEnd := getExprEnd(tail, pos[1]-1)
 			t, err := getExprType(tail[pos[0]+4:exprEnd-1], variables)
 			if nil != err {
-				handleError(err.Error())
+				handleError(err)
 			}
 			if "stack" == t {
-				handleError("data type mismatch in str: stack")
+				handleError(errors.New("data type mismatch in str: stack"))
 			}
 			replacerArgs = append(replacerArgs, tail[pos[0]:exprEnd])
 			replacerArgs = append(replacerArgs, `$val`)
@@ -334,7 +334,7 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 
 		tail, stat = check(`^(?:(int|float|bool|string|stack|void)[[:alnum:]|_]+)`, command)
 		if status.Yes != stat {
-			handleError("is not valid func definition")
+			handleError(errors.New("is not valid func definition"))
 		}
 
 		reg, err = regexp.Compile(`(?:(int|float|bool|string|stack|void)[[:alnum:]|_]+)`)
@@ -375,13 +375,13 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 	if wasDef {
 		funcName, stat := check(`^(?:(int|float|bool|string|stack|void))`, command)
 		if status.Yes != stat {
-			handleError("is not valid func definition")
+			handleError(errors.New("is not valid func definition"))
 		}
 
 		funcName = funcName[0:strings.Index(funcName, "(")]
 
 		if "" != funcTable[funcName] {
-			handleError("function polymorphism is not allowed")
+			handleError(errors.New("function polymorphism is not allowed"))
 		} else {
 			funcTable[funcName] = retVal
 			var err error
@@ -393,7 +393,7 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 			}
 
 			if nil != err {
-				handleError(err.Error())
+				handleError(err)
 			}
 
 			if "float" == funcTable[funcName] {
@@ -440,10 +440,10 @@ func dValidateIf(command string, variables [][][]interface{}) (string, int, [][]
 		ifStruct := command[:loc[1]]
 		t, err := getExprType(ifStruct[2:len(ifStruct)-1], variables)
 		if nil != err {
-			handleError(err.Error())
+			handleError(err)
 		}
 		if "bool" != t {
-			handleError("the expression inside if is not a boolean expression")
+			handleError(errors.New("the expression inside if is not a boolean expression"))
 		}
 	}
 	return tail, stat, variables
@@ -464,10 +464,10 @@ func dValidateElseIf(command string, variables [][][]interface{}) (string, int, 
 		elseIfStruct := command[:loc[1]]
 		t, err := getExprType(elseIfStruct[7:len(elseIfStruct)-1], variables)
 		if nil != err {
-			handleError(err.Error())
+			handleError(err)
 		}
 		if "bool" != t {
-			handleError("the expression inside if is not a boolean expression")
+			handleError(errors.New("the expression inside if is not a boolean expression"))
 		}
 
 	}
@@ -493,17 +493,17 @@ func dValidateReturn(command string, variables [][][]interface{}) (string, int, 
 			wasRet = true
 		}
 		if len(closureHistory) < 1 {
-			handleError("illegal position of return")
+			handleError(errors.New("illegal position of return"))
 		}
 		tail, _, variables = dValidateFuncCall(tail, variables)
 
 		exprType, err := getExprType(tail, variables)
 		if nil != err {
-			handleError(err.Error())
+			handleError(err)
 		}
 
 		if retVal != exprType {
-			handleError("data type mismatch in func definition and return statement: " + retVal + " and " + exprType)
+			handleError(errors.New("data type mismatch in func definition and return statement: " + retVal + " and " + exprType))
 		}
 	}
 	return "", stat, variables
@@ -545,10 +545,10 @@ func dValidatePrint(command string, variables [][][]interface{}) (string, int, [
 	if status.Yes == stat {
 		T, err := getExprType(tail[:len(tail)-1], variables)
 		if nil != err {
-			handleError(err.Error())
+			handleError(err)
 		}
 		if "string" != T {
-			handleError("print: data type mismatch: string and " + T)
+			handleError(errors.New("print: data type mismatch: string and " + T))
 		}
 		return "", stat, variables
 	}
@@ -573,16 +573,16 @@ func dValidateAssignment(command string, variables [][][]interface{}) (string, i
 			if thisVar == fmt.Sprintf("%v", v[1]) {
 				T, err := getExprType(expr, variables)
 				if nil != err {
-					handleError(err.Error())
+					handleError(err)
 				}
 				if v[0] != T {
-					handleError("data type mismatch: " + fmt.Sprintf("%v", v[0]) + " and " + T)
+					handleError(errors.New("data type mismatch: " + fmt.Sprintf("%v", v[0]) + " and " + T))
 				} else {
 					return ``, status.Yes, variables
 				}
 			}
 		}
-		handleError("unresolved reference: " + thisVar)
+		handleError(errors.New("unresolved reference: " + thisVar))
 	}
 
 	return ``, status.No, variables
@@ -602,10 +602,10 @@ func dValidateWhile(command string, variables [][][]interface{}) (string, int, [
 		whileStruct := command[:loc[1]]
 		t, err := getExprType(whileStruct[5:len(whileStruct)-1], variables)
 		if nil != err {
-			handleError(err.Error())
+			handleError(err)
 		}
 		if "bool" != t {
-			handleError("the expression inside while is not a boolean expression")
+			handleError(errors.New("the expression inside while is not a boolean expression"))
 		}
 	}
 	return tail, stat, variables
@@ -621,7 +621,7 @@ func dValidateBreak(command string, variables [][][]interface{}) (string, int, [
 			}
 		}
 		if !isLoop {
-			handleError("break is outside of loop")
+			handleError(errors.New("break is outside of loop"))
 		}
 	}
 	return tail, stat, variables
@@ -646,10 +646,10 @@ func dValidateDoWhile(command string, variables [][][]interface{}) (string, int,
 		doWhileStruct := command[:loc[1]]
 		t, err := getExprType(doWhileStruct[6:], variables)
 		if nil != err {
-			handleError(err.Error())
+			handleError(err)
 		}
 		if "bool" != t {
-			handleError("the expression inside while is not a boolean expression")
+			handleError(errors.New("the expression inside while is not a boolean expression"))
 		}
 
 	}
@@ -673,10 +673,10 @@ func dValidateFor(command string, variables [][][]interface{}) (string, [][][]in
 		forCounter++
 		t, err := getExprType("("+command+")", variables)
 		if nil != err {
-			handleError(err.Error())
+			handleError(err)
 		}
 		if "bool" != t {
-			handleError("data type mismatch in for: bool and " + t)
+			handleError(errors.New("data type mismatch in for: bool and " + t))
 		}
 		return ``, variables
 	}
@@ -688,7 +688,7 @@ func dValidateFor(command string, variables [][][]interface{}) (string, [][][]in
 		loc := re.FindIndex([]byte(command))
 
 		if nil == loc {
-			handleError("invalid for syntax")
+			handleError(errors.New("invalid for syntax"))
 		}
 
 		tempHistory := closureHistory
@@ -710,7 +710,7 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 
 	if isFunc && "void" != retVal && !wasRet && len(closureHistory) < 1 {
 		COMMAND_COUNTER = funcCommandCounter
-		handleError("function must have unconditional return")
+		handleError(errors.New("function must have unconditional return"))
 	}
 
 	if isFunc && len(closureHistory) < 1 {
@@ -843,7 +843,7 @@ func DynamicValidate(validatingFile string, rootSource string) {
 
 	defer func() {
 		if r := recover(); nil != r {
-			handleError(fmt.Sprintf("%v", r))
+			handleError(errors.New(fmt.Sprintf("%v", r)))
 			os.Exit(1)
 		}
 	}()
@@ -871,7 +871,7 @@ func DynamicValidate(validatingFile string, rootSource string) {
 
 	for chunk, err := newChunk(); "end" != chunk; chunk, err = newChunk() {
 		if nil != err {
-			handleError(err.Error())
+			handleError(err)
 		}
 		CommandToExecute = strings.TrimSpace(chunk)
 		inputedCode := CodeInput(chunk, false)
@@ -880,7 +880,7 @@ func DynamicValidate(validatingFile string, rootSource string) {
 		if filter(inputedCode) {
 			variables, err = dynamicValidateCommand(inputedCode, variables)
 			if nil != err {
-				handleError(err.Error())
+				handleError(err)
 			}
 		}
 	}
