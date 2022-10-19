@@ -63,7 +63,7 @@ func makeOperationBinary(exprListInput [][]interface{}) [][]interface{} {
 }
 
 func makePrintBinary(exprListInput [][]interface{}, variables [][]interface{}, usersStack []interface{}, showTree bool,
-	toTranspile bool, toPrimitive bool, primitiveDest *os.File, transpileDest *os.File) [][]interface{} {
+	toTranspile bool, toPrimitive bool, primitiveDest *os.File, transpileDest *os.File) ([][]interface{}, error) {
 	var exprList [][]interface{}
 	exprList = exprListInput
 	i := 0
@@ -125,8 +125,11 @@ func makePrintBinary(exprListInput [][]interface{}, variables [][]interface{}, u
 			var finalRes interface{}
 
 			if len(boolExpr) > 3 { // составное логическое выражение
-				_, infoListList, _ := Parse(boolExpr, variables, usersStack, showTree, toTranspile, toPrimitive,
+				_, infoListList, _, err := Parse(boolExpr, variables, usersStack, showTree, toTranspile, toPrimitive,
 					primitiveDest, transpileDest)
+				if nil != err {
+					return exprList, err
+				}
 				infoList := infoListList[0]
 				ExecuteTree(infoList, variables, usersStack, toTranspile, toPrimitive, primitiveDest, transpileDest)
 
@@ -162,10 +165,12 @@ func makePrintBinary(exprListInput [][]interface{}, variables [][]interface{}, u
 
 	}
 
-	return exprList
+	return exprList, nil
 }
 
-func codeTree(exprList [][]interface{}, treeStructure string, infoList []interface{}) (string, []interface{}) {
+func codeTree(exprList [][]interface{}, treeStructure string, infoList []interface{}) (string, []interface{}, error) {
+	var err error
+
 	if "" == treeStructure {
 		treeStructure = "1"
 	}
@@ -176,8 +181,8 @@ func codeTree(exprList [][]interface{}, treeStructure string, infoList []interfa
 	}
 
 	if 1 == len(exprList) && 0 == i {
-		treeStructure, infoList = codeTree(UnfoldInterfaceSlice(exprList[0][2].([]interface{})), treeStructure, infoList)
-		return treeStructure, infoList
+		treeStructure, infoList, err = codeTree(UnfoldInterfaceSlice(exprList[0][2].([]interface{})), treeStructure, infoList)
+		return treeStructure, infoList, err
 	}
 
 	if i >= len(exprList) {
@@ -189,41 +194,53 @@ func codeTree(exprList [][]interface{}, treeStructure string, infoList []interfa
 		infoList = append(infoList, exprList[i][1])
 		infoList = append(infoList, exprList[i-1][1])
 		infoList = append(infoList, exprList[i+1][1])
-		return treeStructure, infoList
+		return treeStructure, infoList, nil
 	}
 
 	if i+1 < len(exprList) && "OP" == fmt.Sprintf("%v", exprList[i+1][0]) &&
 		"SUBEXPR" == fmt.Sprintf("%v", exprList[i+2][1]) { // выражение и слева, и справа
 		treeStructure += "1"
 		infoList = append(infoList, fmt.Sprintf("%v", exprList[i+1][1]))
-		treeStructure, infoList = codeTree(UnfoldInterfaceSlice(exprList[i][2].([]interface{})), treeStructure, infoList)
+		treeStructure, infoList, err = codeTree(UnfoldInterfaceSlice(exprList[i][2].([]interface{})), treeStructure, infoList)
+		if nil != err {
+			return treeStructure, infoList, err
+		}
 		treeStructure += "1"
-		treeStructure, infoList = codeTree(UnfoldInterfaceSlice(exprList[i+2][2].([]interface{})), treeStructure, infoList)
+		treeStructure, infoList, err = codeTree(UnfoldInterfaceSlice(exprList[i+2][2].([]interface{})), treeStructure, infoList)
+		if nil != err {
+			return treeStructure, infoList, err
+		}
 	} else if i+1 < len(exprList) && "OP" == fmt.Sprintf("%v", exprList[i+1][0]) { // выражение слева
 		treeStructure += "1"
 		infoList = append(infoList, fmt.Sprintf("%v", exprList[i+1][1]))
-		treeStructure, infoList = codeTree(UnfoldInterfaceSlice(exprList[i][2].([]interface{})), treeStructure, infoList)
+		treeStructure, infoList, err = codeTree(UnfoldInterfaceSlice(exprList[i][2].([]interface{})), treeStructure, infoList)
+		if nil != err {
+			return treeStructure, infoList, err
+		}
 		infoList = append(infoList, fmt.Sprintf("%v", exprList[i+2][1]))
 		treeStructure += "100"
 	} else if i-1 >= 0 && "OP" == exprList[i-1][0] { // выражение справа
 		treeStructure += "1001"
 		infoList = append(infoList, fmt.Sprintf("%v", exprList[i-1][1]))
 		infoList = append(infoList, fmt.Sprintf("%v", exprList[i-2][1]))
-		treeStructure, infoList = codeTree(UnfoldInterfaceSlice(exprList[i][2].([]interface{})), treeStructure, infoList)
+		treeStructure, infoList, err = codeTree(UnfoldInterfaceSlice(exprList[i][2].([]interface{})), treeStructure, infoList)
+		if nil != err {
+			return treeStructure, infoList, err
+		}
 	} else {
-		panic("codeTree: ERROR: wrong syntax")
+		return treeStructure, infoList, errors.New("codeTree: ERROR: wrong syntax")
 	}
 
-	return treeStructure, infoList
+	return treeStructure, infoList, nil
 }
 
 func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack []interface{}, showTree bool,
-	toTranspile bool, toPrimitive bool, primitiveDest *os.File, transpileDest *os.File) ([]string, [][]interface{}, []interface{}) {
+	toTranspile bool, toPrimitive bool, primitiveDest *os.File, transpileDest *os.File) ([]string, [][]interface{}, []interface{}, error) {
 	const imgWidth = 1600
 	const imgHeight = 800
 	var treeStructure string
 	var infoList []interface{}
-
+	var err error
 	var treeStructureList []string
 	var infoListList [][]interface{}
 
@@ -613,16 +630,23 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 
 		if "print" == leftExpr[0][1] {
 			exprList = append(exprList, []interface{}{"BR", "("})
-			exprList = append(exprList, makePrintBinary(leftExpr, variables,
-				usersStack, showTree, toTranspile, toPrimitive, primitiveDest, transpileDest)...)
+			binaryPrint, err := makePrintBinary(leftExpr, variables,
+				usersStack, showTree, toTranspile, toPrimitive, primitiveDest, transpileDest)
+			if nil != err {
+				return treeStructureList, infoListList, usersStack, err
+			}
+			exprList = append(exprList, binaryPrint...)
 			exprList = append(exprList, []interface{}{"BR", ")"})
 		} else if "goto" == leftExpr[0][1] {
 			exprList = append(exprList, []interface{}{"BR", "("})
 			exprList = append(exprList, makeOperationBinary(leftExpr)...)
 			exprList = append(exprList, []interface{}{"BR", ")"})
 		} else {
-			_, infoListList, _ = Parse(leftExpr, variables, usersStack, showTree, toTranspile, toPrimitive,
+			_, infoListList, _, err = Parse(leftExpr, variables, usersStack, showTree, toTranspile, toPrimitive,
 				primitiveDest, transpileDest)
+			if nil != err {
+				return treeStructureList, infoListList, usersStack, err
+			}
 			infoList := infoListList[0]
 			_, variables, usersStack = ExecuteTree(infoList, variables, usersStack, toTranspile, toPrimitive,
 				primitiveDest, transpileDest)
@@ -631,8 +655,11 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 		// неоднозначное условие
 		if len(condition) > 1 {
 
-			_, infoListList, _ = Parse(condition, variables, usersStack, showTree, toTranspile, toPrimitive,
+			_, infoListList, _, err = Parse(condition, variables, usersStack, showTree, toTranspile, toPrimitive,
 				primitiveDest, transpileDest)
+			if nil != err {
+				return treeStructureList, infoListList, usersStack, err
+			}
 			infoList := infoListList[0]
 
 			resCon, variables, usersStack = ExecuteTree(infoList, variables, usersStack, toTranspile, toPrimitive,
@@ -684,16 +711,23 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 
 		if "print" == rightExpr[0][1] {
 			exprList = append(exprList, []interface{}{"BR", "("})
-			exprList = append(exprList, makePrintBinary(rightExpr, variables, usersStack, showTree,
-				toTranspile, toPrimitive, primitiveDest, transpileDest)...)
+			binaryPrint, err := makePrintBinary(rightExpr, variables, usersStack, showTree,
+				toTranspile, toPrimitive, primitiveDest, transpileDest)
+			if nil != err {
+				return treeStructureList, infoListList, usersStack, err
+			}
+			exprList = append(exprList, binaryPrint...)
 			exprList = append(exprList, []interface{}{"BR", ")"})
 		} else if "goto" == rightExpr[0][1] {
 			exprList = append(exprList, []interface{}{"BR", "("})
 			exprList = append(exprList, makeOperationBinary(rightExpr)...)
 			exprList = append(exprList, []interface{}{"BR", ")"})
 		} else {
-			_, infoListList, _ = Parse(rightExpr, variables, usersStack, showTree, toTranspile, toPrimitive,
+			_, infoListList, _, err = Parse(rightExpr, variables, usersStack, showTree, toTranspile, toPrimitive,
 				primitiveDest, transpileDest)
+			if nil != err {
+				return treeStructureList, infoListList, usersStack, err
+			}
 			infoList := infoListList[0]
 			_, variables, usersStack = ExecuteTree(infoList, variables, usersStack, toTranspile, toPrimitive,
 				primitiveDest, transpileDest)
@@ -714,8 +748,12 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 				// меняем print под стандартную бинарную операцию
 				i = 0
 				if "print" == fmt.Sprintf("%v", exprList[i][1]) {
-					exprList = makePrintBinary(exprList, variables, usersStack, showTree, toTranspile, toPrimitive,
+					exprList, err = makePrintBinary(exprList, variables, usersStack, showTree, toTranspile, toPrimitive,
 						primitiveDest, transpileDest)
+					if nil != err {
+						return treeStructureList, infoListList, usersStack, err
+					}
+
 					i += 7
 				} else if "input" == fmt.Sprintf("%v", exprList[i][1]) {
 					exprList = makeOperationBinary(exprList)
@@ -784,7 +822,11 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 
 			}
 
-			treeStructure, infoList = codeTree(exprList, "", nil)
+			var err error
+			treeStructure, infoList, err = codeTree(exprList, "", nil)
+			if nil != err {
+				return treeStructureList, infoListList, usersStack, err
+			}
 		} else {
 			treeStructure = "100"
 			infoList = []interface{}{fmt.Sprintf("%v", exprList[0][1])}
@@ -801,5 +843,5 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 	treeStructureList = append(treeStructureList, treeStructure)
 	infoListList = append(infoListList, infoList)
 
-	return treeStructureList, infoListList, usersStack
+	return treeStructureList, infoListList, usersStack, nil
 }

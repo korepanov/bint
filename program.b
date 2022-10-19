@@ -6,7 +6,8 @@ bool func1(){
 	r = "NOT";
 	bool p;
 	p = ("NOT" == r);
-	return (NOT(true));
+	return (NOT((NOT(True))OR(NOT(False))));
+};
 
 void main(){
 	bool t;

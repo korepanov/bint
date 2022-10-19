@@ -74,7 +74,7 @@ func getExprEnd(command string, startPos int) int {
 	panic(errors.New("invalid brace number"))
 }
 
-func sysGetExprType(command string, variables [][][]interface{}) string {
+func sysGetExprType(command string, variables [][][]interface{}) (string, error) {
 	var exprList [][]interface{}
 	var err error
 
@@ -92,7 +92,10 @@ func sysGetExprType(command string, variables [][][]interface{}) string {
 
 	checkVars(exprList, allVariables)
 
-	_, infoListList, _ := parser.Parse(exprList, allVariables, nil, false, false, false, nil, nil)
+	_, infoListList, _, err := parser.Parse(exprList, allVariables, nil, false, false, false, nil, nil)
+	if nil != err {
+		return "", err
+	}
 
 	var res []interface{}
 
@@ -102,26 +105,29 @@ func sysGetExprType(command string, variables [][][]interface{}) string {
 		newVariable := EachVariable(allVariables)
 		for v := newVariable(); "end" != v[0]; v = newVariable() {
 			if fmt.Sprintf("%v", res[0]) == fmt.Sprintf("%v", v[1]) {
-				return fmt.Sprintf("%v", v[0])
+				return fmt.Sprintf("%v", v[0]), nil
 			}
 		}
 	} else {
 		res, _, _ = executor.ExecuteTree(infoListList[0], allVariables, nil, false, false, nil, nil)
 	}
 
-	return WhatsType(fmt.Sprintf("%v", res[0]))
+	return WhatsType(fmt.Sprintf("%v", res[0])), nil
 }
 
 func getExprType(command string, variables [][][]interface{}) (string, error) {
 	c1 := make(chan string, 1)
+	e1 := make(chan error, 1)
 	go func() {
-		text := sysGetExprType(command, variables)
+		text, err := sysGetExprType(command, variables)
 		c1 <- text
+		e1 <- err
 	}()
 
 	select {
 	case res := <-c1:
-		return res, nil
+		err := <-e1
+		return res, err
 	case <-time.After(time.Second):
 		return ``, errors.New("unresolved command")
 	}

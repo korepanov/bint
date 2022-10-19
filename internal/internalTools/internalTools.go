@@ -523,16 +523,22 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			wasGetCommandCounterByMark = false
 
 			if options.InterpPrimitive != sysMod && options.ExecEncrypt != sysMod && 0 != exprList[0][1] { // выражение содержит команды
-				_, infoListList, systemStack = parser.Parse(exprList, variables, systemStack, options.HideTree,
+				_, infoListList, systemStack, err = parser.Parse(exprList, variables, systemStack, options.HideTree,
 					options.Transpile == sysMod, options.Primitive == sysMod, primitiveDest, transpileDest)
+				if nil != err {
+					panic(err)
+				}
 			} else if options.InterpPrimitive != sysMod && options.ExecEncrypt != sysMod && 0 == exprList[0][1] {
 				continue
 			} else if options.InterpPrimitive == sysMod || options.ExecEncrypt == sysMod {
 				if isBasmStyle {
 					exprList, variables, err = LexicalAnalyze(inputedCode,
 						variables, options.Transpile == sysMod, transpileDest, options.Primitive == sysMod, primitiveDest)
-					_, infoListList, systemStack = parser.Parse(exprList, variables, systemStack, options.HideTree,
+					_, infoListList, systemStack, err = parser.Parse(exprList, variables, systemStack, options.HideTree,
 						options.Transpile == sysMod, options.Primitive == sysMod, primitiveDest, transpileDest)
+					if nil != err {
+						panic(err)
+					}
 				} else {
 					infoListList = exprList
 				}
