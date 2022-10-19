@@ -540,6 +540,9 @@ func dValidateFuncCall(command string, variables [][][]interface{}) (string, int
 		if tail[1:] == thisFuncName && "void" == funcTable[thisFuncName] {
 			return ``, status.Yes, variables
 		}
+		if tail[1:] == thisFuncName && "void" != funcTable[thisFuncName] {
+			handleError(errors.New("unused value of func " + thisFuncName))
+		}
 		return tail, status.Yes, variables
 	}
 

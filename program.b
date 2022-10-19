@@ -9,7 +9,12 @@ bool func1(){
 	return (NOT((NOT(True))OR(NOT(False))));
 };
 
+void func2(){
+	print("Hello!\n");
+};
+
 void main(){
+	func2();
 	bool t;
 	t = func1();
 	string s;
