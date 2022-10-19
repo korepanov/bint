@@ -10,6 +10,7 @@ import (
 
 func Validate(toTranslate int, filesListToExecute []string, rootSource string,
 	rootDest string, keyDest string, sysMode int, benvMode bool) {
+
 	defer func() {
 		if r := recover(); nil != r {
 			fmt.Println("ERROR in " + FileToExecute + " at near line " + fmt.Sprintf("%v", LineCounter))
@@ -25,11 +26,6 @@ func Validate(toTranslate int, filesListToExecute []string, rootSource string,
 		err = StaticValidate(rootSource)
 		if nil != err {
 			panic(err)
-			/*fmt.Println("ERROR in " + rootSource + " at near line " +
-				fmt.Sprintf("%v", serviceTools.LineCounter))
-			fmt.Println(serviceTools.CommandToExecute)
-			fmt.Println(err)
-			os.Exit(1)*/
 		}
 		if options.UserTranslate == toTranslate || (options.Internal == toTranslate && options.UserTranslate == sysMode) {
 			Start(options.UserValidate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)

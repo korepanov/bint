@@ -255,6 +255,7 @@ func handleError(newError error) {
 	var chunk string
 
 	newChunk = EachChunk(f)
+	LineCounter = 1
 
 	for counter := 0; counter < sourceCommandCounter; counter++ {
 		chunk, err = newChunk()

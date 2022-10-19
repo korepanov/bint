@@ -11,7 +11,7 @@ import (
 	"unicode"
 )
 
-var LineCounter = 0
+var LineCounter int
 var CommandToExecute string
 
 func IsValidString(s string) bool {
@@ -510,6 +510,15 @@ func CodeInput(expr string, lineIncrement bool) string {
 	var stringInside string
 
 	var i int
+
+	if lineIncrement {
+		if 0 == strings.Count(expr, "\n") {
+			LineCounter++
+		} else {
+			LineCounter += strings.Count(expr, "\n")
+		}
+	}
+
 	// комментарии в одну строку
 	reg, err := regexp.Compile(`^//.*`)
 	if nil != err {
@@ -543,13 +552,6 @@ func CodeInput(expr string, lineIncrement bool) string {
 		}
 	}
 
-	if lineIncrement {
-		if 0 == strings.Count(expr, "\n") {
-			LineCounter++
-		} else {
-			LineCounter += strings.Count(expr, "\n")
-		}
-	}
 	expr = strings.Replace(expr, " ", "", -1)
 	expr = strings.Replace(expr, "\t", "", -1)
 	expr = strings.Replace(expr, "\n", "", -1)
