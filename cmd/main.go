@@ -8,7 +8,7 @@ import (
 
 func main() {
 	// эти опции можно менять для системной отладки
-	sysMode := options.ExecBasm
+	sysMode := options.UserTranslate
 	benvMode := options.ExecBenv
 	var filesListToExecute []string
 	toTranslate, rootSource, rootDest, keyDest, err := ParseArgs()

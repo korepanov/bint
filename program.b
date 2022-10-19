@@ -6,8 +6,7 @@ bool func1(){
 	r = "NOT";
 	bool p;
 	p = ("NOT" == r);
-	return (NOT((NOT(NOT(((a < b)XOR(b < a))AND(False))))XOR(NOT(4 < 5))));	
-};
+	return (NOT(true));
 
 void main(){
 	bool t;
