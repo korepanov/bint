@@ -659,7 +659,6 @@ func validateElse(command string) (tail string, stat int, err error) {
 
 func validateImport(command string) (tail string, stat int, err error) {
 	tail, stat = check(`(?:#importval)`, command)
-
 	return tail, stat, nil
 }
 
@@ -1124,7 +1123,7 @@ func validateCommand(command string) error {
 	return errors.New("unresolved command")
 }
 
-func StaticValidate(rootSource string) error {
+func StaticValidate(rootSource string) (string, error) {
 	f, err := os.Open(rootSource)
 
 	if nil != err {
@@ -1142,9 +1141,30 @@ func StaticValidate(rootSource string) error {
 		inputedCode := CodeInput(chunk, true)
 
 		err = validateCommand(inputedCode)
-
 		if nil != err {
-			return err
+			return rootSource, err
+		}
+
+		for len(inputedCode) > 7 && "#import" == inputedCode[0:7] {
+			bufLineCounter := LineCounter
+			bufCommandToExecute := CommandToExecute
+			var bufClosureHistory []brace
+			for _, el := range closureHistory {
+				bufClosureHistory = append(bufClosureHistory, el)
+			}
+			closureHistory = nil
+			name := inputedCode[8 : strings.Index(inputedCode[8:], "\"")+8]
+			name, err = StaticValidate(name)
+			if nil != err {
+				return name, err
+			}
+			LineCounter = bufLineCounter
+			CommandToExecute = bufCommandToExecute
+			closureHistory = nil
+			for _, el := range bufClosureHistory {
+				closureHistory = append(closureHistory, el)
+			}
+			inputedCode = inputedCode[strings.Index(inputedCode[8:], "\"")+9:]
 		}
 	}
 
@@ -1152,7 +1172,7 @@ func StaticValidate(rootSource string) error {
 		LineCounter = closureHistory[len(closureHistory)-1].line
 		CommandToExecute = closureHistory[len(closureHistory)-1].command
 
-		return errors.New(`'}' is missing`)
+		return rootSource, errors.New(`'}' is missing`)
 	}
 	LineCounter = 0
 
@@ -1161,5 +1181,5 @@ func StaticValidate(rootSource string) error {
 		panic(err)
 	}
 
-	return nil
+	return rootSource, nil
 }

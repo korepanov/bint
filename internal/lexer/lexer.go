@@ -171,7 +171,7 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool,
 			res = append(res, []interface{}{"BR", ")"})
 		} else if len(expr) > i && ":" == string(expr[i]) {
 			res = append(res, []interface{}{"OP", ":"})
-		} else if len(expr) > i+4 && "True" == expr[i:i+4] {
+		} else if len(expr) >= i+4 && "True" == expr[i:i+4] {
 			// крайнее правое значение - операция, которая была выполнена
 			// значение посередине - результат этой операции
 			res = append(res, []interface{}{"VAL", "True", "True"})

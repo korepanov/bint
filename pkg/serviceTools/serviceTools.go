@@ -282,7 +282,7 @@ func EachChunk(file *os.File) func() (string, error) {
 		}
 
 		if "" == strings.TrimSpace(buffer) {
-			buffer = part
+			buffer = part + buffer
 			chunk = make([]byte, chunkSize)
 			_, err := file.Read(chunk)
 
@@ -512,11 +512,7 @@ func CodeInput(expr string, lineIncrement bool) string {
 	var i int
 
 	if lineIncrement {
-		if 0 == strings.Count(expr, "\n") {
-			LineCounter++
-		} else {
-			LineCounter += strings.Count(expr, "\n")
-		}
+		LineCounter += strings.Count(expr, "\n")
 	}
 
 	// комментарии в одну строку

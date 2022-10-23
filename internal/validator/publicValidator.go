@@ -21,10 +21,14 @@ func Validate(toTranslate int, filesListToExecute []string, rootSource string,
 	}()
 
 	var err error
+	var name string
+
 	if options.UserTranslate == toTranslate ||
 		(options.Internal == toTranslate && (options.Internal == sysMode || options.UserTranslate == sysMode)) {
-		err = StaticValidate(rootSource)
+		name, err = StaticValidate(rootSource)
+
 		if nil != err {
+			FileToExecute = name
 			panic(err)
 		}
 		if options.UserTranslate == toTranslate || (options.Internal == toTranslate && options.UserTranslate == sysMode) {

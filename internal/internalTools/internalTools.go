@@ -18,10 +18,10 @@ import (
 	"strings"
 )
 
-var help = flag.Bool("help", false, "Show help")
+var help = flag.Bool("help", false, "show help")
 var iFlag = "-i"
 var oFlag = "-o"
-var sFlag = flag.Bool("s", false, "Use system options (for system debug only)")
+var sFlag = flag.Bool("s", false, "use system options (for system debug only)")
 var eFlag = "-e"
 var piFlag = "-pi"
 var poFlag = "-po"
@@ -30,7 +30,8 @@ var ciFlag = "-ci"
 var coFlag = "-co"
 var ceFlag = "-ce"
 var kFlag = "-k"
-var rFlag = flag.Bool("r", false, "Translation from B to Basm without debug information")
+
+var rFlag = flag.Bool("r", false, "translation from b to basm without debug information")
 
 var FileToExecute string
 
@@ -40,16 +41,16 @@ func ParseArgs() (int, string, string, string, error) {
 	var rootDest string
 	var keyDest string
 
-	flag.StringVar(&iFlag, "i", "", "-i input.b")
-	flag.StringVar(&oFlag, "o", "", "-o output.basm")
-	flag.StringVar(&eFlag, "e", "", "-e program.basm")
-	flag.StringVar(&piFlag, "pi", "", "-pi input.basm")
-	flag.StringVar(&poFlag, "po", "", "-po output.bend")
-	flag.StringVar(&peFlag, "pe", "", "-pe program.bend")
-	flag.StringVar(&ciFlag, "ci", "", "-ci input.bend")
-	flag.StringVar(&coFlag, "co", "", "-co output.benc")
-	flag.StringVar(&ceFlag, "ce", "", "-ce program.benc")
-	flag.StringVar(&kFlag, "k", "", "-k key.k")
+	flag.StringVar(&iFlag, "i", "", "file to translate from b to basm")
+	flag.StringVar(&oFlag, "o", "", "output file translating b to basm")
+	flag.StringVar(&eFlag, "e", "", "execute basm file")
+	flag.StringVar(&piFlag, "pi", "", "file to translate from basm to bend")
+	flag.StringVar(&poFlag, "po", "", "output file translating basm to bend")
+	flag.StringVar(&peFlag, "pe", "", "execute bend file")
+	flag.StringVar(&ciFlag, "ci", "", "file to translate from bend to benc (need to specify key file!)")
+	flag.StringVar(&coFlag, "co", "", "output file translating bend to benc (need to specify key file!)")
+	flag.StringVar(&ceFlag, "ce", "", "execute benc file (need to specify key file!)")
+	flag.StringVar(&kFlag, "k", "", "specify key file")
 	flag.Parse()
 
 	if *help {
@@ -161,8 +162,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/print_format.basm"}
 			}
 		} else if options.Transpile == toTranslate {
-			rootSource = "benv/build/import.basm"
-			rootDest = "benv/build/main.go"
+			rootSource = "benv/internal/build/import.basm"
+			rootDest = "benv/internal/build/main.go"
 
 			source, err := os.Open("benv/build/pattern.p")
 			if nil != err {
@@ -190,7 +191,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 		} else if options.ExecBasm == toTranslate {
 			//rootSource = "program.b"
 			//rootDest = "benv/dowhile.basm"
-			rootDest = "program.basm"
+			rootDest = "benv/prog.basm"
 			filesListToExecute = []string{rootDest}
 		} else if options.Primitive == toTranslate {
 			rootSource = "bendBenv/func.basm"
@@ -229,8 +230,20 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 		}
 
 	} else if options.UserTranslate == toTranslate {
-		filesListToExecute = []string{"benv/build/import", "benv/build/prep_func",
-			"benv/build/long_function", "benv/build/func"}
+		filesListToExecute = []string{"benv/build/import",
+			"benv/build/prep_func",
+			"benv/build/prep_for",
+			"benv/build/prep_dowhile",
+			"benv/build/dowhile",
+			"benv/build/prep_while",
+			"benv/build/prep_if",
+			"benv/build/while",
+			"benv/build/for",
+			"benv/build/if",
+			"benv/build/long_function",
+			"benv/build/recurs",
+			"benv/build/func",
+			"benv/build/print_format"}
 	} else if options.ExecBasm == toTranslate {
 		filesListToExecute = []string{rootDest}
 	} else if options.Primitive == toTranslate {

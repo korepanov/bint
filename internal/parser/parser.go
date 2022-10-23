@@ -243,6 +243,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 	var err error
 	var treeStructureList []string
 	var infoListList [][]interface{}
+	var sizeError error
 
 	exprList := exprListInput
 
@@ -459,7 +460,13 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 					exprList = Pop(exprList, i-1) // выражение
 				}
 				if !toTranspile {
-					exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" + string([]rune(varVal)[leftNumber.(int):rightNumber.(int)]) + "\""})
+					if rightNumber.(int) > leftNumber.(int) && rightNumber.(int) < len(varVal) {
+						exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" +
+							string([]rune(varVal)[leftNumber.(int):rightNumber.(int)]) + "\""})
+					} else {
+						exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"\""})
+						sizeError = errors.New("slice bounds out of range")
+					}
 				} else {
 					exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" + "getVar(\"" + varName + "\").(string)[" +
 						fmt.Sprintf("%v", leftNumber) + ":" + fmt.Sprintf("%v", rightNumber) + "]\""})
@@ -496,7 +503,12 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 					exprList = Pop(exprList, i-1)
 				}
 				if !toTranspile {
-					exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" + string([]rune(varVal)[number.(int)]) + "\""})
+					if number.(int) < len(varVal) {
+						exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" + string([]rune(varVal)[number.(int)]) + "\""})
+					} else {
+						exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"\""})
+						sizeError = errors.New("slice bounds out of range")
+					}
 				} else {
 					exprList = Insert(exprList, i-1, []interface{}{"VAL", "string(getVar(\"" + varName + "\").(string)[" +
 						fmt.Sprintf("%v", number) + "])"})
@@ -843,5 +855,5 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 	treeStructureList = append(treeStructureList, treeStructure)
 	infoListList = append(infoListList, infoList)
 
-	return treeStructureList, infoListList, usersStack, nil
+	return treeStructureList, infoListList, usersStack, sizeError
 }

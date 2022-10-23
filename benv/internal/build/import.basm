@@ -154,7 +154,7 @@ imports.pop(import);
 UNSET_SOURCE();
 SET_SOURCE(import);
 [print(""),(("debug"==translate_mode)OR("validate"==translate_mode)),goto(#_cond4_end)];
-file=("$file$ "+import);
+file=(("$file "+import) + "$");
 send_command(file);
 #_cond4_end:print("");
 print("");
