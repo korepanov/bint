@@ -30,6 +30,7 @@ var ciFlag = "-ci"
 var coFlag = "-co"
 var ceFlag = "-ce"
 var kFlag = "-k"
+var vFlag = flag.Bool("version", false, "print version")
 
 var rFlag = flag.Bool("r", false, "translation from b to basm without debug information")
 
@@ -58,37 +59,41 @@ func ParseArgs() (int, string, string, string, error) {
 		err := errors.New("help")
 		return toTranslate, rootSource, rootDest, keyDest, err
 	} else if "" == iFlag && "" == oFlag && "" != eFlag && "" == piFlag && "" == poFlag && "" == peFlag &&
-		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag {
+		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && !*vFlag {
 		toTranslate = options.ExecBasm
 		rootDest = eFlag
 	} else if "" != iFlag && "" != oFlag && "" == eFlag && "" == piFlag && "" == poFlag && "" == peFlag &&
-		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag {
+		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && !*vFlag {
 		toTranslate = options.UserTranslate
 		rootSource = iFlag
 		rootDest = oFlag
 	} else if "" != piFlag && "" != poFlag && "" == iFlag && "" == oFlag && "" == eFlag && "" == peFlag &&
-		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag {
+		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && !*vFlag {
 		toTranslate = options.Primitive
 		rootSource = piFlag
 		rootDest = poFlag
 	} else if "" == piFlag && "" == poFlag && "" == iFlag && "" == oFlag && "" == eFlag && "" != peFlag &&
-		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag {
+		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && !*vFlag {
 		toTranslate = options.InterpPrimitive
 		rootDest = peFlag
 	} else if "" == piFlag && "" == poFlag && "" == iFlag && "" == oFlag && "" == eFlag && "" == peFlag &&
-		"" != ciFlag && "" != coFlag && "" == ceFlag && "" != kFlag {
+		"" != ciFlag && "" != coFlag && "" == ceFlag && "" != kFlag && !*sFlag && !*vFlag {
 		toTranslate = options.Encrypt
 		rootSource = ciFlag
 		rootDest = coFlag
 		keyDest = kFlag
 	} else if "" == piFlag && "" == poFlag && "" == iFlag && "" == oFlag && "" == eFlag && "" == peFlag &&
-		"" == ciFlag && "" == coFlag && "" != ceFlag && "" != kFlag {
+		"" == ciFlag && "" == coFlag && "" != ceFlag && "" != kFlag && !*sFlag && !*vFlag {
 		toTranslate = options.ExecEncrypt
 		rootDest = ceFlag
 		keyDest = kFlag
 	} else if "" == iFlag && "" == oFlag && "" == eFlag && "" == piFlag && "" == poFlag && "" == peFlag &&
-		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && *sFlag {
+		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && *sFlag && !*vFlag {
 		toTranslate = options.Internal
+	} else if "" == iFlag && "" == oFlag && "" == eFlag && "" == piFlag && "" == poFlag && "" == peFlag &&
+		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && *vFlag {
+		fmt.Println("bint version 2.2")
+		os.Exit(0)
 	} else {
 		flag.Usage()
 		err := errors.New("invalid arguments")
