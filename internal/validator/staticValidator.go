@@ -1120,6 +1120,10 @@ func validateCommand(command string) error {
 		return validateCommand(tail)
 	}
 
+	if "" == command {
+		return nil
+	}
+
 	return errors.New("unresolved command")
 }
 

@@ -1,7 +1,8 @@
-#import "stdlib/core.b"
-
 void main(){
-	println("Hello world!");
+	string s;
+	//print("smth");
+	//a = (a + 2); 
+	print("Hello world!!\n"); 
 };
 
 main();
