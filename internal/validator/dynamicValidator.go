@@ -786,15 +786,18 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 	}
 
 	command, _ = dValidateString(command)
-	command, variables, err = dValidateStr(command, variables)
-	if nil != err {
-		return variables, err
-	}
+
 	var tail string
 	var stat int
 
 	if toBlock {
-		tail, stat, err = validateCD(command)
+		tail, stat, variables, err = dValidateFuncDefinition(command, variables)
+
+		if nil != err {
+			return variables, err
+		}
+		return variables, nil
+		/*tail, stat, err = validateCD(command)
 
 		if nil != err {
 			return variables, err
@@ -802,7 +805,12 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 
 		if status.Yes == stat {
 			return variables, nil
-		}
+		}*/
+	}
+
+	command, variables, err = dValidateStr(command, variables)
+	if nil != err {
+		return variables, err
 	}
 
 	command, variables, err = dValidateFor(command, variables)
@@ -986,13 +994,6 @@ func DynamicValidate(validatingFile string, rootSource string) {
 	fileName = validatingFile
 	funcTable = make(map[string]string)
 
-	defer func() {
-		if r := recover(); nil != r {
-			handleError(errors.New(fmt.Sprintf("%v", r)))
-			os.Exit(1)
-		}
-	}()
-
 	var variables [][][]interface{}
 	variables = append(variables, [][]interface{}{})
 	var err error
@@ -1024,7 +1025,7 @@ func DynamicValidate(validatingFile string, rootSource string) {
 
 		if filter(inputedCode) {
 			variables, err = dynamicValidateCommand(inputedCode, variables)
-			if (nil != err && !toBlock) || (toBlock && nil != err && "unresolved command" != err.Error()) {
+			if nil != err {
 				handleError(err)
 			}
 		}

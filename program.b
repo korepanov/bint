@@ -1,6 +1,7 @@
+#import "stdlib/core.b"
+
 void main(){
-	//print("smth");
-	print("Hello world!\n");
+	println("Hello world!");
 };
 
 main();
