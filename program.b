@@ -1,8 +1,10 @@
 void main(){
-	//print("smth2");
-	string s;
 	//print("smth");
-	//a = (a + 2); 
+	string s;
+	/*
+		Большой
+		комментарий
+	*/
 	print("Hello world!!\n"); 
 };
 
