@@ -17,6 +17,7 @@ var iFlag = "-i"
 var oFlag = "-o"
 var systemStack = []interface{}{"end"}
 var vars = make(map[string][]interface{})
+var commentBegin bool
 
 func ValueFoldInterface(exprList interface{}) interface{} {
 	if "[]interface {}" != fmt.Sprintf("%T", exprList) {
@@ -278,6 +279,87 @@ func EachChunk(file *os.File) func() string {
 	}
 }
 
+func replace(re *regexp.Regexp, src string, repl string) string {
+	loc := re.FindIndex([]byte(src))
+
+	res := src
+
+	if nil != loc {
+		res = src[:loc[0]] + repl + src[loc[1]:]
+	}
+
+	return res
+}
+
+func cutComment(expr string) string {
+	re, err := regexp.Compile(`"(\\.|[^"])*"`)
+	if nil != err {
+		panic(err)
+	}
+
+	var strs []string
+
+	loc := re.FindIndex([]byte(expr))
+
+	var i int
+	res := expr
+
+	for nil != loc {
+		strs = append(strs, res[loc[0]:loc[1]])
+		res = replace(re, res, "$"+fmt.Sprintf("%v", i))
+		loc = re.FindIndex([]byte(res))
+		i++
+	}
+
+	re, err = regexp.Compile(`(?s).*\*/`)
+
+	if nil != err {
+		panic(err)
+	}
+
+	if commentBegin {
+		if nil == re.FindIndex([]byte(res)) {
+			return ""
+		} else {
+			res = string(re.ReplaceAll([]byte(res), []byte("")))
+			commentBegin = false
+		}
+	}
+
+	re, err = regexp.Compile(`//.*`)
+	if nil != err {
+		panic(err)
+	}
+
+	res = string(re.ReplaceAll([]byte(res), []byte("")))
+
+	re, err = regexp.Compile(`/\*(?s).*\*/`)
+	if nil != err {
+		panic(err)
+	}
+	res = string(re.ReplaceAll([]byte(res), []byte("")))
+
+	re, err = regexp.Compile(`/\*(?s).*`)
+	if nil != err {
+		panic(err)
+	}
+	if nil != re.FindIndex([]byte(res)) {
+		commentBegin = true
+	}
+
+	res = string(re.ReplaceAll([]byte(res), []byte("")))
+	
+	if len(strings.TrimSpace(res)) > 0 && "{" == string(strings.TrimSpace(res)[len(strings.TrimSpace(res)) - 1]){
+		res = res + `print("")`
+	}
+
+	for i = 0; i < len(strs); i++ {
+		res = strings.Replace(res, "$"+fmt.Sprintf("%v", i), strs[i], 1)
+	}
+
+	return res
+}
+
 func CodeInput(expr string, lineIncrement bool) string {
 	var stringsInside []string
 	var poses []int
@@ -286,21 +368,12 @@ func CodeInput(expr string, lineIncrement bool) string {
 	var stringInside string
 
 	var i int
-	// комментарии в одну строку
-	reg, err := regexp.Compile(`^//.*`)
-	if nil != err{
-		panic(err)
+
+	expr = cutComment(expr)
+	
+	if "" == strings.TrimSpace(expr) {
+		return `print("")`
 	}
-	expr = string(reg.ReplaceAll([]byte(strings.TrimSpace(expr)), []byte("")))
-
-	// комментарии в несколько строк
-	reg, err = regexp.Compile(`^/(?s).*.*/`)
-	if nil != err{
-		panic(err)
-	}
-
-	expr = string(reg.ReplaceAll([]byte(strings.TrimSpace(expr)), []byte("")))
-
 	//запоминаем стоки, чтобы оставить в них пробелы
 	for i = 0; i < len([]rune(expr)); i++ {
 		if startFlag {

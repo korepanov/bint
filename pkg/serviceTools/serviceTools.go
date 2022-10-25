@@ -573,6 +573,10 @@ func cutComment(expr string) string {
 
 	res = string(re.ReplaceAll([]byte(res), []byte("")))
 
+	if len(strings.TrimSpace(res)) > 0 && "{" == string(strings.TrimSpace(res)[len(strings.TrimSpace(res))-1]) {
+		res = res + `print("")`
+	}
+
 	for i = 0; i < len(strs); i++ {
 		res = strings.Replace(res, "$"+fmt.Sprintf("%v", i), strs[i], 1)
 	}
