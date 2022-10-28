@@ -37,7 +37,6 @@ void init(){
 };
 
 void finish(){
-	UNSET_SOURCE();
 	UNSET_DEST();
 };
 
@@ -75,7 +74,7 @@ stack get_imports(){
 	string command;
 	int command_len;
 	int import_end;
-	
+
 	next_command(command);
 	#get_imports_s:
 	[goto(#get_imports_e), ("end" == command), print("")];
@@ -97,6 +96,7 @@ stack get_imports(){
 void file_union(string file){
 	string command;
 	stack imports;
+	int number;
 	string import;
 	string f;
 
@@ -112,11 +112,28 @@ void file_union(string file){
 		while (NOT("end" == command)){
 			send_command(command);
 			next_command(command);		
-		};	
+		};
+		UNSET_SOURCE();	
 	}else{
 		UNSET_SOURCE();
 		SET_SOURCE(import);
-		file_union(import);
+		do{
+			file_union(import);
+			SET_SOURCE(import);
+
+			next_command(command);
+
+			while (NOT("end" == command)){
+				number = index(command, "#import");
+				if (NOT(0 == number)){
+					send_command(command);
+				};
+				next_command(command);		
+			};
+			
+			UNSET_SOURCE();
+			imports.pop(import);
+		}while(NOT("end" == import));
 	};
 	
 };
