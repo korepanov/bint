@@ -8,7 +8,6 @@ void init(){
 	int pos; 
 
 	get_root_source(root_source);
-	
 	pos = len(root_source);
 	pos = (pos - 1);
 	symbol = root_source[pos];
@@ -46,7 +45,6 @@ int find_import_end(string command){
 	int res;
 
 	command_len = len(command);	
-	
 	command = command[8:command_len];
 	res = index(command, "\"");
 	res = (res + 8);	
@@ -94,36 +92,55 @@ stack get_imports(){
 	return reverse(res);	
 };
 
-void file_union(string file){
+void file_union(){
 	string command;
 	stack imports;
 	string import;
-	string f;
 
 	imports = get_imports();
 	imports.pop(import);
-	if ("end" == import){
-		if (("debug" == translate_mode) OR ("validate" == translate_mode)){
-			f = ("$file$ " + file);
-			send_command(f);
-		};
-		next_command(command);
-		
-		while (NOT("end" == command)){
-			send_command(command);
-			next_command(command);		
-		};	
-	}else{
-		UNSET_SOURCE();
-		SET_SOURCE(import);
-		file_union(import);
+	#file_union_s:
+	[goto(#file_union_e), ("end" == import), print("")];
+	UNSET_SOURCE();
+	SET_SOURCE(import);
+
+	if (("debug" == translate_mode) OR ("validate" == translate_mode)){
+		file = ("$file$ " + import);
+		send_command(file);
 	};
-	
+
+	next_command(command);
+	#import_s:
+	[goto(#import_e), ("end" == command), print("")];
+	send_command(command);
+	next_command(command);
+	goto(#import_s);
+	#import_e:
+	imports.pop(import);	
+	goto(#file_union_s);
+	#file_union_e:
+	SET_SOURCE(root_source);
+
+	if (("debug" == translate_mode) OR ("validate" == translate_mode)){
+		file = (("$file " + root_source) + "$");
+		send_command(file);
+	};
+
+	next_command(command);
+	send_command(first_command);
+	next_command(command);
+	#final_s:
+	[goto(#final_e), ("end" == command), print("")];
+	send_command(command);
+	next_command(command);
+	goto(#final_s);
+	#final_e:
+	print("");
 };
 
 void main(){
 	init();
-	file_union(root_source);	
+	file_union();	
 	finish();
 };
 

@@ -1,11 +1,13 @@
+#import "program2.b"
+
 void main(){
-	//print("smth");
-	string s;
-	/*
-		Большой
-		комментарий
-	*/
-	print("Hello world!!\n"); 
+	print("Hello world!!\n");
+	int a;
+	a = calc(1, 2);
+	string buf;
+	buf = str(a);
+	print(a);
+	print("\n"); 
 };
 
 main();
