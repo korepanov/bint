@@ -93,7 +93,7 @@ stack get_imports(){
 	return reverse(res);	
 };
 
-void file_union(string file){
+void import_union(string file){
 	string command;
 	stack imports;
 	string import;
@@ -109,7 +109,7 @@ void file_union(string file){
 	}else{
 		UNSET_SOURCE();
 		SET_SOURCE(import);
-		file_union(import);
+		import_union(import);
 		
 		if (("debug" == translate_mode) OR ("validate" == translate_mode)){
 			f = ("$file$ " + import);
@@ -135,9 +135,33 @@ void file_union(string file){
 	
 };
 
+void file_union(string file){
+	string command; 
+	int number; 
+	int import_end;
+	int command_len; 
+
+	import_union(file);
+	SET_SOURCE(file);
+	next_command(command);
+	while (NOT("end" == command)){
+		number = index(command, "#import");
+		while (0 == number){
+			import_end = find_import_end(command);
+			import_end = (import_end + 1);
+			command_len = len(command);
+			command = command[import_end:command_len];
+			number = index(command, "#import");
+		};
+		send_command(command);
+		next_command(command);
+	}; 
+	UNSET_SOURCE();	
+};
+
 void main(){
 	init();
-	file_union(root_source, False);	
+	file_union(root_source);
 	finish();
 };
 
