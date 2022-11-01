@@ -104,6 +104,7 @@ void import_union(string file){
 
 	imports = get_imports();
 	imports.pop(import);
+	
 	if ("end" == import){
 		UNSET_SOURCE();
 	}else{
@@ -161,6 +162,16 @@ void file_union(string file){
 
 void main(){
 	init();
+	stack imports;
+	string import;
+	imports = get_imports();
+	
+	do{
+		imports.pop(import);
+		print(import);
+		print("\n");
+	}while (NOT("end" == import));
+
 	file_union(root_source);
 	finish();
 };
