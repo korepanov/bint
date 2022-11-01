@@ -9,7 +9,7 @@ void main(){
 	buf = str(a);
 	print(buf);
 	print("\n"); 
-	a = sum(3, 4);
+	a = sum2(3, 4);
 	buf = str(a);
 	print(buf);
 	print("\n");

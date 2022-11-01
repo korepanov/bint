@@ -90,7 +90,8 @@ stack get_imports(){
 	#get_imports_e:
 	RESET_SOURCE();
 	first_command = command;
-	return reverse(res);	
+	res = reverse(res);	
+	return res; 
 };
 
 void import_union(string file){
@@ -104,35 +105,41 @@ void import_union(string file){
 
 	imports = get_imports();
 	imports.pop(import);
-	
-	if ("end" == import){
-		UNSET_SOURCE();
-	}else{
-		UNSET_SOURCE();
-		SET_SOURCE(import);
-		import_union(import);
-		
-		if (("debug" == translate_mode) OR ("validate" == translate_mode)){
-			f = ("$file$ " + import);
-			send_command(f);
-		};
-		SET_SOURCE(import);
-		next_command(command);
-		
-		while (NOT("end" == command)){
-			number = index(command, "#import");
-			while (0 == number){
-				import_end = find_import_end(command);
-				import_end = (import_end + 1);
-				command_len = len(command);
-				command = command[import_end:command_len];
-				number = index(command, "#import");
+
+	do{
+		if ("end" == import){
+			UNSET_SOURCE();
+		}else{
+			UNSET_SOURCE();
+			SET_SOURCE(import);
+			import_union(import);
+			
+			if (("debug" == translate_mode) OR ("validate" == translate_mode)){
+				f = ("$file$ " + import);
+				send_command(f);
 			};
-			send_command(command);
-			next_command(command);		
-		};	
-		UNSET_SOURCE();
-	};
+			SET_SOURCE(import);
+			next_command(command);
+			
+			while (NOT("end" == command)){
+				number = index(command, "#import");
+				while (0 == number){
+					import_end = find_import_end(command);
+					import_end = (import_end + 1);
+					command_len = len(command);
+					command = command[import_end:command_len];
+					number = index(command, "#import");
+				};
+				send_command(command);
+				next_command(command);		
+			};	
+			UNSET_SOURCE();
+		};
+		imports.pop(import);
+		if (NOT("end" == import)){
+			SET_SOURCE(import);
+		};
+	}while(NOT("end"==import));
 	
 };
 
@@ -162,16 +169,6 @@ void file_union(string file){
 
 void main(){
 	init();
-	stack imports;
-	string import;
-	imports = get_imports();
-	
-	do{
-		imports.pop(import);
-		print(import);
-		print("\n");
-	}while (NOT("end" == import));
-
 	file_union(root_source);
 	finish();
 };
