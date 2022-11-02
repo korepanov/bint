@@ -1,5 +1,4 @@
 int sum(int a, int b){
-	c = (c + 1);
 	return (a + b);
 };
 

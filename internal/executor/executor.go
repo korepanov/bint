@@ -1043,6 +1043,9 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 								panic(err)
 							}
 						} else if toTranspile && nil == transpileVar {
+							if `"` != string(RO[0].([]string)[1][0]) {
+								RO[0].([]string)[1] = `"` + RO[0].([]string)[1] + `"`
+							}
 							_, err := transpileDest.WriteString("setVar(\"" +
 								fmt.Sprintf("%v", v[1]) + "\", append(getVar(\"" +
 								fmt.Sprintf("%v", v[1]) + "\").([]interface{}), " + RO[0].([]string)[1] + "))\n")

@@ -1,3 +1,3 @@
-int sum6 (int a, int b){
+int sum8 (int a, int b){
 	return (a + b); 
 };
