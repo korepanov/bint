@@ -152,8 +152,10 @@ void file_union(string file){
 
 	import_union(file);
 	SET_SOURCE(file);
-	f = (("$file " + file) + "$");
-	send_command(f);
+	if (("debug" == translate_mode) OR ("validate" == translate_mode)){
+		f = (("$file " + file) + "$");
+		send_command(f);
+	};
 	next_command(command);
 	while (NOT("end" == command)){
 		number = index(command, "#import");
