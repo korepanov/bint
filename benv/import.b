@@ -2,6 +2,7 @@ string root_source;
 string first_command;
 string file;
 string translate_mode;
+stack gimports;
 
 void init(){
 	string symbol;
@@ -38,6 +39,24 @@ void init(){
 
 void finish(){
 	UNSET_DEST();
+};
+
+bool in_stack(stack s, string el){
+	string buf;
+	bool res;
+
+	res = False;
+	s.pop(buf);
+	#in_stack_s:
+	[goto(#in_stack_e), ("end" == buf), print("")];
+	[print(""), (el == buf), goto(#no)];
+	res = True;
+	goto(#in_stack_e);
+	#no:
+	s.pop(buf);
+	goto(#in_stack_s);	
+	#in_stack_e:
+	return res;
 };
 
 int find_import_end(string command){
@@ -105,11 +124,15 @@ void import_union(string file){
 
 	imports = get_imports();
 	imports.pop(import);
-
+	
 	do{
+		while ((in_stack(gimports, import))AND(NOT("end" == import))){
+			imports.pop(import);
+		};
 		if ("end" == import){
 			UNSET_SOURCE();
 		}else{
+			gimports.push(import);
 			UNSET_SOURCE();
 			SET_SOURCE(import);
 			import_union(import);
