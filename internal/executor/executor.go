@@ -1123,7 +1123,8 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 							}
 							breakFlag = true
 							if toTranspile {
-								_, err := transpileDest.WriteString("if len(getVar(\"" +
+								_, err := transpileDest.WriteString("if \"[]interface {}\" == fmt.Sprintf(\"%T\", getVar(\"" +
+									fmt.Sprintf("%v", v[1]) + "\")) && len(getVar(\"" +
 									fmt.Sprintf("%v", v[1]) + "\").([]interface{})) > 1{\n")
 								if nil != err {
 									panic(err)
@@ -1148,7 +1149,8 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 									panic(err)
 								}
 
-								_, err = transpileDest.WriteString("if !isEqual(\"end\", " + "getVar(\"" +
+								_, err = transpileDest.WriteString("if \"[]interface {}\" == fmt.Sprintf(\"%T\", getVar(\"" +
+									fmt.Sprintf("%v", v[1]) + "\")) && !isEqual(\"end\", " + "getVar(\"" +
 									fmt.Sprintf("%v", v[1]) + "\").([]interface{})[len(getVar(\"" + fmt.Sprintf("%v", v[1]) +
 									"\").([]interface{})) - 1]) && " + "!isEqual(\"[end]\", " + "getVar(\"" +
 									fmt.Sprintf("%v", v[1]) + "\").([]interface{})[len(getVar(\"" + fmt.Sprintf("%v", v[1]) +
