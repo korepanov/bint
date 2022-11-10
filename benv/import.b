@@ -25,15 +25,6 @@ void init(){
 	};
 
 	SET_SOURCE(root_source);
-	SET_DEST("benv/import_program.b");
-
-	if ("validate" == translate_mode){
-		send_command("$validate$");	
-	};
-
-	if ("debug" == translate_mode){
-		send_command("$debug$");	
-	};
 		
 };
 
@@ -195,10 +186,72 @@ void file_union(string file){
 	UNSET_SOURCE();	
 };
 
+void get_file_content(string file){
+	string import;
+	stack imports;
+	imports = get_imports();
+	imports.pop(import);
+	while(NOT("end"==import)){
+		print(import);
+		print("\n");
+		imports.pop(import);
+	};
+};
+
+void make_parts(string file){
+	string command;
+	stack imports;
+	string import;
+	string f;
+	int number;
+	int import_end;
+	int command_len;
+	int file_number;
+	string snumber;
+	bool got_content;
+
+	imports = get_imports();
+	imports.pop(import);
+	
+	do{
+		if ("end" == import){
+			UNSET_SOURCE();
+		}else{	
+			if (NOT(got_content)){
+				got_content = True;
+				snumber = str(number);
+				dest = (("benv/trace/import_program" + snumber) + ".b");
+				SET_DEST(dest);
+				number = (number + 1);
+				get_file_content(file);
+				UNSET_DEST();
+			};
+			UNSET_SOURCE();
+			SET_SOURCE(import);
+			
+			make_parts(import);
+			
+			SET_SOURCE(import);
+			UNSET_SOURCE();
+		};
+		imports.pop(import);
+		if (NOT("end" == import)){
+			SET_SOURCE(import);
+		};
+	}while(NOT("end"==import));
+};
+
 void main(){
 	init();
-	file_union(root_source);
-	finish();
+	
+	if ("validate" == translate_mode){
+		make_parts(root_source);
+	}else{
+		SET_DEST("benv/import_program.b");
+		file_union(root_source);
+		finish();
+	};
+	
 };
 
 main();
