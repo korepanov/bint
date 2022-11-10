@@ -74,6 +74,9 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool,
 		} else if len(expr) > i+3 && "len" == expr[i:i+3] {
 			res = append(res, []interface{}{"OP", "len"})
 			i += 2
+		} else if len(expr) > i+6 && "exists" == expr[i:i+6] {
+			res = append(res, []interface{}{"OP", "exists"})
+			i += 5
 		} else if len(expr) > i+6 && "index(" == expr[i:i+6] {
 			res = append(res, []interface{}{"OP", "index"})
 			i += 4
@@ -279,6 +282,34 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool,
 
 						if "stack" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
 							goCommand = "setVar(\"" + varName + "\", []interface{}{\"end\"})\n"
+
+							_, err = transpileDest.WriteString(goCommand)
+							if nil != err {
+								return res, variables, err
+							}
+						} else if "string" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
+							goCommand = "setVar(\"" + varName + "\", \"\")\n"
+
+							_, err = transpileDest.WriteString(goCommand)
+							if nil != err {
+								return res, variables, err
+							}
+						} else if "int" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
+							goCommand = "setVar(\"" + varName + "\", 0)\n"
+
+							_, err = transpileDest.WriteString(goCommand)
+							if nil != err {
+								return res, variables, err
+							}
+						} else if "float" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
+							goCommand = "setVar(\"" + varName + "\", 0)\n"
+
+							_, err = transpileDest.WriteString(goCommand)
+							if nil != err {
+								return res, variables, err
+							}
+						} else if "bool" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
+							goCommand = "setVar(\"" + varName + "\", false)\n"
 
 							_, err = transpileDest.WriteString(goCommand)
 							if nil != err {

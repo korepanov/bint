@@ -238,7 +238,7 @@
 	  <keyword>is_letter</keyword>
 	  <keyword>is_digit</keyword>
 	  <keyword>reg_find</keyword>
-	  <keyword>exit</keyword>
+	  <keyword>exists</keyword>
 	
       
     </context>

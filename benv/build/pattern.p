@@ -34,6 +34,15 @@ func ValueFoldInterface(exprList interface{}) interface{} {
 	return fmt.Sprintf("%v", exprList.([]interface{})[0])
 }
 
+func Exists(name string) bool {
+	if _, err := os.Stat(name); err != nil {
+		if os.IsNotExist(err) {
+			return false
+		}
+	}
+	return true
+}
+
 func defineVar(varName string){
 vars[varName] = append(vars[varName], interface{}(nil))
 }

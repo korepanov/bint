@@ -60,6 +60,11 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		return []interface{}{len([]rune(fmt.Sprintf("%v", LO[0])))}, systemStack, nil
+	} else if "exists" == OP {
+		if `"` == string(fmt.Sprintf("%v", LO[0])[0]) && `"` == string(fmt.Sprintf("%v", LO[0])[len(fmt.Sprintf("%v", LO[0]))-1]) {
+			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
+		}
+		return []interface{}{Exists(fmt.Sprintf("%v", LO[0]))}, systemStack, nil
 	} else if "AND" == OP {
 		if "bool" == WhatsType(fmt.Sprintf("%v", LO[0])) && "bool" == WhatsType(fmt.Sprintf("%v", RO[0])) {
 			return []interface{}{StrToBool(fmt.Sprintf("%v", LO[0])) && StrToBool(fmt.Sprintf("%v", RO[0]))}, systemStack, nil
@@ -922,6 +927,10 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 							}
 
 							if len(stranspileVar) > 4 && ("\"sum" == stranspileVar[0:4] || "\"len" == stranspileVar[0:4]) {
+								stranspileVar = stranspileVar[1 : len(stranspileVar)-1]
+							}
+
+							if len(stranspileVar) > 7 && ("\"Exists" == stranspileVar[0:7]) {
 								stranspileVar = stranspileVar[1 : len(stranspileVar)-1]
 							}
 

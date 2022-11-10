@@ -189,26 +189,63 @@ void file_union(string file){
 void get_file_content(string file){
 	string import;
 	stack imports;
+	string command;
+	int number;
+	
 	imports = get_imports();
 	imports.pop(import);
+	UNSET_SOURCE();
+	
 	while(NOT("end"==import)){
-		print(import);
-		print("\n");
+		SET_SOURCE(import);
+		f = (("$file " + import) + "$");
+		send_command(f);
+		next_command(command);
+		while (NOT("end" == command)){
+			number = index(command, "#import");
+			while (0 == number){
+				import_end = find_import_end(command);
+				import_end = (import_end + 1);
+				command_len = len(command);
+				command = command[import_end:command_len];
+				number = index(command, "#import");
+			};
+			send_command(command);
+			next_command(command);
+		}; 
 		imports.pop(import);
 	};
+	
+	SET_SOURCE(file);
+	f = (("$file " + file) + "$");
+	send_command(f);
+	next_command(command);
+	
+	while (NOT("end" == command)){
+		number = index(command, "#import");
+		while (0 == number){
+			import_end = find_import_end(command);
+			import_end = (import_end + 1);
+			command_len = len(command);
+			command = command[import_end:command_len];
+			number = index(command, "#import");
+		};
+		send_command(command);
+		next_command(command);
+	}; 
 };
 
-void make_parts(string file){
+void make_parts(string file, int number){
 	string command;
 	stack imports;
 	string import;
 	string f;
-	int number;
 	int import_end;
 	int command_len;
 	int file_number;
 	string snumber;
 	bool got_content;
+	string dest; 
 
 	imports = get_imports();
 	imports.pop(import);
@@ -220,7 +257,7 @@ void make_parts(string file){
 			if (NOT(got_content)){
 				got_content = True;
 				snumber = str(number);
-				dest = (("benv/trace/import_program" + snumber) + ".b");
+				dest = (("benv/import/import_program" + snumber) + ".b");
 				SET_DEST(dest);
 				number = (number + 1);
 				get_file_content(file);
@@ -229,7 +266,7 @@ void make_parts(string file){
 			UNSET_SOURCE();
 			SET_SOURCE(import);
 			
-			make_parts(import);
+			make_parts(import, number);
 			
 			SET_SOURCE(import);
 			UNSET_SOURCE();
@@ -241,11 +278,32 @@ void make_parts(string file){
 	}while(NOT("end"==import));
 };
 
+void del_files(){
+	int number;
+	string snumber;
+	bool e;
+	string dest; 
+	
+	snumber = str(number);
+	dest = (("benv/import/import_program" + snumber) + ".b");
+	e = exists(dest);
+	
+	while(e){
+		DEL_DEST(dest);
+		number = (number + 1);
+		snumber = str(number);
+		dest = (("benv/import/import_program" + snumber) + ".b");
+		e = exists(dest);
+	};
+	
+};
+
 void main(){
 	init();
+	del_files();
 	
 	if ("validate" == translate_mode){
-		make_parts(root_source);
+		make_parts(root_source, 0);
 	}else{
 		SET_DEST("benv/import_program.b");
 		file_union(root_source);

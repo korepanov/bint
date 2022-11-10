@@ -167,8 +167,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/print_format.basm"}
 			}
 		} else if options.Transpile == toTranslate {
-			rootSource = "benv/internal/build/import.basm"
-			rootDest = "benv/internal/build/main.go"
+			rootSource = "benv/build/import.basm"
+			rootDest = "benv/build/main.go"
 
 			source, err := os.Open("benv/build/pattern.p")
 			if nil != err {
@@ -335,14 +335,14 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	systemStack := []interface{}{"end"}
 	sourceCommandCounter := 1
 
-	defer func() {
+	/*defer func() {
 		if r := recover(); nil != r {
 			fmt.Println("ERROR in " + FileToExecute + " at near line " + fmt.Sprintf("%v", LineCounter))
 			fmt.Println(CommandToExecute)
 			fmt.Println(r)
 			os.Exit(1)
 		}
-	}()
+	}()*/
 
 	var err error
 
@@ -696,7 +696,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 								} else if *rFlag {
 									v[2] = rootSource
 								} else {
-									v[2] = rootSource + "v"
+									v[2] = rootSource + "d"
 								}
 
 								if options.Transpile == sysMod {
