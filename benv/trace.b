@@ -65,6 +65,48 @@ void modify(){
 	print("");
 };
 
+void modify_import(){
+	int number;
+	string snumber;
+	string file;
+	string dest;
+	bool e;
+	
+	snumber = str(number);
+	file = (("benv/import/import_program" + snumber) + ".b");
+	e = exists(file);
+	while(e){
+		SET_SOURCE(file);
+		dest = (("benv/trace/trace_program" + snumber) + ".b");
+		SET_DEST(dest);
+		modify();
+		number = (number + 1);
+		snumber = str(number);
+		file = (("benv/import/import_program" + snumber) + ".b");
+		e = exists(file);
+	};
+};
+
+void del_files(){
+	int number;
+	string snumber;
+	bool e;
+	string dest; 
+	
+	snumber = str(number);
+	dest = (("benv/trace/trace_program" + snumber) + ".b");
+	e = exists(dest);
+	
+	while(e){
+		DEL_DEST(dest);
+		number = (number + 1);
+		snumber = str(number);
+		dest = (("benv/trace/trace_program" + snumber) + ".b");
+		e = exists(dest);
+	};
+	
+};
+
 void main(){
 	init();
 	if (is_release){
@@ -73,6 +115,8 @@ void main(){
 		modify();
 	};
 	finish();
+	del_files();
+	modify_import();
 };
 
 main();
