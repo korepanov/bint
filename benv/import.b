@@ -304,12 +304,12 @@ void main(){
 	
 	if ("validate" == translate_mode){
 		make_parts(root_source, 0);
-	}else{
-		SET_DEST("benv/import_program.b");
-		file_union(root_source);
-		finish();
+		SET_SOURCE(root_source);
 	};
 	
+	SET_DEST("benv/import_program.b");
+	file_union(root_source);
+	finish();	
 };
 
 main();

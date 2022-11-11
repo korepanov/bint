@@ -35,7 +35,13 @@ func ValueFoldInterface(exprList interface{}) interface{} {
 }
 
 func Exists(name string) bool {
-	if _, err := os.Stat(name); err != nil {
+	pwd, err := os.Getwd()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	parent := filepath.Dir(filepath.Dir(pwd))
+	if _, err := os.Stat(parent + "/" + name); err != nil {
 		if os.IsNotExist(err) {
 			return false
 		}
