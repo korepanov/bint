@@ -358,6 +358,10 @@ func SetCommandCounter(file *os.File, COMMAND_COUNTER int) (func() (string, erro
 
 	newChunk := EachChunk(file)
 
+	if 0 == COMMAND_COUNTER {
+		return newChunk, nil
+	}
+
 	i := 1
 
 	for _, err = newChunk(); i < COMMAND_COUNTER-1; _, err = newChunk() {
