@@ -20,6 +20,8 @@ var sourceCommandCounter int
 var funcCommandCounter int
 var fileName string
 var sourceFile string
+var lastFile string
+var fileToValidate string
 var retVal string
 var isFunc bool
 var wasRet bool
@@ -143,10 +145,38 @@ func getExprType(command string, variables [][][]interface{}) (string, error) {
 	}
 }
 
+func getLastFile() string {
+	var fileToRet string
+	f, err := os.Open(fileToValidate)
+	if nil != err {
+		handleError(err)
+	}
+
+	newChunk := EachChunk(f)
+
+	for chunk, err := newChunk(); "end" != chunk; chunk, err = newChunk() {
+		if nil != err {
+			handleError(err)
+		}
+		inputedCode := CodeInput(chunk, false)
+		if len(inputedCode) > 5 && "$file" == inputedCode[0:5] {
+			fileToRet = inputedCode[5 : len(inputedCode)-1]
+		}
+	}
+
+	err = f.Close()
+	if nil != err {
+		handleError(err)
+	}
+
+	return fileToRet
+}
+
 func filter(command string) bool {
 	if "$" == string(command[0]) && "$" == string(command[len(command)-1]) {
 		if len(command) > 5 && "$file" == command[0:5] {
-			if "stdlib/core.b" == command[5:len(command)-1] {
+			if "stdlib/core.b" == command[5:len(command)-1] ||
+				("benv/trace/" == fileToValidate[0:11] && lastFile != command[5:len(command)-1]) {
 				toBlock = true
 			} else {
 				if toBlock {
@@ -991,6 +1021,9 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 }
 
 func DynamicValidate(validatingFile string, rootSource string) {
+	fileToValidate = validatingFile
+	lastFile = getLastFile()
+
 	fileName = validatingFile
 	funcTable = make(map[string]string)
 
