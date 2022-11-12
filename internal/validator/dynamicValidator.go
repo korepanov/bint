@@ -84,6 +84,7 @@ func getExprEnd(command string, startPos int) (int, error) {
 func sysGetExprType(command string, variables [][][]interface{}) (string, error) {
 	var exprList [][]interface{}
 	var err error
+	var modFlag bool
 
 	var allVariables [][]interface{}
 
@@ -96,7 +97,11 @@ func sysGetExprType(command string, variables [][][]interface{}) (string, error)
 	if nil != err {
 		return "", err
 	}
-
+	if "OP" == exprList[0][0] && IsKeyWordWithAssignment(fmt.Sprintf("%v", exprList[0][1])) {
+		modFlag = true
+		exprList = Insert(exprList, 0, []interface{}{"OP", "="})
+		exprList = Insert(exprList, 0, []interface{}{"VAR", "$val"})
+	}
 	err = checkVars(exprList, allVariables)
 
 	if nil != err {
@@ -121,6 +126,9 @@ func sysGetExprType(command string, variables [][][]interface{}) (string, error)
 			}
 		}
 	} else {
+		if modFlag {
+			infoListList[0] = infoListList[0][2:]
+		}
 		res, _, _ = executor.ExecuteTree(infoListList[0], allVariables, nil, false, false, nil, nil)
 	}
 
@@ -338,18 +346,36 @@ func handleError(newError error) {
 	os.Exit(1)
 }
 
-func dValidateString(command string) (string, int) {
+func dValidateString(command string) (string, int, error) {
 	tail := command
 	re, err := regexp.Compile(`"(\\.|[^"])*"`)
 	if nil != err {
 		panic(err)
 	}
-	if nil != re.FindIndex([]byte(tail)) {
+	loc := re.FindIndex([]byte(tail))
+	if nil != loc {
+		i := loc[0]
+		if i > 10 && "is_letter(" == tail[i-10:i] {
+			if 3 != len(tail[loc[0]:loc[1]]) {
+				return ``, status.Err, errors.New(`is_letter must have a string argument of length 1`)
+			}
+		}
+		if i > 9 && "is_digit(" == tail[i-9:i] {
+			if 3 != len(tail[loc[0]:loc[1]]) {
+				return ``, status.Err, errors.New(`is_digit must have a string argument of length 1`)
+			}
+		}
+		if i > 9 && "reg_find(" == tail[i-9:i] {
+			_, err = regexp.Compile(tail[loc[0]+1 : loc[1]-1])
+			if nil != err {
+				return ``, status.Err, err
+			}
+		}
 		tail = string(re.ReplaceAll([]byte(command), []byte(`$$val`)))
-		return tail, status.Yes
+		return tail, status.Yes, nil
 	}
 
-	return tail, status.No
+	return tail, status.No, nil
 }
 
 func dValidateStr(command string, variables [][][]interface{}) (string, [][][]interface{}, error) {
@@ -815,7 +841,11 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		wasRet = false
 	}
 
-	command, _ = dValidateString(command)
+	command, _, err = dValidateString(command)
+
+	if nil != err {
+		return variables, err
+	}
 
 	var tail string
 	var stat int
@@ -1036,7 +1066,7 @@ func DynamicValidate(validatingFile string, rootSource string) {
 	if nil != err {
 		panic(err)
 	}
-	variables[0][0][2] = "val"
+	variables[0][0][2] = "v"
 
 	sourceFile = rootSource
 	COMMAND_COUNTER = 1

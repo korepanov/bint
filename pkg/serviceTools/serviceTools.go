@@ -432,6 +432,13 @@ func stringInSlice(a string, list []string) bool {
 	}
 	return false
 }
+func IsKeyWordWithAssignment(word string) bool {
+	words := []string{"len", "exists", "int", "bool", "float", "index", "is_letter", "is_digit", "reg_find"}
+	if stringInSlice(word, words) {
+		return true
+	}
+	return false
+}
 
 func IsNumber(s string) bool {
 	_, err := strconv.ParseFloat(s, 64)
