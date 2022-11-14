@@ -3,6 +3,7 @@ string first_command;
 string file;
 string translate_mode;
 stack gimports;
+stack pimports;
 
 void init(){
 	string symbol;
@@ -265,8 +266,18 @@ void make_parts(string file, int number){
 			};
 			UNSET_SOURCE();
 			SET_SOURCE(import);
-			
-			make_parts(import, number);
+
+			if (NOT(in_stack(pimports, import))){
+				pimpots.push(import);
+				make_parts(import, number);
+			}else{
+				print("import cycle not allowed\n");
+				print("import in ");
+				print(file);
+				print(": ");
+				print(import);
+				exit(1);
+			};
 			
 			SET_SOURCE(import);
 			UNSET_SOURCE();
