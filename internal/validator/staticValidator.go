@@ -24,7 +24,6 @@ type brace struct {
 }
 
 var closureHistory []brace
-var imports []string
 
 func check(reg string, command string) (tail string, stat int) {
 	re, err := regexp.Compile(reg)
@@ -1129,6 +1128,7 @@ func validateCommand(command string) error {
 }
 
 func StaticValidate(rootSource string) (string, error) {
+
 	f, err := os.Open(rootSource)
 
 	if nil != err {

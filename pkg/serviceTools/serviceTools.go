@@ -220,13 +220,13 @@ func IsUnaryOperation(OP string) bool {
 	operations := []string{"print", "str", "input", "int", "float", "bool", "goto", "SET_SOURCE", "SET_DEST",
 		"next_command", "send_command", "UNDEFINE", "pop", "push", "DEL_DEST", "SEND_DEST", "len", "get_root_source",
 		"get_root_dest", "is_letter", "is_digit", "exists"}
-	return stringInSlice(OP, operations)
+	return StringInSlice(OP, operations)
 }
 
 func CanBePartOfBoolExpr(subExpr string) bool {
 	partsOfBoolExpr := []string{"(", ")", "AND", "OR", "XOR", "NOT", "<", "<=", "==", ">", ">=", "True", "False",
 		"+", "-", "*", "/", "^", "[", "]", "exists"}
-	return stringInSlice(subExpr, partsOfBoolExpr) || IsNumber(subExpr)
+	return StringInSlice(subExpr, partsOfBoolExpr) || IsNumber(subExpr)
 }
 
 func mySplit(buffer string, pattern *regexp.Regexp) [2]string {
@@ -424,7 +424,7 @@ func Exists(name string) bool {
 	return true
 }
 
-func stringInSlice(a string, list []string) bool {
+func StringInSlice(a string, list []string) bool {
 	for _, b := range list {
 		if b == a {
 			return true
@@ -434,7 +434,7 @@ func stringInSlice(a string, list []string) bool {
 }
 func IsKeyWordWithAssignment(word string) bool {
 	words := []string{"len", "exists", "int", "bool", "float", "index", "is_letter", "is_digit", "reg_find"}
-	if stringInSlice(word, words) {
+	if StringInSlice(word, words) {
 		return true
 	}
 	return false
@@ -456,7 +456,7 @@ func IsOp(s string) bool {
 		"DEL_DEST", "SEND_DEST", "REROUTE", ".", "len", "index", "get_root_source", "get_root_dest",
 		"is_letter", "is_digit", "reg_find", "exists"}
 
-	if stringInSlice(s, ops) {
+	if StringInSlice(s, ops) {
 		return true
 	}
 	return false
