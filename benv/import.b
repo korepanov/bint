@@ -247,8 +247,6 @@ void make_parts(string file, int number){
 	string snumber;
 	bool got_content;
 	string dest; 
-	bool cond;
-	string temp;
 
 	imports = get_imports();
 	imports.pop(import);
@@ -268,22 +266,10 @@ void make_parts(string file, int number){
 			};
 			UNSET_SOURCE();
 			SET_SOURCE(import);
-			cond = NOT(in_stack(pimports, import));
-			temp = str(cond);
-			print(temp);
-			print("\n");
-			if (cond){
-				pimpots.push(import);
-				make_parts(import, number);
-			}else{
-				print("import cycle not allowed\n");
-				print("import in ");
-				print(file);
-				print(": ");
-				print(import);
-				exit(1);
-			};
 			
+			pimports.push(import);
+			make_parts(import, number);
+		
 			SET_SOURCE(import);
 			UNSET_SOURCE();
 		};

@@ -937,6 +937,9 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 							if len(stranspileVar) > 8 && ("\"toInt" == stranspileVar[0:6] || "\"toFloat" == stranspileVar[0:8]) {
 								stranspileVar = stranspileVar[1 : len(stranspileVar)-1]
 							}
+							if len(stranspileVar) > 8 && ("\"toBool" == stranspileVar[0:7] || "\"!toBool" == stranspileVar[0:8]) {
+								stranspileVar = stranspileVar[1 : len(stranspileVar)-1]
+							}
 
 							if -1 == strings.Index(stranspileVar, "getVar") {
 								stranspileVar = string(stranspileVar[0]) +
