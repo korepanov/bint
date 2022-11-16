@@ -1127,9 +1127,56 @@ func validateCommand(command string) error {
 	return errors.New("unresolved command")
 }
 
-func StaticValidate(rootSource string) (string, error) {
+func hasCycledImports(imports []string, rootSource string) string {
+	var theseImports []string
 
 	f, err := os.Open(rootSource)
+
+	if nil != err {
+		panic(err)
+	}
+	newChunk := EachChunk(f)
+
+	for chunk, err := newChunk(); "end" != chunk; chunk, err = newChunk() {
+		if nil != err {
+			handleError(err)
+		}
+		inputedCode := CodeInput(chunk, false)
+		for len(inputedCode) > 7 && "#import" == inputedCode[0:7] {
+			name := inputedCode[8 : strings.Index(inputedCode[8:], "\"")+8]
+			if StringInSlice(name, imports) {
+				return rootSource
+			}
+			theseImports = append(theseImports, name)
+			inputedCode = inputedCode[strings.Index(inputedCode[8:], "\"")+9:]
+		}
+	}
+
+	err = f.Close()
+	if nil != err {
+		panic(err)
+	}
+
+	for _, imp := range theseImports {
+		if imp != rootSource {
+			return hasCycledImports(append(imports, imp), imp)
+		}
+	}
+	return ``
+}
+
+func StaticValidate(rootSource string) (string, error) {
+	var cycledFile string
+
+	cycledFile = hasCycledImports([]string{rootSource}, rootSource)
+	var f *os.File
+	var err error
+
+	if `` != cycledFile {
+		f, err = os.Open(cycledFile)
+	} else {
+		f, err = os.Open(rootSource)
+	}
 
 	if nil != err {
 		panic(err)
@@ -1143,6 +1190,11 @@ func StaticValidate(rootSource string) (string, error) {
 			handleError(err)
 		}
 		CommandToExecute = strings.TrimSpace(chunk)
+
+		if `` != cycledFile {
+			return cycledFile, errors.New("import cycle not allowed")
+		}
+
 		inputedCode := CodeInput(chunk, true)
 
 		err = validateCommand(inputedCode)
