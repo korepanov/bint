@@ -25,13 +25,15 @@ func Validate(toTranslate int, filesListToExecute []string, rootSource string,
 
 	if options.UserTranslate == toTranslate ||
 		(options.Internal == toTranslate && (options.Internal == sysMode || options.UserTranslate == sysMode)) {
+		// статическая валидация
 		name, err = StaticValidate(rootSource)
 
 		if nil != err {
 			FileToExecute = name
 			panic(err)
 		}
-		if options.UserTranslate == toTranslate || (options.Internal == toTranslate && options.UserTranslate == sysMode) {
+		// динамическая валидация
+		/*if options.UserTranslate == toTranslate || (options.Internal == toTranslate && options.UserTranslate == sysMode) {
 			Start(options.UserValidate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
 			var number int
 			file := "benv/trace/trace_program" + fmt.Sprintf("%v", number) + ".b"
@@ -46,7 +48,7 @@ func Validate(toTranslate int, filesListToExecute []string, rootSource string,
 			Start(options.InternalValidate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
 			validatingFile := "benv/internal/trace_program.b"
 			DynamicValidate(validatingFile, rootSource)
-		}
+		}*/
 
 	}
 }

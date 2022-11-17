@@ -719,9 +719,17 @@ func dValidateWhile(command string, variables [][][]interface{}) (string, int, [
 	}
 	return tail, stat, variables, nil
 }
-func dValidateBreak(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
+func dValidateBreakContinue(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
 	var isLoop bool
+	var commandType string
+
+	commandType = "break"
+
 	tail, stat := check(`^break`, command)
+	if !("" == tail && status.Yes == stat) {
+		commandType = "continue"
+		tail, stat = check(`^continue`, command)
+	}
 	if "" == tail && status.Yes == stat {
 		for _, brace := range closureHistory {
 			if loop == brace.T {
@@ -730,7 +738,7 @@ func dValidateBreak(command string, variables [][][]interface{}) (string, int, [
 			}
 		}
 		if !isLoop {
-			return tail, status.Err, variables, errors.New("break is outside of loop")
+			return tail, status.Err, variables, errors.New(commandType + " is outside of loop")
 		}
 	}
 	return tail, stat, variables, nil
@@ -913,7 +921,7 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		return dynamicValidateCommand(tail, variables)
 	}
 
-	tail, stat, variables, err = dValidateBreak(command, variables)
+	tail, stat, variables, err = dValidateBreakContinue(command, variables)
 
 	if nil != err {
 		return variables, err

@@ -7,7 +7,7 @@ bool first_file;
 void init(){
 	num = 0;
 	first_file = True; 
-	root_source = "benv/prep_for_program.b";
+	root_source = "benv/while_program.b";
 	SET_SOURCE(root_source);
 	SET_DEST("benv/for_program.b");
 };
@@ -137,6 +137,10 @@ void main(){
 
 				if (("break" == command) AND (NOT(was_internal_for))){
 					command = (("goto(#for" + snum) + "_end)");				
+				};
+				if (("continue" == command) AND (NOT(was_internal_for))){
+					send_command(inc);
+					command = (("goto(#for" + snum) + ")");				
 				};
 				send_command(command);
 				goto(#next_internal);			
