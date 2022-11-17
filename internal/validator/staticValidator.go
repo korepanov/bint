@@ -1206,14 +1206,52 @@ func hasRepeatedImports(rootSource string) bool {
 	return false
 }
 
+func checkImportPos(rootSource string) error {
+	var command_counter int
+
+	LineCounter = 1
+
+	f, err := os.Open(rootSource)
+
+	if nil != err {
+		panic(err)
+	}
+	newChunk := EachChunk(f)
+
+	for chunk, err := newChunk(); "end" != chunk; chunk, err = newChunk() {
+		command_counter++
+		if nil != err {
+			handleError(err)
+		}
+		inputedCode := CodeInput(chunk, true)
+		if len(inputedCode) > 7 && "#import" == inputedCode[0:7] && command_counter > 1 {
+			err = f.Close()
+			if nil != err {
+				panic(err)
+			}
+			return errors.New("imports allowed only in the beginning of the file")
+		}
+	}
+
+	err = f.Close()
+	if nil != err {
+		panic(err)
+	}
+	return nil
+}
+
 func StaticValidate(rootSource string) (string, error) {
 	var cycledFile string
 	var isRepeated bool
+	var err error
 
+	err = checkImportPos(rootSource)
+	if nil != err {
+		return rootSource, err
+	}
 	isRepeated = hasRepeatedImports(rootSource)
 	cycledFile = hasCycledImports([]string{rootSource}, rootSource)
 	var f *os.File
-	var err error
 
 	if `` != cycledFile {
 		f, err = os.Open(cycledFile)
