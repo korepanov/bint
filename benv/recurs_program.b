@@ -1,0 +1,17 @@
+string $ret;
+intsum(inta,intb){print("");
+return(a+b);
+};
+print("");
+voidmain(){print("");
+intk;
+int$sum_res0;
+$sum_res0=sum((5+1),(6-1));
+k=$sum_res0;
+stringbuf;
+buf=str(k);
+print(buf);
+print("\n");
+};
+print("");
+main();

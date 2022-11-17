@@ -55,6 +55,9 @@ string source;
 string temp_dir;
 string ops_ret;
 string temp_buf;
+string $func_end_res;
+string $ops_ret;
+string deb;
 
 is_first = True;
 was_here = False;
@@ -444,6 +447,11 @@ send_command(command);
 #not_send_push:
 comma_pos = (comma_pos + 1);
 command_len = len(buf);
+print(buf);
+print("\n");
+deb = str(comma_pos);
+print(deb);
+print("\n");
 buf = buf[comma_pos:command_len];
 left_border = 0;
 goto(#call_start);
@@ -454,7 +462,12 @@ func_begin = index(buf, func_name_br);
 command_len = len(buf);
 buf2 = buf[func_begin:command_len];
 func_len = index(buf2, ")"); 
-func_end = ((func_begin + func_len) + 1); 
+push(func_begin);
+push(buf2);
+$func_end_res="#gl_fe";
+goto(#func_end_func);
+#gl_fe:
+pop(func_end);
 buf = buf[0:func_begin];
 buf = (((buf + "$") + func_name) + "_res"); 
 buf2 = buf3[func_end:command_len];
@@ -726,4 +739,170 @@ UNDEFINE(el);
 UNDEFINE(buf);
 UNDEFINE(res);
 goto($in_stack_ret);
+
+
+#ops:
+string command;
+string op;
+pop(command);
+pop(op);
+stack quotes;
+stack these_quotes; 
+stack op_nums;
+string buf;
+stack res;
+int num1;
+int num2; 
+int op_num;
+bool was_quote;
+bool to_add;
+
+was_quote = False;
+to_add = True;
+
+push(op);
+push(command);
+
+indexes_ret="#_idx";
+goto(#indexes);
+#_idx:
+pop(op_nums);
+op_nums.pop(buf);
+
+#_op_nums_s:
+[goto(#_op_nums_e), ("end" == buf), print("")];
+op_num = int(buf);
+quotes = reg_find("\"(\\.|[^\"])*\"", command);
+
+#_quotes_s:
+quotes.pop(these_quotes);
+these_quotes.pop(buf);
+[goto(#_quotes_e), ("end" == buf), print("")];
+#_these_quotes_s:
+[goto(#_these_quotes_e), ("end" == buf), print("")];
+num1 = int(buf);
+these_quotes.pop(buf);
+num2 = int(buf);
+these_quotes.pop(buf);
+was_quote = True;
+goto(#_these_quotes_s);
+#_these_quotes_e:
+[print(""), ((op_num > num1)AND(op_num < num2)), goto(#_is_op_end)];
+to_add = False;
+goto(#_push_op_end);
+#_is_op_end:	
+goto(#_quotes_s);
+#_quotes_e:
+[goto(#_push_op_end), ((was_quote)AND(NOT(to_add))), print("")];
+res.push(op_num);
+was_quote = False;
+to_add = True;
+#_push_op_end:
+print("");
+op_nums.pop(buf);
+was_quote = False;
+to_add = True;
+goto(#_op_nums_s);
+#_op_nums_e:
+$reverse_ret="_#rvs";
+push(res);
+goto(#reverse);
+pop(res);
+#_rvs:
+push(res);
+UNDEFINE(command);
+UNDEFINE(op);
+UNDEFINE(quotes);
+UNDEFINE(these_quotes);
+UNDEFINE(op_nums);
+UNDEFINE(buf);
+UNDEFINE(res);
+UNDEFINE(num1);
+UNDEFINE(num2);
+UNDEFINE(op_num);
+UNDEFINE(was_quote);
+UNDEFINE(to_add);
+goto($ops_ret);
+
+
+#func_end_func:
+string command;
+int func_begin;
+pop(command);
+pop(func_begin);
+stack obraces;
+stack cbraces;
+string obrace;
+string cbrace;
+string symbol;
+int o_sum;
+int c_sum;
+int pos;
+string spos;
+int command_len;
+bool stack_res;
+
+command_len = len(command);
+obrace = "(";
+cbrace = ")";
+o_sum = 1;
+c_sum = 0;
+pos = (func_begin + 1);
+
+$ops_ret = "#_fe";
+push(obrace);
+push(command);
+goto(#ops); 
+#_fe:
+pop(obraces);
+
+$ops_ret = "#_fe2";
+push(cbrace);
+push(command);
+goto(#ops); 
+#_fe2:
+pop(cbraces);
+
+#_braces_s:
+[print(""), (pos < command_len), goto(#_braces_e)];
+spos = str(pos);
+push(spos);
+push(obraces);
+$in_stack_ret="#_fe3";
+goto(#in_stack);
+#_fe3:
+pop(stack_res);
+[print(""), stack_res, goto(#_o_plus_end)];
+o_sum = (o_sum + 1);
+#_o_plus_end:
+push(spos);
+push(cbraces);
+$in_stack_ret="#_fe4";
+goto(#in_stack);
+#_fe4:
+pop(stack_res);
+[print(""), stack_res, goto(#_c_plus_end)];
+c_sum = (c_sum + 1);
+#_c_plus_end:
+[goto(#_braces_e), (o_sum == c_sum), print("")];
+pos = (pos + 1);
+goto(#_braces_s);
+#_braces_e:
+push(pos);
+UNDEFINE(command);
+UNDEFINE(func_begin);
+UNDEFINE(obraces);
+UNDEFINE(cbraces);
+UNDEFINE(obrace);
+UNDEFINE(cbrace);
+UNDEFINE(symbol);
+UNDEFINE(o_sum);
+UNDEFINE(c_sum);
+UNDEFINE(pos);
+UNDEFINE(spos);
+UNDEFINE(command_len);
+UNDEFINE(stack_res);
+goto($func_end_res);
+
+
 
