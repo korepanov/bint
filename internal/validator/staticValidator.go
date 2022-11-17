@@ -1229,6 +1229,7 @@ func checkImportPos(rootSource string) error {
 			if nil != err {
 				panic(err)
 			}
+			CommandToExecute = strings.TrimSpace(chunk)
 			return errors.New("imports allowed only in the beginning of the file")
 		}
 	}
