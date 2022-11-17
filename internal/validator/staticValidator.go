@@ -1145,6 +1145,10 @@ func hasCycledImports(imports []string, rootSource string) string {
 		for len(inputedCode) > 7 && "#import" == inputedCode[0:7] {
 			name := inputedCode[8 : strings.Index(inputedCode[8:], "\"")+8]
 			if StringInSlice(name, imports) {
+				err = f.Close()
+				if nil != err {
+					panic(err)
+				}
 				return rootSource
 			}
 			theseImports = append(theseImports, name)
@@ -1165,9 +1169,48 @@ func hasCycledImports(imports []string, rootSource string) string {
 	return ``
 }
 
+func hasRepeatedImports(rootSource string) bool {
+	var imports []string
+
+	f, err := os.Open(rootSource)
+
+	if nil != err {
+		panic(err)
+	}
+	newChunk := EachChunk(f)
+
+	for chunk, err := newChunk(); "end" != chunk; chunk, err = newChunk() {
+		if nil != err {
+			handleError(err)
+		}
+		inputedCode := CodeInput(chunk, false)
+		for len(inputedCode) > 7 && "#import" == inputedCode[0:7] {
+			name := inputedCode[8 : strings.Index(inputedCode[8:], "\"")+8]
+			if StringInSlice(name, imports) {
+				err = f.Close()
+				if nil != err {
+					panic(err)
+				}
+				return true
+			}
+			imports = append(imports, name)
+			inputedCode = inputedCode[strings.Index(inputedCode[8:], "\"")+9:]
+		}
+	}
+
+	err = f.Close()
+	if nil != err {
+		panic(err)
+	}
+
+	return false
+}
+
 func StaticValidate(rootSource string) (string, error) {
 	var cycledFile string
+	var isRepeated bool
 
+	isRepeated = hasRepeatedImports(rootSource)
 	cycledFile = hasCycledImports([]string{rootSource}, rootSource)
 	var f *os.File
 	var err error
@@ -1193,6 +1236,9 @@ func StaticValidate(rootSource string) (string, error) {
 
 		if `` != cycledFile {
 			return cycledFile, errors.New("import cycle not allowed")
+		}
+		if isRepeated {
+			return rootSource, errors.New("repeated imports not allowed")
 		}
 
 		inputedCode := CodeInput(chunk, true)
