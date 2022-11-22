@@ -502,7 +502,7 @@ goto(#finish_end);
 print("");
 UNSET_SOURCE();
 UNSET_DEST();
-DEL_DEST("benv/func_program.b");
+DEL_DEST("benv/len_program.b");
 SEND_DEST(root_dest);
 goto($finish_return_var);
 #finish_end:print("");
