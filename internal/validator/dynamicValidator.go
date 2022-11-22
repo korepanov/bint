@@ -278,7 +278,7 @@ func dValidateNextCommand(command string, variables [][][]interface{}) (string, 
 			return ``, status.Err, variables, err
 		}
 		if "string" != t {
-			return ``, status.Err, variables, errors.New("data type mismatch in input: string and " + t)
+			return ``, status.Err, variables, errors.New("data type mismatch in next_command: string and " + t)
 		}
 		return ``, status.Yes, variables, nil
 	}
@@ -297,7 +297,7 @@ func dValidateSendCommand(command string, variables [][][]interface{}) (string, 
 			return ``, status.Err, variables, err
 		}
 		if "string" != t {
-			return ``, status.Err, variables, errors.New("data type mismatch in input: string and " + t)
+			return ``, status.Err, variables, errors.New("data type mismatch in send_command: string and " + t)
 		}
 		return ``, status.Yes, variables, nil
 	}
@@ -317,6 +317,25 @@ func dValidateSetSource(command string, variables [][][]interface{}) (string, in
 		}
 		if "string" != t {
 			return ``, status.Err, variables, errors.New("data type mismatch in SET_SOURCE: string and " + t)
+		}
+		return ``, status.Yes, variables, nil
+	}
+
+	return command, status.No, variables, nil
+}
+
+func dValidateDelDest(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
+	tail, stat := check(`(?:DEL_DEST\(.*\))`, command)
+
+	if status.Yes == stat && `` == tail {
+		tail, _ = check(`(?:DEL_DEST\()`, command)
+		tail = tail[:len(tail)-1]
+		t, err := getExprType(tail, variables)
+		if nil != err {
+			return ``, status.Err, variables, err
+		}
+		if "string" != t {
+			return ``, status.Err, variables, errors.New("data type mismatch in DEL_DEST: string and " + t)
 		}
 		return ``, status.Yes, variables, nil
 	}
@@ -1062,6 +1081,16 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 	}
 
 	command, stat, variables, err = dValidateSetDest(command, variables)
+
+	if nil != err {
+		return variables, err
+	}
+
+	if status.Yes == stat {
+		return variables, nil
+	}
+
+	command, stat, variables, err = dValidateDelDest(command, variables)
 
 	if nil != err {
 		return variables, err
