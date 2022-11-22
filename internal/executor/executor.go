@@ -55,6 +55,9 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 		return []interface{}{strings.Index(fmt.Sprintf("%v", LO[0]), fmt.Sprintf("%v", RO[0]))}, systemStack, nil
 	} else if "len" == OP {
+		if 0 == len(fmt.Sprintf("%v", LO[0])) {
+			return []interface{}{0}, systemStack, nil
+		}
 		if `"` == string(fmt.Sprintf("%v", LO[0])[0]) && `"` == string(fmt.Sprintf("%v", LO[0])[len(fmt.Sprintf("%v", LO[0]))-1]) {
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
 		}

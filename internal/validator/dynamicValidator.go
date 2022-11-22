@@ -129,6 +129,22 @@ func sysGetExprType(command string, variables [][][]interface{}) (string, error)
 		if modFlag {
 			infoListList[0] = infoListList[0][2:]
 		}
+		if 3 == len(infoListList[0]) && "int" == fmt.Sprintf("%v", infoListList[0][0]) &&
+			"null" == fmt.Sprintf("%v", infoListList[0][2]) {
+			return "int", nil
+		}
+		if 3 == len(infoListList[0]) && "float" == fmt.Sprintf("%v", infoListList[0][0]) &&
+			"null" == fmt.Sprintf("%v", infoListList[0][2]) {
+			return "float", nil
+		}
+		if 3 == len(infoListList[0]) && "bool" == fmt.Sprintf("%v", infoListList[0][0]) &&
+			"null" == fmt.Sprintf("%v", infoListList[0][2]) {
+			return "bool", nil
+		}
+		if 3 == len(infoListList[0]) && "str" == fmt.Sprintf("%v", infoListList[0][0]) &&
+			"null" == fmt.Sprintf("%v", infoListList[0][2]) {
+			return "string", nil
+		}
 		res, _, _ = executor.ExecuteTree(infoListList[0], allVariables, nil, false, false, nil, nil)
 	}
 
@@ -478,6 +494,38 @@ func dValidateStr(command string, variables [][][]interface{}) (string, [][][]in
 			}
 			replacerArgs = append(replacerArgs, tail[pos[0]:exprEnd])
 			replacerArgs = append(replacerArgs, `$val`)
+		}
+
+		r := strings.NewReplacer(replacerArgs...)
+		tail = r.Replace(tail)
+	}
+	return tail, variables, nil
+}
+
+func dValidateLen(command string, variables [][][]interface{}) (string, [][][]interface{}, error) {
+	tail := command
+	re, err := regexp.Compile(`len\(`)
+	if nil != err {
+		panic(err)
+	}
+	if nil != re.FindIndex([]byte(tail)) {
+		var poses [][]int
+		poses = re.FindAllIndex([]byte(tail), -1)
+		var replacerArgs []string
+		for _, pos := range poses {
+			exprEnd, err := getExprEnd(tail, pos[1]-1)
+			if nil != err {
+				return tail, variables, err
+			}
+			t, err := getExprType(tail[pos[0]+4:exprEnd-1], variables)
+			if nil != err {
+				return tail, variables, err
+			}
+			if "string" != t {
+				return tail, variables, errors.New("data type mismatch in len: " + t)
+			}
+			replacerArgs = append(replacerArgs, tail[pos[0]:exprEnd])
+			replacerArgs = append(replacerArgs, `$ival`)
 		}
 
 		r := strings.NewReplacer(replacerArgs...)
@@ -948,6 +996,11 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		return variables, err
 	}
 
+	command, variables, err = dValidateLen(command, variables)
+	if nil != err {
+		return variables, err
+	}
+
 	command, variables, err = dValidateFor(command, variables)
 
 	if nil != err {
@@ -1206,6 +1259,13 @@ func DynamicValidate(validatingFile string, rootSource string) {
 		panic(err)
 	}
 	variables[0][0][2] = "v"
+
+	_, variables[len(variables)-1], err = lexer.LexicalAnalyze("int$ival",
+		variables[len(variables)-1], false, nil, false, nil)
+	if nil != err {
+		panic(err)
+	}
+	variables[0][0][2] = "0"
 
 	sourceFile = rootSource
 	COMMAND_COUNTER = 1

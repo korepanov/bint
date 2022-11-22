@@ -1,13 +1,8 @@
-int sum(int a, int b){
-	return (a + b);
-};
-
 void main(){
-	int k;
-	k = sum(len("blabla"), len("blabla"));
-	string buf;
-	buf = str(k);
-	print(buf);
+	string s;
+	s = "Hello world!";
+	s = s[6:len(s)];
+	print(s);
 	print("\n");
 };
 
