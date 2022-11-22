@@ -21,6 +21,7 @@ int int_buf3;
 int type_len;
 int arg_type_len;
 int func_begin;
+int internal_func_begin;
 int func_end; 
 int func_len;
 int limit_border;
@@ -37,6 +38,7 @@ string arg_name;
 string $in_stack_ret;
 int left_border;
 int comma_pos;
+stack user_stack;
 stack buf_stack;
 stack buf_stack_reserv;
 stack buf_stack2;
@@ -184,7 +186,7 @@ comma_pos = index(command, ",");
 comma_pos = index(command, ")");
 #br_end:
 arg_name = command[0:comma_pos];  
-push(arg_name);
+user_stack.push(arg_name);
 buf_stack.push(arg_name);
 buf_stack2.push(arg_name);
 buf_stack2.push(arg_type);
@@ -232,7 +234,7 @@ command = "";
 arg_name = "";
 #pop_start:
 [goto(#pop_end), ("end" == arg_name), print("")];
-pop(arg_name);
+user_stack.pop(arg_name);
 command = (command + "pop(");
 command = (command + arg_name);
 command = (command + ")");
@@ -308,7 +310,7 @@ command_len = len(buf);
 arg_name = buf[type_len:command_len];
 
 $in_stack_ret="#undef_ret";
-push(arg_name);
+user_stack.push(arg_name);
 push(undefined_args);
 goto(#in_stack);
 #undef_ret:
@@ -428,7 +430,6 @@ number = (number - func_name_len);
 [print(""), ("(" == buf4), goto(#mod_end)];
 
 buf = command;
-
 br_number = index(buf, "(");
 left_border = (br_number + 1);
 buf2 = buf;
@@ -440,18 +441,23 @@ comma_pos = index(buf, ",");
 buf_len = len(buf);
 comma_pos = (buf_len - 1);
 #comma_end:
+[print(""), (left_border == comma_pos), goto(#aend)];
+arg_name="";
+goto(#askip);
+#aend:
 arg_name = buf[left_border:comma_pos];
+#askip:
 command = (("push(" + arg_name) + ")");
 [goto(#not_send_push), ("" == arg_name), print("")];
 send_command(command);
 #not_send_push:
 comma_pos = (comma_pos + 1);
 command_len = len(buf);
-print(buf);
-print("\n");
-deb = str(comma_pos);
-print(deb);
-print("\n");
+[print(""), (comma_pos == command_len), goto(#buf_mod_end)];
+buf="";
+left_border=0;
+goto(#call_start);
+#buf_mod_end:
 buf = buf[comma_pos:command_len];
 left_border = 0;
 goto(#call_start);
@@ -460,18 +466,22 @@ buf = buf2;
 buf3 = buf; 
 func_begin = index(buf, func_name_br); 
 command_len = len(buf);
-buf2 = buf[func_begin:command_len];
-func_len = index(buf2, ")"); 
-push(func_begin);
-push(buf2);
+internal_func_begin = (func_begin + func_name_len);
+push(internal_func_begin);
+push(buf);
 $func_end_res="#gl_fe";
 goto(#func_end_func);
 #gl_fe:
 pop(func_end);
+func_end = (func_end + 1);
+func_len = func_end; 
 buf = buf[0:func_begin];
 buf = (((buf + "$") + func_name) + "_res"); 
+[goto(#nothing), (func_end == command_len), print("")];
 buf2 = buf3[func_end:command_len];
 buf = (buf + buf2);
+#nothing:
+
 [print(""),(void_flag), goto(#set_buf_nop_end)];
 buf="print(\"\")";
 #set_buf_nop_end:
@@ -619,7 +629,12 @@ pointer = i;
 i = (i + (s_len_old - s_len));
 res.push(i);
 pointer = (pointer + sub_len);
+[print(""), (pointer == s_len), goto(#iend)];
+s = "";
+goto(#iskip);
+#iend:
 s = s[pointer:s_len];
+#iskip:
 s_len = len(s);
 i = index(s, sub_s);
 pointer = i;
@@ -804,7 +819,7 @@ was_quote = False;
 to_add = True;
 goto(#_op_nums_s);
 #_op_nums_e:
-$reverse_ret="_#rvs";
+$reverse_ret="#_rvs";
 push(res);
 goto(#reverse);
 pop(res);

@@ -461,7 +461,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 					exprList = Pop(exprList, i-1) // выражение
 				}
 				if !toTranspile {
-					if rightNumber.(int) > leftNumber.(int) && rightNumber.(int) <= len(varVal) {
+					if rightNumber.(int) >= leftNumber.(int) && rightNumber.(int) <= len(varVal) {
 						exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" +
 							string([]rune(varVal)[leftNumber.(int):rightNumber.(int)]) + "\""})
 					} else {

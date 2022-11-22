@@ -194,9 +194,9 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 			}
 			filesListToExecute = []string{rootSource}
 		} else if options.ExecBasm == toTranslate {
-			rootSource = "program.b"
+			//rootSource = "program.b"
 			//rootDest = "benv/dowhile.basm"
-			rootDest = "benv/func.basm"
+			rootDest = "program.basm"
 			filesListToExecute = []string{rootDest}
 		} else if options.Primitive == toTranslate {
 			rootSource = "bendBenv/func.basm"
@@ -335,14 +335,14 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	systemStack := []interface{}{"end"}
 	sourceCommandCounter := 1
 
-	defer func() {
+	/*defer func() {
 		if r := recover(); nil != r {
 			fmt.Println("ERROR in " + FileToExecute + " at near line " + fmt.Sprintf("%v", LineCounter))
 			fmt.Println(CommandToExecute)
 			fmt.Println(r)
 			os.Exit(1)
 		}
-	}()
+	}()*/
 
 	var err error
 
