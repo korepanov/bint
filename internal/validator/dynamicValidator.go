@@ -251,6 +251,82 @@ func dValidateInput(command string, variables [][][]interface{}) (string, int, [
 	return command, status.No, variables, nil
 }
 
+func dValidateNextCommand(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
+	tail, stat := check(`(?:next_command\([[:alpha:]]+[[:alnum:]|_]*\))`, command)
+
+	if status.Yes == stat && `` == tail {
+		tail, _ = check(`(?:next_command\()`, command)
+		tail = tail[:len(tail)-1]
+		t, err := getExprType(tail, variables)
+		if nil != err {
+			return ``, status.Err, variables, err
+		}
+		if "string" != t {
+			return ``, status.Err, variables, errors.New("data type mismatch in input: string and " + t)
+		}
+		return ``, status.Yes, variables, nil
+	}
+
+	return command, status.No, variables, nil
+}
+
+func dValidateSendCommand(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
+	tail, stat := check(`(?:send_command\([[:alpha:]]+[[:alnum:]|_]*\))`, command)
+
+	if status.Yes == stat && `` == tail {
+		tail, _ = check(`(?:send_command\()`, command)
+		tail = tail[:len(tail)-1]
+		t, err := getExprType(tail, variables)
+		if nil != err {
+			return ``, status.Err, variables, err
+		}
+		if "string" != t {
+			return ``, status.Err, variables, errors.New("data type mismatch in input: string and " + t)
+		}
+		return ``, status.Yes, variables, nil
+	}
+
+	return command, status.No, variables, nil
+}
+
+func dValidateSetSource(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
+	tail, stat := check(`(?:SET_SOURCE\(.*\))`, command)
+
+	if status.Yes == stat && `` == tail {
+		tail, _ = check(`(?:SET_SOURCE\()`, command)
+		tail = tail[:len(tail)-1]
+		t, err := getExprType(tail, variables)
+		if nil != err {
+			return ``, status.Err, variables, err
+		}
+		if "string" != t {
+			return ``, status.Err, variables, errors.New("data type mismatch in SET_SOURCE: string and " + t)
+		}
+		return ``, status.Yes, variables, nil
+	}
+
+	return command, status.No, variables, nil
+}
+
+func dValidateSetDest(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
+	tail, stat := check(`(?:SET_DEST\(.*\))`, command)
+
+	if status.Yes == stat && `` == tail {
+		tail, _ = check(`(?:SET_DEST\()`, command)
+		tail = tail[:len(tail)-1]
+		t, err := getExprType(tail, variables)
+		if nil != err {
+			return ``, status.Err, variables, err
+		}
+		if "string" != t {
+			return ``, status.Err, variables, errors.New("data type mismatch in SET_DEST: string and " + t)
+		}
+		return ``, status.Yes, variables, nil
+	}
+
+	return command, status.No, variables, nil
+}
+
 func handleError(newError error) {
 	var inputedCode string
 	var errorFile string
@@ -865,15 +941,6 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 			return variables, err
 		}
 		return variables, nil
-		/*tail, stat, err = validateCD(command)
-
-		if nil != err {
-			return variables, err
-		}
-
-		if status.Yes == stat {
-			return variables, nil
-		}*/
 	}
 
 	command, variables, err = dValidateStr(command, variables)
@@ -909,6 +976,70 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 
 	if status.Yes == stat {
 		return variables, nil
+	}
+
+	command, stat, variables, err = dValidateNextCommand(command, variables)
+
+	if nil != err {
+		return variables, err
+	}
+
+	if status.Yes == stat {
+		return variables, nil
+	}
+
+	command, stat, variables, err = dValidateSendCommand(command, variables)
+
+	if nil != err {
+		return variables, err
+	}
+
+	if status.Yes == stat {
+		return variables, nil
+	}
+
+	command, stat, variables, err = dValidateSetSource(command, variables)
+
+	if nil != err {
+		return variables, err
+	}
+
+	if status.Yes == stat {
+		return variables, nil
+	}
+
+	command, stat, variables, err = dValidateSetDest(command, variables)
+
+	if nil != err {
+		return variables, err
+	}
+
+	if status.Yes == stat {
+		return variables, nil
+	}
+
+	tail, stat, err = validateStandardFuncCall(command, "UNSET_SOURCE", 0, false)
+
+	if nil != err {
+		return variables, err
+	}
+
+	if status.Yes == stat {
+		if `` == tail {
+			return variables, nil
+		}
+	}
+
+	tail, stat, err = validateStandardFuncCall(command, "UNSET_DEST", 0, false)
+
+	if nil != err {
+		return variables, err
+	}
+
+	if status.Yes == stat {
+		if `` == tail {
+			return variables, nil
+		}
 	}
 
 	tail, stat, variables, err = dValidateFuncDefinition(command, variables)

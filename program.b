@@ -4,7 +4,7 @@ int sum(int a, int b){
 
 void main(){
 	int k;
-	k = sum((2*(5+1)), (3*(6-1)));
+	k = sum(len("blabla"), len("blabla"));
 	string buf;
 	buf = str(k);
 	print(buf);
