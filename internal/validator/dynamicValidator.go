@@ -154,6 +154,7 @@ func sysGetExprType(command string, variables [][][]interface{}) (string, error)
 func getExprType(command string, variables [][][]interface{}) (string, error) {
 	c1 := make(chan string, 1)
 	e1 := make(chan error, 1)
+
 	go func() {
 		text, err := sysGetExprType(command, variables)
 		c1 <- text
@@ -1294,7 +1295,7 @@ func DynamicValidate(validatingFile string, rootSource string) {
 	if nil != err {
 		panic(err)
 	}
-	variables[0][0][2] = "0"
+	variables[0][1][2] = "0"
 
 	sourceFile = rootSource
 	COMMAND_COUNTER = 1
