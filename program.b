@@ -1,9 +1,12 @@
 void main(){
-	string s;
-	s = "Hello world!";
-	s = s[6:len(s)];
-	print(s);
-	print("\n");
+	stack s;
+	s.push("bla");
+	string a;
+	int c;
+	c = 10;
+	/*string st;
+	st = "0";*/
+	a = str(c);
 };
 
 main();

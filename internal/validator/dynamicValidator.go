@@ -131,18 +131,46 @@ func sysGetExprType(command string, variables [][][]interface{}) (string, error)
 		}
 		if 3 == len(infoListList[0]) && "int" == fmt.Sprintf("%v", infoListList[0][0]) &&
 			"null" == fmt.Sprintf("%v", infoListList[0][2]) {
+			t, err := getExprType(fmt.Sprintf("%v", infoListList[0][1]), variables)
+			if nil != err {
+				return ``, err
+			}
+			if "string" != t && "int" != t && "float" != t {
+				return ``, errors.New("data type mismatch in int: " + t)
+			}
 			return "int", nil
 		}
 		if 3 == len(infoListList[0]) && "float" == fmt.Sprintf("%v", infoListList[0][0]) &&
 			"null" == fmt.Sprintf("%v", infoListList[0][2]) {
+			t, err := getExprType(fmt.Sprintf("%v", infoListList[0][1]), variables)
+			if nil != err {
+				return ``, err
+			}
+			if "string" != t && "int" != t && "float" != t {
+				return ``, errors.New("data type mismatch in float: " + t)
+			}
 			return "float", nil
 		}
 		if 3 == len(infoListList[0]) && "bool" == fmt.Sprintf("%v", infoListList[0][0]) &&
 			"null" == fmt.Sprintf("%v", infoListList[0][2]) {
+			t, err := getExprType(fmt.Sprintf("%v", infoListList[0][1]), variables)
+			if nil != err {
+				return ``, err
+			}
+			if "string" != t && "bool" != t {
+				return ``, errors.New("data type mismatch in bool: " + t)
+			}
 			return "bool", nil
 		}
 		if 3 == len(infoListList[0]) && "str" == fmt.Sprintf("%v", infoListList[0][0]) &&
 			"null" == fmt.Sprintf("%v", infoListList[0][2]) {
+			t, err := getExprType(fmt.Sprintf("%v", infoListList[0][1]), variables)
+			if nil != err {
+				return ``, err
+			}
+			if "stack" == t {
+				return ``, errors.New("data type mismatch in str: stack")
+			}
 			return "string", nil
 		}
 		res, _, _ = executor.ExecuteTree(infoListList[0], allVariables, nil, false, false, nil, nil)
