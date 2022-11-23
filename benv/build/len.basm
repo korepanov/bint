@@ -503,6 +503,7 @@ goto(#finish_end);
 print("");
 UNSET_SOURCE();
 UNSET_DEST();
+DEL_DEST(root_source);
 goto($finish_return_var);
 #finish_end:print("");
 string$len_poses_return_var;
