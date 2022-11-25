@@ -186,7 +186,7 @@ func validateFuncDefinition(command string) (tail string, stat int, err error) {
 }
 
 func validateReturn(command string) (tail string, stat int, err error) {
-	tail, stat = check(`(?m)(?:return)`, command)
+	tail, stat = check(`(?m)(?:^return)`, command)
 	return tail, stat, nil
 }
 
