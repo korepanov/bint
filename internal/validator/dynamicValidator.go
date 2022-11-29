@@ -315,6 +315,25 @@ func dValidateNextCommand(command string, variables [][][]interface{}) (string, 
 	return command, status.No, variables, nil
 }
 
+func dValidateExit(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
+	tail, stat := check(`(?:exit\(.*?\))`, command)
+
+	if status.Yes == stat && `` == tail {
+		tail, _ = check(`(?:exit\()`, command)
+		tail = tail[:len(tail)-1]
+		t, err := getExprType(tail, variables)
+		if nil != err {
+			return ``, status.Err, variables, err
+		}
+		if "int" != t {
+			return ``, status.Err, variables, errors.New("data type mismatch in exit: int and " + t)
+		}
+		return ``, status.Yes, variables, nil
+	}
+
+	return command, status.No, variables, nil
+}
+
 func dValidateSendCommand(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
 	tail, stat := check(`(?:send_command\([[:alpha:]]+[[:alnum:]|_]*\))`, command)
 
@@ -756,7 +775,14 @@ func dValidateElse(command string, variables [][][]interface{}) (string, int, []
 
 func dValidateReturn(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
 	var err error
-	tail, stat := check(`^return[^\=]+`, command)
+	re, err := regexp.Compile(`[^=]=[^=]`)
+	if nil != err {
+		panic(err)
+	}
+	if nil != re.FindIndex([]byte(command)) {
+		return command, status.No, variables, nil
+	}
+	tail, stat := check(`^return.*`, command)
 	if status.Yes == stat && "" == tail {
 		tail = command[6:]
 		if 1 == len(closureHistory) && funcDefinition == closureHistory[0].T {
@@ -1083,6 +1109,16 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 	}
 
 	command, stat, variables, err = dValidateNextCommand(command, variables)
+
+	if nil != err {
+		return variables, err
+	}
+
+	if status.Yes == stat {
+		return variables, nil
+	}
+
+	command, stat, variables, err = dValidateExit(command, variables)
 
 	if nil != err {
 		return variables, err

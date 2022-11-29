@@ -186,7 +186,14 @@ func validateFuncDefinition(command string) (tail string, stat int, err error) {
 }
 
 func validateReturn(command string) (tail string, stat int, err error) {
-	tail, stat = check(`^return[^\=]+`, command)
+	re, err := regexp.Compile(`[^=]=[^=]`)
+	if nil != err {
+		panic(err)
+	}
+	if nil != re.FindIndex([]byte(command)) {
+		return command, status.No, nil
+	}
+	tail, stat = check(`^return.*`, command)
 	if `` == tail {
 		return tail, stat, nil
 	} else {

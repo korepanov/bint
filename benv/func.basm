@@ -325,7 +325,11 @@ inside_vars_stack.push(arg_name);
 #no_args:
 command_len = len(buf);
 [print(""), (command_len > 6), goto(#not_send_return_end)];
-r = reg_find("^return[^\=]+", buf);
+r = reg_find("[^=]=[^=]", buf);
+r.pop(el);
+el.pop(rbuf);
+[print(""), ("end" == rbuf), goto(#not_send_return_end)];
+r = reg_find("^return.*", buf);
 r.pop(el);
 el.pop(rbuf);
 [goto(#not_send_return_end), ("end" == rbuf), print("")];
