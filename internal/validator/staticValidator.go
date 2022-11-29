@@ -206,7 +206,7 @@ func validateFigureBrace(command string) (tail string, stat int, err error) {
 }
 
 func validateVarDef(command string) (tail string, stat int, err error) {
-	tail, stat = check(`(?m)(?:(int|float|bool|string|stack)[[:alnum:]|_]*)`, command)
+	tail, stat = check(`(?m)(?:(int|float|bool|string|stack)[[:alpha:]][[:alnum:]|_]*)`, command)
 	if status.Yes == stat && `` == tail {
 		return tail, stat, nil
 	}
