@@ -254,6 +254,19 @@ int func_call(string fname, string command){
 		pos = -1;
 	}else{
 		pos = int(buf);
+		if (pos > 0){
+			int prev;
+			bool L;
+			bool D;
+			string symbol;
+			prev = (pos - 1);
+			symbol = command[pos];
+			L = is_letter(symbol);
+			D = is_digit(symbol);
+			if (((L)OR(D))OR("_" == symbol)){
+				pos = -1;			
+			};
+		};
 	};
 	
 	
