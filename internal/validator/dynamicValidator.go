@@ -756,7 +756,7 @@ func dValidateElse(command string, variables [][][]interface{}) (string, int, []
 
 func dValidateReturn(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
 	var err error
-	tail, stat := check(`(?m)(?:return)`, command)
+	tail, stat := check(`^return[[:alpha:]][[:alnum:]|_]*`, command)
 	if status.Yes == stat {
 		if 1 == len(closureHistory) && funcDefinition == closureHistory[0].T {
 			wasRet = true
