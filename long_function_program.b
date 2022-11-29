@@ -1,0 +1,13 @@
+intt;
+voidT(){print("");
+[print(""),(NOT(False)),goto(#_cond0_end)];
+print("smth\n");
+#_cond0_end:print("");
+print("");
+};
+print("");
+voidmain(){print("");
+T();
+};
+print("");
+main();
