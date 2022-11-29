@@ -186,8 +186,12 @@ func validateFuncDefinition(command string) (tail string, stat int, err error) {
 }
 
 func validateReturn(command string) (tail string, stat int, err error) {
-	tail, stat = check(`^return[[:alpha:]][[:alnum:]|_]*`, command)
-	return tail, stat, nil
+	tail, stat = check(`^return[^\=]+`, command)
+	if `` == tail {
+		return tail, stat, nil
+	} else {
+		return command, status.No, nil
+	}
 }
 
 func validateFigureBrace(command string) (tail string, stat int, err error) {

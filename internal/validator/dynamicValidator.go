@@ -756,8 +756,9 @@ func dValidateElse(command string, variables [][][]interface{}) (string, int, []
 
 func dValidateReturn(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
 	var err error
-	tail, stat := check(`^return[[:alpha:]][[:alnum:]|_]*`, command)
-	if status.Yes == stat {
+	tail, stat := check(`^return[^\=]+`, command)
+	if status.Yes == stat && "" == tail {
+		tail = command[6:]
 		if 1 == len(closureHistory) && funcDefinition == closureHistory[0].T {
 			wasRet = true
 		}
@@ -777,6 +778,8 @@ func dValidateReturn(command string, variables [][][]interface{}) (string, int, 
 			return tail, status.Err, variables,
 				errors.New("data type mismatch in func definition and return statement: " + retVal + " and " + exprType)
 		}
+	} else {
+		stat = status.No
 	}
 	return "", stat, variables, nil
 }

@@ -22,8 +22,10 @@ stack len_poses(string command){
 	stack null; 
 	int pos;
 	int epos;
+	string find;
 
-	s = ops(command, "len");
+	find = "len(";
+	s = ops(command, find);
 	string buf;
 	s.pop(buf);
 	

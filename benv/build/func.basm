@@ -19,6 +19,8 @@ string dest;
 int int_buf;
 int int_buf2;
 int int_buf3; 
+int int_buf4;
+int int_buf5;
 int type_len;
 int arg_type_len;
 int func_begin;
@@ -323,10 +325,14 @@ inside_vars_stack.push(arg_name);
 #no_args:
 command_len = len(buf);
 [print(""), (command_len > 6), goto(#not_send_return_end)];
-r = reg_find("^return[[:alpha:]][[:alnum:]|_]*", buf);
+r = reg_find("^return[^\=]+", buf);
 r.pop(el);
 el.pop(rbuf);
 [goto(#not_send_return_end), ("end" == rbuf), print("")];
+el.pop(rbuf);
+int_buf4 = int(rbuf);
+int_buf5 = len(buf);
+[print(""), (int_buf4 == int_buf5), goto(#not_send_return_end)];
 [goto(#not_send_return), ("return" == buf[0:6]), goto(#not_send_return_end)];
 #not_send_return:
 buf = buf[6:command_len];
