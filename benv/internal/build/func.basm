@@ -11,6 +11,7 @@ string buf;
 string buf2;
 string buf3; 
 string buf4;
+string rbuf;
 string symbol; 
 string $reverse_ret;
 string indexes_ret;
@@ -46,6 +47,8 @@ stack inside_vars_stack;
 stack inside_vars_stack_reserv;
 stack null;
 stack undefined_args;
+stack r;
+stack el;
 bool is_first;
 bool was_func;
 bool was_here; 
@@ -320,6 +323,10 @@ inside_vars_stack.push(arg_name);
 #no_args:
 command_len = len(buf);
 [print(""), (command_len > 6), goto(#not_send_return_end)];
+r = reg_find("^return[[:alpha:]][[:alnum:]|_]*", buf);
+r.pop(el);
+el.pop(rbuf);
+[goto(#not_send_return_end), ("end" == rbuf), print("")];
 [goto(#not_send_return), ("return" == buf[0:6]), goto(#not_send_return_end)];
 #not_send_return:
 buf = buf[6:command_len];
@@ -365,7 +372,6 @@ next_command(buf);
 
 goto(#inside_args);
 #inside_args_end:
-
 [print(""), ("void" == return_type), goto(#define_return_end)];
 
 

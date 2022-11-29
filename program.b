@@ -9,7 +9,6 @@ int calc(int a){
 	res = (a + a);
 	return res;
 };
-
 void main(){
 	int res;
 	t = 10; 
