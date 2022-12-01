@@ -1,15 +1,12 @@
-int factorial(int n){
-	if (0 == n){
-		return 1;	
+int t;
+
+void T(){
+	if (NOT(False)){
+		print("smth\n");
 	};
-	return (n * factorial(n - 1));
+};
+void main(){
+	T(); 
 };
 
-void main(){
-	int res;
-	res = factorial(5);
-	string buf;
-	buf = str(res);
-	print(buf);
-	print("\n");
-};
+main();

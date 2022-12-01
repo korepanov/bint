@@ -8,7 +8,7 @@ void init(){
 	first_file = True;
 	br_closed = 0;
 	br_opened = 0;
-	root_source = "long_function_program.b";
+	root_source = "benv/long_function_program.b";
 	SET_SOURCE(root_source);
 	SET_DEST("benv/recurs_program.b");
 };
@@ -260,7 +260,7 @@ int func_call(string fname, string command){
 			bool D;
 			string symbol;
 			prev = (pos - 1);
-			symbol = command[pos];
+			symbol = command[prev];
 			L = is_letter(symbol);
 			D = is_digit(symbol);
 			if (((L)OR(D))OR("_" == symbol)){
@@ -268,7 +268,6 @@ int func_call(string fname, string command){
 			};
 		};
 	};
-	
 	
 	return pos;
 };
@@ -757,7 +756,7 @@ void main(){
 	};
 
 	clear_files();
-	//DEL_DEST(root_source);
+	DEL_DEST(root_source);
 	
 };
 
