@@ -335,7 +335,7 @@ func dValidateExit(command string, variables [][][]interface{}) (string, int, []
 }
 
 func dValidateSendCommand(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
-	tail, stat := check(`(?:send_command\([[:alpha:]]+[[:alnum:]|_]*\))`, command)
+	tail, stat := check(`(?:send_command\(.*?\))`, command)
 
 	if status.Yes == stat && `` == tail {
 		tail, _ = check(`(?:send_command\()`, command)
