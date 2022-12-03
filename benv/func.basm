@@ -19,6 +19,8 @@ string $reverse_ret;
 string $func_call_index_ret; 
 string indexes_ret;
 string dest;
+string init_buf;
+int init_buf_len; 
 int int_buf;
 int int_buf2;
 int int_buf3; 
@@ -26,6 +28,7 @@ int int_buf4;
 int int_buf5;
 int int_buf6;
 int int_buf7;
+int int_buf8;
 int type_len;
 int arg_type_len;
 int func_begin;
@@ -458,16 +461,26 @@ buf = command;
 br_number = (func_pos + func_name_len);
 left_border = (br_number + 1);
 buf2 = buf;
+init_buf = buf; 
+init_buf_len = len(init_buf); 
+
+push(br_number);
+push(buf);
+$func_end_res="#subfunc1";
+goto(#func_end_func);
+#subfunc1:
+pop(int_buf8);
 
 #call_start:
 [goto(#call_end), ("" == buf), print("")];
 comma_pos = index(buf, ",");
-print(buf);
-print("\n");
-string temp;
-temp = str(comma_pos);
-print(temp);
-print("\n");
+buf_len = len(buf);
+int_buf8 = (int_buf8 - (init_buf_len - buf_len));
+[goto(#call_end), (int_buf8 < 0), print("")];
+
+[goto(#not_subfunc), (comma_pos < int_buf8), print("")];
+comma_pos = int_buf8;
+#not_subfunc:
 [print(""), (-1 == comma_pos), goto(#comma_end)];
 buf_len = len(buf);
 comma_pos = (buf_len - 1);
