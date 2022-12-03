@@ -1,3 +1,4 @@
+
 string command;
 int i;
 int j;
@@ -65,7 +66,6 @@ string temp_buf;
 string $func_end_res;
 string $ops_ret;
 string deb;
-
 is_first = True;
 was_here = False;
 undefine_checked = False;
@@ -76,7 +76,6 @@ source = root_source;
 dest = "benv/func_program.b";
 SET_DEST(dest);
 next_command(command);
-
 #again_begin:
 i = 0;
 j = 0;
@@ -110,13 +109,9 @@ buf_stack_reserv = null;
 buf_stack2 = null;
 inside_vars_stack = null;
 inside_vars_stack_reserv = null;
-
-
 call_number = 0; 
-
 #begin:
 [goto(#again_end), ("end" == command), print("")];
-
 void_flag = False; 
 br_number = index(command, "(");
 [goto(#command_end), (-1 == br_number), print("")];
@@ -150,7 +145,6 @@ buf = (("string $" + func_name) + "_return_var");
 send_command(buf);
 left_border = (br_number + 1);
 was_func = True;
-
 buf = (((return_type + " $") + func_name) + "_res");
 [goto(#not_define_void_end), (void_flag), print("")];
 send_command(buf);
@@ -180,11 +174,9 @@ number = index(command[left_border:right_border], "string");
 [print(""), (-1 == number), goto(#arg_type_end)];
 arg_type = "no_args";
 goto(#func_end);
-
 #arg_type_end:
 arg_type_len = len(arg_type);
 command_len = len(command);
-
 command = command[right_border:command_len];
 comma_pos = index(command, ",");
 [print(""), (-1 == comma_pos), goto(#br_end)];
@@ -202,12 +194,10 @@ left_border = 0;
 right_border = index(command, ",");
 [print(""), (-1 == right_border), goto(#func_args)];
 right_border = 3;
-
 goto(#func_args);
 #func_end:
 command_len = len(command);
 buf = command[1:command_len];
-
 command = "goto(#";
 command = (command + func_name);
 command = (command + "_end)");
@@ -227,7 +217,6 @@ send_command(command);
 #not_send_pass_args:
 command = "";
 [print(""), ("end" == arg_type), goto(#args_to_pass)];
-
 fig_br_number = index(buf, "{");
 [print(""), (-1 == fig_br_number), goto(#not_send_fig_br)];
 send_command(buf);
@@ -249,7 +238,6 @@ send_command(command);
 command = "";
 goto(#pop_start);
 #pop_end:
-
 [goto(#check_undefine_end0), (undefine_checked), print("")];
 undefine_checked = True;
 #check_begin:
@@ -273,14 +261,11 @@ SET_DEST(dest);
 next_command(command);
 goto(#again_begin);
 #check_undefine_end0:
-
 undefine_checked = False;
 left_border = 0;
-
 #inside_args:
 limit_border = len(buf);
 limit_border = (limit_border - 1);
-
 [goto(#inside_args_end), (buf == "}"), print("")];
 arg_type = "int";
 right_border = (left_border + 3);
@@ -313,7 +298,6 @@ arg_type = "no_args";
 type_len = len(arg_type); 
 command_len = len(buf);
 arg_name = buf[type_len:command_len];
-
 $in_stack_ret="#undef_ret";
 user_stack.push(arg_name);
 push(undefined_args);
@@ -343,8 +327,6 @@ buf = buf[6:command_len];
 buf = ((("push(") + buf) + ")");
 send_command(buf);
 next_command(buf);
-
-
 #pop_args_start0:
 inside_vars_stack.pop(arg_name);
 [goto(#pop_args_end0), ("end" == arg_name), print("")];
@@ -355,7 +337,6 @@ inside_vars_stack_reserv.push(arg_name);
 #not_send0:
 goto(#pop_args_start0);
 #pop_args_end0:
-
 arg_name = "";
 #undefine_start0:
 [goto(#undefine_end0), ("end" == arg_name), print("")];
@@ -373,19 +354,13 @@ buf_stack_reserv = null;
 arg_name = "";
 command = (("goto($" + func_name) + "_return_var)");
 send_command(command);
-
 goto(#inside_args);
 #not_send_return_end:
-
 send_command(buf);
 next_command(buf);
-
 goto(#inside_args);
 #inside_args_end:
 [print(""), ("void" == return_type), goto(#define_return_end)];
-
-
-
 #pop_args_start:
 inside_vars_stack.pop(arg_name);
 [goto(#pop_args_end), ("end" == arg_name), print("")];
@@ -396,7 +371,6 @@ inside_vars_stack_reserv.push(arg_name);
 #not_send:
 goto(#pop_args_start);
 #pop_args_end:
-
 arg_name = "";
 #undefine_start:
 [goto(#undefine_end), ("end" == arg_name), print("")];
@@ -412,14 +386,10 @@ buf_stack = buf_stack_reserv;
 arg_name = "";
 command = (("goto($" + func_name) + "_return_var)");
 send_command(command);
-
-
 #define_return_end:
 print("");
-
 inside_vars_stack = null;
 buf_stack = null;
-
 next_command(command);
 command = ((("#" + (func_name + "_end:")) + "\n") + command);
 send_command(command);
@@ -428,7 +398,6 @@ i = 0;
 command_len = len(command); 
 func_name_len = len(func_name);
 func_name_br = (func_name + "(");
-
 #start_entry: 
 [goto(#again_end), ("end" == command), print("")];
 number = index(command, func_name_br);
@@ -439,17 +408,14 @@ goto(#func_call_index);
 #func_call_index_ret:
 pop(func_pos);
 [goto(#mod_end), (-1 == func_pos), print("")];
-
 number = (number + func_name_len);
 buf4 = command[number];
 number = (number - func_name_len); 
 [print(""), ("(" == buf4), goto(#mod_end)];
-
 buf = command;
 br_number = index(buf, "(");
 left_border = (br_number + 1);
 buf2 = buf;
-
 #call_start:
 [goto(#call_end), ("" == buf), print("")];
 comma_pos = index(buf, ",");
@@ -497,7 +463,6 @@ buf = (((buf + "$") + func_name) + "_res");
 buf2 = buf3[func_end:command_len];
 buf = (buf + buf2);
 #nothing:
-
 [print(""),(void_flag), goto(#set_buf_nop_end)];
 buf="print(\"\")";
 #set_buf_nop_end:
@@ -518,12 +483,10 @@ send_command(command);
 #send_void_mark_end:
 command = buf; 
 call_number = (call_number + 1);
-
 #mod_end:
 send_command(command);
 next_command(command);
 goto(#start_entry);
-
 #end_entry:
 print("");
 #command_end:
@@ -558,12 +521,10 @@ DEL_DEST("benv/recurs_program.b");
 UNSET_SOURCE();
 UNSET_DEST();
 exit(0);
-
 #reverse:
 string buf;
 stack res; 
 stack s;
-
 pop(s);
 s.pop(buf);
 #reverse_s:
@@ -577,8 +538,6 @@ UNDEFINE(buf);
 UNDEFINE(res);
 UNDEFINE(s);
 goto($reverse_ret);
-
-
 #look_behind:
 stack st;
 stack this;
@@ -588,11 +547,9 @@ int pos;
 string symbol;
 string reg;
 string s;
-
 pop(reg);
 pop(s);
 st = reg_find(reg, s);
-
 #look_behind_s:
 st.pop(this);
 this.pop(buf);
@@ -621,7 +578,6 @@ UNDEFINE(symbol);
 UNDEFINE(reg);
 UNDEFINE(s);
 goto(#look_behind_ret);
-
 #indexes:
 stack res;
 	
@@ -632,7 +588,6 @@ int s_len_old;
 int sub_len;
 string s;
 string sub_s;
-
 pop(s);
 pop(sub_s);
 s_len = len(s);
@@ -670,7 +625,6 @@ UNDEFINE(sub_len);
 UNDEFINE(s);
 UNDEFINE(sub_s);
 goto(indexes_ret);
-
 #func_call_index:
 string reg;
 stack st;
@@ -682,12 +636,9 @@ bool letter;
 bool digit;
 string command;
 string func_name;
-
 pop(command);
 pop(func_name);
-
 reg = (("(?:" + func_name) + ")");
-
 push(reg);
 push(command);
 goto(#look_behind);
@@ -716,15 +667,12 @@ UNDEFINE(func_name);
 push(-1);
 goto(#func_call_index_ret);
 #is_found:
-
 ist.pop(buf);
-
 [print("func_call_index ERROR\n"), ("end" == buf), print("")];
 	
 res = int(buf);
 letter = is_letter(symbol);
 digit = is_digit(symbol);	
-
 [print(""), (NOT((((letter)OR(digit))OR("_" == symbol))OR("$" == symbol))), goto(#not_func)];
 push(res);
 UNDEFINE(reg);
@@ -742,15 +690,11 @@ goto(#func_call_index_ret);
 goto(#func_call_index_s);
 #end_func:
 print("");
-
-
-
 #in_stack:
 stack s;
 string el;
 string buf;
 bool res;
-
 pop(s);
 pop(el);
 res = False;
@@ -770,8 +714,6 @@ UNDEFINE(el);
 UNDEFINE(buf);
 UNDEFINE(res);
 goto($in_stack_ret);
-
-
 #ops:
 string command;
 string op;
@@ -787,24 +729,19 @@ int num2;
 int op_num;
 bool was_quote;
 bool to_add;
-
 was_quote = False;
 to_add = True;
-
 push(op);
 push(command);
-
 indexes_ret="#_idx";
 goto(#indexes);
 #_idx:
 pop(op_nums);
 op_nums.pop(buf);
-
 #_op_nums_s:
 [goto(#_op_nums_e), ("end" == buf), print("")];
 op_num = int(buf);
 quotes = reg_find("\"(\\.|[^\"])*\"", command);
-
 #_quotes_s:
 quotes.pop(these_quotes);
 these_quotes.pop(buf);
@@ -854,8 +791,6 @@ UNDEFINE(op_num);
 UNDEFINE(was_quote);
 UNDEFINE(to_add);
 goto($ops_ret);
-
-
 #func_end_func:
 string command;
 int func_begin;
@@ -872,28 +807,24 @@ int pos;
 string spos;
 int command_len;
 bool stack_res;
-
 command_len = len(command);
 obrace = "(";
 cbrace = ")";
 o_sum = 1;
 c_sum = 0;
 pos = (func_begin + 1);
-
 $ops_ret = "#_fe";
 push(obrace);
 push(command);
 goto(#ops); 
 #_fe:
 pop(obraces);
-
 $ops_ret = "#_fe2";
 push(cbrace);
 push(command);
 goto(#ops); 
 #_fe2:
 pop(cbraces);
-
 #_braces_s:
 [print(""), (pos < command_len), goto(#_braces_e)];
 spos = str(pos);
@@ -934,6 +865,3 @@ UNDEFINE(spos);
 UNDEFINE(command_len);
 UNDEFINE(stack_res);
 goto($func_end_res);
-
-
-

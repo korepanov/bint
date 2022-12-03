@@ -87,22 +87,57 @@ stack look_behind(string reg, string s){
 	res.push(symbol);
 	goto(#look_behind_s);
 	#look_behind_e:
-	return reverse(res);
+	res = reverse(res);
+	return res;
+};
+
+stack look_ahead(string reg, string s){
+	stack st;
+	stack this;
+	stack res;  
+	string buf;
+	int pos;
+	string symbol;
+	int last_pos;
+
+	st = reg_find(reg, s);
+	last_pos = len(s);
+	last_pos = (last_pos - 1);
+
+	#look_ahead_s:
+	st.pop(this);
+	this.pop(buf);
+	this.pop(buf);
+	[goto(#look_ahead_e), ("end" == buf), print("")];
+	pos = int(buf);
+	[print(""), (last_pos == pos), goto(#ais_not_zero)];
+	res.push("$");
+	goto(#look_ahead_s);
+	#ais_not_zero:
+	symbol = s[pos];
+	res.push(symbol);
+	goto(#look_ahead_s);
+	#look_ahead_e:
+	res = reverse(res);
+	return res; 
 };
 
 int func_call_index(string command, string func_name){
 	string reg;
 	stack st;
+	stack st2;
 	stack ist;
 	int res;
 	string buf;
 	string symbol;
+	string symbol2;
 	bool letter;
 	bool digit;
-
+	
 	reg = (("(?:" + func_name) + ")");
 
 	st = look_behind(reg, command);
+	st2 = look_ahead(reg, command);
 	ist = indexes(command, func_name);
 	
 	#func_call_index_s:
@@ -111,19 +146,31 @@ int func_call_index(string command, string func_name){
 	if ("end" == symbol){
 		return -1;	
 	};
+	
+	st2.pop(symbol2);
+	
+	if ("end" == symbol2){
+		print("long_function: func_call_index: ERROR\n");
+		exit(1);
+	};
 
 	ist.pop(buf);
-
+	
 	if ("end" == buf){
-		print("func_call_index ERROR\n");	
+		print("func_call_index ERROR\n");
+		exit(1);	
 	}; 
 
 	res = int(buf);
 	letter = is_letter(symbol);
 	digit = is_digit(symbol);	
-
+	
 	if (NOT(((letter)OR(digit))OR("_" == symbol))){
-		return res;		
+		letter = is_letter(symbol2);
+		digit = is_digit(symbol2);
+		if (NOT(((letter)OR(digit))OR("_" == symbol2))){
+			return res;		
+		};
 	};
 
 	goto(#func_call_index_s);
@@ -373,7 +420,7 @@ void replace(){
 	replaced_command = command;
 	itemp = len(command);
 	stemp_len = 0;
-
+	
 	#pop_func_pos_start:
 	[goto(#pop_func_pos_end), ("end" == sleft_border), print("")];
 	left_border = int(sleft_border);

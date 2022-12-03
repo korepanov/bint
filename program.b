@@ -8,7 +8,7 @@ int sum2(int a, int b){
 
 void main(){
 	int res;
-	res = sum2(sum(1, 2), 3);
+	res = sum(sum2(1, 2), 3);
 	string buf;
 	buf = str(res);
 	print(buf);
