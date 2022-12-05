@@ -94,6 +94,7 @@ func sysGetExprType(command string, variables [][][]interface{}) (string, error)
 
 	exprList, allVariables, err = lexer.LexicalAnalyze(command,
 		allVariables, false, nil, false, nil)
+
 	if nil != err {
 		return "", err
 	}
@@ -635,6 +636,12 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 		for _, loc := range locs {
 			_, variables[len(variables)-1], err = lexer.LexicalAnalyze(tail[loc[0]:loc[1]],
 				variables[len(variables)-1], false, nil, false, nil)
+			if "int" == variables[len(variables)-1][len(variables[len(variables)-1])-1][0] {
+				variables[len(variables)-1][len(variables[len(variables)-1])-1][2] = "1"
+			}
+			if "float" == variables[len(variables)-1][len(variables[len(variables)-1])-1][0] {
+				variables[len(variables)-1][len(variables[len(variables)-1])-1][2] = "0.1"
+			}
 		}
 
 		tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void)[[:alnum:]|_]*?\`+
@@ -708,6 +715,12 @@ func dValidateVarDef(command string, variables [][][]interface{}) (string, int, 
 			variables[len(variables)-1], false, nil, false, nil)
 		if nil != err {
 			return tail, status.Err, variables, err
+		}
+		if "int" == variables[len(variables)-1][len(variables[len(variables)-1])-1][0] {
+			variables[len(variables)-1][len(variables[len(variables)-1])-1][2] = "1"
+		}
+		if "float" == variables[len(variables)-1][len(variables[len(variables)-1])-1][0] {
+			variables[len(variables)-1][len(variables[len(variables)-1])-1][2] = "0.1"
 		}
 	}
 	return tail, stat, variables, nil
@@ -801,8 +814,10 @@ func dValidateReturn(command string, variables [][][]interface{}) (string, int, 
 		}
 
 		if retVal != exprType {
-			return tail, status.Err, variables,
-				errors.New("data type mismatch in func definition and return statement: " + retVal + " and " + exprType)
+			if !("float" == retVal && "int" == exprType) {
+				return tail, status.Err, variables,
+					errors.New("data type mismatch in func definition and return statement: " + retVal + " and " + exprType)
+			}
 		}
 	} else {
 		stat = status.No
@@ -1362,7 +1377,7 @@ func DynamicValidate(validatingFile string, rootSource string) {
 	if nil != err {
 		panic(err)
 	}
-	variables[0][1][2] = "0"
+	variables[0][1][2] = "1"
 
 	sourceFile = rootSource
 	COMMAND_COUNTER = 1
