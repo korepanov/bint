@@ -185,6 +185,12 @@ func getExprType(command string, variables [][][]interface{}) (string, error) {
 	e1 := make(chan error, 1)
 
 	go func() {
+		defer func() {
+			if r := recover(); nil != r {
+				c1 <- ""
+				e1 <- errors.New(fmt.Sprintf("%v", r))
+			}
+		}()
 		text, err := sysGetExprType(command, variables)
 		c1 <- text
 		e1 <- err

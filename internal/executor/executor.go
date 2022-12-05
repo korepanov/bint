@@ -458,59 +458,31 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			return LO, systemStack, err
 		}
 
-		if "int" == WhatsType(fmt.Sprintf("%v", LO[0])) {
-			intLO, err := strconv.Atoi(fmt.Sprintf("%v", LO[0]))
-			if nil != err {
-				return LO, systemStack, err
-			}
-
-			if "int" == WhatsType(fmt.Sprintf("%v", RO[0])) {
-				intRO, err := strconv.Atoi(fmt.Sprintf("%v", RO[0]))
-				if nil != err {
-					return LO, systemStack, err
-				}
-
-				return []interface{}{intLO / intRO}, systemStack, nil
-			}
-
-			if "float" == WhatsType(fmt.Sprintf("%v", RO[0])) {
-				floatRO, err := strconv.ParseFloat(fmt.Sprintf("%v", RO[0]), 64)
-				if nil != err {
-					return LO, systemStack, err
-				}
-
-				floatLO, err := strconv.ParseFloat(fmt.Sprintf("%v", LO[0]), 64)
-				if nil != err {
-					return LO, systemStack, err
-				}
-
-				return []interface{}{floatLO / floatRO}, systemStack, nil
-			}
-
-			err = errors.New("executor: / : error: data type mismatch")
-			return LO, systemStack, err
-
-		}
-
-		if "float" == WhatsType(fmt.Sprintf("%v", LO[0])) {
-			floatLO, err := strconv.ParseFloat(fmt.Sprintf("%v", LO[0]), 64)
-
-			if nil != err {
-				return LO, systemStack, err
-			}
-
-			if "float" == WhatsType(fmt.Sprintf("%v", RO[0])) || "int" == WhatsType(fmt.Sprintf("%v", RO[0])) {
-				floatRO, err := strconv.ParseFloat(fmt.Sprintf("%v", RO[0]), 64)
-				if nil != err {
-					return LO, systemStack, err
-				}
-
-				return []interface{}{floatLO / floatRO}, systemStack, nil
-			}
-
-			err = errors.New("executor: / : error: data type mismatch")
+		floatLO, err := strconv.ParseFloat(fmt.Sprintf("%v", LO[0]), 64)
+		if nil != err {
 			return LO, systemStack, err
 		}
+		floatRO, err := strconv.ParseFloat(fmt.Sprintf("%v", RO[0]), 64)
+		if nil != err {
+			return RO, systemStack, err
+		}
+
+		return []interface{}{floatLO / floatRO}, systemStack, nil
+
+	} else if "@" == OP {
+		if !("int" == WhatsType(fmt.Sprintf("%v", LO[0])) && "int" == WhatsType(fmt.Sprintf("%v", RO[0]))) {
+			err := errors.New("executor: @ : error: data type mismatch")
+			return LO, systemStack, err
+		}
+		intLO, err := strconv.Atoi(fmt.Sprintf("%v", LO[0]))
+		if nil != err {
+			return LO, systemStack, err
+		}
+		intRO, err := strconv.Atoi(fmt.Sprintf("%v", RO[0]))
+		if nil != err {
+			return LO, systemStack, err
+		}
+		return []interface{}{intLO / intRO}, systemStack, nil
 	} else if "^" == OP {
 		if ("int" != WhatsType(fmt.Sprintf("%v", LO[0])) && "float" != WhatsType(fmt.Sprintf("%v", LO[0]))) ||
 			("int" != WhatsType(fmt.Sprintf("%v", RO[0])) && "float" != WhatsType(fmt.Sprintf("%v", RO[0]))) {
