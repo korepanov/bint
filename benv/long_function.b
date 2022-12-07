@@ -6,7 +6,7 @@ bool bool_res;
 string root_source;
 
 int init(){
-	root_source = "benv/if_program.b";
+	root_source = "if_program.b";
 	SET_SOURCE(root_source);
 	SET_DEST("benv/long_function_program.b");
 	
@@ -14,7 +14,7 @@ int init(){
 };
 
 int finish(){
-	DEL_DEST(root_source);
+	//DEL_DEST(root_source);
 	return 0;
 };
 
@@ -310,7 +310,8 @@ stack func_ends(string command, stack func_begins, int func_len){
 	func_begins.pop(buf);
 	goto(#func_ends_s);
 	#func_ends_e:
-	return reverse(res);
+	res = reverse(res);
+	return res;
 };
 
 void del_file(bool change_flag){
@@ -434,7 +435,7 @@ void replace(){
 	str_func_entry = str(func_entry);
 	command_to_send = ((((return_type + "$") + func_name) + "_res") + str_func_entry);
 	send_command(command_to_send);
-
+	
 	command_to_send = (((("$" + func_name) +  "_res") + str_func_entry) + "=");
 	func_entry = (func_entry + 1);
 	func_call = command[left_border_reserv:right_border_reserv];
@@ -450,7 +451,8 @@ void replace(){
 	command_to_send = (command_to_send + func_call);
 	
 	send_command(command_to_send);
-	
+	print(command_to_send);
+	print("\n");
 	func_pos_stack.pop(sleft_border);
 	func_ends_stack.pop(sright_border);
 	goto(#pop_func_pos_start);
