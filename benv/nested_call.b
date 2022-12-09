@@ -4,6 +4,7 @@ string func_name;
 stack func_stack;
 bool bool_res;
 string root_source;
+bool was_mod; 
 
 int init(){
 	root_source = "if_program.b";
@@ -452,30 +453,12 @@ void replace(){
 	func_pos_stack = func_calls(command, func_name);	
 	func_ends_stack = func_ends(command, func_pos_stack, func_len);
 	inside_calls_stack = next_inside_call(command, func_pos_stack, func_ends_stack);
-	print(command);
-	print("\n");
-	string buf; 
-	bool was_ins;
-	while (NOT("end" == buf)){
-		inside_calls_stack.pop(buf);
-		print(buf);
-		print("\n");
-		if (NOT("end" == buf)){
-			was_ins = True;		
-		};
-		inside_calls_stack.pop(buf);
-		print(buf);
-		print("\n");
-	};
-
-	if (was_ins){
-		print("");	
-	};
-	exit(1);
-
-	func_pos_stack.pop(sleft_border);
-	func_ends_stack.pop(sright_border);
 	
+	inside_calls_stack.pop(sleft_border);
+	inside_calls_stack.pop(sright_border);
+	if (NOT("end" == sleft_border)){
+		was_mod = True;	
+	};
 	replaced_command = command;
 	itemp = len(command);
 	stemp_len = 0;
@@ -509,9 +492,9 @@ void replace(){
 	command_to_send = (command_to_send + func_call);
 	
 	send_command(command_to_send);
-	func_pos_stack.pop(sleft_border);
-	func_ends_stack.pop(sright_border);
-	goto(#pop_func_pos_start);
+	//func_pos_stack.pop(sleft_border);
+	//func_ends_stack.pop(sright_border);
+	//goto(#pop_func_pos_start);
 	#pop_func_pos_end:
 	send_command(replaced_command);
 	offset = 0;
@@ -543,15 +526,23 @@ void replace(){
 void main(){
 
 	int res; 
-
 	res = init();
 
 	[print(""), (0 == res), print("INIT ERROR\n")];
+	
+	do{
+		was_mod = False;
+		replace();
+		res = finish();
 
-	replace();
-	res = finish();
-
-	[print(""), (0 == res), print("FINISH ERROR\n")];
+		[print(""), (0 == res), print("FINISH ERROR\n")];
+		
+		SET_SOURCE("benv/nested_call_program.b");
+		SET_DEST("benv/nested_call_program2.b");
+	}while(was_mod);
+	
+	UNSET_SOURCE();
+	UNSET_DEST(); 
 };
 
 main(); 
