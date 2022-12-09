@@ -5,9 +5,12 @@ stack func_stack;
 bool bool_res;
 string root_source;
 bool was_mod; 
+stack map;
+stack map_el;
+stack null;
 
 int init(){
-	root_source = "benv/if_program.b";
+	root_source = "if_program.b";
 	SET_SOURCE(root_source);
 	SET_DEST("benv/nested_call_program.b");
 	
@@ -15,7 +18,7 @@ int init(){
 };
 
 int finish(){
-	DEL_DEST(root_source);
+	//DEL_DEST(root_source);
 	return 0;
 };
 
@@ -410,7 +413,7 @@ void replace(int init_func_entry){
 	#replace_s:
 	func_stack.pop(return_type);
 	func_stack.pop(func_name);
-		
+
 	[goto(#replace_e), ("end" == func_name), print("")];
 	
 	#next:
@@ -498,11 +501,17 @@ void replace(int init_func_entry){
 	#pop_func_pos_end:
 	send_command(replaced_command);
 	offset = 0;
+	//command_to_send = (((("UNDEFINE($" + func_name) + "_res") + str_func_entry) + ")");
+	//send_command(command_to_send);
 	goto(#next);
 	#next_end:
 	UNSET_SOURCE();
 	UNSET_DEST();
 	func_stack.pop(func_name);
+	map_el.push(func_entry);
+	map_el.push(func_name);
+	map.push(map_el);
+	map_el = null; 
 	func_entry = init_func_entry;
 	offset = 0;
 	[goto(#replace_e), ("end" == func_name), print("")];
@@ -533,8 +542,7 @@ void main(){
 	
 	do{
 		was_mod = False;
-		replace(func_entry);
-		func_entry = (func_entry + 1); 
+		replace(0);
 		res = finish();
 
 		[print(""), (0 == res), print("FINISH ERROR\n")];

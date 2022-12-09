@@ -17,6 +17,8 @@ print("");
 voidmain(){print("");
 intres;
 res=(sum(1,sum(sum(1, 2),2)) + mul(1,mul(mul(mul(1, 9), 3), 4)));
+intt;
+t=(sum(1,sum(sum(1, 2),2)) + mul(1,mul(mul(mul(1, 9), 3), 4)));
 stringbuf;
 buf=str(res);
 print(buf);
