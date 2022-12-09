@@ -6,7 +6,7 @@ bool bool_res;
 string root_source;
 
 int init(){
-	root_source = "if_program.b";
+	root_source = "benv/if_program.b";
 	SET_SOURCE(root_source);
 	SET_DEST("benv/long_function_program.b");
 	
@@ -14,7 +14,7 @@ int init(){
 };
 
 int finish(){
-	//DEL_DEST(root_source);
+	DEL_DEST(root_source);
 	return 0;
 };
 
@@ -451,8 +451,6 @@ void replace(){
 	command_to_send = (command_to_send + func_call);
 	
 	send_command(command_to_send);
-	print(command_to_send);
-	print("\n");
 	func_pos_stack.pop(sleft_border);
 	func_ends_stack.pop(sright_border);
 	goto(#pop_func_pos_start);
