@@ -16,7 +16,7 @@ int div(int a, int b){
 
 void main(){
 	int res;
-	res = (diff(sum(3, 4), sum(1, 2)) + mul(diff(div(sum(1, 2), 3), 2), -5));
+	res = sum(1, sum(1, 2));
 	string buf;
 	buf = str(res);
 	print(buf);
