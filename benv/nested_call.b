@@ -543,6 +543,7 @@ void main(){
 		SET_DEST("benv/nested_call_program2.b");
 	}while(was_mod);
 	
+	DEL_DEST("benv/nested_call_program2.b");
 	UNSET_SOURCE();
 	UNSET_DEST(); 
 };
