@@ -16,7 +16,7 @@ return(a@b);
 print("");
 voidmain(){print("");
 intres;
-res=sum(1,sum(1,2));
+res=sum(1,sum(sum(1, 2),2));
 stringbuf;
 buf=str(res);
 print(buf);

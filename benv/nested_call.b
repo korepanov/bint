@@ -366,7 +366,7 @@ stack next_inside_call(string command, stack func_pos_stack, stack func_ends_sta
 	return res;
 };
 
-void replace(){
+void replace(int init_func_entry){
 	string command;
 	string command_to_send;
 	string replaced_command;
@@ -399,7 +399,7 @@ void replace(){
 	string arg_type;
 	stack inside_calls_stack;
 
-	func_entry = 0;
+	func_entry = init_func_entry;
 	offset = 0;
 	change_flag = False;
 	was_replace = False;
@@ -503,7 +503,7 @@ void replace(){
 	UNSET_SOURCE();
 	UNSET_DEST();
 	func_stack.pop(func_name);
-	func_entry = 0;
+	func_entry = init_func_entry;
 	offset = 0;
 	[goto(#replace_e), ("end" == func_name), print("")];
 	func_stack.push(func_name);
@@ -525,14 +525,16 @@ void replace(){
 
 void main(){
 
-	int res; 
+	int res;
+	int func_entry; 
 	res = init();
 
 	[print(""), (0 == res), print("INIT ERROR\n")];
 	
 	do{
 		was_mod = False;
-		replace();
+		replace(func_entry);
+		func_entry = (func_entry + 1); 
 		res = finish();
 
 		[print(""), (0 == res), print("FINISH ERROR\n")];
