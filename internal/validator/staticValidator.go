@@ -346,7 +346,7 @@ func validateArithmetic(command string, isOp bool) (tail string, stat int, err e
 			return ``, status.Err, errors.New(`unary minus before variable is not allowed, use expression like (-1)*var`)
 		}
 	}
-	re, err := regexp.Compile(`(?m)(?:\(([[[:alnum:]|_]|\[|])*[+|\-|*|/|^]([[[:alnum:]|_]|\[|])*\))`)
+	re, err := regexp.Compile(`(?m)(?:\(([[[:alnum:]|_]|\[|])*[+|\-|*|/|^|@]([[[:alnum:]|_]|\[|])*\))`)
 	if nil != err {
 		panic(err)
 	}

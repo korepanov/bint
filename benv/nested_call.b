@@ -7,7 +7,7 @@ string root_source;
 bool was_mod; 
 
 int init(){
-	root_source = "if_program.b";
+	root_source = "benv/if_program.b";
 	SET_SOURCE(root_source);
 	SET_DEST("benv/nested_call_program.b");
 	
@@ -15,7 +15,7 @@ int init(){
 };
 
 int finish(){
-	//DEL_DEST(root_source);
+	DEL_DEST(root_source);
 	return 0;
 };
 
