@@ -346,6 +346,12 @@ stack next_inside_call(string command, stack func_pos_stack, stack func_ends_sta
 			int inside_begin;
 			inside_begin = int(buf);
 			if (inside_begin < e){
+				func_ends_stack.pop(buf);
+				if ("end" == buf){
+					print("nested_call: next_inside_call: ERROR\n");
+					exit(1);	
+				};
+				e = int(buf);
 				res.push(e);
 				res.push(inside_begin);
 				return res; 			
@@ -449,17 +455,15 @@ void replace(){
 	print(command);
 	print("\n");
 	string buf; 
-	stack poses;
 	bool was_ins;
 	while (NOT("end" == buf)){
-		inside_calls_stack.pop(poses);
-		poses.pop(buf);
+		inside_calls_stack.pop(buf);
 		print(buf);
 		print("\n");
 		if (NOT("end" == buf)){
 			was_ins = True;		
 		};
-		poses.pop(buf);
+		inside_calls_stack.pop(buf);
 		print(buf);
 		print("\n");
 	};
