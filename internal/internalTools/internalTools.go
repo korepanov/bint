@@ -200,7 +200,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 		} else if options.ExecBasm == toTranslate {
 			//rootSource = "long_function_program.b"
 			//rootDest = "benv/dowhile.basm"
-			rootDest = "program.basm"
+			rootDest = "benv/nested_call.basm"
 			filesListToExecute = []string{rootDest}
 		} else if options.Primitive == toTranslate {
 			rootSource = "bendBenv/func.basm"

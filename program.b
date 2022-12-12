@@ -21,6 +21,10 @@ void main(){
 	buf = str(res);
 	print(buf);
 	print("\n");
+	res = sum(((-1)*5), sum(sum(sum(1, 10), sum(2, 9)), 4));
+	buf = str(res);
+	print(buf);
+	print("\n");
 };
 
 main();
