@@ -70,7 +70,7 @@ is_first = True;
 was_here = False;
 undefine_checked = False;
  
-root_source = "benv/recurs_program.b";
+root_source = "recurs_program.b";
 SET_SOURCE(root_source);
 source = root_source;
 dest = "benv/func_program.b";
@@ -300,6 +300,7 @@ command_len = len(buf);
 arg_name = buf[type_len:command_len];
 $in_stack_ret="#undef_ret";
 user_stack.push(arg_name);
+push(arg_name); 
 push(undefined_args);
 goto(#in_stack);
 #undef_ret:

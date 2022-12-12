@@ -300,6 +300,7 @@ command_len = len(buf);
 arg_name = buf[type_len:command_len];
 $in_stack_ret="#undef_ret";
 user_stack.push(arg_name);
+push(arg_name); 
 push(undefined_args);
 goto(#in_stack);
 #undef_ret:
