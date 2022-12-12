@@ -5,12 +5,9 @@ stack func_stack;
 bool bool_res;
 string root_source;
 bool was_mod; 
-stack map;
-stack map_el;
-stack null;
 
 int init(){
-	root_source = "if_program.b";
+	root_source = "benv/if_program.b";
 	SET_SOURCE(root_source);
 	SET_DEST("benv/nested_call_program.b");
 	
@@ -18,7 +15,7 @@ int init(){
 };
 
 int finish(){
-	//DEL_DEST(root_source);
+	DEL_DEST(root_source);
 	return 0;
 };
 
@@ -337,8 +334,10 @@ stack next_inside_call(string command, stack func_pos_stack, stack func_ends_sta
 	string buf;
 	stack res;
 	func_pos_stack.pop(buf);
+	
 	if (NOT("end" == buf)){
 		func_ends_stack.pop(buf);
+		
 		if ("end" == buf){
 			print("nested_call: next_inside_call: ERROR\n");
 			exit(1);		
@@ -346,6 +345,7 @@ stack next_inside_call(string command, stack func_pos_stack, stack func_ends_sta
 		int e;
 		e = int(buf);
 		func_pos_stack.pop(buf);
+		
 		if (NOT("end" == buf)){
 			int inside_begin;
 			inside_begin = int(buf);
@@ -387,7 +387,6 @@ void replace(int init_func_entry){
 	string symbol;
 	string return_type;
 	int func_entry;
-	string str_func_entry;
 	string sleft_border;
 	string sright_border;
 	int left_border;
@@ -401,9 +400,12 @@ void replace(int init_func_entry){
 	int stemp_len;
 	string arg_type;
 	stack inside_calls_stack;
+	bool was_nest;
+	stack command_stack;
 
 	func_entry = init_func_entry;
 	offset = 0;
+	
 	change_flag = False;
 	was_replace = False;
 	func_stack = get_funcs();
@@ -413,7 +415,7 @@ void replace(int init_func_entry){
 	#replace_s:
 	func_stack.pop(return_type);
 	func_stack.pop(func_name);
-
+	
 	[goto(#replace_e), ("end" == func_name), print("")];
 	
 	#next:
@@ -452,6 +454,8 @@ void replace(int init_func_entry){
 	send_command(command);
 	goto(#next);
 	#to_next_end:
+	print("");
+	#another_nest:
 	
 	func_pos_stack = func_calls(command, func_name);	
 	func_ends_stack = func_ends(command, func_pos_stack, func_len);
@@ -459,8 +463,17 @@ void replace(int init_func_entry){
 	
 	inside_calls_stack.pop(sleft_border);
 	inside_calls_stack.pop(sright_border);
+	
 	if (NOT("end" == sleft_border)){
 		was_mod = True;	
+	}else{
+		if (was_mod){
+			was_mod = False;
+			goto(#pop_func_pos_end);		
+		}else{
+			send_command(command);
+			goto(#next);
+		};
 	};
 	replaced_command = command;
 	itemp = len(command);
@@ -476,43 +489,54 @@ void replace(int init_func_entry){
 	left_border = (left_border + offset);
 	right_border = (right_border + offset);
 
-	str_func_entry = str(func_entry);
-	command_to_send = ((((return_type + "$") + func_name) + "_res") + str_func_entry);
-	send_command(command_to_send);
+	if (NOT(was_nest)){
+		command_to_send = (((return_type + "$") + func_name) + "_nest");
+		send_command(command_to_send);
+		was_nest = True; 
+	};
 	
-	command_to_send = (((("$" + func_name) +  "_res") + str_func_entry) + "=");
+	command_to_send = ((("$" + func_name) +  "_nest") + "=");
 	func_entry = (func_entry + 1);
 	func_call = command[left_border_reserv:right_border_reserv];
 	left_part = replaced_command[0:left_border];
 	right_part = replaced_command[right_border:itemp];
 	
-	replaced_command = (((((left_part + "$") + func_name) + "_res") + str_func_entry) + right_part); 
-	stemp = ((("$" + func_name) + "_res") + str_func_entry);
+	replaced_command = ((((left_part + "$") + func_name) + "_nest") + right_part); 
+	stemp = (("$" + func_name) + "_nest");
 	stemp_len = len(stemp);
 	offset = (offset + (stemp_len - (right_border - left_border)));
 	temp = str(offset);
 	itemp = len(replaced_command);
 	command_to_send = (command_to_send + func_call);
 	
-	send_command(command_to_send);
+	command_stack.push(replaced_command);
+	command = command_to_send;
+	offset = 0; 
+	goto(#another_nest);
 	//func_pos_stack.pop(sleft_border);
 	//func_ends_stack.pop(sright_border);
 	//goto(#pop_func_pos_start);
 	#pop_func_pos_end:
-	send_command(replaced_command);
+	//send_command(replaced_command);
+	send_command(command_to_send);
+	command_stack.pop(replaced_command);
+
+	while(NOT("end" == replaced_command)){
+		send_command(replaced_command);
+		command_stack.pop(replaced_command);
+	};
+	
+	command_to_send = ((("UNDEFINE($" + func_name) + "_nest") + ")");
+	send_command(command_to_send);
 	offset = 0;
-	//command_to_send = (((("UNDEFINE($" + func_name) + "_res") + str_func_entry) + ")");
-	//send_command(command_to_send);
+	func_entry = init_func_entry; 
+	was_nest = False; 
 	goto(#next);
 	#next_end:
 	UNSET_SOURCE();
 	UNSET_DEST();
 	func_stack.pop(func_name);
-	map_el.push(func_entry);
-	map_el.push(func_name);
-	map.push(map_el);
-	map_el = null; 
-	func_entry = init_func_entry;
+	
 	offset = 0;
 	[goto(#replace_e), ("end" == func_name), print("")];
 	func_stack.push(func_name);
@@ -540,8 +564,8 @@ void main(){
 
 	[print(""), (0 == res), print("INIT ERROR\n")];
 	
-	do{
-		was_mod = False;
+	//do{
+		//was_mod = False;
 		replace(0);
 		res = finish();
 
@@ -549,7 +573,7 @@ void main(){
 		
 		SET_SOURCE("benv/nested_call_program.b");
 		SET_DEST("benv/nested_call_program2.b");
-	}while(was_mod);
+	//}while(was_mod);
 	
 	DEL_DEST("benv/nested_call_program2.b");
 	UNSET_SOURCE();
