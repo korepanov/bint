@@ -576,6 +576,45 @@ func dValidateStr(command string, variables [][][]interface{}) (string, [][][]in
 	return tail, variables, nil
 }
 
+func dValidateIndex(command string, variables [][][]interface{}) (string, [][][]interface{}, error) {
+	tail := command
+	re, err := regexp.Compile(`index\(`)
+	if nil != err {
+		panic(err)
+	}
+	if nil != re.FindIndex([]byte(tail)) {
+		var poses [][]int
+		poses = re.FindAllIndex([]byte(tail), -1)
+		var replacerArgs []string
+		for _, pos := range poses {
+			exprEnd, err := getExprEnd(tail, pos[1]-1)
+			if nil != err {
+				return tail, variables, err
+			}
+			t, err := getExprType(tail[pos[0]+6:pos[0]+6+strings.Index(tail[pos[0]+6:exprEnd-1], ",")], variables)
+			if nil != err {
+				return tail, variables, err
+			}
+			if "string" != t {
+				return tail, variables, errors.New("data type mismatch: first argument in index: str and " + t)
+			}
+			t, err = getExprType(tail[pos[0]+6+strings.Index(tail[pos[0]+6:exprEnd-1], ",")+1:exprEnd-1], variables)
+			if nil != err {
+				return tail, variables, err
+			}
+			if "string" != t {
+				return tail, variables, errors.New("data type mismatch: second argument in index: str and " + t)
+			}
+			replacerArgs = append(replacerArgs, tail[pos[0]:exprEnd])
+			replacerArgs = append(replacerArgs, `$ival`)
+		}
+
+		r := strings.NewReplacer(replacerArgs...)
+		tail = r.Replace(tail)
+	}
+	return tail, variables, nil
+}
+
 func dValidateLen(command string, variables [][][]interface{}) (string, [][][]interface{}, error) {
 	tail := command
 	re, err := regexp.Compile(`len\(`)
@@ -1090,6 +1129,11 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 	}
 
 	command, variables, err = dValidateStr(command, variables)
+	if nil != err {
+		return variables, err
+	}
+
+	command, variables, err = dValidateIndex(command, variables)
 	if nil != err {
 		return variables, err
 	}

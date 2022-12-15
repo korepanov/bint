@@ -1,8 +1,9 @@
 void main(){
-	int c;
-	c = 5;
 	string buf;
-	buf = (str(c) + str(c));
+	buf = "Hello world!";
+	int res;
+	res = (index(buf, "world") + index(buf, "lo"));
+	buf = str(res);
 	print(buf);
 	print("\n");
 };
