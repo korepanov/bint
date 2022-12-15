@@ -128,6 +128,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/internal/build/recurs",
 					"benv/internal/build/func",
 					"benv/internal/build/len",
+					"benv/internal/build/str",
 					"benv/internal/build/print_format"}
 
 			} else {
@@ -159,6 +160,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/build/recurs",
 					"benv/build/func",
 					"benv/build/len",
+					"benv/build/str",
 					"benv/build/print_format"}
 			} else {
 				filesListToExecute = []string{"benv/import.basm",
@@ -171,7 +173,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/print_format.basm"}
 			}
 		} else if options.Transpile == toTranslate {
-			rootSource = "benv/internal/build/nested_call.basm"
+			rootSource = "benv/internal/build/print_format.basm"
 			rootDest = "benv/internal/build/main.go"
 
 			source, err := os.Open("benv/build/pattern.p")
