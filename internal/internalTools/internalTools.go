@@ -131,6 +131,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/internal/build/str",
 					"benv/internal/build/index",
 					"benv/internal/build/is_letter",
+					"benv/internal/build/is_digit",
 					"benv/internal/build/print_format"}
 
 			} else {
@@ -165,6 +166,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/build/str",
 					"benv/build/index",
 					"benv/build/is_letter",
+					"benv/build/is_digit",
 					"benv/build/print_format"}
 			} else {
 				filesListToExecute = []string{"benv/import.basm",
