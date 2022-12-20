@@ -1,11 +1,10 @@
 void main(){
-	bool b;
-	
-	if (exists("test.txt")){
-		print("YES\n");	
-	}else{
-		print("NO\n");	
-	};
+	string s;
+	s = "Hello";
+	string t;
+	t = s[(0 + 1)];
+	print(t);
+	print("\n");	
 };
 
 main();
