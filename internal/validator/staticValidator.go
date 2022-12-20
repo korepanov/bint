@@ -433,7 +433,7 @@ func validateUserStackCall(command string) (tail string, stat int, err error) {
 		return tail, stat, err
 	}
 
-	tail, stat = check(`(?:[[:alpha:]]+[[:alnum:]|_]*\.pop\([[:alpha:]]+[[:alnum:]|_]*\))`, command)
+	tail, stat = check(`(?:[[:alpha:]]+[[:alnum:]|_|\(|\)|,]*\.pop\([[:alpha:]]+[[:alnum:]|_]*\))`, command)
 	if status.Yes == stat && `` == tail {
 		return tail, stat, err
 	}
@@ -1023,6 +1023,12 @@ func validateCommand(command string) error {
 	}
 
 	tail, stat, err = validateStandardFuncCall(command, "index", 2, true)
+
+	if nil != err {
+		return err
+	}
+
+	tail, stat, err = validateStandardFuncCall(command, "reg_find", 2, true)
 
 	if nil != err {
 		return err

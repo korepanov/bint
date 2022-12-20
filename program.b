@@ -1,15 +1,15 @@
 void main(){
-	bool res; 
 	string s;
+	string re;
+	int t;
+	stack r;
 
-	s = "2";
-	string s2;
-	s2 = "3";
-	res = ((is_digit(s))AND(is_digit(s2)));
-	string buf;
-	buf = str(res);
-	print(buf);
-	print("\n"); 
+	re="lo.*";
+	s = "Hello world!\n";
+	r = reg_find(re, s);
+	s = str(t);
+	print(s);
+	print("\n");
 };
 
 main();

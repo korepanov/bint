@@ -711,6 +711,46 @@ func dValidateLen(command string, variables [][][]interface{}) (string, [][][]in
 	return tail, variables, nil
 }
 
+func dValidateRegFind(command string, variables [][][]interface{}) (string, [][][]interface{}, error) {
+	tail := command
+	re, err := regexp.Compile(`reg_find\(`)
+	if nil != err {
+		panic(err)
+	}
+	if nil != re.FindIndex([]byte(tail)) {
+		var poses [][]int
+		poses = re.FindAllIndex([]byte(tail), -1)
+		var replacerArgs []string
+		for _, pos := range poses {
+			exprEnd, err := getExprEnd(tail, pos[1]-1)
+			if nil != err {
+				return tail, variables, err
+			}
+			t, err := getExprType(tail[pos[0]+9:pos[0]+9+strings.Index(tail[pos[0]+9:exprEnd-1], ",")], variables)
+			if nil != err {
+				return tail, variables, err
+			}
+			if "string" != t {
+				return tail, variables, errors.New("data type mismatch: first argument in reg_find: str and " + t)
+			}
+			t, err = getExprType(tail[pos[0]+9+strings.Index(tail[pos[0]+9:exprEnd-1], ",")+1:exprEnd-1], variables)
+			if nil != err {
+				return tail, variables, err
+			}
+
+			if "string" != t {
+				return tail, variables, errors.New("data type mismatch: second argument in reg_find: str and " + t)
+			}
+			replacerArgs = append(replacerArgs, tail[pos[0]:exprEnd])
+			replacerArgs = append(replacerArgs, `$stackVal`)
+		}
+
+		r := strings.NewReplacer(replacerArgs...)
+		tail = r.Replace(tail)
+	}
+	return tail, variables, nil
+}
+
 func dValidateFuncDefinition(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
 	var wasDef bool
 
@@ -1202,6 +1242,11 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		return variables, err
 	}
 
+	command, variables, err = dValidateRegFind(command, variables)
+	if nil != err {
+		return variables, err
+	}
+
 	command, variables, err = dValidateIsLetter(command, variables)
 	if nil != err {
 		return variables, err
@@ -1509,6 +1554,12 @@ func DynamicValidate(validatingFile string, rootSource string) {
 		panic(err)
 	}
 	variables[0][2][2] = "False"
+
+	_, variables[len(variables)-1], err = lexer.LexicalAnalyze("stack$stackVal",
+		variables[len(variables)-1], false, nil, false, nil)
+	if nil != err {
+		panic(err)
+	}
 
 	sourceFile = rootSource
 	COMMAND_COUNTER = 1
