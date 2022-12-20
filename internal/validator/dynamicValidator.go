@@ -887,7 +887,7 @@ func dValidateIf(command string, variables [][][]interface{}) (string, int, [][]
 		}
 		loc := re.FindIndex([]byte(command))
 		ifStruct := command[:loc[1]]
-		t, err := getExprType(ifStruct[2:len(ifStruct)-1], variables)
+		t, err := getExprType(ifStruct[3:len(ifStruct)-2], variables)
 		if nil != err {
 			return tail, status.Err, variables, err
 		}

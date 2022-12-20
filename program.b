@@ -1,8 +1,7 @@
 void main(){
 	bool b;
-	b = exists("test.txt");
 	
-	if (b){
+	if (exists("test.txt")){
 		print("YES\n");	
 	}else{
 		print("NO\n");	
