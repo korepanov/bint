@@ -257,7 +257,7 @@ func filter(command string) bool {
 func dValidateUserStackCall(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
 	tail, stat := check(`(?:[[:alpha:]]+[[:alnum:]|_]*\.push\(.+\))`, command)
 
-	tail2, stat2 := check(`(?:[[:alpha:]]+[[:alnum:]|_]*\.pop\([[:alpha:]]+[[:alnum:]|_]*\))`, command)
+	tail2, stat2 := check(`(?:[[:alpha:]|$]+[[:alnum:]|_]*\.pop\([[:alpha:]]+[[:alnum:]|_]*\))`, command)
 	if (status.Yes == stat && `` == tail) || (status.Yes == stat2 && `` == tail2) {
 		var exprList [][]interface{}
 		var err error

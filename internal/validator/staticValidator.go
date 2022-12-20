@@ -1022,6 +1022,12 @@ func validateCommand(command string) error {
 		return err
 	}
 
+	if status.Yes == stat {
+		if `` == tail {
+			return nil
+		}
+	}
+
 	tail, stat, err = validateStandardFuncCall(command, "index", 2, true)
 
 	if nil != err {
@@ -1032,12 +1038,6 @@ func validateCommand(command string) error {
 
 	if nil != err {
 		return err
-	}
-
-	if status.Yes == stat {
-		if `` == tail {
-			return nil
-		}
 	}
 
 	tail, stat, err = validatePrint(command)

@@ -1,12 +1,12 @@
 void main(){
 	string s;
 	string re;
-	int t;
 	stack r;
+	int t; 
 
 	re="lo.*";
 	s = "Hello world!\n";
-	r = reg_find(re, s);
+	reg_find(re, s).pop(r);
 	s = str(t);
 	print(s);
 	print("\n");
