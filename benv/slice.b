@@ -6,7 +6,7 @@ string command;
 void init(){
 	root_source = "import_program.b";
 	SET_SOURCE(root_source);
-	SET_DEST("benv/index_program.b");	
+	SET_DEST("benv/slice_program.b");	
 };
 
 void finish(){
@@ -138,20 +138,26 @@ void main(){
 			bpos = int(buf);
 			el.pop(buf);
 			epos = int(buf);
-			epos = (epos + 1);
 
 			gbpos = slice_name_start(command, bpos);
-			command_len = len(command);
-			command = command[gbpos:command_len];
-			print((command + "\n"));
+			bpos = (bpos + 1);
 			snumber = str(number);
-			buf = ("int $sl" + snumber);
+			buf = ("string $sl_internal" + snumber);
 			send_command(buf);
 			buf = command[bpos:epos];
-			buf = ((("$sl" + snumber) + "=") + buf);
+			buf = ((("$sl_internal" + snumber) + "=") + buf);
+			send_command(buf);
+			sub_command = ("$sl_internal" + snumber);
+
+			bpos = (bpos - 1);
+			buf = ("string $sl" + snumber);
+			send_command(buf);
+			buf = command[gbpos:bpos];
+			buf = (((((("$sl" + snumber) + "=") + buf) + "[") + sub_command) + "]");
 			send_command(buf);
 			sub_command = ("$sl" + snumber);
-			command = modify_command(command, sub_command, bpos, epos);
+			epos = (epos + 1);
+			command = modify_command(command, sub_command, gbpos, epos);
 			number = (number + 1);
 			s.pop(el);
 			el.pop(buf);
@@ -161,8 +167,9 @@ void main(){
 		for (int i; i = 0; i < number; i = (i + 1)){
 			string b;
 			snumber = str(i);
-			b = (("UNDEFINE($sl" + snumber) + ")");
-			send_command(b);		
+			b = (("UNDEFINE($sl_internal" + snumber) + ")");
+			send_command(b);
+			send_command((("UNDEFINE($sl" + snumber) + ")"));	
 		};
 
 		next_command(command);
