@@ -85,6 +85,7 @@ void modify_import(){
 		file = (("benv/import/import_program" + snumber) + ".b");
 		e = exists(file);
 	};
+	
 };
 
 void del_files(){
@@ -117,6 +118,9 @@ void main(){
 	finish();
 	del_files();
 	modify_import();
+	SET_SOURCE("benv/trace_program.b");
+	SET_DEST("benv/import_program.b");
+	copy(); 
 };
 
 main();

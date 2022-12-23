@@ -4,7 +4,7 @@ string root_source;
 string command;
 
 void init(){
-	root_source = "import_program.b";
+	root_source = "benv/import_program.b";
 	SET_SOURCE(root_source);
 	SET_DEST("benv/slice_program.b");	
 };
@@ -12,7 +12,7 @@ void init(){
 void finish(){
 	UNSET_SOURCE();
 	UNSET_DEST();
-	//DEL_DEST(root_source); 
+	DEL_DEST(root_source); 
 };
 
 int slice_end(string command, int func_begin){
