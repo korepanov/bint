@@ -83,6 +83,18 @@ stack slice_poses(string command){
 	return res;
 };
 
+int colon_pos(string command){
+	int res;
+	string buf;
+
+	ops(command, ":").pop(buf);
+	if (NOT("end" == buf)){
+		res = int(buf);
+		return res;
+	};
+	return -1;
+};
+
 int slice_name_start(string command, int slice_begin){
 	stack el;
 	int res;
@@ -114,7 +126,9 @@ void main(){
 	int epos;
 	int gbpos;
 	int command_len;
+	int colon;
 	string buf;
+	int buf_len;
 	int number;
 	string snumber;
 	string sub_command; 
@@ -144,10 +158,30 @@ void main(){
 			snumber = str(number);
 			buf = ("string $sl_internal" + snumber);
 			send_command(buf);
-			buf = command[bpos:epos];
-			buf = ((("$sl_internal" + snumber) + "=") + buf);
+			buf = ("string $sl_left" + snumber);
 			send_command(buf);
-			sub_command = ("$sl_internal" + snumber);
+			buf = ("string $sl_right" + snumber);
+			send_command(buf);
+			buf = command[bpos:epos];
+			colon = colon_pos(buf);
+
+			if (NOT(-1 == colon)){
+				string buf2;
+				buf2 = buf[0:colon];
+				string buf3;
+				colon = (colon + 1);
+				buf_len = len(buf);
+				buf3 = buf[colon:buf_len];
+				buf = ((("$sl_left" + snumber) + "=") + buf2);
+				send_command(buf);
+				buf = ((("$sl_right" + snumber) + "=") + buf3);
+				send_command(buf);
+				sub_command = ((("$sl_left" + snumber) + ":") + ("$sl_right" + snumber));
+			}else{
+				buf = ((("$sl_internal" + snumber) + "=") + buf);
+				send_command(buf);
+				sub_command = ("$sl_internal" + snumber);
+			};
 
 			bpos = (bpos - 1);
 			buf = ("string $sl" + snumber);
@@ -170,6 +204,8 @@ void main(){
 			b = (("UNDEFINE($sl_internal" + snumber) + ")");
 			send_command(b);
 			send_command((("UNDEFINE($sl" + snumber) + ")"));	
+			send_command((("UNDEFINE($sl_left" + snumber) + ")"));
+			send_command((("UNDEFINE($sl_right" + snumber) + ")"));		
 		};
 
 		next_command(command);
