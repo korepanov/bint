@@ -112,6 +112,7 @@ void main(){
 	int bpos;
 	int epos;
 	int gbpos;
+	int command_len;
 	string buf;
 	int number;
 	string snumber;
@@ -123,10 +124,12 @@ void main(){
 	while (NOT("end" == command)){
 		number = 0;
 		s = slice_poses(command);
+		
 		s.pop(el);
 		el.pop(buf);
-
+		print((command  + "\n"));
 		while (NOT("end" == buf)){
+			
 			s = slice_poses(command);
 			
 			s.pop(el);
@@ -138,7 +141,9 @@ void main(){
 
 			gbpos = slice_name_start(command, bpos);
 			print((command + "\n")); 
-			print((str(gbpos) + "\n"));
+			command_len = len(command);
+			command = command[gbpos:command_len];
+			print((command + "\n"));
 		
 			snumber = str(number);
 			buf = ("int $sl" + snumber);
