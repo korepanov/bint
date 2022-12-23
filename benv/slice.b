@@ -37,19 +37,19 @@ int slice_end(string command, int func_begin){
 	obraces = ops(command, obrace);
 	cbraces = ops(command, cbrace);
 	
-	#_braces_s:
-	[print(""), (pos < command_len), goto(#_braces_e)];
+	#braces_s:
+	[print(""), (pos < command_len), goto(#braces_e)];
 	spos = str(pos);
-	[print(""), in_stack(obraces, spos), goto(#_o_plus_end)];
+	[print(""), in_stack(obraces, spos), goto(#o_plus_end)];
 	o_sum = (o_sum + 1);
-	#_o_plus_end:
-	[print(""), in_stack(cbraces, spos), goto(#_c_plus_end)];
+	#o_plus_end:
+	[print(""), in_stack(cbraces, spos), goto(#c_plus_end)];
 	c_sum = (c_sum + 1);
-	#_c_plus_end:
-	[goto(#_braces_e), (o_sum == c_sum), print("")];
+	#c_plus_end:
+	[goto(#braces_e), (o_sum == c_sum), print("")];
 	pos = (pos + 1);
-	goto(#_braces_s);
-	#_braces_e:
+	goto(#braces_s);
+	#braces_e:
 	return pos;
 };
 
@@ -64,6 +64,7 @@ stack slice_poses(string command){
 
 	find = "[";
 	s = ops(command, find);
+	
 	string buf;
 	s.pop(buf);
 	
@@ -127,7 +128,7 @@ void main(){
 		
 		s.pop(el);
 		el.pop(buf);
-		print((command  + "\n"));
+		
 		while (NOT("end" == buf)){
 			
 			s = slice_poses(command);
@@ -140,11 +141,9 @@ void main(){
 			epos = (epos + 1);
 
 			gbpos = slice_name_start(command, bpos);
-			print((command + "\n")); 
 			command_len = len(command);
 			command = command[gbpos:command_len];
 			print((command + "\n"));
-		
 			snumber = str(number);
 			buf = ("int $sl" + snumber);
 			send_command(buf);
