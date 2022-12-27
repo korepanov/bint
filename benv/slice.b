@@ -16,7 +16,6 @@ void init(){
 void finish(){
 	UNSET_SOURCE();
 	UNSET_DEST();
-	DEL_DEST(root_source); 
 };
 
 int slice_end(string command, int func_begin){
@@ -159,11 +158,11 @@ void modify(){
 			gbpos = slice_name_start(command, bpos);
 			bpos = (bpos + 1);
 			snumber = str(number);
-			buf = ("string $sl_internal" + snumber);
+			buf = ("int $sl_internal" + snumber);
 			send_command(buf);
-			buf = ("string $sl_left" + snumber);
+			buf = ("int $sl_left" + snumber);
 			send_command(buf);
-			buf = ("string $sl_right" + snumber);
+			buf = ("int $sl_right" + snumber);
 			send_command(buf);
 			buf = command[bpos:epos];
 			colon = colon_pos(buf);
@@ -233,7 +232,12 @@ void main(){
 	init();
 	modify(); 
 	finish();
-	copy("benv/slice_program.b", "benv/import_program.b"); 
+	if ("benv/import_program.b" == root_source){
+		copy("benv/slice_program.b", "benv/import_program.b");
+	}else{
+		copy("benv/slice_program.b", "benv/trace_program.b");
+	};
+	DEL_DEST("benv/slice_program.b");
 
 	for (int number; number = 0; exists((("benv/trace/trace_program" + str(number)) + ".b")); number = (number + 1)){
 	SET_SOURCE((("benv/trace/trace_program" + str(number)) + ".b"));
@@ -241,5 +245,8 @@ void main(){
 	modify();
 	finish();
 	copy((("benv/trace/slice_program" + str(number)) + ".b"), (("benv/trace/trace_program" + str(number)) + ".b"));
+	DEL_DEST((("benv/trace/slice_program" + str(number)) + ".b"));
 	};
 };
+
+main();

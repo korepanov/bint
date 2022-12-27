@@ -877,7 +877,8 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 							} else if "\"" != string(stranspileVar[0]) &&
 								!(len(stranspileVar) > 6 && "string" == stranspileVar[0:6]) &&
 								!(len(stranspileVar) > 6 && "getVar" == stranspileVar[0:6]) &&
-								!(len(stranspileVar) > 8 && "unicode." == stranspileVar[0:8]) {
+								!(len(stranspileVar) > 8 && "unicode." == stranspileVar[0:8]) &&
+								!(len(stranspileVar) > 6 && "Exists" == stranspileVar[0:6]) {
 								stranspileVar = "\"" + stranspileVar + "\""
 							} else if "\"" == string(stranspileVar[0]) {
 								stranspileVar = "\"" + stranspileVar[1:len(stranspileVar)-1] + "\""
@@ -898,7 +899,7 @@ func sysExecuteTree(infoList []interface{}, variables [][]interface{}, systemSta
 								stranspileVar = stranspileVar[1 : len(stranspileVar)-1]
 							}
 
-							if -1 == strings.Index(stranspileVar, "getVar") {
+							if -1 == strings.Index(stranspileVar, "getVar") && -1 == strings.Index(stranspileVar, "Exists") {
 								stranspileVar = string(stranspileVar[0]) +
 									strings.Replace(stranspileVar[1:len(stranspileVar)-1], "\"", `\"`, -1) +
 									string(stranspileVar[len(stranspileVar)-1])

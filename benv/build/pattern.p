@@ -162,7 +162,8 @@ panic(errors.New("could not create file " + fmt.Sprintf("%v", fileName) + ": " +
 return f 
 }
 
-func getRootSource(source string) string{
+func getRootSource(sourceI interface{}) string{
+source := fmt.Sprintf("%v", sourceI)
 ex, err := os.Executable()
 if err != nil {
 panic(errors.New("getRootSource: " + err.Error()))

@@ -857,7 +857,7 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 	return tail, stat, variables, nil
 }
 func dValidateVarDef(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
-	tail, stat := check(`(?m)(?:(int|float|bool|string|stack)[[:alnum:]|_]*)`, command)
+	tail, stat := check(`(?m)(?:(int|float|bool|string|stack)\$?[[:alnum:]|_]*)`, command)
 	if status.Yes == stat && `` == tail {
 		var err error
 		_, variables[len(variables)-1], err = lexer.LexicalAnalyze(command,
@@ -1028,7 +1028,7 @@ func dValidatePrint(command string, variables [][][]interface{}) (string, int, [
 }
 
 func dValidateAssignment(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
-	_, stat := check(`(?:[[:alpha:]][[:alnum:]|_]*={1}[^=]+)`, command)
+	_, stat := check(`(?:\$?[[:alpha:]][[:alnum:]|_]*={1}[^=]+)`, command)
 	if status.Yes == stat {
 
 		thisVar := command[0:strings.Index(command, "=")]
