@@ -1027,6 +1027,14 @@ func dValidatePrint(command string, variables [][][]interface{}) (string, int, [
 	return command, status.No, variables, nil
 }
 
+func dValidateUndefine(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
+	_, stat := check(`(?:^UNDEFINE\(\$.*?\))`, command)
+	if status.Yes == stat {
+		return "", stat, variables, nil
+	}
+	return command, status.No, variables, nil
+}
+
 func dValidateAssignment(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
 	_, stat := check(`(?:\$?[[:alpha:]][[:alnum:]|_]*={1}[^=]+)`, command)
 	if status.Yes == stat {
@@ -1466,6 +1474,16 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		return variables, nil
 	}
 	_, stat, variables, err = dValidatePrint(command, variables)
+
+	if nil != err {
+		return variables, err
+	}
+
+	if status.Yes == stat {
+		return variables, nil
+	}
+
+	_, stat, variables, err = dValidateUndefine(command, variables)
 
 	if nil != err {
 		return variables, err
