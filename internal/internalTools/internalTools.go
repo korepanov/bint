@@ -110,11 +110,11 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 		toTranslate = toTranslateInternal
 
 		if options.Internal == toTranslate {
-			rootSource = "benv/program.b"
-			rootDest = "benv/prog.basm"
+			rootSource = "benv/slice.b"
+			rootDest = "benv/slice.basm"
 			if execBenv {
 				filesListToExecute = []string{"benv/internal/build/import",
-					"benv/internal/build/slice",
+					//"benv/internal/build/slice",
 					"benv/internal/build/prep_func",
 					"benv/internal/build/prep_for",
 					"benv/internal/build/prep_dowhile",
@@ -147,8 +147,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/internal/print_format.basm"}
 			}
 		} else if options.UserTranslate == toTranslate {
-			rootSource = "program.b"
-			rootDest = "program.basm"
+			rootSource = "int.b"
+			rootDest = "int.basm"
 			//filesListToExecute = []string{"benv/import.basm"}
 			if execBenv {
 				filesListToExecute = []string{"benv/build/import",
@@ -185,8 +185,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/print_format.basm"}
 			}
 		} else if options.Transpile == toTranslate {
-			rootSource = "program.basm"
-			rootDest = "main.go"
+			rootSource = "benv/build/slice.basm"
+			rootDest = "benv/build/main.go"
 
 			source, err := os.Open("benv/build/pattern.p")
 			if nil != err {

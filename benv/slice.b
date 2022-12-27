@@ -4,8 +4,8 @@ string root_source;
 string command;
 
 void init(){
-	if (exists("benv/import_program.b")){
-		root_source = "benv/import_program.b";
+	if (exists("import_program.b")){
+		root_source = "import_program.b";
 	}else{
 		root_source = "benv/trace_program.b";	
 	};
@@ -62,8 +62,10 @@ stack slice_poses(string command){
 	stack res;
 	stack null; 
 	int pos;
+	int buf_pos;
 	int epos;
 	string find;
+	string symbol;
 
 	find = "[";
 	s = ops(command, find);
@@ -74,11 +76,15 @@ stack slice_poses(string command){
 	while (NOT("end" == buf)){
 		pos = int(buf);
 		if(NOT(0 == pos)){
-			epos = slice_end(command, pos);
-			el.push(epos);
-			el.push(pos);
-			res.push(el);
-			el = null;	
+			buf_pos = (pos - 1);
+			symbol = command[buf_pos];
+			if ((is_letter(symbol))OR(is_digit(symbol))){			
+				epos = slice_end(command, pos);
+				el.push(epos);
+				el.push(pos);
+				res.push(el);
+				el = null;	
+			};
 		};
 		s.pop(buf);	
 	};
@@ -104,6 +110,8 @@ int slice_name_start(string command, int slice_begin){
 
 	command = command[0:slice_begin];
 	reg_find("[[:alpha:]]+[[:alnum:]]*$", command).pop(el);
+	print((command + "\n"));
+	print((str(res) + "\n")); 
 	el.pop(res);
 	return res; 
 };

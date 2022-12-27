@@ -1,15 +1,7 @@
 void main(){
-	int number2;
-	int number3;
-	number2 = 2;
- 	number3 = 3;
-	SET_SOURCE((("program" + str(number2)) + ".b"));
-	SET_DEST((("program" + str(number3)) + ".b"));
-	string command;
-	next_command(command);
-	send_command(command);
-	UNSET_SOURCE();
-	UNSET_DEST(); 
+	int num;
+	num = (int("1") + int("2"));
+	print((str(num) + "\n")); 
 };
 
 main();
