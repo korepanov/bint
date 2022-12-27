@@ -732,6 +732,32 @@ func replaceVals(command string) (tail string, stat int) {
 	return tail, status.No
 }
 
+func ValidateStr(command string, variables [][][]interface{}) (string, [][][]interface{}, error) {
+	tail := command
+	re, err := regexp.Compile(`str\(`)
+	if nil != err {
+		panic(err)
+	}
+	if nil != re.FindIndex([]byte(tail)) {
+		var poses [][]int
+		poses = re.FindAllIndex([]byte(tail), -1)
+		var replacerArgs []string
+		for _, pos := range poses {
+			exprEnd, err := getExprEnd(tail, pos[1]-1)
+			if nil != err {
+				return tail, variables, err
+			}
+
+			replacerArgs = append(replacerArgs, tail[pos[0]:exprEnd])
+			replacerArgs = append(replacerArgs, `val`)
+		}
+
+		r := strings.NewReplacer(replacerArgs...)
+		tail = r.Replace(tail)
+	}
+	return tail, variables, nil
+}
+
 func validateCommand(command string) error {
 	oldCommand := command
 
@@ -810,6 +836,10 @@ func validateCommand(command string) error {
 		return err
 	}
 
+	command, _, err = ValidateStr(command, nil)
+	if nil != err {
+		return err
+	}
 	tail, stat, err = validateDoWhile(command)
 
 	if nil != err {
