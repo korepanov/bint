@@ -1,10 +1,12 @@
+void println(string s){
+	print(s);
+	print("\n");
+};
+
 void main(){
 	string s;
 	s = "Hello";
-	string t;
-	t = s[(0 + 1)];
-	print(t);
-	print("\n");	
+	println(s[len(s[(len(s) - 2): len(s)])]); 	
 };
 
 main();
