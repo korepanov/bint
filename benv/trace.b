@@ -118,9 +118,11 @@ void main(){
 	finish();
 	del_files();
 	modify_import();
-	SET_SOURCE("benv/trace_program.b");
+	/*SET_SOURCE("benv/trace_program.b");
 	SET_DEST("benv/import_program.b");
-	copy(); 
+	copy();*/
+	UNSET_SOURCE();
+	UNSET_DEST();  
 };
 
 main();

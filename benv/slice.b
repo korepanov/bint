@@ -4,7 +4,11 @@ string root_source;
 string command;
 
 void init(){
-	root_source = "benv/import_program.b";
+	if (exists("benv/import_program.b")){
+		root_source = "benv/import_program.b";
+	}else{
+		root_source = "benv/trace_program.b";	
+	};
 	SET_SOURCE(root_source);
 	SET_DEST("benv/slice_program.b");	
 };
@@ -119,7 +123,7 @@ string modify_command(string command, string sub_command, int bpos, int epos){
 	return new_command;
 };
 
-void main(){
+void modify(){
 	stack s;
 	stack el;
 	int bpos;
@@ -133,7 +137,6 @@ void main(){
 	string snumber;
 	string sub_command; 
 
-	init();
 	next_command(command);
 	
 	while (NOT("end" == command)){
@@ -210,7 +213,33 @@ void main(){
 
 		next_command(command);
 	};
-	finish();
 };
 
-main();
+void copy(string source, string dest){
+	SET_SOURCE(source);
+	SET_DEST(dest);
+	string command;
+	next_command(command); 
+	while (NOT("end" == command)){
+		send_command(command);
+		next_command(command);	
+	};
+
+	UNSET_SOURCE();
+	UNSET_DEST();
+};
+
+void main(){
+	init();
+	modify(); 
+	finish();
+	copy("benv/slice_program.b", "benv/import_program.b"); 
+
+	for (int number; number = 0; exists((("benv/trace/trace_program" + str(number)) + ".b")); number = (number + 1)){
+	SET_SOURCE((("benv/trace/trace_program" + str(number)) + ".b"));
+	SET_DEST((("benv/trace/slice_program" + str(number)) + ".b"));
+	modify();
+	finish();
+	copy((("benv/trace/slice_program" + str(number)) + ".b"), (("benv/trace/trace_program" + str(number)) + ".b"));
+	};
+};

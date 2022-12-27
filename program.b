@@ -1,3 +1,5 @@
+#import "program2.b"
+
 void main(){
 	string s;
 	s = "Hello";
