@@ -152,8 +152,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 			//filesListToExecute = []string{"benv/import.basm"}
 			if execBenv {
 				filesListToExecute = []string{"benv/build/import",
-					"benv/build/int",
 					"benv/build/slice",
+					"benv/build/int",
 					"benv/build/prep_func",
 					"benv/build/prep_for",
 					"benv/build/prep_dowhile",
