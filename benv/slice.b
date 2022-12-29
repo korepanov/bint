@@ -244,7 +244,8 @@ void main(){
 	}else{
 		copy("benv/slice_program.b", "benv/trace_program.b");
 	};
-	/*DEL_DEST("benv/slice_program.b");
+	
+	DEL_DEST("benv/slice_program.b");
 
 	for (int number; number = 0; exists((("benv/trace/trace_program" + str(number)) + ".b")); number = (number + 1)){
 		SET_SOURCE((("benv/trace/trace_program" + str(number)) + ".b"));
@@ -253,7 +254,7 @@ void main(){
 		finish();
 		copy((("benv/trace/slice_program" + str(number)) + ".b"), (("benv/trace/trace_program" + str(number)) + ".b"));
 		DEL_DEST((("benv/trace/slice_program" + str(number)) + ".b"));
-	};*/
+	};
 };
 
 main();
