@@ -1,6 +1,6 @@
 void main(){
-	float num;
-	num = (float("1.5") + float("2.7"));
+	bool res;
+	res = ((bool("True"))AND(bool("False")));
 	print((str(num) + "\n")); 
 };
 
