@@ -4,8 +4,8 @@ string root_source;
 string command;
 
 void init(){
-	if (exists("import_program.b")){
-		root_source = "import_program.b";
+	if (exists("benv/import_program.b")){
+		root_source = "benv/import_program.b";
 	}else{
 		root_source = "benv/trace_program.b";	
 	};
@@ -72,15 +72,14 @@ stack slice_poses(string command){
 	
 	string buf;
 	s.pop(buf);
-	print("slice_poses\n");
 	while (NOT("end" == buf)){
 		pos = int(buf);
-		print((str(pos) + "\n"));
+		
 		if(NOT(0 == pos)){
 			buf_pos = (pos - 1);
 			symbol = command[buf_pos];
-			print((symbol + "\n")); 
-			if ((is_letter(symbol))OR(is_digit(symbol))){			
+			
+			if ((is_letter(symbol))OR(is_digit(symbol))){	
 				epos = slice_end(command, pos);
 				el.push(epos);
 				el.push(pos);
@@ -111,9 +110,7 @@ int slice_name_start(string command, int slice_begin){
 	int res;
 
 	command = command[0:slice_begin];
-	reg_find("[[:alpha:]]+[[:alnum:]]*$", command).pop(el);
-	print((command + "\n"));
-	print((str(res) + "\n")); 
+	reg_find("[[:alpha:]]+[[:alnum:]]*$", command).pop(el); 
 	el.pop(res);
 	return res; 
 };
@@ -239,7 +236,6 @@ void copy(string source, string dest){
 };
 
 void main(){
-	print("smth\n");
 	init();
 	modify(); 
 	finish();
@@ -248,7 +244,7 @@ void main(){
 	}else{
 		copy("benv/slice_program.b", "benv/trace_program.b");
 	};
-	DEL_DEST("benv/slice_program.b");
+	/*DEL_DEST("benv/slice_program.b");
 
 	for (int number; number = 0; exists((("benv/trace/trace_program" + str(number)) + ".b")); number = (number + 1)){
 		SET_SOURCE((("benv/trace/trace_program" + str(number)) + ".b"));
@@ -257,7 +253,7 @@ void main(){
 		finish();
 		copy((("benv/trace/slice_program" + str(number)) + ".b"), (("benv/trace/trace_program" + str(number)) + ".b"));
 		DEL_DEST((("benv/trace/slice_program" + str(number)) + ".b"));
-	};
+	};*/
 };
 
 main();
