@@ -45,12 +45,16 @@ stack int_poses(string command){
 	
 	while (NOT("end" == buf)){
 		pos = int(buf);
-		epos = func_end(command, (pos + 3));
-		el.push(epos);
-		el.push(pos);
-		res.push(el);
-		el = null;	
-		s.pop(buf);	
+		if (NOT(0 == pos)){
+			if (NOT((is_letter(command[(pos - 1)])) OR (is_digit(command[(pos - 1)])))){
+				epos = func_end(command, (pos + 3));
+				el.push(epos);
+				el.push(pos);
+				res.push(el);
+				el = null;	
+			};	
+		};
+		s.pop(buf);
 	};
 
 	return res;
