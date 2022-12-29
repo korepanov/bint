@@ -148,13 +148,14 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/internal/print_format.basm"}
 			}
 		} else if options.UserTranslate == toTranslate {
-			rootSource = "float.b"
-			rootDest = "float.basm"
+			rootSource = "program.b"
+			rootDest = "program.basm"
 			//filesListToExecute = []string{"benv/import.basm"}
 			if execBenv {
 				filesListToExecute = []string{"benv/build/import",
 					"benv/build/slice",
 					"benv/build/int",
+					"benv/build/float",
 					"benv/build/prep_func",
 					"benv/build/prep_for",
 					"benv/build/prep_dowhile",
@@ -187,8 +188,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/print_format.basm"}
 			}
 		} else if options.Transpile == toTranslate {
-			rootSource = "benv/internal/build/int.basm"
-			rootDest = "benv/internal/build/main.go"
+			rootSource = "benv/build/float.basm"
+			rootDest = "benv/build/main.go"
 
 			source, err := os.Open("benv/build/pattern.p")
 			if nil != err {
@@ -371,6 +372,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			"benv/internal/build/trace",
 			"benv/internal/build/slice",
 			"benv/internal/build/int",
+			"benv/internal/build/float",
 		}
 	}
 	if options.UserValidate == toTranslate {
@@ -378,6 +380,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			"benv/build/trace",
 			"benv/build/slice",
 			"benv/build/int",
+			"benv/build/float",
 		}
 	}
 
