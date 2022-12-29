@@ -379,6 +379,25 @@ func dValidateSetSource(command string, variables [][][]interface{}) (string, in
 	return command, status.No, variables, nil
 }
 
+func dValidateExists(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
+	tail, stat := check(`(?:exists\(.*\))`, command)
+
+	if status.Yes == stat && `` == tail {
+		tail, _ = check(`(?:exists\()`, command)
+		tail = tail[:len(tail)-1]
+		t, err := getExprType(tail, variables)
+		if nil != err {
+			return ``, status.Err, variables, err
+		}
+		if "string" != t {
+			return ``, status.Err, variables, errors.New("data type mismatch in exists: string and " + t)
+		}
+		return ``, status.Yes, variables, nil
+	}
+
+	return command, status.No, variables, nil
+}
+
 func dValidateDelDest(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
 	tail, stat := check(`(?:DEL_DEST\(.*\))`, command)
 
@@ -888,11 +907,15 @@ func dValidateIf(command string, variables [][][]interface{}) (string, int, [][]
 		loc := re.FindIndex([]byte(command))
 		ifStruct := command[:loc[1]]
 		t, err := getExprType(ifStruct[3:len(ifStruct)-2], variables)
-		if nil != err {
-			return tail, status.Err, variables, err
-		}
-		if "bool" != t {
-			return tail, status.Err, variables, errors.New("the expression inside if is not a boolean expression")
+
+		if "bool" != t || nil != err {
+			t, err = getExprType("("+ifStruct[3:len(ifStruct)-2]+")", variables)
+			if nil != err {
+				return tail, status.Err, variables, err
+			}
+			if "bool" != t {
+				return tail, status.Err, variables, errors.New("the expression inside if is not a boolean expression")
+			}
 		}
 	}
 	return tail, stat, variables, nil
@@ -1163,7 +1186,10 @@ func dValidateFor(command string, variables [][][]interface{}) (string, [][][]in
 		forCounter++
 		t, err := getExprType("("+command+")", variables)
 		if nil != err {
-			return tail, variables, err
+			t, err = getExprType(command, variables)
+			if nil != err {
+				return tail, variables, err
+			}
 		}
 		if "bool" != t {
 			return tail, variables, errors.New("data type mismatch in for: bool and " + t)
@@ -1331,6 +1357,16 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 	}
 
 	command, stat, variables, err = dValidateSetSource(command, variables)
+
+	if nil != err {
+		return variables, err
+	}
+
+	if status.Yes == stat {
+		return variables, nil
+	}
+
+	command, stat, variables, err = dValidateExists(command, variables)
 
 	if nil != err {
 		return variables, err

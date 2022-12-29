@@ -1,6 +1,6 @@
 void main(){
-	int num;
-	num = (int("1") + int("2"));
+	float num;
+	num = (float("1.5") + float("2.7"));
 	print((str(num) + "\n")); 
 };
 

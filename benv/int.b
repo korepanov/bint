@@ -16,7 +16,6 @@ void init(){
 void finish(){
 	UNSET_SOURCE();
 	UNSET_DEST();
-	DEL_DEST(root_source); 
 };
 
 void copy(string source, string dest){
