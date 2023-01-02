@@ -906,10 +906,18 @@ func dValidateIf(command string, variables [][][]interface{}) (string, int, [][]
 		}
 		loc := re.FindIndex([]byte(command))
 		ifStruct := command[:loc[1]]
-		t, err := getExprType(ifStruct[3:len(ifStruct)-2], variables)
+
+		ifStruct, _, variables, err = dValidateFuncCall("$bval="+ifStruct[3:len(ifStruct)-2], variables)
+		ifStruct = ifStruct[6:]
+
+		if nil != err {
+			return tail, stat, variables, err
+		}
+
+		t, err := getExprType(ifStruct, variables)
 
 		if "bool" != t || nil != err {
-			t, err = getExprType("("+ifStruct[3:len(ifStruct)-2]+")", variables)
+			t, err = getExprType("("+ifStruct+")", variables)
 			if nil != err {
 				return tail, status.Err, variables, err
 			}
@@ -934,7 +942,13 @@ func dValidateElseIf(command string, variables [][][]interface{}) (string, int, 
 		}
 		loc := re.FindIndex([]byte(command))
 		elseIfStruct := command[:loc[1]]
-		t, err := getExprType(elseIfStruct[7:len(elseIfStruct)-1], variables)
+		elseIfStruct, _, variables, err = dValidateFuncCall("$bval="+elseIfStruct[7:len(elseIfStruct)-1], variables)
+		elseIfStruct = elseIfStruct[6:]
+
+		if nil != err {
+			return tail, stat, variables, err
+		}
+		t, err := getExprType(elseIfStruct, variables)
 		if nil != err {
 			return tail, status.Err, variables, err
 		}
@@ -944,7 +958,7 @@ func dValidateElseIf(command string, variables [][][]interface{}) (string, int, 
 
 	}
 
-	return tail, stat, variables, nil
+	return command, stat, variables, nil
 }
 
 func dValidateElse(command string, variables [][][]interface{}) (string, int, [][][]interface{}) {
