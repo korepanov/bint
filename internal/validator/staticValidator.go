@@ -61,7 +61,7 @@ func validateStandardFuncCall(command string, funcName string, argNum int,
 			}
 
 		} else if 1 == argNum {
-			tail, stat = check(`(?:`+funcName+`\([[:alpha:]]+[[:alnum:]|_|\.]*\))`, command)
+			tail, stat = check(`(?:`+funcName+`\([^\,]*\))`, command)
 			if status.Yes == stat && `` == tail {
 				return tail, stat, nil
 			}

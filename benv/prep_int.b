@@ -49,7 +49,7 @@ bool is_int(string command){
 	while (NOT("end" == buf)){
 		pos = int(buf);
 		if (NOT(0 == pos)){
-			if (NOT((is_letter(command[(pos - 1)])) OR (is_digit(command[(pos - 1)])))){
+			if (NOT(((is_letter(command[(pos - 1)])) OR (is_digit(command[(pos - 1)])))OR("_" == command[(pos - 1)]))){
 				return True;	
 			};	
 		};
@@ -71,8 +71,9 @@ void modify(){
 	while (NOT("end" == command)){
 		number = 0;
 
-		if (is_int(command)){
-			send_command("print(\"\")");
+		if ((is_int(command)) AND (NOT(-1 == index(command, "{")))){
+			send_command((command[0:(index(command, "{") + 1)] + "print(\"\")"));
+			command = command[(index(command, "{") + 1):len(command)]); 		
 		};
 		
 		send_command(command); 

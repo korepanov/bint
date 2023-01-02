@@ -1,7 +1,11 @@
 void main(){
-	bool res;
-	res = ((bool("True"))AND(bool("False")));
-	print((str(num) + "\n")); 
+	string s;
+	int r;
+	s = "Hello";
+	r = (len(s) + len(s));
+	s = str(r);
+	print(s);
+	print("\n"); 
 };
 
 main();
