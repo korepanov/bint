@@ -201,6 +201,25 @@ func FindExprListEnd(exprList [][]interface{}, exprBegin int) int {
 	return i
 }
 
+func FindExprEnd(expr string, exprBegin int) int {
+	openedBraces := 1
+	closedBraces := 0
+	//exprBegin - первый символ после "("
+	i := exprBegin
+
+	for openedBraces != closedBraces {
+		if "(" == string(expr[i]) {
+			openedBraces += 1
+		}
+		if ")" == string(expr[i]) {
+			closedBraces += 1
+		}
+		i += 1
+	}
+	// возвращает символ, следующий за финалным
+	return i
+}
+
 func Pop(list [][]interface{}, i int) [][]interface{} {
 	copy(list[i:], list[i+1:])
 	list = list[:len(list)-1]

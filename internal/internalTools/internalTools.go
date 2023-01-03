@@ -110,11 +110,11 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 		toTranslate = toTranslateInternal
 
 		if options.Internal == toTranslate {
-			rootSource = "benv/is_letter.b"
-			rootDest = "benv/is_letter.basm"
+			rootSource = "benv/slice.b"
+			rootDest = "benv/slice.basm"
 			if execBenv {
 				filesListToExecute = []string{"benv/internal/build/import",
-					"benv/internal/build/slice",
+					//"benv/internal/build/slice",
 					//"benv/internal/build/int",
 					//"benv/internal/build/float",
 					"benv/internal/build/prep_func",
@@ -130,13 +130,13 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/internal/build/long_function",
 					"benv/internal/build/recurs",
 					"benv/internal/build/func",
-					"benv/internal/build/len",
+					/*"benv/internal/build/len",
 					"benv/internal/build/str",
 					"benv/internal/build/index",
 					"benv/internal/build/is_letter",
 					"benv/internal/build/is_digit",
 					"benv/internal/build/reg_find",
-					"benv/internal/build/exists",
+					"benv/internal/build/exists",*/
 					"benv/internal/build/print_format"}
 
 			} else {
@@ -155,15 +155,15 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 			if execBenv {
 				filesListToExecute = []string{"benv/build/import",
 					"benv/build/slice",
-					"benv/build/len",
-					"benv/build/str",
-					"benv/build/index",
-					"benv/build/is_letter",
+					//"benv/build/len",
+					//"benv/build/str",
+					//"benv/build/index",
+					//"benv/build/is_letter",
 					//"benv/build/is_digit",
 					//"benv/build/reg_find",
 					//"benv/build/exists",
-					"benv/build/prep_int",
-					"benv/build/int",
+					//"benv/build/prep_int",
+					//"benv/build/int",
 					//prep_float
 					//"benv/build/float",
 					//prep_bool
@@ -193,7 +193,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/print_format.basm"}
 			}
 		} else if options.Transpile == toTranslate {
-			rootSource = "benv/build/is_letter.basm"
+			rootSource = "benv/build/slice.basm"
 			rootDest = "benv/build/main.go"
 
 			source, err := os.Open("benv/build/pattern.p")
@@ -384,12 +384,12 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 		filesListToExecute = []string{"benv/build/import",
 			"benv/build/trace",
 			"benv/build/slice",
-			"benv/build/len",
-			"benv/build/str",
-			"benv/build/prep_int",
-			"benv/build/int",
-			"benv/build/index",
-			"benv/build/is_letter",
+			//"benv/build/len",
+			//"benv/build/str",
+			//"benv/build/prep_int",
+			//"benv/build/int",
+			//"benv/build/index",
+			//"benv/build/is_letter",
 			//"benv/build/float",
 			//"benv/build/bool",
 		}

@@ -4,6 +4,7 @@ import (
 	"bint.com/internal/const/status"
 	. "bint.com/pkg/serviceTools"
 	"errors"
+	"fmt"
 	"os"
 	"regexp"
 	"strings"
@@ -383,6 +384,11 @@ func validateFuncCall(command string, isFunc bool) (tail string, stat int, err e
 	for _, loc := range notFuncLocArr {
 		loc[0]++
 	}
+	re, err = regexp.Compile(`(AND|OR|XOR)\(`)
+
+	for _, el := range re.FindAllIndex([]byte(tail), -1) {
+		notFuncLocArr = append(notFuncLocArr, []int{el[0], FindExprEnd(tail, el[1]+1)})
+	}
 
 	re, err = regexp.Compile(`(?:[[:alpha:]|_]+[[:alnum:]|_|\.]*\((([[:alnum:]|_|\[|\]|:|\.]*\,[^,]){0,})[[:alnum:]|_|\[|\]|:|\.]*\))`)
 	if nil != err {
@@ -759,6 +765,9 @@ func ValidateStr(command string, variables [][][]interface{}) (string, [][][]int
 }
 
 func validateCommand(command string) error {
+	if "((is_let)OR(is_dig))" == command {
+		fmt.Print("")
+	}
 	oldCommand := command
 
 	tail, stat, err := validateFuncDefinition(command)
