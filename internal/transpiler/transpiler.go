@@ -425,7 +425,7 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 			RO[0] = RO[0].(string)[1 : len(RO[0].(string))-1]
 		}
 
-		if "getVar" == fmt.Sprintf("%v", LO[0])[0:6] {
+		if len(fmt.Sprintf("%v", LO[0])) > 6 && "getVar" == fmt.Sprintf("%v", LO[0])[0:6] {
 			_, err = transpileDest.WriteString("{intListList := compileRegexp(fmt.Sprintf(\"%v\", " + fmt.Sprintf("%v", LO[0]) +
 				")).FindAllIndex([]byte(fmt.Sprintf(\"%v\", " + fmt.Sprintf("%v", RO[0]) + ")), -1)\n")
 		} else {

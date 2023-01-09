@@ -40,6 +40,12 @@ void main(){
 			print("YES\n"); 		
 		};
 	};
+
+	if (True){
+		if (is_letter("e")){
+			print("YES\n"); 		
+		};
+	};
 };
 
 main();
