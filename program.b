@@ -46,6 +46,12 @@ void main(){
 			print("YES\n"); 		
 		};
 	};
+
+	if (True){
+		if (is_digit("1")){
+			print("YES\n"); 		
+		};
+	};
 };
 
 main();
