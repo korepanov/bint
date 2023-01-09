@@ -2,9 +2,15 @@
 
 string root_source;
 string command;
+bool e; 
 
 void init(){
-	root_source = "benv/reg_find_program.b";
+	e = exists("benv/import_program.b");
+	if (e){
+		root_source = "benv/import_program.b";
+	}else{
+		root_source = "benv/trace_program.b";	
+	};
 	SET_SOURCE(root_source);
 	SET_DEST("benv/exists_program.b");	
 };
@@ -12,7 +18,20 @@ void init(){
 void finish(){
 	UNSET_SOURCE();
 	UNSET_DEST();
-	DEL_DEST(root_source); 
+};
+
+void copy(string source, string dest){
+	SET_SOURCE(source);
+	SET_DEST(dest);
+	string command;
+	next_command(command); 
+	while (NOT("end" == command)){
+		send_command(command);
+		next_command(command);	
+	};
+
+	UNSET_SOURCE();
+	UNSET_DEST();
 };
 
 stack exists_poses(string command){
@@ -23,6 +42,10 @@ stack exists_poses(string command){
 	int pos;
 	int epos;
 	string find;
+	bool is_let;
+	bool is_dig;
+	string symbol;
+	int buf_pos;
 
 	find = "exists(";
 	s = ops(command, find);
@@ -31,11 +54,20 @@ stack exists_poses(string command){
 	
 	while (NOT("end" == buf)){
 		pos = int(buf);
-		epos = func_end(command, (pos + 6));
-		el.push(epos);
-		el.push(pos);
-		res.push(el);
-		el = null;	
+		if (NOT(0 == pos)){
+			buf_pos = (pos - 1);
+			symbol = command[buf_pos]; 
+			is_let = is_letter(symbol);
+			is_dig = is_digit(symbol);
+			
+			if (NOT(((is_let)OR(is_dig))OR("_" == symbol))){
+				epos = func_end(command, (pos + 6));
+				el.push(epos);
+				el.push(pos);
+				res.push(el);
+				el = null;
+			};
+		};	
 		s.pop(buf);	
 	};
 
@@ -56,7 +88,7 @@ string modify_command(string command, string sub_command, int bpos, int epos){
 	return new_command;
 };
 
-void main(){
+void modify(){
 	stack s;
 	stack el;
 	int bpos;
@@ -66,7 +98,6 @@ void main(){
 	string snumber;
 	string sub_command; 
 
-	init();
 	next_command(command);
 	
 	while (NOT("end" == command)){
@@ -106,7 +137,41 @@ void main(){
 
 		next_command(command);
 	};
-	finish();
 };
 
+void main(){
+	init();
+	modify();
+	finish();
+	
+	if ("benv/import_program.b" == root_source){
+		copy("benv/exists_program.b", "benv/import_program.b");
+	}else{
+		copy("benv/exists_program.b", "benv/trace_program.b");
+	};
+	
+	DEL_DEST("benv/exists_program.b");
+	string t;
+	string t2;
+	string s;
+	s = str(0);
+	t = (("benv/trace/trace_program" + s) + ".b");
+	e = exists(t);
+	for (int number; number = 1; e; number = (number + 1)){
+		t = (("benv/trace/trace_program" + s) + ".b");
+		SET_SOURCE(t);
+		t = (("benv/trace/exists_program" + s) + ".b");
+		SET_DEST(t);
+		modify();
+		finish();
+		t = (("benv/trace/exists_program" + s) + ".b");
+		t2 = (("benv/trace/trace_program" + s) + ".b");
+		copy(t, t2);
+		t = (("benv/trace/exists_program" + s) + ".b"); 
+		DEL_DEST(t);
+		s = str(number);
+		t = (("benv/trace/trace_program" + s) + ".b");
+		e = exists(t);
+	};
+};
 main();

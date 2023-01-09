@@ -18,6 +18,12 @@ void main(){
 	res.pop(buf);
 	print(buf);
 	print("\n"); 
+
+	if(exists("test.txt")){
+		print("EXISTS\n");	
+	}else{
+		print("DOES NOT EXIST\n"); 
+	};
 };
 
 main();
