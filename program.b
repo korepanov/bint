@@ -24,7 +24,9 @@ void main(){
 		print((s + "\n"));
 		print("EXISTS\n");	
 	}else{
-		print("DOES NOT EXIST\n"); 
+		if(len(s) > 0){
+			print("DOES NOT EXIST\n");
+		};  
 	};
 };
 
