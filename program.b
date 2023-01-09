@@ -28,6 +28,10 @@ void main(){
 			print("DOES NOT EXIST\n");
 		};  
 	};
+
+	if (True){
+		print((str(1) + "\n")); 
+	};
 };
 
 main();
