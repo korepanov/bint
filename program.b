@@ -11,6 +11,13 @@ void main(){
 	if (((is_letter("a"))AND(is_digit("2")))){
 		print("YES\n");	
 	};
+
+	stack res;
+	reg_find("l.*", s).pop(res);
+	string buf;
+	res.pop(buf);
+	print(buf);
+	print("\n"); 
 };
 
 main();
