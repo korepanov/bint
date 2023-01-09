@@ -52,6 +52,13 @@ void main(){
 			print("YES\n"); 		
 		};
 	};
+
+	if (True){
+		reg_find("l.*", s).pop(res);
+		res.pop(buf);
+		print(buf);
+		print("\n"); 
+	};
 };
 
 main();
