@@ -8,7 +8,7 @@ void main(){
 	print(((str(4) + str(5)) + "\n"));
 	print(((str(index(s, "e")) + str(index(s, "l"))) + "\n")); 
 	
-	if (is_letter("a")){
+	if (((is_letter("a"))AND(is_digit("2")))){
 		print("YES\n");	
 	};
 };
