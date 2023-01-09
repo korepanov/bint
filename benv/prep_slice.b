@@ -2,9 +2,11 @@
 
 string root_source;
 string command;
+bool e;
 
 void init(){
-	if (exists("benv/import_program.b")){
+	e = exists("benv/import_program.b");
+	if (e){
 		root_source = "benv/import_program.b";
 	}else{
 		root_source = "benv/trace_program.b";	
@@ -74,21 +76,21 @@ void modify(){
 	int epos;
 	int number;
 	string snumber;
-	string sub_command; 
+	string sub_command;
+	int i; 
 	
 	next_command(command);
 	
 	while (NOT("end" == command)){
 		number = 0;
-
-		if ((is_slice(command)) AND (NOT(-1 == index(command, "{")))){
+		i = index(command, "{");
+		if ((is_slice(command)) AND (NOT(-1 == i))){
 			string t;
-			int i;
 			int command_len;
 			i = index(command, "{");
             i = (i + 1);
 			t = command[0:i];
-			send_command((t + "print(\"test\")"));
+			send_command((t + "print(\"\")"));
 			command_len = len(command);
 			command = command[i:command_len]; 		
 		};
@@ -102,7 +104,7 @@ void main(){
 	init();
 	modify();
 	finish();
-
+	
 	if ("benv/import_program.b" == root_source){
 		copy("benv/prep_slice_program.b", "benv/import_program.b");
 	}else{
@@ -110,14 +112,27 @@ void main(){
 	};
 	
 	DEL_DEST("benv/prep_slice_program.b");
-
-	for (int number; number = 0; exists((("benv/trace/trace_program" + str(number)) + ".b")); number = (number + 1)){
-		SET_SOURCE((("benv/trace/trace_program" + str(number)) + ".b"));
-		SET_DEST((("benv/trace/prep_slice_program" + str(number)) + ".b"));
+	string t;
+	string t2;
+	string s;
+	s = str(0);
+	t = (("benv/trace/trace_program" + s) + ".b");
+	e = exists(t);
+	for (int number; number = 1; e; number = (number + 1)){
+		t = (("benv/trace/trace_program" + s) + ".b");
+		SET_SOURCE(t);
+		t = (("benv/trace/prep_slice_program" + s) + ".b");
+		SET_DEST(t);
 		modify();
 		finish();
-		copy((("benv/trace/prep_slice_program" + str(number)) + ".b"), (("benv/trace/trace_program" + str(number)) + ".b"));
-		DEL_DEST((("benv/trace/prep_slice_program" + str(number)) + ".b"));
+		t = (("benv/trace/prep_slice_program" + s) + ".b");
+		t2 = (("benv/trace/trace_program" + s) + ".b");
+		copy(t, t2);
+		t = (("benv/trace/prep_slice_program" + s) + ".b"); 
+		DEL_DEST(t);
+		s = str(number);
+		t = (("benv/trace/trace_program" + s) + ".b");
+		e = exists(t);
 	};
 };
 

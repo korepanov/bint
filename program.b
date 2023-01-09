@@ -20,6 +20,8 @@ void main(){
 	print("\n"); 
 
 	if(exists("test.txt")){
+		s = s[1:(2+1)];
+		print((s + "\n"));
 		print("EXISTS\n");	
 	}else{
 		print("DOES NOT EXIST\n"); 

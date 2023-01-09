@@ -615,6 +615,7 @@ func cutComment(expr string) string {
 }
 
 func CodeInput(expr string, lineIncrement bool) string {
+	//fmt.Println(expr)
 	var stringsInside []string
 	var poses []int
 	var pos int
