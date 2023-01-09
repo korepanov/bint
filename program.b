@@ -32,6 +32,14 @@ void main(){
 	if (True){
 		print((str(1) + "\n")); 
 	};
+
+	s = "Hello";
+
+	if (True){
+		if (index(s, "e") > 0){
+			print("YES\n"); 		
+		};
+	};
 };
 
 main();
