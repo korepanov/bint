@@ -59,6 +59,12 @@ void main(){
 		print(buf);
 		print("\n"); 
 	};
+
+	if(True){
+		if(exists("test.txt")){
+			print("YES\n"); 
+		};	
+	};
 };
 
 main();
