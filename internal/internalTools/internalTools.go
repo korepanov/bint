@@ -161,6 +161,19 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 			//filesListToExecute = []string{"benv/import.basm"}
 			if execBenv {
 				filesListToExecute = []string{"benv/build/import",
+					"benv/build/prep_func",
+					"benv/build/prep_for",
+					"benv/build/prep_dowhile",
+					"benv/build/dowhile",
+					"benv/build/prep_while",
+					"benv/build/prep_if",
+					"benv/build/while",
+					"benv/build/for",
+					"benv/build/if",
+					"benv/build/nested_call",
+					"benv/build/long_function",
+					"benv/build/recurs",
+					"benv/build/func",
 					"benv/build/prep_slice",
 					"benv/build/slice",
 					"benv/build/prep_len",
@@ -177,21 +190,6 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/build/reg_find",
 					"benv/build/prep_exists",
 					"benv/build/exists",
-
-					"benv/build/prep_func",
-					"benv/build/prep_for",
-					"benv/build/prep_dowhile",
-					"benv/build/dowhile",
-					"benv/build/prep_while",
-					"benv/build/prep_if",
-					"benv/build/while",
-					"benv/build/for",
-
-					"benv/build/if",
-					"benv/build/nested_call",
-					"benv/build/long_function",
-					"benv/build/recurs",
-					"benv/build/func",
 					"benv/build/print_format"}
 			} else {
 				filesListToExecute = []string{"benv/import.basm",
@@ -386,7 +384,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	if options.InternalValidate == toTranslate {
 		filesListToExecute = []string{"benv/internal/build/import",
 			"benv/internal/build/trace",
-			"benv/internal/build/prep_slice",
+			/*"benv/internal/build/prep_slice",
 			"benv/internal/build/slice",
 			"benv/internal/build/prep_len",
 			"benv/internal/build/len",
@@ -401,15 +399,13 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			"benv/internal/build/prep_reg_find",
 			"benv/internal/build/reg_find",
 			"benv/internal/build/prep_exists",
-			"benv/internal/build/exists",
-			//"benv/internal/build/int",
-			//"benv/internal/build/float",
+			"benv/internal/build/exists",*/
 		}
 	}
 	if options.UserValidate == toTranslate {
 		filesListToExecute = []string{"benv/build/import",
 			"benv/build/trace",
-			"benv/build/prep_slice",
+			/*"benv/build/prep_slice",
 			"benv/build/slice",
 			"benv/build/prep_len",
 			"benv/build/len",
@@ -424,7 +420,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			"benv/build/prep_reg_find",
 			"benv/build/reg_find",
 			"benv/build/prep_exists",
-			"benv/build/exists",
+			"benv/build/exists",*/
 			//"benv/build/prep_int",
 			//"benv/build/int",
 			//"benv/build/index",
