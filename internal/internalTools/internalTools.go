@@ -128,8 +128,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/internal/build/is_digit",
 					"benv/internal/build/prep_reg_find",
 					"benv/internal/build/reg_find",
-					/*"benv/internal/build/prep_exists",
-					"benv/internal/build/exists",*/
+					"benv/internal/build/prep_exists",
+					"benv/internal/build/exists",
 
 					"benv/internal/build/prep_func",
 					"benv/internal/build/prep_for",
@@ -208,7 +208,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/print_format.basm"}
 			}
 		} else if options.Transpile == toTranslate {
-			rootSource = "benv/internal/build/prep_reg_find.basm"
+			rootSource = "benv/internal/build/exists.basm"
 			rootDest = "benv/internal/build/main.go"
 
 			source, err := os.Open("benv/build/pattern.p")
@@ -237,7 +237,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 		} else if options.ExecBasm == toTranslate {
 			//rootSource = "long_function_program.b"
 			//rootDest = "benv/dowhile.basm"
-			rootDest = "program.basm"
+			rootDest = "benv/prog.basm"
 			filesListToExecute = []string{rootDest}
 		} else if options.Primitive == toTranslate {
 			rootSource = "bendBenv/func.basm"
@@ -404,6 +404,8 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			"benv/internal/build/is_digit",
 			"benv/internal/build/prep_reg_find",
 			"benv/internal/build/reg_find",
+			"benv/internal/build/prep_exists",
+			"benv/internal/build/exists",
 			//"benv/internal/build/int",
 			//"benv/internal/build/float",
 		}
