@@ -541,6 +541,17 @@ func validateMark(command string) (tail string, stat int, err error) {
 	return command, stat, nil
 }
 
+func validateSlice(command string) (tail string, stat int, err error) {
+	re, err := regexp.Compile(`]\[`)
+	if nil != err {
+		panic(err)
+	}
+	if nil != re.FindIndex([]byte(command)) {
+		return ``, status.Err, errors.New("unresolved command")
+	}
+	return command, status.No, nil
+}
+
 func validatePrint(command string) (tail string, stat int, err error) {
 	tail, stat = check(`(?:print\()`, command)
 	if status.Yes == stat {
@@ -842,9 +853,15 @@ func validateCommand(command string) error {
 	}
 
 	command, _, err = ValidateStr(command, nil)
+
 	if nil != err {
 		return err
 	}
+	_, _, err = validateSlice(command)
+	if nil != err {
+		return err
+	}
+
 	tail, stat, err = validateDoWhile(command)
 
 	if nil != err {

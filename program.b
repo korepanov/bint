@@ -49,17 +49,22 @@ void main(){
 		print("OK3\n");	
 	};
 
-	stack s;
+	stack st_var;
 	if(True){
-		reg_find("e", "Hello").pop(s);
+		reg_find("e", "Hello").pop(st_var);
 	};
 	string buf;
-	s.pop(buf);
+	st_var.pop(buf);
 	print((buf + "\n"));
 
 	if (exists("program2.b")){
 		print("EXISTS\n"); 	
 	};
+
+	if (int("1") < 2){
+		print("OK4\n"); 	
+	};
+
 };
 
 main();
