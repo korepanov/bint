@@ -1,3 +1,5 @@
+#import "program2.b"
+#import "program3.b"
 
 void main(){
 	for (int i; i = 0; i < 5; i = (i + 1)){
@@ -29,8 +31,9 @@ void main(){
 	}else{
 		print("NO\n");	
 	};
-
-	print((((s[1:3] + s[4]) + "\n") + str(999))); 
+	
+	print(((((s[1:3] + s[4]) + "\n") + str(999)) + "\n"));
+	print((str(sum(sum(1, 2), diff(3, 2))) + "\n")); 
 };
 
 main();
