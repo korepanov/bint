@@ -48,6 +48,18 @@ void main(){
 	if(is_digit("2")){
 		print("OK3\n");	
 	};
+
+	stack s;
+	if(True){
+		reg_find("e", "Hello").pop(s);
+	};
+	string buf;
+	s.pop(buf);
+	print((buf + "\n"));
+
+	if (exists("program2.b")){
+		print("EXISTS\n"); 	
+	};
 };
 
 main();
