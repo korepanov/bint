@@ -81,6 +81,27 @@ func getExprEnd(command string, startPos int) (int, error) {
 	return 0, errors.New("invalid brace number")
 }
 
+func getSliceEnd(command string, startPos int) (int, error) {
+	brOpened := 1
+	brClosed := 0
+	pos := startPos + 1
+
+	for i := pos; i < len(command); i++ {
+		if "[" == string(command[i]) {
+			brOpened++
+		}
+		if "]" == string(command[i]) {
+			brClosed++
+		}
+
+		if brOpened == brClosed {
+			return i + 1, nil
+		}
+	}
+
+	return 0, errors.New("invalid brace number")
+}
+
 func sysGetExprType(command string, variables [][][]interface{}) (string, error) {
 	var exprList [][]interface{}
 	var err error
@@ -580,7 +601,14 @@ func dValidateStr(command string, variables [][][]interface{}) (string, [][][]in
 			}
 			t, err := getExprType(tail[pos[0]+4:exprEnd-1], variables)
 			if nil != err {
-				return tail, variables, err
+				tail2, _, variables, err := dValidateFuncCall(tail[pos[0]+4:exprEnd-1], variables)
+				if nil != err {
+					return tail, variables, err
+				}
+				t, err = getExprType(tail2, variables)
+				if nil != err {
+					return ``, variables, err
+				}
 			}
 			if "stack" == t {
 				return tail, variables, errors.New("data type mismatch in str: stack")
@@ -715,7 +743,16 @@ func dValidateLen(command string, variables [][][]interface{}) (string, [][][]in
 			}
 			t, err := getExprType(tail[pos[0]+4:exprEnd-1], variables)
 			if nil != err {
-				return tail, variables, err
+				tail, variables, err = dValidateStr(command, variables)
+				if nil != err {
+					return tail, variables, err
+				}
+				tail, variables, err = dValidateSlice(command, variables)
+				if nil != err {
+					return tail, variables, err
+				}
+
+				return dValidateLen(tail, variables)
 			}
 			if "string" != t {
 				return tail, variables, errors.New("data type mismatch in len: " + t)
@@ -730,6 +767,90 @@ func dValidateLen(command string, variables [][][]interface{}) (string, [][][]in
 	return tail, variables, nil
 }
 
+func dValidateSliceInternal(command string, variables [][][]interface{}) (string, [][][]interface{}, error) {
+	tail, variables, err := dValidateStr(command, variables)
+	if nil != err {
+		return tail, variables, err
+	}
+
+	re, err := regexp.Compile(`\[`)
+	if nil != err {
+		panic(err)
+	}
+	if nil != re.FindIndex([]byte(tail)) {
+		var poses [][]int
+		poses = re.FindAllIndex([]byte(tail), -1)
+		var replacerArgs []string
+		for _, pos := range poses {
+			pos[1], err = getSliceEnd(tail, pos[0]+1)
+			if nil != err {
+				return ``, variables, err
+			}
+			colon := strings.Index(tail[pos[0]+1:pos[1]-1], ":")
+			var subcommands []string
+			if -1 != colon {
+				subcommands = append(subcommands, tail[pos[0]+1 : pos[1]-1][0:colon])
+				subcommands = append(subcommands, tail[pos[0]+1 : pos[1]-1][colon+1:len(tail[pos[0]+1:pos[1]-1])])
+			} else {
+				subcommands = append(subcommands, tail[pos[0]+1:pos[1]-1])
+			}
+
+			for _, com := range subcommands {
+				t, err := getExprType(`$ival=`+com, variables)
+
+				if nil != err {
+					return dValidateSliceInternal(com, variables)
+				}
+
+				if "int" != t {
+					return tail, variables, errors.New("data type mismatch in slice: int and " + t)
+				}
+			}
+			replacerArgs = append(replacerArgs, tail[pos[0]+1:pos[1]-1])
+			replacerArgs = append(replacerArgs, `$ival`)
+		}
+
+		r := strings.NewReplacer(replacerArgs...)
+		tail = r.Replace(tail)
+	}
+	return tail, variables, nil
+}
+
+func dValidateSlice(command string, variables [][][]interface{}) (string, [][][]interface{}, error) {
+	var tail string
+	var err error
+	var replacerArgs []string
+
+	tail, variables, err = dValidateSliceInternal(command, variables)
+
+	if nil != err {
+		return ``, variables, err
+	}
+
+	re, err := regexp.Compile(`[\$|[:alnum:]|_]+\[\$ival\]`)
+	if nil != err {
+		panic(err)
+	}
+
+	poses := re.FindAllIndex([]byte(tail), -1)
+
+	for _, pos := range poses {
+		t, err := getExprType(tail[pos[0]:pos[1]][0:strings.Index(tail[pos[0]:pos[1]], "[")], variables)
+		if nil != err {
+			return ``, variables, err
+		}
+		if "string" != t {
+			return tail, variables, errors.New("slice can only be applied to a string, got: " + t)
+		}
+
+		replacerArgs = append(replacerArgs, tail[pos[0]:pos[1]])
+		replacerArgs = append(replacerArgs, `$val`)
+	}
+	r := strings.NewReplacer(replacerArgs...)
+	tail = r.Replace(tail)
+
+	return tail, variables, nil
+}
 func dValidateRegFind(command string, variables [][][]interface{}) (string, [][][]interface{}, error) {
 	tail := command
 	re, err := regexp.Compile(`reg_find\(`)
@@ -1305,6 +1426,12 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		return variables, err
 	}
 
+	command, variables, err = dValidateSlice(command, variables)
+
+	if nil != err {
+		return variables, err
+	}
+
 	command, variables, err = dValidateFor(command, variables)
 
 	if nil != err {
@@ -1483,32 +1610,6 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		return dynamicValidateCommand(tail, variables)
 	}
 
-	tail, stat, variables, err = dValidateIf(command, variables)
-
-	if nil != err {
-		return variables, err
-	}
-
-	if status.Yes == stat {
-		return dynamicValidateCommand(tail, variables)
-	}
-
-	tail, stat, variables, err = dValidateElseIf(command, variables)
-
-	if nil != err {
-		return variables, err
-	}
-
-	if status.Yes == stat {
-		return dynamicValidateCommand(tail, variables)
-	}
-
-	tail, stat, variables = dValidateElse(command, variables)
-
-	if status.Yes == stat {
-		return dynamicValidateCommand(tail, variables)
-	}
-
 	_, stat, variables, err = dValidateReturn(command, variables)
 
 	if nil != err {
@@ -1554,19 +1655,30 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		return variables, nil
 	}
 
-	tail, stat, err = validateFigureBrace(command)
+	tail, stat, variables, err = dValidateIf(command, variables)
 
 	if nil != err {
 		return variables, err
 	}
 
 	if status.Yes == stat {
+		return dynamicValidateCommand(tail, variables)
+	}
 
-		variables = variables[:len(variables)-1]
+	tail, stat, variables, err = dValidateElseIf(command, variables)
 
-		if tail == `` {
-			return variables, nil
-		}
+	if nil != err {
+		return variables, err
+	}
+
+	if status.Yes == stat {
+		return dynamicValidateCommand(tail, variables)
+	}
+
+	tail, stat, variables = dValidateElse(command, variables)
+
+	if status.Yes == stat {
+		return dynamicValidateCommand(tail, variables)
 	}
 
 	_, stat, variables, err = dValidatePrint(command, variables)
@@ -1583,6 +1695,21 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 
 	if nil != err {
 		return variables, err
+	}
+
+	tail, stat, err = validateFigureBrace(command)
+
+	if nil != err {
+		return variables, err
+	}
+
+	if status.Yes == stat {
+
+		variables = variables[:len(variables)-1]
+
+		if tail == `` {
+			return variables, nil
+		}
 	}
 
 	if again {

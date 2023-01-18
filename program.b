@@ -31,7 +31,9 @@ void main(){
 	}else{
 		print("NO\n");	
 	};
-	
+	if (1 < len(str(2))){
+		print(s[0:len(s[1:3])]);
+	};
 	print(((((s[1:3] + s[4]) + "\n") + str(999)) + "\n"));
 	print((str(sum(sum(1, 2), diff(3, 2))) + "\n")); 
 };
