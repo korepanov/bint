@@ -110,27 +110,10 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 		toTranslate = toTranslateInternal
 
 		if options.Internal == toTranslate {
-			rootSource = "benv/print_format.b"
-			rootDest = "benv/print_format.basm"
+			rootSource = "benv/program.b"
+			rootDest = "benv/prog.basm"
 			if execBenv {
 				filesListToExecute = []string{"benv/internal/build/import",
-					"benv/internal/build/prep_slice",
-					"benv/internal/build/slice",
-					"benv/internal/build/prep_len",
-					"benv/internal/build/len",
-					"benv/internal/build/prep_str",
-					"benv/internal/build/str",
-					"benv/internal/build/prep_index",
-					"benv/internal/build/index",
-					"benv/internal/build/prep_is_letter",
-					"benv/internal/build/is_letter",
-					"benv/internal/build/prep_is_digit",
-					"benv/internal/build/is_digit",
-					"benv/internal/build/prep_reg_find",
-					"benv/internal/build/reg_find",
-					"benv/internal/build/prep_exists",
-					"benv/internal/build/exists",
-
 					"benv/internal/build/prep_func",
 					"benv/internal/build/prep_for",
 					"benv/internal/build/prep_dowhile",
@@ -144,6 +127,14 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/internal/build/long_function",
 					"benv/internal/build/recurs",
 					"benv/internal/build/func",
+					"benv/internal/build/slice",
+					"benv/internal/build/len",
+					"benv/internal/build/str",
+					"benv/internal/build/index",
+					"benv/internal/build/is_letter",
+					"benv/internal/build/is_digit",
+					"benv/internal/build/reg_find",
+					"benv/internal/build/exists",
 					"benv/internal/build/print_format"}
 
 			} else {
@@ -174,21 +165,13 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/build/long_function",
 					"benv/build/recurs",
 					"benv/build/func",
-					//"benv/build/prep_slice",
 					"benv/build/slice",
-					//"benv/build/prep_len",
 					"benv/build/len",
-					//"benv/build/prep_str",
 					"benv/build/str",
-					//"benv/build/prep_index",
 					"benv/build/index",
-					//"benv/build/prep_is_letter",
 					"benv/build/is_letter",
-					//"benv/build/prep_is_digit",
 					"benv/build/is_digit",
-					//"benv/build/prep_reg_find",
 					"benv/build/reg_find",
-					//"benv/build/prep_exists",
 					"benv/build/exists",
 					"benv/build/print_format"}
 			} else {
@@ -202,8 +185,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/print_format.basm"}
 			}
 		} else if options.Transpile == toTranslate {
-			rootSource = "benv/build/print_format.basm"
-			rootDest = "benv/build/main.go"
+			rootSource = "benv/internal/build/print_format.basm"
+			rootDest = "benv/internal/build/main.go"
 
 			source, err := os.Open("benv/build/pattern.p")
 			if nil != err {
@@ -231,7 +214,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 		} else if options.ExecBasm == toTranslate {
 			//rootSource = "long_function_program.b"
 			//rootDest = "benv/dowhile.basm"
-			rootDest = "program.basm"
+			rootDest = "benv/prog.basm"
 			filesListToExecute = []string{rootDest}
 		} else if options.Primitive == toTranslate {
 			rootSource = "bendBenv/func.basm"
