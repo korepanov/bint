@@ -14,6 +14,7 @@ void init(){
 void finish(){
 	UNSET_SOURCE();
 	UNSET_DEST();
+	DEL_DEST(root_source); 
 };
 
 int slice_end(string command, int func_begin){
