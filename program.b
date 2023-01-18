@@ -36,6 +36,10 @@ void main(){
 	};
 	print(((((s[1:3] + s[4]) + "\n") + str(999)) + "\n"));
 	print((str(sum(sum(1, 2), diff(3, 2))) + "\n")); 
+
+	if(0 < index(s, "l")){
+		print("OK\n"); 	
+	}; 
 };
 
 main();
