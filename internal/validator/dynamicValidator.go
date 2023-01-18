@@ -1280,11 +1280,6 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		return variables, nil
 	}
 
-	command, variables, err = dValidateStr(command, variables)
-	if nil != err {
-		return variables, err
-	}
-
 	command, variables, err = dValidateIndex(command, variables)
 	if nil != err {
 		return variables, err
@@ -1523,15 +1518,6 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 	if status.Yes == stat {
 		return variables, nil
 	}
-	_, stat, variables, err = dValidatePrint(command, variables)
-
-	if nil != err {
-		return variables, err
-	}
-
-	if status.Yes == stat {
-		return variables, nil
-	}
 
 	_, stat, variables, err = dValidateUndefine(command, variables)
 
@@ -1551,6 +1537,11 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 
 	if status.Yes == stat {
 		again = true
+	}
+
+	command, variables, err = dValidateStr(command, variables)
+	if nil != err {
+		return variables, err
 	}
 
 	_, stat, variables, err = dValidateAssignment(command, variables)
@@ -1576,6 +1567,16 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		if tail == `` {
 			return variables, nil
 		}
+	}
+
+	_, stat, variables, err = dValidatePrint(command, variables)
+
+	if nil != err {
+		return variables, err
+	}
+
+	if status.Yes == stat {
+		return variables, nil
 	}
 
 	tail, variables, err = dValidateFor(command, variables)

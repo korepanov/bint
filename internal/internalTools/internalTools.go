@@ -367,48 +367,11 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	if options.InternalValidate == toTranslate {
 		filesListToExecute = []string{"benv/internal/build/import",
 			"benv/internal/build/trace",
-			/*"benv/internal/build/prep_slice",
-			"benv/internal/build/slice",
-			"benv/internal/build/prep_len",
-			"benv/internal/build/len",
-			"benv/internal/build/prep_str",
-			"benv/internal/build/str",
-			"benv/internal/build/prep_index",
-			"benv/internal/build/index",
-			"benv/internal/build/prep_is_letter",
-			"benv/internal/build/is_letter",
-			"benv/internal/build/prep_is_digit",
-			"benv/internal/build/is_digit",
-			"benv/internal/build/prep_reg_find",
-			"benv/internal/build/reg_find",
-			"benv/internal/build/prep_exists",
-			"benv/internal/build/exists",*/
 		}
 	}
 	if options.UserValidate == toTranslate {
 		filesListToExecute = []string{"benv/build/import",
 			"benv/build/trace",
-			/*"benv/build/prep_slice",
-			"benv/build/slice",
-			"benv/build/prep_len",
-			"benv/build/len",
-			"benv/build/prep_str",
-			"benv/build/str",
-			"benv/build/prep_index",
-			"benv/build/index",
-			"benv/build/prep_is_letter",
-			"benv/build/is_letter",
-			"benv/build/prep_is_digit",
-			"benv/build/is_digit",
-			"benv/build/prep_reg_find",
-			"benv/build/reg_find",
-			"benv/build/prep_exists",
-			"benv/build/exists",*/
-			//"benv/build/prep_int",
-			//"benv/build/int",
-			//"benv/build/index",
-			//"benv/build/float",
-			//"benv/build/bool",
 		}
 	}
 
