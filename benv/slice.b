@@ -6,14 +6,9 @@ bool e;
 
 void init(){
 	
-	e = exists("benv/import_program.b");
-	if (e){
-		root_source = "benv/import_program.b";
-	}else{
-		root_source = "benv/trace_program.b";	
-	};
+	root_source = "benv/func_program.b"; 
 	SET_SOURCE(root_source);
-	SET_DEST("benv/slice_program.b");	
+	SET_DEST("benv/import_program.b");	
 };
 
 void finish(){
@@ -251,35 +246,6 @@ void main(){
 	init();
 	modify(); 
 	finish();
-	if ("benv/import_program.b" == root_source){
-		copy("benv/slice_program.b", "benv/import_program.b");
-	}else{
-		copy("benv/slice_program.b", "benv/trace_program.b");
-	};
-	
-	DEL_DEST("benv/slice_program.b");
-	string t;
-	string t2;
-	string s;
-	s = str(0);
-	t = (("benv/trace/trace_program" + s) + ".b");
-	e = exists(t);
-	for (int number; number = 1; e; number = (number + 1)){
-		t = (("benv/trace/trace_program" + s) + ".b");
-		SET_SOURCE(t);
-		t = (("benv/trace/slice_program" + s) + ".b");
-		SET_DEST(t);
-		modify();
-		finish();
-		t = (("benv/trace/slice_program" + s) + ".b");
-		t2 = (("benv/trace/trace_program" + s) + ".b");
-		copy(t, t2);
-		t = (("benv/trace/slice_program" + s) + ".b"); 
-		DEL_DEST(t);
-		s = str(number);
-		t = (("benv/trace/trace_program" + s) + ".b");
-		e = exists(t);
-	};
 };
 
 main();
