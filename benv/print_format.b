@@ -3,7 +3,7 @@
 string root_dest;
 
 void init(){
-	SET_SOURCE("benv/func_program.b");
+	SET_SOURCE("benv/import_program.b");
 	SET_DEST("benv/program.basm");
 	get_root_dest(root_dest);
 };
@@ -11,7 +11,7 @@ void init(){
 void finish(){
 	UNSET_SOURCE();
 	UNSET_DEST();
-	DEL_DEST("benv/func_program.b");
+	DEL_DEST("benv/import_program.b");
 	SEND_DEST(root_dest);
 };
 
