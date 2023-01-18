@@ -40,6 +40,14 @@ void main(){
 	if(0 < index(s, "l")){
 		print("OK\n"); 	
 	}; 
+
+	if(is_letter("l")){
+		print("OK2\n"); 	
+	};
+
+	if(is_digit("2")){
+		print("OK3\n");	
+	};
 };
 
 main();

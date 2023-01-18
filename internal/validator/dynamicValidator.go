@@ -586,7 +586,13 @@ func dValidateString(command string) (string, int, error) {
 
 func dValidateStr(command string, variables [][][]interface{}) (string, [][][]interface{}, error) {
 	tail := command
-	re, err := regexp.Compile(`str\(`)
+	var err error
+	var re *regexp.Regexp
+	var exprEnd int
+	var t string
+	var tail2 string
+
+	re, err = regexp.Compile(`str\(`)
 	if nil != err {
 		panic(err)
 	}
@@ -595,13 +601,13 @@ func dValidateStr(command string, variables [][][]interface{}) (string, [][][]in
 		poses = re.FindAllIndex([]byte(tail), -1)
 		var replacerArgs []string
 		for _, pos := range poses {
-			exprEnd, err := getExprEnd(tail, pos[1]-1)
+			exprEnd, err = getExprEnd(tail, pos[1]-1)
 			if nil != err {
 				return tail, variables, err
 			}
-			t, err := getExprType(tail[pos[0]+4:exprEnd-1], variables)
+			t, err = getExprType(tail[pos[0]+4:exprEnd-1], variables)
 			if nil != err {
-				tail2, _, variables, err := dValidateFuncCall(tail[pos[0]+4:exprEnd-1], variables)
+				tail2, _, variables, err = dValidateFuncCall(tail[pos[0]+4:exprEnd-1], variables, true)
 				if nil != err {
 					return tail, variables, err
 				}
@@ -1028,7 +1034,7 @@ func dValidateIf(command string, variables [][][]interface{}) (string, int, [][]
 		loc := re.FindIndex([]byte(command))
 		ifStruct := command[:loc[1]]
 
-		ifStruct, _, variables, err = dValidateFuncCall("$bval="+ifStruct[3:len(ifStruct)-2], variables)
+		ifStruct, _, variables, err = dValidateFuncCall("$bval="+ifStruct[3:len(ifStruct)-2], variables, false)
 		ifStruct = ifStruct[6:]
 
 		if nil != err {
@@ -1063,7 +1069,7 @@ func dValidateElseIf(command string, variables [][][]interface{}) (string, int, 
 		}
 		loc := re.FindIndex([]byte(command))
 		elseIfStruct := command[:loc[1]]
-		elseIfStruct, _, variables, err = dValidateFuncCall("$bval="+elseIfStruct[7:len(elseIfStruct)-1], variables)
+		elseIfStruct, _, variables, err = dValidateFuncCall("$bval="+elseIfStruct[7:len(elseIfStruct)-1], variables, false)
 		elseIfStruct = elseIfStruct[6:]
 
 		if nil != err {
@@ -1111,7 +1117,7 @@ func dValidateReturn(command string, variables [][][]interface{}) (string, int, 
 		if len(closureHistory) < 1 {
 			return tail, status.Err, variables, errors.New("illegal position of return")
 		}
-		tail, _, variables, err = dValidateFuncCall(tail, variables)
+		tail, _, variables, err = dValidateFuncCall(tail, variables, true)
 		if nil != err {
 			return tail, status.Err, variables, err
 		}
@@ -1132,7 +1138,7 @@ func dValidateReturn(command string, variables [][][]interface{}) (string, int, 
 	return "", stat, variables, nil
 }
 
-func dValidateFuncCall(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
+func dValidateFuncCall(command string, variables [][][]interface{}, knownUsage bool) (string, int, [][][]interface{}, error) {
 	var replacerArgs []string
 	var thisFuncName string
 	var err error
@@ -1158,11 +1164,16 @@ func dValidateFuncCall(command string, variables [][][]interface{}) (string, int
 	if nil != replacerArgs {
 		r := strings.NewReplacer(replacerArgs...)
 		tail = r.Replace(tail)
-		if tail[1:] == thisFuncName && "void" == funcTable[thisFuncName] {
-			return ``, status.Yes, variables, nil
-		}
-		if tail[1:] == thisFuncName && "void" != funcTable[thisFuncName] {
-			return tail, status.Err, variables, errors.New("unused value of func " + thisFuncName)
+
+		if !knownUsage {
+			for thisFuncName = range funcTable {
+				if tail[1:] == thisFuncName && "void" == funcTable[thisFuncName] {
+					return ``, status.Yes, variables, nil
+				}
+				if tail[1:] == thisFuncName && "void" != funcTable[thisFuncName] {
+					return tail, status.Err, variables, errors.New("unused value of func " + thisFuncName)
+				}
+			}
 		}
 		return tail, status.Yes, variables, nil
 	}
@@ -1630,7 +1641,7 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		return variables, nil
 	}
 
-	command, stat, variables, err = dValidateFuncCall(command, variables)
+	command, stat, variables, err = dValidateFuncCall(command, variables, false)
 
 	if nil != err {
 		return variables, err
