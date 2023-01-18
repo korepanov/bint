@@ -23,6 +23,14 @@ void main(){
 	for (print(""); print(""); i < len(s); i = (i + 1)){
 		print("smth4\n"); 	
 	};
+
+	if(True){
+		print("YES\n");	
+	}else{
+		print("NO\n");	
+	};
+
+	print((((s[1:3] + s[4]) + "\n") + str(999))); 
 };
 
 main();
