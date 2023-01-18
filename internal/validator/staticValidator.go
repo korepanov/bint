@@ -4,7 +4,6 @@ import (
 	"bint.com/internal/const/status"
 	. "bint.com/pkg/serviceTools"
 	"errors"
-	"fmt"
 	"os"
 	"regexp"
 	"strings"
@@ -765,9 +764,6 @@ func ValidateStr(command string, variables [][][]interface{}) (string, [][][]int
 }
 
 func validateCommand(command string) error {
-	if "((is_let)OR(is_dig))" == command {
-		fmt.Print("")
-	}
 	oldCommand := command
 
 	tail, stat, err := validateFuncDefinition(command)
@@ -869,6 +865,16 @@ func validateCommand(command string) error {
 		return validateCommand(tail)
 	}
 
+	tail, stat, err = validateImport(command)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		return validateCommand(tail)
+	}
+
 	tail, stat, err = validateFor(command)
 
 	if nil != err {
@@ -881,16 +887,6 @@ func validateCommand(command string) error {
 
 	if !isValidBracesNum(command) {
 		return errors.New("number of '(' does not equal number of ')'")
-	}
-
-	tail, stat, err = validateImport(command)
-
-	if nil != err {
-		return err
-	}
-
-	if status.Yes == stat {
-		return validateCommand(tail)
 	}
 
 	tail, stat, err = validateCD(command)
