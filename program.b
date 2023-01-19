@@ -69,6 +69,10 @@ void main(){
 		print("OK5\n"); 	
 	};
 
+	if(bool("True")){
+		print((str(bool("True")) + "\n")); 	
+	};
+
 };
 
 main();

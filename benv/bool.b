@@ -49,7 +49,7 @@ stack bool_poses(string command){
 	while (NOT("end" == buf)){
 		pos = int(buf);
 		if (NOT(0 == pos)){
-			if (NOT((is_letter(command[(pos - 1)])) OR (is_digit(command[(pos - 1)])))){
+			if (NOT(((is_letter(command[(pos - 1)]))OR(is_digit(command[(pos - 1)])))OR("_" == command[(pos - 1)]))){
 				epos = func_end(command, (pos + 4));
 				el.push(epos);
 				el.push(pos);
