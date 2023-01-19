@@ -334,7 +334,8 @@ func ExecBenv(filesListToExecute []string, rootSource string, rootDest string, t
 	exPath := filepath.Dir(ex) + "/"
 
 	if !Exists("benv/build/import") {
-		_, err = Copy(rootSource, exPath+rootSource[strings.LastIndex(rootSource, "/")+1:])
+		err = CopyDirectory(rootSource[:strings.LastIndex(rootSource, "/")], exPath)
+		//_, err = Copy(rootSource, exPath+rootSource[strings.LastIndex(rootSource, "/")+1:])
 		if nil != err {
 			fmt.Println(err)
 			os.Exit(1)
@@ -374,8 +375,8 @@ func ExecBenv(filesListToExecute []string, rootSource string, rootDest string, t
 	}
 
 	FileToExecute = filesListToExecute[len(filesListToExecute)-1]
-
 	cmd = exec.Command(filesListToExecute[len(filesListToExecute)-1], "-o", rootDest)
+
 	err = cmd.Start()
 	if nil != err {
 		panic(err)
@@ -385,10 +386,12 @@ func ExecBenv(filesListToExecute []string, rootSource string, rootDest string, t
 		panic(err)
 	}
 
-	_, err = Copy(exPath+rootDest, userDest)
-	if nil != err {
-		fmt.Println(err)
-		os.Exit(1)
+	if len(filesListToExecute) > 2 {
+		_, err = Copy(exPath+rootDest, userDest)
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 	}
 }
 
