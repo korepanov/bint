@@ -65,6 +65,10 @@ void main(){
 		print("OK4\n"); 	
 	};
 
+	if(float("1.5") < 2){
+		print("OK5\n"); 	
+	};
+
 };
 
 main();

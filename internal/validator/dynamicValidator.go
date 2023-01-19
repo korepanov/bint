@@ -675,6 +675,51 @@ func dValidateInt(command string, variables [][][]interface{}) (string, [][][]in
 	return tail, variables, nil
 }
 
+func dValidateFloat(command string, variables [][][]interface{}) (string, [][][]interface{}, error) {
+	tail := command
+	var err error
+	var re *regexp.Regexp
+	var exprEnd int
+	var t string
+	var tail2 string
+
+	re, err = regexp.Compile(`float\(`)
+	if nil != err {
+		panic(err)
+	}
+	if nil != re.FindIndex([]byte(tail)) {
+		var poses [][]int
+		poses = re.FindAllIndex([]byte(tail), 1)
+
+		for _, pos := range poses {
+			if 0 == pos[0] || !(pos[0] > 0 && (unicode.IsLetter(rune(tail[pos[0]-1])) || '_' == tail[pos[0]-1] ||
+				unicode.IsDigit(rune(tail[pos[0]-1])))) {
+				exprEnd, err = getExprEnd(tail, pos[1]-1)
+				if nil != err {
+					return tail, variables, err
+				}
+				t, err = getExprType(tail[pos[0]+6:exprEnd-1], variables)
+				if nil != err {
+					tail2, _, variables, err = dValidateFuncCall(tail[pos[0]+4:exprEnd-1], variables, true)
+					if nil != err {
+						return tail, variables, err
+					}
+					t, err = getExprType(tail2, variables)
+					if nil != err {
+						return ``, variables, err
+					}
+				}
+				if "stack" == t {
+					return tail, variables, errors.New("data type mismatch in str: stack")
+				}
+				tail = tail[:pos[0]] + `$fval` + tail[exprEnd:]
+				return dValidateFloat(tail, variables)
+			}
+		}
+	}
+	return tail, variables, nil
+}
+
 func dValidateIsLetter(command string, variables [][][]interface{}) (string, [][][]interface{}, error) {
 	tail, variables, err := dValidateSlice(command, variables)
 	if nil != err {
@@ -1737,6 +1782,11 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		return variables, err
 	}
 
+	command, variables, err = dValidateFloat(command, variables)
+	if nil != err {
+		return variables, err
+	}
+
 	_, stat, variables, err = dValidateAssignment(command, variables)
 
 	if nil != err {
@@ -1842,6 +1892,13 @@ func DynamicValidate(validatingFile string, rootSource string) {
 		panic(err)
 	}
 	variables[0][2][2] = "False"
+
+	_, variables[len(variables)-1], err = lexer.LexicalAnalyze("bool$fval",
+		variables[len(variables)-1], false, nil, false, nil)
+	if nil != err {
+		panic(err)
+	}
+	variables[0][3][2] = "1.5"
 
 	_, variables[len(variables)-1], err = lexer.LexicalAnalyze("stack$stackVal",
 		variables[len(variables)-1], false, nil, false, nil)
