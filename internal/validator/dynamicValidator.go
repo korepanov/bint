@@ -1209,6 +1209,17 @@ func dValidateFuncCall(command string, variables [][][]interface{}, knownUsage b
 
 	tail := command
 
+	for thisFuncName = range funcTable {
+		if tail[1:] == thisFuncName && "void" == funcTable[thisFuncName] {
+			return ``, status.Yes, variables, nil
+		}
+		if !knownUsage {
+			if tail[1:] == thisFuncName && "void" != funcTable[thisFuncName] {
+				return tail, status.Err, variables, errors.New("unused value of func " + thisFuncName)
+			}
+		}
+	}
+
 	for funcName := range funcTable {
 		locArr := GetFuncNameEntry(funcName, tail)
 
@@ -1229,11 +1240,12 @@ func dValidateFuncCall(command string, variables [][][]interface{}, knownUsage b
 		r := strings.NewReplacer(replacerArgs...)
 		tail = r.Replace(tail)
 
-		if !knownUsage {
-			for thisFuncName = range funcTable {
-				if tail[1:] == thisFuncName && "void" == funcTable[thisFuncName] {
-					return ``, status.Yes, variables, nil
-				}
+		for thisFuncName = range funcTable {
+
+			if tail[1:] == thisFuncName && "void" == funcTable[thisFuncName] {
+				return ``, status.Yes, variables, nil
+			}
+			if !knownUsage {
 				if tail[1:] == thisFuncName && "void" != funcTable[thisFuncName] {
 					return tail, status.Err, variables, errors.New("unused value of func " + thisFuncName)
 				}
