@@ -72,6 +72,7 @@ void main(){
 	if(bool("True")){
 		print((str(bool("True")) + "\n")); 	
 	};
+	s = s[1:2:3]; 
 
 };
 
