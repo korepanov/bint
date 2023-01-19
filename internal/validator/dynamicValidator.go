@@ -676,7 +676,11 @@ func dValidateInt(command string, variables [][][]interface{}) (string, [][][]in
 }
 
 func dValidateIsLetter(command string, variables [][][]interface{}) (string, [][][]interface{}, error) {
-	tail := command
+	tail, variables, err := dValidateSlice(command, variables)
+	if nil != err {
+		return ``, variables, err
+	}
+
 	re, err := regexp.Compile(`is_letter\(`)
 	if nil != err {
 		panic(err)
@@ -708,7 +712,10 @@ func dValidateIsLetter(command string, variables [][][]interface{}) (string, [][
 }
 
 func dValidateIsDigit(command string, variables [][][]interface{}) (string, [][][]interface{}, error) {
-	tail := command
+	tail, variables, err := dValidateSlice(command, variables)
+	if nil != err {
+		return ``, variables, err
+	}
 	re, err := regexp.Compile(`is_digit\(`)
 	if nil != err {
 		panic(err)

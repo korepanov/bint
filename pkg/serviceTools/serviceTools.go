@@ -53,7 +53,7 @@ func LookBehind(reg string, s string) ([]string, error) {
 		if loc[0] > 0 {
 			res = append(res, string(s[loc[0]-1]))
 		} else {
-			res = append(res, "$")
+			res = append(res, "%")
 		}
 	}
 
@@ -133,7 +133,8 @@ func GetFuncNameEntry(funcName string, command string) [][]int {
 	var funcLocArr [][]int
 
 	for i := 0; i < len(behindSymbols); i++ {
-		if !("_" == behindSymbols[i] || unicode.IsLetter(rune(behindSymbols[i][0])) || unicode.IsDigit(rune(behindSymbols[i][0]))) {
+		if !("_" == behindSymbols[i] || unicode.IsLetter(rune(behindSymbols[i][0])) || unicode.IsDigit(rune(behindSymbols[i][0])) ||
+			"$" == behindSymbols[i]) {
 			if !("_" == aheadSymbols[i] || unicode.IsLetter(rune(aheadSymbols[i][0])) || unicode.IsDigit(rune(aheadSymbols[i][0]))) {
 				funcLocArr = append(funcLocArr, locArr[i])
 			}

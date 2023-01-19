@@ -45,7 +45,7 @@ func Validate(toTranslate int, filesListToExecute []string, rootSource string,
 			}
 			validatingFile := "benv/trace_program.b"
 			DynamicValidate(validatingFile, rootSource)
-		} /*else {
+		} else {
 			Start(options.InternalValidate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
 			var number int
 			file := "benv/internal/trace/trace_program" + fmt.Sprintf("%v", number) + ".b"
@@ -56,7 +56,7 @@ func Validate(toTranslate int, filesListToExecute []string, rootSource string,
 			}
 			validatingFile := "benv/internal/trace_program.b"
 			DynamicValidate(validatingFile, rootSource)
-		}*/
+		}
 
 	}
 }
