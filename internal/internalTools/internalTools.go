@@ -334,6 +334,10 @@ func ExecBenv(filesListToExecute []string, rootSource string, rootDest string, t
 	exPath := filepath.Dir(ex) + "/"
 
 	if !Exists("benv/build/import") {
+		err = RemoveContents(exPath)
+		if nil != err {
+			fmt.Println(err)
+		}
 		err = CopyDirectory(rootSource[:strings.LastIndex(rootSource, "/")], exPath)
 		//_, err = Copy(rootSource, exPath+rootSource[strings.LastIndex(rootSource, "/")+1:])
 		if nil != err {
