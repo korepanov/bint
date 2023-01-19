@@ -15,6 +15,7 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 )
 
@@ -54,6 +55,11 @@ func ParseArgs() (int, string, string, string, error) {
 	flag.StringVar(&kFlag, "k", "", "specify key file")
 	flag.Parse()
 
+	mydir, err := os.Getwd()
+	if nil != err {
+		panic(err)
+	}
+
 	if *help {
 		flag.Usage()
 		err := errors.New("help")
@@ -61,32 +67,32 @@ func ParseArgs() (int, string, string, string, error) {
 	} else if "" == iFlag && "" == oFlag && "" != eFlag && "" == piFlag && "" == poFlag && "" == peFlag &&
 		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && !*vFlag {
 		toTranslate = options.ExecBasm
-		rootDest = eFlag
+		rootDest = mydir + "/" + eFlag
 	} else if "" != iFlag && "" != oFlag && "" == eFlag && "" == piFlag && "" == poFlag && "" == peFlag &&
 		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && !*vFlag {
 		toTranslate = options.UserTranslate
-		rootSource = iFlag
-		rootDest = oFlag
+		rootSource = mydir + "/" + iFlag
+		rootDest = mydir + "/" + oFlag
 	} else if "" != piFlag && "" != poFlag && "" == iFlag && "" == oFlag && "" == eFlag && "" == peFlag &&
 		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && !*vFlag {
 		toTranslate = options.Primitive
-		rootSource = piFlag
-		rootDest = poFlag
+		rootSource = mydir + "/" + piFlag
+		rootDest = mydir + "/" + poFlag
 	} else if "" == piFlag && "" == poFlag && "" == iFlag && "" == oFlag && "" == eFlag && "" != peFlag &&
 		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && !*vFlag {
 		toTranslate = options.InterpPrimitive
-		rootDest = peFlag
+		rootDest = mydir + "/" + peFlag
 	} else if "" == piFlag && "" == poFlag && "" == iFlag && "" == oFlag && "" == eFlag && "" == peFlag &&
 		"" != ciFlag && "" != coFlag && "" == ceFlag && "" != kFlag && !*sFlag && !*vFlag {
 		toTranslate = options.Encrypt
-		rootSource = ciFlag
-		rootDest = coFlag
-		keyDest = kFlag
+		rootSource = mydir + "/" + ciFlag
+		rootDest = mydir + "/" + coFlag
+		keyDest = mydir + "/" + kFlag
 	} else if "" == piFlag && "" == poFlag && "" == iFlag && "" == oFlag && "" == eFlag && "" == peFlag &&
 		"" == ciFlag && "" == coFlag && "" != ceFlag && "" != kFlag && !*sFlag && !*vFlag {
 		toTranslate = options.ExecEncrypt
-		rootDest = ceFlag
-		keyDest = kFlag
+		rootDest = mydir + "/" + ceFlag
+		keyDest = mydir + "/" + kFlag
 	} else if "" == iFlag && "" == oFlag && "" == eFlag && "" == piFlag && "" == poFlag && "" == peFlag &&
 		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && *sFlag && !*vFlag {
 		toTranslate = options.Internal
@@ -259,20 +265,37 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 		}
 
 	} else if options.UserTranslate == toTranslate {
-		filesListToExecute = []string{"benv/build/import",
-			"benv/build/prep_func",
-			"benv/build/prep_for",
-			"benv/build/prep_dowhile",
-			"benv/build/dowhile",
-			"benv/build/prep_while",
-			"benv/build/prep_if",
-			"benv/build/while",
-			"benv/build/for",
-			"benv/build/if",
-			"benv/build/long_function",
-			"benv/build/recurs",
-			"benv/build/func",
-			"benv/build/print_format"}
+		ex, err := os.Executable()
+		if nil != err {
+			panic(err)
+		}
+		exPath := filepath.Dir(ex) + "/"
+		filesListToExecute = []string{exPath + "benv/build/import",
+			exPath + "benv/build/prep_func",
+			exPath + "benv/build/prep_for",
+			exPath + "benv/build/prep_dowhile",
+			exPath + "benv/build/dowhile",
+			exPath + "benv/build/prep_while",
+			exPath + "benv/build/prep_if",
+			exPath + "benv/build/while",
+			exPath + "benv/build/for",
+			exPath + "benv/build/if",
+			exPath + "benv/build/nested_call",
+			exPath + "benv/build/long_function",
+			exPath + "benv/build/recurs",
+			exPath + "benv/build/func",
+			exPath + "benv/build/slice",
+			exPath + "benv/build/int",
+			exPath + "benv/build/float",
+			exPath + "benv/build/bool",
+			exPath + "benv/build/len",
+			exPath + "benv/build/str",
+			exPath + "benv/build/index",
+			exPath + "benv/build/is_letter",
+			exPath + "benv/build/is_digit",
+			exPath + "benv/build/reg_find",
+			exPath + "benv/build/exists",
+			exPath + "benv/build/print_format"}
 	} else if options.ExecBasm == toTranslate {
 		filesListToExecute = []string{rootDest}
 	} else if options.Primitive == toTranslate {
@@ -298,16 +321,37 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 }
 func ExecBenv(filesListToExecute []string, rootSource string, rootDest string, toTranslate int) {
 	FileToExecute = filesListToExecute[0]
-
 	bufRootSource := rootSource
+	userDest := rootDest
 
 	if options.UserValidate == toTranslate || options.InternalValidate == toTranslate {
 		bufRootSource += "v"
 	}
+	ex, err := os.Executable()
+	if nil != err {
+		panic(err)
+	}
+	exPath := filepath.Dir(ex) + "/"
+
+	if !Exists("benv/build/import") {
+		_, err = Copy(rootSource, exPath+rootSource[strings.LastIndex(rootSource, "/")+1:])
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		rootSource = rootSource[strings.LastIndex(rootSource, "/")+1:]
+		rootDest = rootDest[strings.LastIndex(rootDest, "/")+1:]
+
+		bufRootSource = rootSource
+
+		if options.UserValidate == toTranslate || options.InternalValidate == toTranslate {
+			bufRootSource += "v"
+		}
+	}
 
 	cmd := exec.Command(filesListToExecute[0], "-i", bufRootSource)
 
-	err := cmd.Start()
+	err = cmd.Start()
 	if nil != err {
 		panic(err)
 	}
@@ -340,6 +384,12 @@ func ExecBenv(filesListToExecute []string, rootSource string, rootDest string, t
 	if nil != err {
 		panic(err)
 	}
+
+	_, err = Copy(exPath+rootDest, userDest)
+	if nil != err {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 }
 
 func Start(toTranslate int, filesListToExecute []string, rootSource string, rootDest string, keyDest string, sysMod int, execBenv bool) {
@@ -368,16 +418,28 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 		}
 	}()
 
-	var err error
-
 	if options.InternalValidate == toTranslate {
 		filesListToExecute = []string{"benv/internal/build/import",
 			"benv/internal/build/trace",
 		}
 	}
+	var err error
+
 	if options.UserValidate == toTranslate {
-		filesListToExecute = []string{"benv/build/import",
-			"benv/build/trace",
+		if Exists("benv/build/import") {
+			filesListToExecute = []string{"benv/build/import",
+				"benv/build/trace",
+			}
+		} else {
+			ex, err := os.Executable()
+			if nil != err {
+				panic(err)
+			}
+			exPath := filepath.Dir(ex) + "/"
+
+			filesListToExecute = []string{exPath + "benv/build/import",
+				exPath + "benv/build/trace",
+			}
 		}
 	}
 

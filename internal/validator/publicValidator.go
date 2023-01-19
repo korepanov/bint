@@ -6,6 +6,7 @@ import (
 	. "bint.com/pkg/serviceTools"
 	"fmt"
 	"os"
+	"path/filepath"
 )
 
 func Validate(toTranslate int, filesListToExecute []string, rootSource string,
@@ -37,13 +38,36 @@ func Validate(toTranslate int, filesListToExecute []string, rootSource string,
 		if options.UserTranslate == toTranslate || (options.Internal == toTranslate && options.UserTranslate == sysMode) {
 			Start(options.UserValidate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
 			var number int
-			file := "benv/trace/trace_program" + fmt.Sprintf("%v", number) + ".b"
+			var file string
+			var validatingFile string
+
+			if !Exists("benv/build/import") {
+				ex, err := os.Executable()
+				if nil != err {
+					panic(err)
+				}
+				exPath := filepath.Dir(ex) + "/"
+				file = exPath + "benv/trace/trace_program" + fmt.Sprintf("%v", number) + ".b"
+			} else {
+				file = "benv/trace/trace_program" + fmt.Sprintf("%v", number) + ".b"
+			}
+
 			for Exists(file) {
 				DynamicValidate(file, rootSource)
 				number++
 				file = "benv/trace/trace_program" + fmt.Sprintf("%v", number) + ".b"
 			}
-			validatingFile := "benv/trace_program.b"
+			if !Exists("benv/build/import") {
+				ex, err := os.Executable()
+				if nil != err {
+					panic(err)
+				}
+				exPath := filepath.Dir(ex) + "/"
+				validatingFile = exPath + "benv/trace_program.b"
+			} else {
+				validatingFile = "benv/trace_program.b"
+			}
+
 			DynamicValidate(validatingFile, rootSource)
 		} else {
 			Start(options.InternalValidate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
