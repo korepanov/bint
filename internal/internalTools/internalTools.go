@@ -390,7 +390,7 @@ func ExecBenv(filesListToExecute []string, rootSource string, rootDest string, t
 		panic(err)
 	}
 
-	if len(filesListToExecute) > 2 {
+	if len(filesListToExecute) > 2 && !Exists("benv/build/import") {
 		_, err = Copy(exPath+rootDest, userDest)
 		if nil != err {
 			fmt.Println(err)
