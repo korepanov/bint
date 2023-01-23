@@ -1893,7 +1893,7 @@ func DynamicValidate(validatingFile string, rootSource string) {
 	}
 	variables[0][2][2] = "False"
 
-	_, variables[len(variables)-1], err = lexer.LexicalAnalyze("bool$fval",
+	_, variables[len(variables)-1], err = lexer.LexicalAnalyze("float$fval",
 		variables[len(variables)-1], false, nil, false, nil)
 	if nil != err {
 		panic(err)

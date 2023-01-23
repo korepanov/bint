@@ -1,0 +1,2 @@
+as --64 hello.s -o hello.o
+ld -s hello.o -o hello
