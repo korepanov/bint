@@ -1,3 +1,5 @@
 /release/
 /asm/program.o
 /program
+/asm/data.s
+/asm/program.s
