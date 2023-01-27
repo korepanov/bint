@@ -906,6 +906,18 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	}
 
 	if options.Compile == sysMod {
+		dataFile, err := compiler.InitData()
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		progFile, err := compiler.InitProg()
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
 		f, err := os.Open(rootSource)
 		if nil != err {
 			fmt.Println("could not open file " + rootSource)
@@ -928,8 +940,31 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 				panic(err)
 			}
 			for _, infoList := range infoListList {
-				compiler.CompileTree(infoList, variables, systemStack)
+				compiler.CompileTree(infoList, variables, systemStack, dataFile, progFile)
 			}
 		}
+
+		err = compiler.FinishProg(progFile)
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		err = dataFile.Close()
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		err = progFile.Close()
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		err = compiler.CompileAsm(rootDest)
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
 	}
 }

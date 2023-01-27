@@ -7,13 +7,42 @@ import (
 	"io"
 	"math"
 	"os"
+	"os/exec"
 	"regexp"
 	"strconv"
 	"strings"
 	"unicode"
 )
 
-func initData() (*os.File, error) {
+var number int
+
+func CompileAsm(rootDest string) error {
+	cmd := exec.Command("as", "--64", "asm/data.s", "asm/program.s", "-o", "asm/program.o")
+
+	err := cmd.Start()
+	if nil != err {
+		return err
+	}
+	err = cmd.Wait()
+	if nil != err {
+		return err
+	}
+
+	cmd = exec.Command("ld", "-s", "asm/program.o", "-o", rootDest)
+
+	err = cmd.Start()
+	if nil != err {
+		return err
+	}
+	err = cmd.Wait()
+	if nil != err {
+		return err
+	}
+
+	return nil
+}
+
+func InitData() (*os.File, error) {
 	f, err := os.Create("asm/data.s")
 	if nil != err {
 		fmt.Println("could not create file data.s")
@@ -23,7 +52,7 @@ func initData() (*os.File, error) {
 	return f, err
 }
 
-func initProg() (*os.File, error) {
+func InitProg() (*os.File, error) {
 	f, err := os.Create("asm/program.s")
 	if nil != err {
 		fmt.Println("could not create file program.s")
@@ -31,6 +60,20 @@ func initProg() (*os.File, error) {
 	}
 	_, err = f.Write([]byte(".text\n.globl _start\n_start:\n"))
 	return f, err
+}
+
+func FinishProg(f *os.File) error {
+	_, err := f.Write([]byte("mov $60,  %rax\n"))
+	if nil != err {
+		return err
+	}
+	_, err = f.Write([]byte("xor %rdi, %rdi\n"))
+	if nil != err {
+		return err
+	}
+	_, err = f.Write([]byte("syscall\n"))
+
+	return err
 }
 
 func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interface{}, dataFile *os.File, progFile *os.File) ([]interface{}, []interface{}, error) {
@@ -1012,27 +1055,52 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 	return res, variables, systemStack, OPPointer
 }
 
-func CompileTree(infoList []interface{}, variables [][]interface{}, systemStack []interface{}) {
-	dataFile, err := initData()
-	if nil != err {
-		fmt.Println(err)
-		os.Exit(1)
-	}
+func CompileTree(infoList []interface{}, variables [][]interface{},
+	systemStack []interface{}, dataFile *os.File, progFile *os.File) {
 
-	progFile, err := initProg()
-	if nil != err {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	_, variables, systemStack, _ = sysCompileTree(infoList, variables, systemStack, 0, dataFile, progFile)
+	res, variables, systemStack, _ := sysCompileTree(infoList, variables, systemStack, 0, dataFile, progFile)
 
-	err = dataFile.Close()
-	if nil != err {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	err = progFile.Close()
-	if nil != err {
-		os.Exit(1)
+	if "print" == res[0] {
+		_, err := dataFile.Write([]byte("msg" + fmt.Sprintf("%v", number) + ":\n"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		_, err = dataFile.Write([]byte(".ascii " + fmt.Sprintf("%v", ValueFoldInterface(res[1])) + "\n"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		_, err = dataFile.Write([]byte("len" + fmt.Sprintf("%v", number) + " = . -msg" + fmt.Sprintf("%v", number) + "\n"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		_, err = progFile.Write([]byte("mov $1,   %rdi\n"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		_, err = progFile.Write([]byte("mov $msg" + fmt.Sprintf("%v", number) + ", %rsi\n"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		_, err = progFile.Write([]byte("mov $len" + fmt.Sprintf("%v", number) + ", %rdx\n"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		_, err = progFile.Write([]byte("mov $1,   %rax\n"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		_, err = progFile.Write([]byte("syscall\n"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		number++
 	}
 }
