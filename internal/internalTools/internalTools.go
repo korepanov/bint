@@ -1,6 +1,7 @@
 package internalTools
 
 import (
+	"bint.com/internal/compiler"
 	"bint.com/internal/const/options"
 	"bint.com/internal/decryptor"
 	"bint.com/internal/encrypter"
@@ -905,7 +906,30 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	}
 
 	if options.Compile == sysMod {
-		fmt.Println("Compile")
-		os.Exit(1)
+		f, err := os.Open(rootSource)
+		if nil != err {
+			fmt.Println("could not open file " + rootSource)
+			os.Exit(1)
+		}
+		newChunk := EachChunk(f)
+
+		for chunk, err := newChunk(); "end" != chunk; chunk, err = newChunk() {
+			if nil != err {
+				panic(err)
+			}
+			inputedCode := CodeInput(chunk, false)
+			exprList, variables, err = LexicalAnalyze(inputedCode, variables, false, nil, false, nil)
+			if nil != err {
+				panic(err)
+			}
+			_, infoListList, systemStack, err =
+				parser.Parse(exprList, variables, systemStack, options.HideTree, false, false, nil, nil)
+			if nil != err {
+				panic(err)
+			}
+			for _, infoList := range infoListList {
+				compiler.CompileTree(infoList, variables, systemStack)
+			}
+		}
 	}
 }
