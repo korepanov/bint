@@ -14,6 +14,7 @@ const (
 	ExecEncrypt      = iota
 	UserValidate     = iota
 	InternalValidate = iota
+	Compile          = iota
 	ShowTree         = true
 	ExecBenv         = true
 	InterpBenv       = false

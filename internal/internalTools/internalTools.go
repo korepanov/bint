@@ -30,6 +30,8 @@ var peFlag = "-pe"
 var ciFlag = "-ci"
 var coFlag = "-co"
 var ceFlag = "-ce"
+var biFlag = "-bi"
+var boFlag = "bo"
 var kFlag = "-k"
 var vFlag = flag.Bool("version", false, "print version")
 
@@ -52,6 +54,8 @@ func ParseArgs() (int, string, string, string, error) {
 	flag.StringVar(&ciFlag, "ci", "", "file to translate from bend to benc (need to specify key file!)")
 	flag.StringVar(&coFlag, "co", "", "output file translating bend to benc (need to specify key file!)")
 	flag.StringVar(&ceFlag, "ce", "", "execute benc file (need to specify key file!)")
+	flag.StringVar(&biFlag, "bi", "", "basm file to compile")
+	flag.StringVar(&boFlag, "bo", "", "output file compiling basm")
 	flag.StringVar(&kFlag, "k", "", "specify key file")
 	flag.Parse()
 
@@ -65,41 +69,46 @@ func ParseArgs() (int, string, string, string, error) {
 		err := errors.New("help")
 		return toTranslate, rootSource, rootDest, keyDest, err
 	} else if "" == iFlag && "" == oFlag && "" != eFlag && "" == piFlag && "" == poFlag && "" == peFlag &&
-		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && !*vFlag {
+		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && !*vFlag && "" == biFlag && "" == boFlag {
 		toTranslate = options.ExecBasm
 		rootDest = mydir + "/" + eFlag
 	} else if "" != iFlag && "" != oFlag && "" == eFlag && "" == piFlag && "" == poFlag && "" == peFlag &&
-		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && !*vFlag {
+		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && !*vFlag && "" == biFlag && "" == boFlag {
 		toTranslate = options.UserTranslate
 		rootSource = mydir + "/" + iFlag
 		rootDest = mydir + "/" + oFlag
 	} else if "" != piFlag && "" != poFlag && "" == iFlag && "" == oFlag && "" == eFlag && "" == peFlag &&
-		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && !*vFlag {
+		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && !*vFlag && "" == biFlag && "" == boFlag {
 		toTranslate = options.Primitive
 		rootSource = mydir + "/" + piFlag
 		rootDest = mydir + "/" + poFlag
 	} else if "" == piFlag && "" == poFlag && "" == iFlag && "" == oFlag && "" == eFlag && "" != peFlag &&
-		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && !*vFlag {
+		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && !*vFlag && "" == biFlag && "" == boFlag {
 		toTranslate = options.InterpPrimitive
 		rootDest = mydir + "/" + peFlag
 	} else if "" == piFlag && "" == poFlag && "" == iFlag && "" == oFlag && "" == eFlag && "" == peFlag &&
-		"" != ciFlag && "" != coFlag && "" == ceFlag && "" != kFlag && !*sFlag && !*vFlag {
+		"" != ciFlag && "" != coFlag && "" == ceFlag && "" != kFlag && !*sFlag && !*vFlag && "" == biFlag && "" == boFlag {
 		toTranslate = options.Encrypt
 		rootSource = mydir + "/" + ciFlag
 		rootDest = mydir + "/" + coFlag
 		keyDest = mydir + "/" + kFlag
 	} else if "" == piFlag && "" == poFlag && "" == iFlag && "" == oFlag && "" == eFlag && "" == peFlag &&
-		"" == ciFlag && "" == coFlag && "" != ceFlag && "" != kFlag && !*sFlag && !*vFlag {
+		"" == ciFlag && "" == coFlag && "" != ceFlag && "" != kFlag && !*sFlag && !*vFlag && "" == biFlag && "" == boFlag {
 		toTranslate = options.ExecEncrypt
 		rootDest = mydir + "/" + ceFlag
 		keyDest = mydir + "/" + kFlag
 	} else if "" == iFlag && "" == oFlag && "" == eFlag && "" == piFlag && "" == poFlag && "" == peFlag &&
-		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && *sFlag && !*vFlag {
+		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && *sFlag && !*vFlag && "" == biFlag && "" == boFlag {
 		toTranslate = options.Internal
 	} else if "" == iFlag && "" == oFlag && "" == eFlag && "" == piFlag && "" == poFlag && "" == peFlag &&
-		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && *vFlag {
+		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && *vFlag && "" == biFlag && "" == boFlag {
 		fmt.Println("bint version 2.2")
 		os.Exit(0)
+	} else if "" == iFlag && "" == oFlag && "" == eFlag && "" == piFlag && "" == poFlag && "" == peFlag &&
+		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && !*vFlag && "" != biFlag && "" != boFlag {
+		toTranslate = options.Compile
+		rootSource = mydir + "/" + biFlag
+		rootDest = mydir + "/" + boFlag
 	} else {
 		flag.Usage()
 		err := errors.New("invalid arguments")
@@ -260,6 +269,9 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 			filesListToExecute = []string{rootDest}
 
 			rootDest = "program.basm"
+		} else if options.Compile == toTranslate {
+			rootSource = "program.basm"
+			rootDest = "program"
 		} else {
 			panic(errors.New("set option to translate"))
 		}
@@ -890,5 +902,10 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 				panic(err)
 			}
 		}
+	}
+
+	if options.Compile == sysMod {
+		fmt.Println("Compile")
+		os.Exit(1)
 	}
 }
