@@ -15,6 +15,8 @@ import (
 )
 
 var number int
+var markNumber int
+var dataNumber int
 
 func CompileAsm(rootDest string) error {
 	cmd := exec.Command("as", "--64", "asm/data.s", "asm/program.s", "-o", "asm/program.o")
@@ -58,7 +60,26 @@ func InitProg() (*os.File, error) {
 		fmt.Println("could not create file program.s")
 		return f, err
 	}
-	_, err = f.Write([]byte(".text\n.globl _start\n_start:\n"))
+	_, err = f.Write([]byte(".text\n" +
+
+		"print:\n" +
+		"mov (%rsi), %al\n" +
+		"cmp $0, %al\n" +
+		"jz  ex\n" +
+		"mov $1, %rdi\n" +
+		"mov $1, %rdx\n" +
+		"mov $1, %rax\n" +
+		"syscall\n" +
+		"inc %rsi\n" +
+		"dec %r8\n" +
+		"jnz print\n" +
+		"ex:\n" +
+		"ret\n"))
+	if nil != err {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	_, err = f.Write([]byte(".globl _start\n_start:\n"))
 	return f, err
 }
 
@@ -543,6 +564,40 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 	} else if "str" == OP {
 		return []interface{}{"\"" + fmt.Sprintf("%v", LO[0]) + "\""}, systemStack, nil
 	} else if "=" == OP {
+		_, err := dataFile.Write([]byte("data" + fmt.Sprintf("%v", dataNumber) + ":\n"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		_, err = dataFile.Write([]byte(".ascii " + fmt.Sprintf("%v", RO[0]) + "\n.space 1, 0\n"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		_, err = progFile.Write([]byte("mov $data" + fmt.Sprintf("%v", dataNumber) + ", %esi\n"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		dataNumber++
+		_, err = progFile.Write([]byte("mov " + fmt.Sprintf("%v", LO[0]) + ", %edi\n"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		_, err = progFile.Write([]byte("mark" + fmt.Sprintf("%v", markNumber) + ":\n"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		_, err = progFile.Write([]byte("mov (%esi), %al\nmov %al, (%edi)\ninc %esi\ninc %edi\ncmp $0, (%esi)\njnz mark" +
+			fmt.Sprintf("%v", markNumber) + "\n"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		markNumber++
+
 		return []interface{}{0}, systemStack, nil // успех
 	} else if "." == OP {
 		return []interface{}{0}, systemStack, nil
@@ -1029,7 +1084,8 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 					LO = []interface{}{v[2]}
 					wasLO = true
 				} else if !wasLO {
-					LO = v[2].([]interface{})
+					//LO = v[2].([]interface{})
+					LO[0] = "$" + fmt.Sprintf("%v", LO[0])
 					wasLO = true
 				}
 			}
@@ -1038,7 +1094,8 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 					RO = []interface{}{v[2]}
 					wasRO = true
 				} else if !wasRO {
-					RO = v[2].([]interface{})
+					//RO = v[2].([]interface{})
+					RO[0] = "$" + fmt.Sprintf("%v", RO[0])
 					wasRO = true
 				}
 			}
@@ -1076,46 +1133,30 @@ func CompileTree(infoList []interface{}, variables [][]interface{},
 	res, variables, systemStack, _ := sysCompileTree(infoList, variables, systemStack, 0, dataFile, progFile)
 
 	if "print" == res[0] {
-		_, err := dataFile.Write([]byte("msg" + fmt.Sprintf("%v", number) + ":\n"))
-		if nil != err {
-			fmt.Println(err)
-			os.Exit(1)
+		if "$" != string(fmt.Sprintf("%v", ValueFoldInterface(res[1]))[0]) {
+			_, err := dataFile.Write([]byte("msg" + fmt.Sprintf("%v", number) + ":\n"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = dataFile.Write([]byte(".ascii " + fmt.Sprintf("%v", ValueFoldInterface(res[1])) + "\n.space 1, 0\n"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = progFile.Write([]byte("mov $msg" + fmt.Sprintf("%v", number) + ", %rsi\ncall print\n"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			number++
+		} else {
+			_, err := progFile.Write([]byte("mov " + fmt.Sprintf("%v", ValueFoldInterface(res[1])) + ", %rsi\ncall print\n"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		}
-		_, err = dataFile.Write([]byte(".ascii " + fmt.Sprintf("%v", ValueFoldInterface(res[1])) + "\n"))
-		if nil != err {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		_, err = dataFile.Write([]byte("len" + fmt.Sprintf("%v", number) + " = . -msg" + fmt.Sprintf("%v", number) + "\n"))
-		if nil != err {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		_, err = progFile.Write([]byte("mov $1,   %rdi\n"))
-		if nil != err {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		_, err = progFile.Write([]byte("mov $msg" + fmt.Sprintf("%v", number) + ", %rsi\n"))
-		if nil != err {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		_, err = progFile.Write([]byte("mov $len" + fmt.Sprintf("%v", number) + ", %rdx\n"))
-		if nil != err {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		_, err = progFile.Write([]byte("mov $1,   %rax\n"))
-		if nil != err {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		_, err = progFile.Write([]byte("syscall\n"))
-		if nil != err {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		number++
+
 	}
 }

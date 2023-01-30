@@ -9,8 +9,8 @@ import (
 	"unicode"
 )
 
-func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool,
-	transpileDest *os.File, toPrimitive bool, primitiveDest *os.File) ([][]interface{}, [][]interface{}, error) {
+func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, toCompile bool,
+	transpileDest *os.File, toPrimitive bool, primitiveDest *os.File, dataFile *os.File) ([][]interface{}, [][]interface{}, error) {
 
 	var res [][]interface{}
 
@@ -317,6 +317,23 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool,
 							if nil != err {
 								return res, variables, err
 							}
+						}
+					}
+					if toCompile {
+						if "stack" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
+							print("")
+						} else if "string" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
+							_, err := dataFile.Write([]byte(varName + ":\n.space 256, 0\n"))
+							if nil != err {
+								fmt.Println(err)
+								os.Exit(1)
+							}
+						} else if "int" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
+							print("")
+						} else if "float" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
+							print("")
+						} else if "bool" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
+							print("")
 						}
 					}
 					if toPrimitive {

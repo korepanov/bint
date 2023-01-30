@@ -612,7 +612,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 
 				} else {
 					exprList, variables, err = LexicalAnalyze(inputedCode,
-						variables, options.Transpile == sysMod, transpileDest, options.Primitive == sysMod, primitiveDest)
+						variables, options.Transpile == sysMod, false, transpileDest, options.Primitive == sysMod, primitiveDest, nil)
 				}
 			} else {
 				var temp string
@@ -657,7 +657,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			} else if options.InterpPrimitive == sysMod || options.ExecEncrypt == sysMod {
 				if isBasmStyle {
 					exprList, variables, err = LexicalAnalyze(inputedCode,
-						variables, options.Transpile == sysMod, transpileDest, options.Primitive == sysMod, primitiveDest)
+						variables, options.Transpile == sysMod, false, transpileDest, options.Primitive == sysMod, primitiveDest, nil)
 					_, infoListList, systemStack, err = parser.Parse(exprList, variables, systemStack, options.HideTree,
 						options.Transpile == sysMod, options.Primitive == sysMod, primitiveDest, transpileDest)
 					if nil != err {
@@ -930,7 +930,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 				panic(err)
 			}
 			inputedCode := CodeInput(chunk, false)
-			exprList, variables, err = LexicalAnalyze(inputedCode, variables, false, nil, false, nil)
+			exprList, variables, err = LexicalAnalyze(inputedCode, variables, false, true, nil, false, nil, dataFile)
 			if nil != err {
 				panic(err)
 			}
@@ -940,7 +940,9 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 				panic(err)
 			}
 			for _, infoList := range infoListList {
-				compiler.CompileTree(infoList, variables, systemStack, dataFile, progFile)
+				if "0" != infoList[0] {
+					compiler.CompileTree(infoList, variables, systemStack, dataFile, progFile)
+				}
 			}
 		}
 
