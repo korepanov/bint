@@ -1,0 +1,7 @@
+string s;
+input(s);
+print("Hello world!\n");
+print(s);
+print("\n"); 
+exit(1); 
+print("Bye world!\n"); 
