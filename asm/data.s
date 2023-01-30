@@ -1,6 +1,8 @@
 .data
 s:
 .space 256, 0
+d:
+.space 256, 0
 data0:
 .ascii "Привет, я строка!\n"
 .space 1, 0

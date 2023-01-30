@@ -1,6 +1,8 @@
 string s;
+string d;
 s = "Привет, я строка!\n";
-print(s);
+d = s;
+print(d);
 print("\n"); 
 print("Bye world!\n"); 
 exit(1);

@@ -23,7 +23,16 @@ inc %esi
 inc %edi
 cmp $0, (%esi)
 jnz mark0
-mov $s, %rsi
+mov $s, %esi
+mov $d, %edi
+mark1:
+mov (%esi), %al
+mov %al, (%edi)
+inc %esi
+inc %edi
+cmp $0, (%esi)
+jnz mark1
+mov $d, %rsi
 call print
 mov $msg0, %rsi
 call print

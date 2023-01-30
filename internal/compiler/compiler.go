@@ -564,23 +564,31 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 	} else if "str" == OP {
 		return []interface{}{"\"" + fmt.Sprintf("%v", LO[0]) + "\""}, systemStack, nil
 	} else if "=" == OP {
-		_, err := dataFile.Write([]byte("data" + fmt.Sprintf("%v", dataNumber) + ":\n"))
-		if nil != err {
-			fmt.Println(err)
-			os.Exit(1)
+		if "$" != string(fmt.Sprintf("%v", RO[0])[0]) {
+			_, err := dataFile.Write([]byte("data" + fmt.Sprintf("%v", dataNumber) + ":\n"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = dataFile.Write([]byte(".ascii " + fmt.Sprintf("%v", RO[0]) + "\n.space 1, 0\n"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = progFile.Write([]byte("mov $data" + fmt.Sprintf("%v", dataNumber) + ", %esi\n"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			dataNumber++
+		} else {
+			_, err := progFile.Write([]byte("mov " + fmt.Sprintf("%v", RO[0]) + ", %esi\n"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		}
-		_, err = dataFile.Write([]byte(".ascii " + fmt.Sprintf("%v", RO[0]) + "\n.space 1, 0\n"))
-		if nil != err {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		_, err = progFile.Write([]byte("mov $data" + fmt.Sprintf("%v", dataNumber) + ", %esi\n"))
-		if nil != err {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		dataNumber++
-		_, err = progFile.Write([]byte("mov " + fmt.Sprintf("%v", LO[0]) + ", %edi\n"))
+		_, err := progFile.Write([]byte("mov " + fmt.Sprintf("%v", LO[0]) + ", %edi\n"))
 		if nil != err {
 			fmt.Println(err)
 			os.Exit(1)
@@ -944,7 +952,8 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 							"end" == fmt.Sprintf("%v", rightVar[2].([]interface{})[0]) {
 							rightVar[2].([]interface{})[0] = []interface{}{"end"}
 						}
-						RO[0] = ValueFoldInterface(rightVar[2])
+						RO[0] = "$" + fmt.Sprintf("%v", rightVar[1])
+						//RO[0] = ValueFoldInterface(rightVar[2])
 						typeRO = fmt.Sprintf("%v", rightVar[0])
 						break
 					}
@@ -1081,7 +1090,8 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 				}
 
 				if "string" == fmt.Sprintf("%T", v[2]) && !wasLO {
-					LO = []interface{}{v[2]}
+					//LO = []interface{}{v[2]}
+					LO[0] = "$" + fmt.Sprintf("%v", LO[0])
 					wasLO = true
 				} else if !wasLO {
 					//LO = v[2].([]interface{})
@@ -1091,7 +1101,8 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 			}
 			if fmt.Sprintf("%v", RO[0]) == fmt.Sprintf("%v", v[1]) {
 				if "string" == fmt.Sprintf("%T", v[2]) && !wasRO {
-					RO = []interface{}{v[2]}
+					//RO = []interface{}{v[2]}
+					RO[0] = "$" + fmt.Sprintf("%v", RO[0])
 					wasRO = true
 				} else if !wasRO {
 					//RO = v[2].([]interface{})
