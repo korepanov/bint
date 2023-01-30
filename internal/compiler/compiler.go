@@ -612,8 +612,23 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		if nil != err {
 			panic(err)
 		}
+		_, err = progFile.Write([]byte("mov $60,   %rax\n"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		_, err = progFile.Write([]byte("mov $" + fmt.Sprintf("%v", code) + ", %rdi\n"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 
-		os.Exit(code)
+		_, err = progFile.Write([]byte("syscall\n"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		return []interface{}{0}, systemStack, nil
 	} else if "is_letter" == OP {
 		if "string" != WhatsType(fmt.Sprintf("%v", LO[0])) {
 			err := errors.New("executor: is_letter : error: data type mismatch")
