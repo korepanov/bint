@@ -1,6 +1,8 @@
 .data
 $enter:
 .ascii "\n"
+$heapBegin:
+.quad 0 
 $heapSize:
 .quad 0
 $heapMax:
@@ -131,8 +133,18 @@ defineVar:
 
 .globl _start
 _start:
+call newMem
+mov ($heapPointer), %rax 
+mov %rax, ($heapBegin)
 
-mov $114, %r9
+movq ($heapBegin), %rax
+call toStr
+mov $$buf2, %rsi
+call print
+mov $$enter, %rsi
+call print
+
+mov $172, %r9
 
 loop:
 call defineVar
