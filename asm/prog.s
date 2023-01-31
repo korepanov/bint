@@ -85,6 +85,7 @@ newMem:
  syscall
 # запомнить адрес начала выделяемой памяти
  mov %rax, %r8 
+ mov %r8, ($heapPointer)
 # выделить динамическую память
  mov $4096, %rdi
  add %rax, %rdi
@@ -117,7 +118,7 @@ sum:
 defineVar:
  movq ($heapMax), %rax
  cmp ($heapPointer), %rax 
- jl defOk
+ jg defOk
  call newMem
  movq %r8, ($heapPointer)
  defOk:
@@ -130,7 +131,7 @@ defineVar:
 .globl _start
 _start:
 
-mov $2, %r9
+mov $116, %r9
 
 loop:
 call defineVar
