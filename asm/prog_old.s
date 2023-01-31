@@ -1,5 +1,11 @@
 .data
+$enter:
+.ascii "\n"
 $heapSize:
+.quad 0
+$heapMax:
+.quad 0
+$heapPointer:
 .quad 0
 $buf:
 .space 256, 0
@@ -40,6 +46,7 @@ set: #set strings
 toStr:
  # число в %rax 
  # подготовка преобразования числа в строку
+  movq $0, ($buf2)
   mov $10, %r8    # делитель
   mov $$buf, %rsi  # адрес начала буфера 
   xor %rdi, %rdi  # обнуляем счетчик
@@ -90,6 +97,9 @@ newMem:
  mov $4096, %rbx
  call sum 
  mov %rax, ($heapSize) 
+ mov ($heapPointer), %rbx
+ call sum 
+ mov %rax, ($heapMax) 
  ret
  
 sum:
@@ -104,10 +114,38 @@ sum:
  end_sum:
  ret
 
+defineVar:
+ movq ($heapMax), %rax
+ cmp ($heapPointer), %rax 
+ jl defOk
+ call newMem
+ movq %r8, ($heapPointer)
+ defOk:
+ movq ($heapPointer), %rax
+ movq $72, %rbx
+ call sum
+ movq %rax, ($heapPointer)
+ ret 
+
 .globl _start
 _start:
-call newMem
-call newMem
+
+mov $2, %r9
+
+loop:
+call defineVar
+dec %r9
+
+movq ($heapPointer), %rax
+call toStr
+mov $$buf2, %rsi
+call print
+mov $$enter, %rsi
+call print
+
+cmp $0, %r9
+jne loop
+
 movq ($heapSize), %rax
 call toStr
 mov $$buf2, %rsi

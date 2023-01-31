@@ -3,6 +3,8 @@ $enter:
 .ascii "\n"
 $heapSize:
 .quad 0
+$heapMax:
+.quad 0
 $heapPointer:
 .quad 0
 $buf:
@@ -95,6 +97,9 @@ newMem:
  mov $4096, %rbx
  call sum 
  mov %rax, ($heapSize) 
+ mov ($heapPointer), %rbx
+ call sum 
+ mov %rax, ($heapMax) 
  ret
  
 sum:
@@ -110,9 +115,7 @@ sum:
  ret
 
 defineVar:
- movq ($heapSize), %rax
- movq ($heapPointer), %rbx
- call sum
+ movq ($heapMax), %rax
  cmp ($heapPointer), %rax 
  jl defOk
  call newMem
@@ -127,11 +130,11 @@ defineVar:
 .globl _start
 _start:
 
-mov $1, %r9
+mov $2, %r9
 
-#loop:
+loop:
 call defineVar
-#dec %r9
+dec %r9
 
 movq ($heapPointer), %rax
 call toStr
@@ -140,8 +143,8 @@ call print
 mov $$enter, %rsi
 call print
 
-#cmp $0, %r9
-#jne loop
+cmp $0, %r9
+jne loop
 
 movq ($heapSize), %rax
 call toStr
