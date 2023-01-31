@@ -1,4 +1,8 @@
 .data
+$buf:
+.space 256, 0
+$buf2:
+.space 256, 0
 s:
 .space 256, 0
 d:

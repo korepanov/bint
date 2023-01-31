@@ -1,5 +1,6 @@
 string s;
 string d;
+int k;
 s = "Привет, я строка!\n";
 d = s;
 print(d);

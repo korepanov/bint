@@ -50,37 +50,31 @@ func InitData() (*os.File, error) {
 		fmt.Println("could not create file data.s")
 		return f, err
 	}
-	_, err = f.Write([]byte(".data\n"))
+	_, err = f.Write([]byte(".data\n$buf:\n.space 256, 0\n$buf2:\n.space 256, 0\n"))
 	return f, err
 }
 
 func InitProg() (*os.File, error) {
-	f, err := os.Create("asm/program.s")
-	if nil != err {
-		fmt.Println("could not create file program.s")
-		return f, err
-	}
-	_, err = f.Write([]byte(".text\n" +
-
-		"print:\n" +
-		"mov (%rsi), %al\n" +
-		"cmp $0, %al\n" +
-		"jz  ex\n" +
-		"mov $1, %rdi\n" +
-		"mov $1, %rdx\n" +
-		"mov $1, %rax\n" +
-		"syscall\n" +
-		"inc %rsi\n" +
-		"dec %r8\n" +
-		"jnz print\n" +
-		"ex:\n" +
-		"ret\n"))
+	f, err := os.Open("asm/pattern.s")
 	if nil != err {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	_, err = f.Write([]byte(".globl _start\n_start:\n"))
-	return f, err
+	f2, err := os.Create("asm/program.s")
+	if nil != err {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	_, err = io.Copy(f2, f)
+	if nil != err {
+		panic(err)
+	}
+	err = f.Close()
+	if nil != err {
+		panic(err)
+	}
+
+	return f2, err
 }
 
 func FinishProg(f *os.File) error {
