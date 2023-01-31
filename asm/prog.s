@@ -98,6 +98,7 @@ newMem:
  mov $4096, %rbx
  call sum 
  mov %rax, ($heapSize) 
+ mov $4096, %rax
  mov ($heapPointer), %rbx
  call sum 
  mov %rax, ($heapMax) 
@@ -131,7 +132,7 @@ defineVar:
 .globl _start
 _start:
 
-mov $116, %r9
+mov $114, %r9
 
 loop:
 call defineVar
