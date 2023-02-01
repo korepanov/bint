@@ -1,8 +1,10 @@
 .data
 pageSize:
 .quad 4096
+varNameSize:
+.quad 64
 varSize:
-.quad 200 
+.quad 256 
 enter:
 .ascii "\n"
 heapBegin:
@@ -13,6 +15,18 @@ heapMax:
 .quad 0
 heapPointer:
 .quad 0
+getPointer:
+.quad 0 
+data0:
+.ascii "sVar"
+.space 1, 0
+data1:
+.ascii "sVar2"
+.space 1, 0
+data2:
+.ascii "sVar3"
+.space 1, 0
+
 buf:
 .space 256, 0
 buf2:
@@ -108,6 +122,17 @@ __newMem:
  mov (heapPointer), %rbx
  call __sum 
  mov %rax, (heapMax) 
+ 
+ mov $0, %dl
+ mov $0, %rbx
+ __newMemlo:
+ movb %dl, (%r8, %rbx)
+ inc %rbx
+ cmp (pageSize), %rbx
+ jz  __newMemex
+ jmp __newMemlo
+ 
+ __newMemex:
  ret
  
 __sum:
@@ -122,47 +147,71 @@ __sum:
  __end_sum:
  ret
 
+__sub:
+# операнды в rax и в rbx
+# результат в rax
+
+ cmp $0, %rbx
+ je __end_sub
+ dec %rbx
+ dec %rax
+ jmp __sub
+ __end_sub:
+ ret
+
 __defineVar:
  movq (heapMax), %rax
  cmp (heapPointer), %rax 
- jg defOk
+ jg __defOk
  call __newMem
  movq %r8, (heapPointer)
- defOk:
+ __defOk:
+ mov (heapPointer), %r8
+ mov $0, %rbx
+ mov %rcx, (%r8, %rbx)
+  
+
  movq (heapPointer), %rax
  movq (varSize), %rbx
  call __sum
  movq %rax, (heapPointer)
  ret 
 
+__getVar:
+ movq (heapBegin), %rax
+ movq %rax, (getPointer)
+ movq (heapMax), %rax 
+ cmp (getPointer), %rax 
+ jg __search
+ jmp __stop # переменная не найдена, ошибка 
+ __search:
+ movq (getPointer), %r8
+ 
+ movq $0, %rbx
+ 
+ mov (%r8, %rbx), %rsi 
+ 
+ call __print 
+ mov $enter, %rsi 
+ call __print
+ ret 
+
 .globl _start
 _start:
 call __newMem
-mov (heapPointer), %rax 
-mov %rax, (heapBegin)
+movq (heapPointer), %rax 
+movq %rax, (heapBegin)
 
-movq (heapBegin), %rax
-call __toStr
-mov $buf2, %rsi
-call __print
-mov $enter, %rsi
-call __print
-
-mov $43, %r9
-
-loop:
+movq $data0, %rcx 
 call __defineVar
-dec %r9
 
-movq (heapPointer), %rax
-call __toStr
-mov $buf2, %rsi
-call __print
-mov $enter, %rsi
-call __print
+mov $data1, %rcx
+call __defineVar 
 
-cmp $0, %r9
-jne loop
+mov $data2, %rcx
+call __defineVar 
+
+call __getVar
 
 movq (heapSize), %rax
 call __toStr
