@@ -5,8 +5,12 @@ varNameSize:
 .quad 64
 varSize:
 .quad 256 
+typeSize:
+.quad 64 
 enter:
 .ascii "\n"
+space:
+.ascii " "
 heapBegin:
 .quad 0 
 heapSize:
@@ -17,15 +21,24 @@ heapPointer:
 .quad 0
 getPointer:
 .quad 0 
-data0:
+var0:
 .ascii "sVar"
 .space 1, 0
-data1:
-.ascii "sVar2"
+varT0:
+.ascii "string"
 .space 1, 0
-data2:
-.ascii "sVar3"
+var1:
+.ascii "iVar"
 .space 1, 0
+varT1:
+.ascii "int"
+.space 1, 0
+var2:
+.ascii "fVar"
+.space 1, 0
+varT2:
+.ascii "float"
+.space 1, 0 
 
 buf:
 .space 256, 0
@@ -168,11 +181,16 @@ __defineVar:
  __defOk:
  mov (heapPointer), %r8
  mov $0, %rbx
- mov %rcx, (%r8, %rbx)
-  
-
+ movq %rcx, (%r8, %rbx)
  movq (heapPointer), %rax
- movq (varSize), %rbx
+ movq (varNameSize), %rbx
+ call __sum
+ movq %rax, %r8
+ mov $0, %rbx 
+ movq %rdx, (%r8, %rbx)
+ 
+ movq (varSize), %rax
+ movq (heapPointer), %rbx
  call __sum
  movq %rax, (heapPointer)
  ret 
@@ -189,21 +207,26 @@ __getVar:
  movq $0, %rbx
  mov (%r8, %rbx), %rsi 
  call __print 
+ mov $space, %rsi 
+ call __print
+ movq (getPointer), %rax
+ movq (varNameSize), %rbx 
+ call __sum 
+ movq %rax, %r8
+ movq $0, %rbx
+ mov (%r8, %rbx), %rsi 
+ call __print
  mov $enter, %rsi 
  call __print
-
- movq (getPointer), %rax 
+ 
+ movq (getPointer), %rax
  movq (varSize), %rbx 
  call __sum 
  movq %rax, (getPointer)
-
- movq (getPointer), %r8
- movq $0, %rbx
- mov (%r8, %rbx), %rsi 
- call __print 
- mov $enter, %rsi 
- call __print
-
+ 
+ movq (heapMax), %rax 
+ cmp (getPointer), %rax
+ jg __search
  ret 
 
 .globl _start
@@ -212,13 +235,16 @@ call __newMem
 movq (heapPointer), %rax 
 movq %rax, (heapBegin)
 
-movq $data0, %rcx 
+movq $var0, %rcx
+movq $varT0, %rdx 
 call __defineVar
 
-mov $data1, %rcx
+movq $var1, %rcx
+movq $varT1, %rdx
 call __defineVar 
 
-mov $data2, %rcx
+mov $var2, %rcx
+movq $varT2, %rdx
 call __defineVar 
 
 call __getVar
