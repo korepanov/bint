@@ -186,14 +186,24 @@ __getVar:
  jmp __stop # переменная не найдена, ошибка 
  __search:
  movq (getPointer), %r8
- 
  movq $0, %rbx
- 
  mov (%r8, %rbx), %rsi 
- 
  call __print 
  mov $enter, %rsi 
  call __print
+
+ movq (getPointer), %rax 
+ movq (varSize), %rbx 
+ call __sum 
+ movq %rax, (getPointer)
+
+ movq (getPointer), %r8
+ movq $0, %rbx
+ mov (%r8, %rbx), %rsi 
+ call __print 
+ mov $enter, %rsi 
+ call __print
+
  ret 
 
 .globl _start
