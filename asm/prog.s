@@ -1,17 +1,21 @@
 .data
-$enter:
+pageSize:
+.quad 4096
+varSize:
+.quad 200 
+enter:
 .ascii "\n"
-$heapBegin:
+heapBegin:
 .quad 0 
-$heapSize:
+heapSize:
 .quad 0
-$heapMax:
+heapMax:
 .quad 0
-$heapPointer:
+heapPointer:
 .quad 0
-$buf:
+buf:
 .space 256, 0
-$buf2:
+buf2:
 .space 256, 0
 s:
 .space 200, 0
@@ -21,39 +25,39 @@ len = . - msg1
 
 .text
 
-print:
+__print:
  mov (%rsi), %al	
  cmp $0, %al	
- jz  ex			
+ jz  __ex			
  mov $1, %rdi	
  mov $1, %rdx
  mov $1, %rax	
  syscall		    
  inc %rsi		  
  dec %r8		    
- jnz print
-ex:
+ jnz __print
+__ex:
  ret
 
-set: #set strings
+__set: #set strings
  # %edi = %esi
  mov (%esi), %al
  mov %al, (%edi)
  inc %esi
  inc %edi
  cmp $0, (%esi)
- jnz set
+ jnz __set
  ret 
 
-toStr:
+__toStr:
  # число в %rax 
  # подготовка преобразования числа в строку
-  movq $0, ($buf2)
+  movq $0, (buf2)
   mov $10, %r8    # делитель
-  mov $$buf, %rsi  # адрес начала буфера 
+  mov $buf, %rsi  # адрес начала буфера 
   xor %rdi, %rdi  # обнуляем счетчик
 # преобразуем путем последовательного деления на 10
-lo:
+__lo:
   xor %rdx, %rdx  # число в rdx:rax
   div %r8         # делим rdx:rax на r8
   add $48, %dl    # цифру в символ цифры
@@ -61,25 +65,25 @@ lo:
   inc %rsi        # на следующую позицию в буфере
   inc %rdi        # счетчик увеличиваем на 1
   cmp $0, %rax    # проверка конца алгоритма
-  jnz lo          # продолжим цикл?
+  jnz __lo          # продолжим цикл?
 # число записано в обратном порядке,
 # вернем правильный, перенеся в другой буфер 
-  mov $$buf2, %rbx # начало нового буфера
-  mov $$buf, %rcx  # старый буфер
+  mov $buf2, %rbx # начало нового буфера
+  mov $buf, %rcx  # старый буфер
   add %rdi, %rcx  # в конец
   dec %rcx        # старого буфера
   mov %rdi, %rdx  # длина буфера
 # перенос из одного буфера в другой
-exc:
+__exc:
   mov (%rcx), %al # из старого буфера
   mov %al, (%rbx) # в новый
   dec %rcx        # в обратном порядке  
   inc %rbx        # продвигаемся в новом буфере
   dec %rdx        # а в старом в обратном порядке
-  jnz exc         # проверка конца алгоритма
+  jnz __exc         # проверка конца алгоритма
   ret 
 
-newMem:
+__newMem:
 # адрес начала выделяемой памяти в %r8
 # получить адрес начала области для выделения памяти
  mov $12, %rax
@@ -87,85 +91,85 @@ newMem:
  syscall
 # запомнить адрес начала выделяемой памяти
  mov %rax, %r8 
- mov %r8, ($heapPointer)
+ mov %r8, (heapPointer)
 # выделить динамическую память
- mov $4096, %rdi
+ mov (pageSize), %rdi
  add %rax, %rdi
  mov $12, %rax
  syscall
 # обработка ошибки
  cmp $-1, %rax
- jz _stop
- movq ($heapSize), %rax
- mov $4096, %rbx
- call sum 
- mov %rax, ($heapSize) 
- mov $4096, %rax
- mov ($heapPointer), %rbx
- call sum 
- mov %rax, ($heapMax) 
+ jz __stop
+ movq (heapSize), %rax
+ mov (pageSize), %rbx
+ call __sum 
+ mov %rax, (heapSize) 
+ mov (pageSize), %rax
+ mov (heapPointer), %rbx
+ call __sum 
+ mov %rax, (heapMax) 
  ret
  
-sum:
+__sum:
 # операнды в rax и в rbx
 # результат в rax
 
  cmp $0, %rbx
- je end_sum
+ je __end_sum
  dec %rbx
  inc %rax
- jmp sum
- end_sum:
+ jmp __sum
+ __end_sum:
  ret
 
-defineVar:
- movq ($heapMax), %rax
- cmp ($heapPointer), %rax 
+__defineVar:
+ movq (heapMax), %rax
+ cmp (heapPointer), %rax 
  jg defOk
- call newMem
- movq %r8, ($heapPointer)
+ call __newMem
+ movq %r8, (heapPointer)
  defOk:
- movq ($heapPointer), %rax
- movq $72, %rbx
- call sum
- movq %rax, ($heapPointer)
+ movq (heapPointer), %rax
+ movq (varSize), %rbx
+ call __sum
+ movq %rax, (heapPointer)
  ret 
 
 .globl _start
 _start:
-call newMem
-mov ($heapPointer), %rax 
-mov %rax, ($heapBegin)
+call __newMem
+mov (heapPointer), %rax 
+mov %rax, (heapBegin)
 
-movq ($heapBegin), %rax
-call toStr
-mov $$buf2, %rsi
-call print
-mov $$enter, %rsi
-call print
+movq (heapBegin), %rax
+call __toStr
+mov $buf2, %rsi
+call __print
+mov $enter, %rsi
+call __print
 
-mov $172, %r9
+mov $43, %r9
 
 loop:
-call defineVar
+call __defineVar
 dec %r9
 
-movq ($heapPointer), %rax
-call toStr
-mov $$buf2, %rsi
-call print
-mov $$enter, %rsi
-call print
+movq (heapPointer), %rax
+call __toStr
+mov $buf2, %rsi
+call __print
+mov $enter, %rsi
+call __print
 
 cmp $0, %r9
 jne loop
 
-movq ($heapSize), %rax
-call toStr
-mov $$buf2, %rsi
-call print
+movq (heapSize), %rax
+call __toStr
+mov $buf2, %rsi
+call __print
  
-_stop:
+__stop:
 mov $60, %rax
 xor %rdi, %rdi
 syscall
