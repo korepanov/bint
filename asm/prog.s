@@ -7,6 +7,11 @@ varSize:
 .quad 256 
 typeSize:
 .quad 64 
+valSize:
+.quad 256
+fatalError:
+.ascii "fatal error: internal error\n"
+.space 1, 0 
 enter:
 .ascii "\n"
 .space 1, 0
@@ -23,6 +28,14 @@ heapPointer:
 .quad 0
 getPointer:
 .quad 0 
+setPointer:
+.quad 0
+valBegin:
+.quad 0
+valMax:
+.quad 0 
+valPointer:
+.quad 0
 var0:
 .ascii "sVar"
 .space 1, 0
@@ -40,7 +53,9 @@ var2:
 .space 1, 0
 varT2:
 .ascii "float"
-.space 1, 0 
+.space 1, 0
+data0:
+.quad 25
 
 buf:
 .space 256, 0
@@ -54,6 +69,13 @@ len = . - msg1
 
 .text
 
+__throughError:
+ mov $fatalError, %rsi
+ call __print 
+ mov $60, %rax
+ mov $1, %rdi
+ syscall
+
 __print:
  mov (%rsi), %al	
  cmp $0, %al	
@@ -63,7 +85,7 @@ __print:
  mov $1, %rax	
  syscall		    
  inc %rsi		  
- dec %r8		    
+ #dec %r8		    
  jnz __print
 __ex:
  ret
@@ -128,7 +150,7 @@ __newMem:
  syscall
 # обработка ошибки
  cmp $-1, %rax
- jz __stop
+ jz __throughError 
  movq (heapSize), %rax
  mov (pageSize), %rbx
  call __sum 
@@ -175,6 +197,8 @@ __sub:
  ret
 
 __defineVar:
+ # имя переменной в %rcx 
+ # тип переменной в %rdx 
  movq (heapMax), %rax
  cmp (heapPointer), %rax 
  jg __defOk
@@ -198,29 +222,33 @@ __defineVar:
  ret 
 
 __getVar:
+ # имя переменной в %rcx 
  movq (heapBegin), %rax
  movq %rax, (getPointer)
  movq (heapMax), %rax 
  cmp (getPointer), %rax 
  jg __search
- jmp __stop # переменная не найдена, ошибка 
+ call __throughError # переменная не найдена, ошибка 
  __search:
  movq (getPointer), %r8
  movq $0, %rbx
- mov (%r8, %rbx), %rsi 
- call __print 
- mov $space, %rsi 
- call __print
- movq (getPointer), %rax
- movq (varNameSize), %rbx 
- call __sum 
- movq %rax, %r8
+ mov (%r8, %rbx), %rsi
+ cmp %rsi, %rcx
+ jne __getVarNext
+ movq (getPointer), %rax 
+# movq (varNameSize), %rbx
+# call __sum 
+# movq (typeSize), %rbx
+# call __sum 
+ movq %rax, %r8 # считываем адрес переменной, по которому лежит ее значение 
  movq $0, %rbx
- mov (%r8, %rbx), %rsi 
- call __print
- mov $enter, %rsi 
- call __print
- 
+ movq (%r8, %rbx), %rsi # адрес в %rsi 
+ mov %rsi, %rax 
+ movq %rsi, %r8
+ movq $0, %rbx
+ mov (%r8, %rbx), %rcx # поместить значение переменной в %rcx 
+ ret  
+ __getVarNext:
  movq (getPointer), %rax
  movq (varSize), %rbx 
  call __sum 
@@ -229,7 +257,67 @@ __getVar:
  movq (heapMax), %rax 
  cmp (getPointer), %rax
  jg __search
+ call __throughError # переменная не найдена, ошибка 
+
+__initVals:
+ movq (heapBegin), %rax
+ movq %rax, (setPointer)
+ movq (heapMax), %rax 
+ cmp (setPointer), %rax
+ jg __initValsOk
+ call __newMem 
+ __initValsOk:
+ mov (setPointer), %rax
+ mov %rax, (valBegin) 
  ret 
+
+__setVar:
+ # имя переменной в %rcx 
+ # значение переменной в %rdx 
+ movq (heapBegin), %rax
+ movq %rax, (setPointer)
+ movq (heapMax), %rax 
+ cmp (setPointer), %rax 
+ jg __setVarSearch
+ call __throughError # переменная не найдена, ошибка 
+ __setVarSearch:
+ movq (setPointer), %r8
+ movq $0, %rbx
+ mov (%r8, %rbx), %rsi
+ cmp %rsi, %rcx
+ jne __setVarNext
+ movq (heapMax), %rax
+ cmp (heapPointer), %rax
+ jg __setVarOk
+ call __newMem
+ movq %r8, (heapPointer)
+ __setVarOk:
+ mov (valBegin), %r8
+ mov $0, %rbx
+ movq %rdx, (%r8, %rbx) # пишем по адресу (valBegin)
+ movq (setPointer), %rax
+ movq (varNameSize), %rbx
+ call __sum 
+ mov %rax, (setPointer)
+ mov (setPointer), %r8
+ movq $0, %rbx
+ movq (valBegin), %rsi #пишем адрес в переменную 
+ movq %rsi, (%r8, %rbx)
+ movq (valBegin), %rax
+ movq (valSize), %rbx
+ call __sum
+ movq %rax, (valBegin) 
+
+ ret
+ __setVarNext: 
+ movq (setPointer), %rax
+ movq (varSize), %rbx 
+ call __sum 
+ movq %rax, (setPointer)
+ movq (heapMax), %rax 
+ cmp (setPointer), %rax
+ jg __setVarSearch
+ call __throughError # переменная не найдена, ошибка 
 
 .globl _start
 _start:
@@ -249,7 +337,16 @@ mov $var2, %rcx
 movq $varT2, %rdx
 call __defineVar 
 
+call __initVals
+
+mov $var1, %rcx
+mov $data0, %rdx
+call __setVar
 call __getVar
+mov %rcx, %rax
+call __toStr
+mov $buf2, %rsi 
+call __print
 
 movq (heapSize), %rax
 call __toStr
