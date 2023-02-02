@@ -9,8 +9,10 @@ typeSize:
 .quad 64 
 enter:
 .ascii "\n"
+.space 1, 0
 space:
 .ascii " "
+.space 1, 0
 heapBegin:
 .quad 0 
 heapSize:
