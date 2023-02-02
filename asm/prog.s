@@ -233,20 +233,21 @@ __getVar:
  movq (getPointer), %r8
  movq $0, %rbx
  mov (%r8, %rbx), %rsi
+ call __print
  cmp %rsi, %rcx
  jne __getVarNext
- movq (getPointer), %rax 
+ call __print 
 # movq (varNameSize), %rbx
 # call __sum 
 # movq (typeSize), %rbx
 # call __sum 
- movq %rax, %r8 # считываем адрес переменной, по которому лежит ее значение 
- movq $0, %rbx
- movq (%r8, %rbx), %rsi # адрес в %rsi 
- mov %rsi, %rax 
- movq %rsi, %r8
- movq $0, %rbx
- mov (%r8, %rbx), %rcx # поместить значение переменной в %rcx 
+# movq %rax, %r8 # считываем адрес переменной, по которому лежит ее значение 
+# movq $0, %rbx
+# movq (%r8, %rbx), %rsi # адрес в %rsi 
+# mov %rsi, %rax 
+# movq %rsi, %r8
+# movq $0, %rbx
+# mov (%r8, %rbx), %rcx # поместить значение переменной в %rcx 
  ret  
  __getVarNext:
  movq (getPointer), %rax
