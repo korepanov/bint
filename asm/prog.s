@@ -90,6 +90,34 @@ __print:
 __ex:
  ret
 
+__printHeap:
+ movq (heapBegin), %rax 
+ movq (heapSize), %rbx 
+ call __sum 
+ movq %rax, %r9
+ movq (heapBegin), %r8
+ movq $0, %rbx
+__printHeapLocal:
+ movb (%r8, %rbx), %al
+ cmp $0, %al
+ jz __printHeapNext
+ call __toStr
+ mov $buf2, %rsi
+ cmp %r8, %r9
+ jz  __printHeapEx			
+ mov $1, %rdi	
+ mov $1, %rdx
+ mov $1, %rax	
+ syscall
+ __printHeapNext:
+ inc %r8 
+ jmp __printHeapLocal		    
+# incb (%r8, %rbx)			  		    
+# jnz __printHeapLocal
+__printHeapEx:
+ 
+ ret
+
 __set: #set strings
  # %edi = %esi
  mov (%esi), %al
@@ -233,17 +261,25 @@ __getVar:
  movq (getPointer), %r8
  movq $0, %rbx
  mov (%r8, %rbx), %rsi
- call __print
  cmp %rsi, %rcx
  jne __getVarNext
- call __print 
-# movq (varNameSize), %rbx
-# call __sum 
-# movq (typeSize), %rbx
-# call __sum 
-# movq %rax, %r8 # считываем адрес переменной, по которому лежит ее значение 
-# movq $0, %rbx
-# movq (%r8, %rbx), %rsi # адрес в %rsi 
+ movq (getPointer), %rax 
+ movq (varNameSize), %rbx
+ call __sum 
+ movq (typeSize), %rbx
+ call __sum 
+ 
+# call __toStr
+# mov $buf2, %rsi 
+# call __print
+
+ movq %rax, %r8 # считываем адрес переменной, по которому лежит ее значение 
+ movq $0, %rbx
+ movq (%r8, %rbx), %rsi # адрес в %rsi
+ mov %rsi, %rax 
+ call __toStr
+ mov $buf2, %rsi 
+ call __print
 # mov %rsi, %rax 
 # movq %rsi, %r8
 # movq $0, %rbx
@@ -261,7 +297,7 @@ __getVar:
  call __throughError # переменная не найдена, ошибка 
 
 __initVals:
- movq (heapBegin), %rax
+ movq (heapMax), %rax
  movq %rax, (setPointer)
  movq (heapMax), %rax 
  cmp (setPointer), %rax
@@ -308,8 +344,13 @@ __setVar:
  movq (valSize), %rbx
  call __sum
  movq %rax, (valBegin) 
-
+ call __toStr
+ mov $buf2, %rsi
+ call __print
+ mov $enter, %rsi
+ call __print
  ret
+
  __setVarNext: 
  movq (setPointer), %rax
  movq (varSize), %rbx 
@@ -343,17 +384,21 @@ call __initVals
 mov $var1, %rcx
 mov $data0, %rdx
 call __setVar
+mov $var1, %rcx
 call __getVar
-mov %rcx, %rax
-call __toStr
-mov $buf2, %rsi 
-call __print
+#mov %rcx, %rax
+#call __toStr
+#mov $buf2, %rsi 
+#call __print
 
 movq (heapSize), %rax
 call __toStr
 mov $buf2, %rsi
 call __print
- 
+movq $enter, %rsi
+call __print 
+call __printHeap
+
 __stop:
 mov $60, %rax
 xor %rdi, %rdi
