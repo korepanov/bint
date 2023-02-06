@@ -95,25 +95,25 @@ __printHeap:
  movq (heapSize), %rbx 
  call __sum 
  movq %rax, %r9
- movq (heapBegin), %r8
+ movq (heapBegin), %r10
+
  movq $0, %rbx
-__printHeapLocal:
- movb (%r8, %rbx), %al
- cmp $0, %al
- jz __printHeapNext
+__printHeapLocal: 
+ 
+ cmp %r9, %r10 
+ jg  __printHeapEx 
+ movb (%r10), %al
  call __toStr
- mov $buf2, %rsi
- cmp %r8, %r9
- jz  __printHeapEx			
+ mov $buf2, %rsi			
  mov $1, %rdi	
  mov $1, %rdx
  mov $1, %rax	
  syscall
  __printHeapNext:
- inc %r8 
+ inc %r10
+
  jmp __printHeapLocal		    
-# incb (%r8, %rbx)			  		    
-# jnz __printHeapLocal
+
 __printHeapEx:
  
  ret
@@ -191,8 +191,9 @@ __newMem:
  mov $0, %dl
  mov $0, %rbx
  __newMemlo:
- movb %dl, (%r8, %rbx)
+ movb %dl, (%r8)
  inc %rbx
+ inc %r8
  cmp (pageSize), %rbx
  jz  __newMemex
  jmp __newMemlo
@@ -344,11 +345,11 @@ __setVar:
  movq (valSize), %rbx
  call __sum
  movq %rax, (valBegin) 
- call __toStr
- mov $buf2, %rsi
- call __print
- mov $enter, %rsi
- call __print
+ #call __toStr
+ #mov $buf2, %rsi
+ #call __print
+ #mov $enter, %rsi
+ #call __print
  ret
 
  __setVarNext: 
@@ -363,10 +364,11 @@ __setVar:
 
 .globl _start
 _start:
+
 call __newMem
 movq (heapPointer), %rax 
-movq %rax, (heapBegin)
-
+movq %rax, (heapBegin) 
+call __printHeap
 movq $var0, %rcx
 movq $varT0, %rdx 
 call __defineVar
@@ -384,20 +386,20 @@ call __initVals
 mov $var1, %rcx
 mov $data0, %rdx
 call __setVar
-mov $var1, %rcx
-call __getVar
+#mov $var1, %rcx
+#call __getVar
 #mov %rcx, %rax
 #call __toStr
 #mov $buf2, %rsi 
 #call __print
 
-movq (heapSize), %rax
-call __toStr
-mov $buf2, %rsi
-call __print
-movq $enter, %rsi
+#movq (heapSize), %rax
+#call __toStr
+#mov $buf2, %rsi
+#call __print
+#movq $enter, %rsi
 call __print 
-call __printHeap
+#call __printHeap
 
 __stop:
 mov $60, %rax
