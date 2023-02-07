@@ -235,14 +235,12 @@ __defineVar:
  movq %r8, (heapPointer)
  __defOk:
  mov (heapPointer), %r8
- mov $0, %rbx
- movq %rcx, (%r8, %rbx)
+ movq %rcx, (%r8)
  movq (heapPointer), %rax
  movq (varNameSize), %rbx
  call __sum
  movq %rax, %r8
- mov $0, %rbx 
- movq %rdx, (%r8, %rbx)
+ movq %rdx, (%r8)
  
  movq (varSize), %rax
  movq (heapPointer), %rbx
@@ -260,31 +258,29 @@ __getVar:
  call __throughError # переменная не найдена, ошибка 
  __search:
  movq (getPointer), %r8
- movq $0, %rbx
- mov (%r8, %rbx), %rsi
+ mov (%r8), %rsi
  cmp %rsi, %rcx
  jne __getVarNext
  movq (getPointer), %rax 
  movq (varNameSize), %rbx
  call __sum 
- movq (typeSize), %rbx
- call __sum 
+ #movq (typeSize), %rbx
+ #call __sum 
  
  #call __toStr
  #mov $buf2, %rsi 
  #call __print
 
  movq %rax, %r8 # считываем адрес переменной, по которому лежит ее значение 
- movq $0, %rbx
  movq (%r8), %rsi # адрес в %rsi
-# mov %rsi, %rax 
-# call __toStr
-# mov $buf2, %rsi 
-# call __print
-# mov %rsi, %rax 
-# movq %rsi, %r8
-# movq $0, %rbx
-# mov (%r8, %rbx), %rcx # поместить значение переменной в %rcx 
+ mov %rsi, %rcx
+ #mov %rsi, %rax 
+ #call __toStr
+ #mov $buf2, %rsi 
+ #call __print
+ #mov %rsi, %rax 
+ #movq %rsi, %r8
+ #mov (%r8), %rcx # поместить значение переменной в %rcx 
  ret  
  __getVarNext:
  movq (getPointer), %rax
@@ -320,8 +316,7 @@ __setVar:
  call __throughError # переменная не найдена, ошибка 
  __setVarSearch:
  movq (setPointer), %r8
- movq $0, %rbx
- mov (%r8, %rbx), %rsi
+ mov (%r8), %rsi
  cmp %rsi, %rcx
  jne __setVarNext
  movq (heapMax), %rax
@@ -331,16 +326,17 @@ __setVar:
  movq %r8, (heapPointer)
  __setVarOk:
  mov (valBegin), %r8
- mov $0, %rbx
- movq %rdx, (%r8, %rbx) # пишем по адресу (valBegin)
+ movq %rdx, (%r8) # пишем по адресу (valBegin)
  movq (setPointer), %rax
  movq (varNameSize), %rbx
  call __sum 
  mov %rax, (setPointer)
+ mov (typeSize), %rbx 
+ call __sum
+ mov %rax, (setPointer)
  mov (setPointer), %r8
- movq $0, %rbx
  movq (valBegin), %rsi #пишем адрес в переменную 
- movq %rsi, (%r8, %rbx)
+ movq %rsi, (%r8)
  movq (valBegin), %rax
  movq (valSize), %rbx
  call __sum
@@ -389,9 +385,10 @@ call __setVar
 mov $var1, %rcx
 call __getVar
 #mov %rcx, %rax
+mov %rcx, %rsi
 #call __toStr
 #mov $buf2, %rsi 
-#call __print
+call __print
 
 #movq (heapSize), %rax
 #call __toStr
