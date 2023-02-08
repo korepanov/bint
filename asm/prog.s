@@ -97,14 +97,11 @@ __printHeap:
  movq %rax, %r9
  movq (heapBegin), %r10
 
- movq $0, %rbx
 __printHeapLocal: 
  
  cmp %r9, %r10 
  jz  __printHeapEx 
- movb (%r10), %al
- call __toStr
- mov $buf2, %rsi			
+ mov (%r10), %rsi			
  mov $1, %rdi	
  mov $1, %rdx
  mov $1, %rax	
@@ -272,8 +269,9 @@ __getVar:
  #call __print
 
  movq %rax, %r8 # считываем адрес переменной, по которому лежит ее значение 
- movq (%r8), %rsi # адрес в %rsi
- mov %rsi, %rcx
+ movq (%r8), %rcx 
+
+ #mov %rsi, %rcx
  #mov %rsi, %rax 
  #call __toStr
  #mov $buf2, %rsi 
@@ -335,7 +333,7 @@ __setVar:
  call __sum
  mov %rax, (setPointer)
  mov (setPointer), %r8
- movq (valBegin), %rsi #пишем адрес в переменную 
+ movq $valBegin, %rsi #пишем адрес в переменную 
  movq %rsi, (%r8)
  movq (valBegin), %rax
  movq (valSize), %rbx
@@ -364,7 +362,7 @@ _start:
 call __newMem
 movq (heapPointer), %rax 
 movq %rax, (heapBegin) 
-
+call __printHeap
 movq $var0, %rcx
 movq $varT0, %rdx 
 call __defineVar
@@ -388,7 +386,7 @@ call __getVar
 mov %rcx, %rsi
 #call __toStr
 #mov $buf2, %rsi 
-call __print
+#call __print
 
 #movq (heapSize), %rax
 #call __toStr
