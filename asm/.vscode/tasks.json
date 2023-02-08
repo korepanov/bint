@@ -4,10 +4,28 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "asmCompile",
+            "label": "rmProg",
             "type": "shell",
-            "command": "as --64 prog.s -o prog.o  & ld -s prog.o -o prog & clear",
+            "command": "rm -f prog",
         },
+        {
+            "label": "as",
+            "type": "shell",
+            "dependsOn":"rmProg",
+            "command": "as --64 prog.s -o prog.o",
+            
+        },
+        {
+            "label": "ld",
+            "type": "shell",
+            "dependsOn":"as",
+            "command": "ld -s prog.o -o prog",
+        },
+        {
+            "label": "Build",
+            "dependsOn":"ld"
+            
+        }
         
     ]
 }

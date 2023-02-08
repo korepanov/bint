@@ -264,8 +264,8 @@ __getVar:
  movq (getPointer), %rax 
  movq (varNameSize), %rbx
  call __sum 
- #movq (typeSize), %rbx
- #call __sum 
+ movq (typeSize), %rbx
+ call __sum 
  
  #call __toStr
  #mov $buf2, %rsi 

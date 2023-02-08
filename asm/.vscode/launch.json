@@ -10,7 +10,7 @@
             "name": "launch",
             "program": "${cwd}/prog",
             "cwd": "/home/slava/Go/bint/asm",
-            "preLaunchTask": "asmCompile",
+            "preLaunchTask": "Build",
         }
     ]
 }
