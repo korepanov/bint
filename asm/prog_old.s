@@ -1,15 +1,65 @@
 .data
-$enter:
+pageSize:
+.quad 4096
+varNameSize:
+.quad 64
+varSize:
+.quad 256 
+typeSize:
+.quad 64 
+valSize:
+.quad 256
+fatalError:
+.ascii "fatal error: internal error\n"
+.space 1, 0 
+enter:
 .ascii "\n"
-$heapSize:
+.space 1, 0
+space:
+.ascii " "
+.space 1, 0
+heapBegin:
+.quad 0 
+heapSize:
 .quad 0
-$heapMax:
+heapMax:
 .quad 0
-$heapPointer:
+heapPointer:
 .quad 0
-$buf:
+getPointer:
+.quad 0 
+setPointer:
+.quad 0
+valBegin:
+.quad 0
+valMax:
+.quad 0 
+valPointer:
+.quad 0
+var0:
+.ascii "sVar"
+.space 1, 0
+varT0:
+.ascii "string"
+.space 1, 0
+var1:
+.ascii "iVar"
+.space 1, 0
+varT1:
+.ascii "int"
+.space 1, 0
+var2:
+.ascii "fVar"
+.space 1, 0
+varT2:
+.ascii "float"
+.space 1, 0
+data0:
+.quad 25
+
+buf:
 .space 256, 0
-$buf2:
+buf2:
 .space 256, 0
 s:
 .space 200, 0
@@ -19,39 +69,71 @@ len = . - msg1
 
 .text
 
-print:
+__throughError:
+ mov $fatalError, %rsi
+ call __print 
+ mov $60, %rax
+ mov $1, %rdi
+ syscall
+
+__print:
  mov (%rsi), %al	
  cmp $0, %al	
- jz  ex			
+ jz  __ex			
  mov $1, %rdi	
  mov $1, %rdx
  mov $1, %rax	
  syscall		    
  inc %rsi		  
- dec %r8		    
- jnz print
-ex:
+ #dec %r8		    
+ jnz __print
+__ex:
  ret
 
-set: #set strings
+__printHeap:
+ #movq (heapBegin), %rax 
+ #movq (heapSize), %rbx 
+ #call __sum 
+ movq (heapMax), %r9
+ movq (heapBegin), %r10
+ 
+ mov %r10, %rsi
+ __printHeapLocal:
+ cmp %r9, %rsi   
+ jz  __printHeapEx  	
+ mov $1, %rdi	
+ mov $1, %rdx
+ mov $1, %rax	
+ syscall
+
+ __printHeapNext:
+ inc %rsi 
+
+ jmp __printHeapLocal		    
+
+__printHeapEx:
+ 
+ ret
+
+__set: #set strings
  # %edi = %esi
  mov (%esi), %al
  mov %al, (%edi)
  inc %esi
  inc %edi
  cmp $0, (%esi)
- jnz set
+ jnz __set
  ret 
 
-toStr:
+__toStr:
  # число в %rax 
  # подготовка преобразования числа в строку
-  movq $0, ($buf2)
+  movq $0, (buf2)
   mov $10, %r8    # делитель
-  mov $$buf, %rsi  # адрес начала буфера 
+  mov $buf, %rsi  # адрес начала буфера 
   xor %rdi, %rdi  # обнуляем счетчик
 # преобразуем путем последовательного деления на 10
-lo:
+__lo:
   xor %rdx, %rdx  # число в rdx:rax
   div %r8         # делим rdx:rax на r8
   add $48, %dl    # цифру в символ цифры
@@ -59,99 +141,299 @@ lo:
   inc %rsi        # на следующую позицию в буфере
   inc %rdi        # счетчик увеличиваем на 1
   cmp $0, %rax    # проверка конца алгоритма
-  jnz lo          # продолжим цикл?
+  jnz __lo          # продолжим цикл?
 # число записано в обратном порядке,
 # вернем правильный, перенеся в другой буфер 
-  mov $$buf2, %rbx # начало нового буфера
-  mov $$buf, %rcx  # старый буфер
+  mov $buf2, %rbx # начало нового буфера
+  mov $buf, %rcx  # старый буфер
   add %rdi, %rcx  # в конец
   dec %rcx        # старого буфера
   mov %rdi, %rdx  # длина буфера
 # перенос из одного буфера в другой
-exc:
+__exc:
   mov (%rcx), %al # из старого буфера
   mov %al, (%rbx) # в новый
   dec %rcx        # в обратном порядке  
   inc %rbx        # продвигаемся в новом буфере
   dec %rdx        # а в старом в обратном порядке
-  jnz exc         # проверка конца алгоритма
+  jnz __exc         # проверка конца алгоритма
   ret 
 
-newMem:
-# адрес начала выделяемой памяти в %r8
+__newMemStart:
 # получить адрес начала области для выделения памяти
  mov $12, %rax
  xor %rdi, %rdi
  syscall
 # запомнить адрес начала выделяемой памяти
  mov %rax, %r8 
+ movq %r8, (heapPointer)
 # выделить динамическую память
- mov $4096, %rdi
+ mov (pageSize), %rdi
  add %rax, %rdi
  mov $12, %rax
  syscall
 # обработка ошибки
  cmp $-1, %rax
- jz _stop
- movq ($heapSize), %rax
- mov $4096, %rbx
- call sum 
- mov %rax, ($heapSize) 
- mov ($heapPointer), %rbx
- call sum 
- mov %rax, ($heapMax) 
+ jz __throughError 
+ movq (heapSize), %rax
+ mov (pageSize), %rbx
+ call __sum 
+ mov %rax, (heapSize) 
+ mov (pageSize), %rax
+ mov (heapPointer), %rbx
+ call __sum 
+ mov %rax, (heapMax) 
+ 
+ mov $0, %dl
+ mov $0, %rbx
+ __newMemloStart:
+ movb %dl, (%r8)
+ inc %rbx
+ inc %r8
+ cmp (pageSize), %rbx
+ jz  __newMemexStart
+ jmp __newMemloStart
+ 
+ __newMemexStart:
+ ret
+
+ __newMem:
+# адрес начала выделяемой памяти в %r8
+ mov %r8, %rax  
+ mov %r8, (heapPointer)
+# выделить динамическую память
+ mov (pageSize), %rdi
+ add %rax, %rdi
+ mov $12, %rax
+ syscall
+# обработка ошибки
+ cmp $-1, %rax
+ jz __throughError 
+ movq (heapSize), %rax
+ mov (pageSize), %rbx
+ call __sum 
+ mov %rax, (heapSize) 
+ mov (pageSize), %rax
+ mov (heapPointer), %rbx
+ call __sum 
+ mov %rax, (heapMax) 
+ 
+ mov $0, %dl
+ mov $0, %rbx
+ __newMemlo:
+ movb %dl, (%r8)
+ inc %rbx
+ inc %r8
+ cmp (pageSize), %rbx
+ jz  __newMemex
+ jmp __newMemlo
+ 
+ __newMemex:
  ret
  
-sum:
+__sum:
 # операнды в rax и в rbx
 # результат в rax
 
  cmp $0, %rbx
- je end_sum
+ je __end_sum
  dec %rbx
  inc %rax
- jmp sum
- end_sum:
+ jmp __sum
+ __end_sum:
  ret
 
-defineVar:
- movq ($heapMax), %rax
- cmp ($heapPointer), %rax 
- jl defOk
- call newMem
- movq %r8, ($heapPointer)
- defOk:
- movq ($heapPointer), %rax
- movq $72, %rbx
- call sum
- movq %rax, ($heapPointer)
+__sub:
+# операнды в rax и в rbx
+# результат в rax
+
+ cmp $0, %rbx
+ je __end_sub
+ dec %rbx
+ dec %rax
+ jmp __sub
+ __end_sub:
+ ret
+
+__defineVar:
+ # имя переменной в %rcx 
+ # тип переменной в %rdx 
+ movq (heapMax), %rax
+ cmp (heapPointer), %rax 
+ jg __defOk
+ movq (heapMax), %r8
+ call __newMem
+ movq %r8, (heapPointer)
+ __defOk:
+ mov (heapPointer), %r8
+ movq %rcx, (%r8)
+ movq (heapPointer), %rax
+ movq (varNameSize), %rbx
+ call __sum
+ movq %rax, %r8
+ movq %rdx, (%r8)
+ 
+ movq (varSize), %rax
+ movq (heapPointer), %rbx
+ call __sum
+ movq %rax, (heapPointer)
  ret 
+
+__getVar:
+ # имя переменной в %rcx 
+ movq (heapBegin), %rax
+ movq %rax, (getPointer)
+ movq (heapMax), %rax 
+ cmp (getPointer), %rax 
+ jg __search
+ call __throughError # переменная не найдена, ошибка 
+ __search:
+ movq (getPointer), %r8
+ mov (%r8), %rsi
+ cmp %rsi, %rcx
+ jne __getVarNext
+ movq (getPointer), %rax 
+ movq (varNameSize), %rbx
+ call __sum 
+ movq (typeSize), %rbx
+ call __sum 
+ 
+ #call __toStr
+ #mov $buf2, %rsi 
+ #call __print
+
+ movq %rax, %r8 # считываем адрес переменной, по которому лежит ее значение 
+ movq (%r8), %rcx 
+
+ #mov %rsi, %rcx
+ #mov %rsi, %rax 
+ #call __toStr
+ #mov $buf2, %rsi 
+ #call __print
+ #mov %rsi, %rax 
+ #movq %rsi, %r8
+ #mov (%r8), %rcx # поместить значение переменной в %rcx 
+ ret  
+ __getVarNext:
+ movq (getPointer), %rax
+ movq (varSize), %rbx 
+ call __sum 
+ movq %rax, (getPointer)
+ 
+ movq (heapMax), %rax 
+ cmp (getPointer), %rax
+ jg __search
+ call __throughError # переменная не найдена, ошибка 
+
+__initVals:
+ movq (heapMax), %rax
+ movq %rax, (setPointer)
+ movq (heapMax), %rax 
+ cmp (setPointer), %rax
+ jg __initValsOk
+ movq (heapMax), %r8 
+ call __newMem 
+ __initValsOk:
+ mov (setPointer), %rax
+ mov %rax, (valBegin) 
+ ret 
+
+__setVar:
+ # имя переменной в %rcx 
+ # значение переменной в %rdx 
+ movq (heapBegin), %rax
+ movq %rax, (setPointer)
+ movq (heapMax), %rax 
+ cmp (setPointer), %rax 
+ jg __setVarSearch
+ call __throughError # переменная не найдена, ошибка 
+ __setVarSearch:
+ movq (setPointer), %r8
+ mov (%r8), %rsi
+ cmp %rsi, %rcx
+ jne __setVarNext
+ movq (heapMax), %rax
+ cmp (heapPointer), %rax
+ jg __setVarOk
+ movq (heapMax), %r8 
+ call __newMem
+ movq (heapMax), %r8 
+ movq %r8, (heapPointer)
+ __setVarOk:
+ movq (valBegin), %r8
+ movq %rdx, (%r8) # пишем по адресу (valBegin)
+ movq (setPointer), %rax
+ movq (varNameSize), %rbx
+ call __sum 
+ mov %rax, (setPointer)
+ mov (typeSize), %rbx 
+ call __sum
+ movq %rax, (setPointer)
+ movq (setPointer), %r8
+ movq (valBegin), %rsi #пишем адрес в переменную 
+ movq %rsi, (%r8)
+ movq (valBegin), %rax
+ movq (valSize), %rbx
+ call __sum
+ movq %rax, (valBegin) 
+ #call __toStr
+ #mov $buf2, %rsi
+ #call __print
+ #mov $enter, %rsi
+ #call __print
+ ret
+
+ __setVarNext: 
+ movq (setPointer), %rax
+ movq (varSize), %rbx 
+ call __sum 
+ movq %rax, (setPointer)
+ movq (heapMax), %rax 
+ cmp (setPointer), %rax
+ jg __setVarSearch
+ call __throughError # переменная не найдена, ошибка 
 
 .globl _start
 _start:
 
-mov $2, %r9
+call __newMemStart
+movq (heapPointer), %rax 
+movq %rax, (heapBegin) 
+#call __printHeap
+movq $var0, %rcx
+movq $varT0, %rdx 
+call __defineVar
 
-loop:
-call defineVar
-dec %r9
+movq $var1, %rcx
+movq $varT1, %rdx
+call __defineVar 
 
-movq ($heapPointer), %rax
-call toStr
-mov $$buf2, %rsi
-call print
-mov $$enter, %rsi
-call print
+mov $var2, %rcx
+movq $varT2, %rdx
+call __defineVar 
 
-cmp $0, %r9
-jne loop
+call __initVals
 
-movq ($heapSize), %rax
-call toStr
-mov $$buf2, %rsi
-call print
- 
-_stop:
+mov $var1, %rcx
+mov $data0, %rdx
+call __setVar
+#mov $var1, %rcx
+#call __getVar
+#mov %rcx, %rax
+#mov %rcx, %rsi
+#call __toStr
+#mov $buf2, %rsi 
+#call __print
+
+#movq (heapSize), %rax
+#call __toStr
+#mov $buf2, %rsi
+#call __print
+#movq $enter, %rsi
+#call __print 
+call __printHeap
+
+__stop:
 mov $60, %rax
 xor %rdi, %rdi
 syscall
