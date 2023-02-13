@@ -7,6 +7,15 @@ varSize:
 .quad 256 
 typeSize:
 .quad 64 
+buf:
+.quad 256 
+lenBuf = . - buf 
+varType:
+.quad 64 
+lenVarType = . - varType 
+varName:
+.quad 64 
+lenVarName = . - varName 
 varName0:
 .ascii "iVar"
 .space 1, 0
@@ -66,9 +75,35 @@ __printHeap:
  __printHeapEx:
  ret 
 
+__set: #set strings
+ # входные параметры 
+ # rsi - длина входного буфера 
+ # rdx - адрес буфера назначения
+ # rdi - адрес буфера источника 
+ mov %rdx, %r8 
+ mov %rsi, %r9  
+ __setClear:
+ movb $'0', (%rdx)
+ dec %rsi
+ inc %rdx
+ cmp $0, %rsi  
+ jnz __setClear 
+ mov %r8, %rdx 
+ mov %r9, %rsi  
+ __setLocal:
+ mov (%rdi), %dl
+ mov %dl, (%rdx)
+ inc %rdx
+ inc %rdi
+ dec %rsi  
+ cmp $0, %rsi
+ jnz __setLocal 
+ ret 
+
 __defineVar:
- # имя переменной в %rcx
- # тип перемееной в %rdx 
+ # адрес имени переменной в %rcx
+ # адрес типа переменой в %rdx
+  
  mov %r14, %rax 
  cmp %rax, %r15
  jg __defOk 
@@ -76,9 +111,27 @@ __defineVar:
  call __newMem
  __defOk:
  mov %r14, %r8 
- movq %rcx, (%r8) 
+ __defOkLocal:
+ mov (%rcx), %dl 
+ cmp $0, %dl 
+ jz __defOkLocalEx
+ mov %dl, (%r8)
+ inc %rcx 
+ inc %r8 
+ jmp __defOkLocal
+ __defOkLocalEx:
+ mov %r14, %r8 
  add (varNameSize), %r8 
- movq %rdx, (%r8)
+  __defOkTypeLocal:
+ mov (%rdx), %dl 
+ cmp $0, %dl 
+ jz __defOkTypeLocalEx
+ mov %dl, (%r8)
+ inc %rdx
+ inc %r8 
+ jmp __defOkTypeLocal
+ __defOkTypeLocalEx:
+ 
  mov %r14, %rax 
  add (varSize), %rax 
  mov %rax, %r14
@@ -109,12 +162,12 @@ __firstMem:
  cmp $-1, %rax
  jz __throughError
 # заполним выделенную память
- mov $0, %dl
+ mov $'0', %dl
  mov $0, %rbx
  __lo:
  movb %dl, (%r8, %rbx)
  inc %rbx
- cmp pageSize, %rbx
+ cmp (pageSize), %rbx
  jz  __ex
  jmp __lo
  __ex:
@@ -151,13 +204,25 @@ __firstMem:
 .globl _start
 _start:
  call __firstMem
- mov (varName0), %rcx
- mov (varType0), %rdx 
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $varName0, %rdi 
+ call __set 
+
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $varType0, %rdi 
+ call __set 
+
+ mov $varName, %rcx 
+ mov $varType, %rdx  
  call __defineVar
- mov (varName1), %rcx 
- mov (varType1), %rdx
- call __defineVar
- 
+ #mov (varName1), %rcx 
+ #mov (varType1), %rdx
+ #call __defineVar
+ #mov $varType, %rsi 
+ #call __print 
  call __printHeap
 
 __stop:
