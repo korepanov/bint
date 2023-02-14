@@ -231,6 +231,10 @@ __readClear:
  __readEx:
  ret 
 
+__compare:
+ mov $buf, %rax 
+ mov $varName, %rax 
+ 
 __setVar:
  # имя переменной в %rcx 
  # значение переменной в %rdx 
