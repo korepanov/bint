@@ -29,7 +29,8 @@ varType1:
 .ascii "string"
 lenVarType1 = . - varType1
 data0:
-.quad 25 
+.ascii "25"
+.space 1, 0
 data1:
 .ascii "Hello world!\n"
 .space 1, 0
@@ -144,6 +145,7 @@ __defineVar:
  mov %rax, %r14
  ret 
 
+# r12 - pointer (общего назначения)
 # r13 - heapBegin 
 # r14 - heapPointer 
 # r15 - heapMax 
@@ -207,6 +209,43 @@ __firstMem:
  __newMemEx:
  ret 
 
+__read: 
+ mov %r12, %r8
+ mov $buf, %r10 
+ mov $lenBuf, %rsi 
+__readClear:
+ movb $0, (%r10)
+ dec %rsi
+ inc %r10
+ cmp $0, %rsi  
+ jnz __readClear
+ mov $buf, %r10
+ __readLocal: 
+ mov (%r8), %r9b
+ cmp $'0', %r9b  
+ jz __readEx
+ mov %r9b, (%r10)
+ inc %r10 
+ inc %r8 
+ jmp __readLocal
+ __readEx:
+ ret 
+
+__setVar:
+ # имя переменной в %rcx 
+ # значение переменной в %rdx 
+ mov %r13, %rax 
+ cmp %r15, %rax 
+ jg __setVarEx 
+ mov %rax, %rsi
+ mov %r13, %r12 
+ call __read
+ mov $buf, %rsi 
+ call __print  
+ __setVarEx:
+ ret
+
+
 
 .globl _start
 _start:
@@ -250,7 +289,8 @@ _start:
  #call __defineVar
  #mov $varType, %rsi 
  #call __print 
- call __printHeap
+ #call __printHeap
+ call __setVar 
 
 __stop:
  mov $60,  %rax      # номер системного вызова exit
