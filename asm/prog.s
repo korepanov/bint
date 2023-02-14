@@ -2,32 +2,32 @@
 pageSize:
 .quad 4096 
 varNameSize:
-.quad 64
+.quad 32
 varSize:
-.quad 256 
+.quad 128 
 typeSize:
-.quad 64 
+.quad 32 
 buf:
-.quad 256 
+.quad 0, 0, 0, 0
 lenBuf = . - buf 
 varType:
-.quad 64 
+.quad 0, 0, 0, 0
 lenVarType = . - varType 
 varName:
-.quad 64 
+.quad 0, 0, 0, 0
 lenVarName = . - varName 
 varName0:
 .ascii "iVar"
-.space 1, 0
+lenVarName0 = . - varName0
 varType0:
 .ascii "int"
-.space 1, 0
+lenVarType0 = . - varType0
 varName1:
 .ascii "sVar"
-.space 1, 0
+lenVarName1 = . - varName1
 varType1:
 .ascii "string"
-.space 1, 0
+lenVarType1 = . - varType1
 data0:
 .quad 25 
 data1:
@@ -77,27 +77,34 @@ __printHeap:
 
 __set: #set strings
  # входные параметры 
- # rsi - длина входного буфера 
+ # rsi - длина буфера назначения 
  # rdx - адрес буфера назначения
+ # rax - длина буфера источника 
  # rdi - адрес буфера источника 
  mov %rdx, %r8 
- mov %rsi, %r9  
+ mov %rsi, %r9
+  
  __setClear:
  movb $'0', (%rdx)
  dec %rsi
  inc %rdx
  cmp $0, %rsi  
- jnz __setClear 
- mov %r8, %rdx 
- mov %r9, %rsi  
+ jnz __setClear
+ dec %rdx  
+ movb $0, (%rdx)
+
+ mov %r8, %rdx   
+ 
  __setLocal:
- mov (%rdi), %dl
- mov %dl, (%rdx)
+ mov (%rdi), %r11b
+ movb %r11b, (%rdx)
  inc %rdx
  inc %rdi
- dec %rsi  
- cmp $0, %rsi
- jnz __setLocal 
+ dec %rax  
+ cmp $0, %rax
+ jnz __setLocal
+ 
+  
  ret 
 
 __defineVar:
@@ -112,10 +119,10 @@ __defineVar:
  __defOk:
  mov %r14, %r8 
  __defOkLocal:
- mov (%rcx), %dl 
- cmp $0, %dl 
+ mov (%rcx), %r11b 
+ cmp $'0', %r11b
  jz __defOkLocalEx
- mov %dl, (%r8)
+ mov %r11b, (%r8)
  inc %rcx 
  inc %r8 
  jmp __defOkLocal
@@ -123,10 +130,10 @@ __defineVar:
  mov %r14, %r8 
  add (varNameSize), %r8 
   __defOkTypeLocal:
- mov (%rdx), %dl 
- cmp $0, %dl 
+ mov (%rdx), %r11b
+ cmp $'0', %r11b 
  jz __defOkTypeLocalEx
- mov %dl, (%r8)
+ mov %r11b, (%r8)
  inc %rdx
  inc %r8 
  jmp __defOkTypeLocal
@@ -205,15 +212,35 @@ __firstMem:
 _start:
  call __firstMem
 
+ #iVar 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
+ mov $lenVarName0, %rax 
  mov $varName0, %rdi 
  call __set 
 
  mov $lenVarType, %rsi 
  mov $varType, %rdx 
+ mov $lenVarType0, %rax 
  mov $varType0, %rdi 
  call __set 
+
+ mov $varName, %rcx 
+ mov $varType, %rdx  
+ call __defineVar
+ 
+ #sVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
+ call __set 
+
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenVarType1, %rax 
+ mov $varType1, %rdi 
+ call __set
 
  mov $varName, %rcx 
  mov $varType, %rdx  
