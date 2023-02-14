@@ -198,7 +198,7 @@ __firstMem:
  cmp $-1, %rax
  jz __throughError
 # заполним выделенную память
- mov $0, %dl
+ mov $'0', %dl
  mov $0, %rbx
  __newMemlo:
  movb %dl, (%r8, %rbx)
@@ -210,6 +210,7 @@ __firstMem:
  ret 
 
 __read: 
+ # считать в buf по указателю в %r12 
  mov %r12, %r8
  mov $buf, %r10 
  mov $lenBuf, %rsi 
@@ -232,21 +233,49 @@ __readClear:
  ret 
 
 __compare:
+ # сравнить строки по адресу $buf и $varName 
  mov $buf, %rax 
- mov $varName, %rax 
- 
+ mov $varName, %rbx 
+ __compareLocal:
+ cmp $0, (%rax)  
+ jz __equal
+ cmp %rax, %rbx 
+ jnz __notEqual
+ inc %rax 
+ inc %rbx 
+ jmp __compareLocal
+
+ __notEqual:
+ mov $0, %rax 
+ ret 
+ __equal:
+ mov $1, %rax  
+ ret 
+
 __setVar:
- # имя переменной в %rcx 
- # значение переменной в %rdx 
- mov %r13, %rax 
- cmp %r15, %rax 
- jg __setVarEx 
- mov %rax, %rsi
- mov %r13, %r12 
- call __read
+ # имя переменной по адресу $varName 
+ mov %r13, %r11 
+ __setVarLocal:
+ cmp %r15, %r11
+ jg __setVarEnd
+
+ mov %r11, %r12 
+ call __read 
  mov $buf, %rsi 
- call __print  
- __setVarEx:
+ call __print
+ add (varSize), %r11
+ jmp __setVarLocal  
+ #mov %rax, %rsi
+ #mov %r13, %r12 
+ #call __read
+ #mov $buf, %rsi 
+ #call __print  
+ __setVarEnd:
+ #sub (varSize), %r11 
+ #mov %r11, %r12 
+ #call __read 
+ #mov $buf, %rsi 
+ #call __print 
  ret
 
 
@@ -288,14 +317,15 @@ _start:
  mov $varName, %rcx 
  mov $varType, %rdx  
  call __defineVar
- #mov (varName1), %rcx 
- #mov (varType1), %rdx
- #call __defineVar
- #mov $varType, %rsi 
- #call __print 
- #call __printHeap
- call __setVar 
+ 
 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
+ call __set 
+ call __setVar 
+ #call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
