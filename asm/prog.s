@@ -118,11 +118,13 @@ __defineVar:
  # адрес имени переменной в %rcx
  # адрес типа переменой в %rdx
   
- mov %r14, %rax 
+ mov %r14, %rax
+ #add (pageSize), %rax 
  cmp %rax, %r15
  jg __defOk 
  mov %r15, %r8
  call __newMem
+ 
  __defOk:
  mov %r14, %r8 
  __defOkLocal:
@@ -352,13 +354,104 @@ _start:
  mov $varType, %rdx  
  call __defineVar
 
+ mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+ mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+ mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+ mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+ mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+ mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+  mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar
+
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi 
  call __set 
- call __setVar 
- #call __printHeap
+ #call __setVar 
+ call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
