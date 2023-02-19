@@ -28,6 +28,12 @@ lenVarName1 = . - varName1
 varType1:
 .ascii "string"
 lenVarType1 = . - varType1
+varName2:
+.ascii "fVar"
+lenVarName2 = . - varName2
+varType2:
+.ascii "float"
+lenVarType2 = . - varType2
 data0:
 .ascii "25"
 .space 1, 0
@@ -86,7 +92,7 @@ __set: #set strings
  mov %rsi, %r9
   
  __setClear:
- movb $'0', (%rdx)
+ movb $'*', (%rdx)
  dec %rsi
  inc %rdx
  cmp $0, %rsi  
@@ -120,10 +126,10 @@ __defineVar:
  __defOk:
  mov %r14, %r8 
  __defOkLocal:
- mov (%rcx), %r11b 
- cmp $'0', %r11b
+ movb (%rcx), %r11b 
+ cmp $'*', %r11b
  jz __defOkLocalEx
- mov %r11b, (%r8)
+ movb %r11b, (%r8)
  inc %rcx 
  inc %r8 
  jmp __defOkLocal
@@ -131,10 +137,10 @@ __defineVar:
  mov %r14, %r8 
  add (varNameSize), %r8 
   __defOkTypeLocal:
- mov (%rdx), %r11b
- cmp $'0', %r11b 
+ movb (%rdx), %r11b
+ cmp $'*', %r11b 
  jz __defOkTypeLocalEx
- mov %r11b, (%r8)
+ movb %r11b, (%r8)
  inc %rdx
  inc %r8 
  jmp __defOkTypeLocal
@@ -171,11 +177,12 @@ __firstMem:
  cmp $-1, %rax
  jz __throughError
 # заполним выделенную память
- mov $'0', %dl
+ mov $'*', %dl
  mov $0, %rbx
  __lo:
- movb %dl, (%r8, %rbx)
+ movb %dl, (%r8)
  inc %rbx
+ inc %r8 
  cmp (pageSize), %rbx
  jz  __ex
  jmp __lo
@@ -198,11 +205,12 @@ __firstMem:
  cmp $-1, %rax
  jz __throughError
 # заполним выделенную память
- mov $'0', %dl
+ mov $'*', %dl
  mov $0, %rbx
  __newMemlo:
- movb %dl, (%r8, %rbx)
+ movb %dl, (%r8)
  inc %rbx
+ inc %r8 
  cmp (pageSize), %rbx
  jz  __newMemEx
  jmp __newMemlo
@@ -222,14 +230,19 @@ __readClear:
  jnz __readClear
  mov $buf, %r10
  __readLocal: 
- mov (%r8), %r9b
- cmp $'0', %r9b  
+ movb (%r8), %r9b
+ cmp $'*', %r9b  
  jz __readEx
  mov %r9b, (%r10)
  inc %r10 
  inc %r8 
  jmp __readLocal
  __readEx:
+ mov $buf, %r10 
+ cmp $0, (%r10)
+ jnz __readOk
+ movb $'*', (%r10)
+ __readOk:
  ret 
 
 __compare:
@@ -254,16 +267,20 @@ __compare:
 
 __setVar:
  # имя переменной по адресу $varName 
- mov %r13, %r11 
+ mov %r13, %rbx
  __setVarLocal:
- cmp %r15, %r11
+ cmp %r15, %rbx
  jg __setVarEnd
 
- mov %r11, %r12 
+ mov %rbx, %r12 
  call __read 
- mov $buf, %rsi 
+ mov $buf, %rsi
+ cmp $'*', (buf)
+ jz __setVarEnd 
+
  call __print
- add (varSize), %r11
+ 
+ add (varSize), %rbx 
  jmp __setVarLocal  
  #mov %rax, %rsi
  #mov %r13, %r12 
@@ -318,6 +335,22 @@ _start:
  mov $varType, %rdx  
  call __defineVar
  
+#fVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi 
+ call __set 
+
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenVarType2, %rax 
+ mov $varType2, %rdi 
+ call __set
+
+ mov $varName, %rcx 
+ mov $varType, %rdx  
+ call __defineVar
 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
