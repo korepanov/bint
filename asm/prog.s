@@ -4,12 +4,19 @@ pageSize:
 varNameSize:
 .quad 32
 varSize:
-.quad 128 
+.quad 160 
 typeSize:
 .quad 32 
+metaSize:
+.quad 32 
+valSize:
+.quad 64 
 buf:
 .quad 0, 0, 0, 0
 lenBuf = . - buf 
+buf2:
+.quad 0, 0, 0, 0
+lenBuf2 = . - buf2 
 varType:
 .quad 0, 0, 0, 0
 lenVarType = . - varType 
@@ -95,6 +102,55 @@ __printHeap:
  __printHeapEx:
  ret 
 
+__raxToStr:
+# значение в %rax 
+# результат в %rsi 
+mov $10, %rbx  
+__itoa:
+  xor %rdx,%rdx       
+  div %rbx         
+  add $'0', %dl      
+  dec %rsi
+  mov %dl, (%rsi)     
+  cmp $0, %rax
+  jnz __itoa
+
+
+
+__toStr:
+ # число в %rax 
+ # подготовка преобразования числа в строку
+  movq $0, (buf2)
+  mov $10, %r8    # делитель
+  mov $buf, %rsi  # адрес начала буфера 
+  xor %rdi, %rdi  # обнуляем счетчик
+# преобразуем путем последовательного деления на 10
+__toStrlo:
+  xor %rdx, %rdx  # число в rdx:rax
+  div %r8         # делим rdx:rax на r8
+  add $48, %dl    # цифру в символ цифры
+  mov %dl, (%rsi) # в буфер
+  inc %rsi        # на следующую позицию в буфере
+  inc %rdi        # счетчик увеличиваем на 1
+  cmp $0, %rax    # проверка конца алгоритма
+  jnz __toStrlo          # продолжим цикл?
+# число записано в обратном порядке,
+# вернем правильный, перенеся в другой буфер 
+  mov $buf2, %rbx # начало нового буфера
+  mov $buf, %rcx  # старый буфер
+  add %rdi, %rcx  # в конец
+  dec %rcx        # старого буфера
+  mov %rdi, %rdx  # длина буфера
+# перенос из одного буфера в другой
+__toStrexc:
+  mov (%rcx), %al # из старого буфера
+  mov %al, (%rbx) # в новый
+  dec %rcx        # в обратном порядке  
+  inc %rbx        # продвигаемся в новом буфере
+  dec %rdx        # а в старом в обратном порядке
+  jnz __toStrexc         # проверка конца алгоритма
+  ret
+
 __set: #set strings
  # входные параметры 
  # rsi - длина буфера назначения 
@@ -123,8 +179,7 @@ __set: #set strings
  dec %rax  
  cmp $0, %rax
  jnz __setLocal
- 
-  
+ movb $0, (%rdx)
  ret 
 
 __defineVar:
@@ -315,20 +370,84 @@ __setVar:
  jz __setVarSearch
  
  add (varNameSize), %rbx 
- add (typeSize), %rbx 
+ add (typeSize), %rbx
+ mov %rbx, %r10  
  mov $userData, %rax 
- mov $lenUserData, %r12 
+ xor %rdi, %rdi # счетчик количества реально записанных байт 
  __setNow:
- cmp $0, %r12 
- jz __setVarRet
- mov (%rax), %dl 
+ mov (%rax), %dl
+ cmp $0, %dl 
+ jz __setMeta  
  mov %dl, (%rbx)
  inc %rbx 
  inc %rax 
- dec %r12 
- jmp __setNow  
+ inc %rdi 
+ jmp __setNow 
+ __setMeta: 
+ mov %r10, %rbx 
+ add (valSize), %rbx
+ movb $'b', (%rbx)
+ inc %rbx 
+ movb $0, (%rbx)
  __setVarRet:
  ret
+
+ __getVar:
+ # вход: имя переменной по адресу $varName 
+ # выход: $userData 
+ mov %r13, %rbx
+ __getVarLocal:
+ cmp %r15, %rbx
+ jg __getVarEnd
+
+ mov %rbx, %r12 
+ call __read 
+ cmp $'*', (buf)
+ jz __getVarEnd 
+ 
+ add (varSize), %rbx 
+ jmp __getVarLocal  
+  
+ __getVarEnd:
+ __getVarSearch:
+ sub (varSize), %rbx 
+ mov %rbx, %r12 
+ call __read 
+ cmp $'*', (buf)
+ jz __throughError
+ mov $buf, %rsi 
+ mov %rbx, %r12 
+ call __compare
+ mov %r12, %rbx 
+ cmp $0, %rax 
+ jz __getVarSearch
+ 
+ add (varNameSize), %rbx 
+ add (typeSize), %rbx 
+ mov $userData, %rax 
+ mov $lenUserData, %r12 
+
+ mov $userData, %r10 
+ mov $lenUserData, %rsi 
+ __getClear:
+ movb $0, (%r10)
+ dec %rsi
+ inc %r10
+ cmp $0, %rsi  
+ jnz __getClear
+ 
+ #__getNow:
+ #cmp $0, %r12 
+ #jz __getVarRet
+ #mov (%rax), %dl 
+ #mov %dl, (%rbx)
+ #inc %rbx 
+ #inc %rax 
+ #dec %r12 
+ #jmp __getNow  
+ #__getVarRet:
+ ret
+
 
 
 
@@ -387,18 +506,36 @@ _start:
  mov $varType, %rdx  
  call __defineVar
 
+ #mov $lenVarName, %rsi 
+ #mov $varName, %rdx 
+ #mov $lenVarName1, %rax 
+ #mov $varName1, %rdi 
+ #call __set 
+ #mov $lenUserData, %rsi 
+ #mov $userData, %rdx 
+ #mov $lenData1, %rax 
+ #mov $data1, %rdi 
+# call __set
+# call __setVar 
+
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi 
  call __set 
  mov $lenUserData, %rsi 
  mov $userData, %rdx 
- mov $lenData1, %rax 
- mov $data1, %rdi 
+ mov $lenData0, %rax 
+ mov $data0, %rdi 
  call __set
- call __setVar 
-  
+ call __setVar
+
+  mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
+ call __set
+ #call __getVar 
  call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
