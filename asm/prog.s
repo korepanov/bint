@@ -67,6 +67,14 @@ __print:
 __printEx:
  ret
 
+ __printSymbol:
+ mov (%rsi), %al				
+ mov $1, %rdi	
+ mov $1, %rdx
+ mov $1, %rax	
+ syscall		    
+ ret
+
 __printHeap:  
  mov %r13, %r8  
  __printHeapLoop:
@@ -257,7 +265,8 @@ __compare:
  __compareLocal:
  cmp $0, (%rax)  
  jz __equal
- cmp %rax, %rbx 
+ movb (%rax), %dl
+ cmp %dl, (%rbx)  
  jnz __notEqual
  inc %rax 
  inc %rbx 
@@ -279,25 +288,28 @@ __setVar:
 
  mov %rbx, %r12 
  call __read 
- mov $buf, %rsi
  cmp $'*', (buf)
  jz __setVarEnd 
-
- call __print
  
  add (varSize), %rbx 
  jmp __setVarLocal  
- #mov %rax, %rsi
- #mov %r13, %r12 
- #call __read
- #mov $buf, %rsi 
- #call __print  
+  
  __setVarEnd:
- #sub (varSize), %r11 
- #mov %r11, %r12 
- #call __read 
- #mov $buf, %rsi 
- #call __print 
+ __setVarSearch:
+ sub (varSize), %rbx 
+ mov %rbx, %r12 
+ call __read 
+ cmp $'*', (buf)
+ jz __throughError
+ mov $buf, %rsi 
+ mov %rbx, %r12 
+ call __compare
+ mov %r12, %rbx 
+ cmp $0, %rax 
+ jz __setVarSearch
+ 
+ mov $buf, %rsi 
+ call __print 
  ret
 
 
@@ -362,8 +374,8 @@ _start:
  mov $lenVarName1, %rax 
  mov $varName1, %rdi 
  call __set 
- #call __setVar 
- call __printHeap
+ call __setVar 
+ #call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
