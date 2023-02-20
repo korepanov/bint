@@ -16,6 +16,9 @@ lenVarType = . - varType
 varName:
 .quad 0, 0, 0, 0
 lenVarName = . - varName 
+userData:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenUserData = . - userData
 varName0:
 .ascii "iVar"
 lenVarName0 = . - varName0
@@ -37,9 +40,11 @@ lenVarType2 = . - varType2
 data0:
 .ascii "25"
 .space 1, 0
+lenData0 = . - data0 
 data1:
-.ascii "Hello world!\n"
+.ascii "Hello world!"
 .space 1, 0
+lenData1 = . - data1 
 
 fatalError:
 .ascii "fatal error: internal error\n"
@@ -281,6 +286,7 @@ __compare:
 
 __setVar:
  # имя переменной по адресу $varName 
+ # данные в $userData 
  mov %r13, %rbx
  __setVarLocal:
  cmp %r15, %rbx
@@ -308,8 +314,20 @@ __setVar:
  cmp $0, %rax 
  jz __setVarSearch
  
- mov $buf, %rsi 
- call __print 
+ add (varNameSize), %rbx 
+ add (typeSize), %rbx 
+ mov $userData, %rax 
+ mov $lenUserData, %r12 
+ __setNow:
+ cmp $0, %r12 
+ jz __setVarRet
+ mov (%rax), %dl 
+ mov %dl, (%rbx)
+ inc %rbx 
+ inc %rax 
+ dec %r12 
+ jmp __setNow  
+ __setVarRet:
  ret
 
 
@@ -374,8 +392,14 @@ _start:
  mov $lenVarName1, %rax 
  mov $varName1, %rdi 
  call __set 
+ mov $lenUserData, %rsi 
+ mov $userData, %rdx 
+ mov $lenData1, %rax 
+ mov $data1, %rdi 
+ call __set
  call __setVar 
- #call __printHeap
+  
+ call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
