@@ -115,16 +115,19 @@ __set: #set strings
  ret 
 
 __defineVar:
- # адрес имени переменной в %rcx
- # адрес типа переменой в %rdx
-  
+ # адрес имени переменной в $varName
+ # адрес типа переменой в $varType
+ 
+ mov $varName, %rcx 
+ mov $varType, %rdx 
  mov %r14, %rax
- #add (pageSize), %rax 
+
  cmp %rax, %r15
  jg __defOk 
  mov %r15, %r8
  call __newMem
- 
+ mov $varName, %rcx 
+ mov $varType, %rdx
  __defOk:
  mov %r14, %r8 
  __defOkLocal:
@@ -194,7 +197,7 @@ __firstMem:
  __newMem:
  # адрес начала выделяемой памяти в  %r8 
 # запомнить адрес начала выделяемой памяти
- mov %r8, %r14
+ #mov %r8, %r14
  mov %r8, %r9 
  add (pageSize), %r9 
  mov %r9, %r15
@@ -352,97 +355,6 @@ _start:
 
  mov $varName, %rcx 
  mov $varType, %rdx  
- call __defineVar
-
- mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
- mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
- mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
- mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
- mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
- mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
- call __defineVar
-  mov $varName, %rcx 
- mov $varType, %rdx 
  call __defineVar
 
  mov $lenVarName, %rsi 
