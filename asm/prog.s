@@ -168,6 +168,41 @@ __set: #set strings
  movb $0, (%rdx)
  ret 
 
+__toNumber:
+  # вход: buf 
+  # выход: %r10
+  mov $buf2, %rdx 
+  mov $lenBuf2, %rsi 
+   __toNumberClear:
+  movb $0, (%rdx)
+  dec %rsi
+  inc %rdx
+  cmp $0, %rsi  
+  jnz __toNumberClear
+
+  mov $buf2,  %r8
+  dec %r8         # указывает на младший разряд числа
+  mov $buf, %r9   # последний разряд числа
+  xor %r10, %r10  # здесь будет копиться сумма
+  mov $1,   %r11  # в начале умножаем на 1, потом на 10 и т.д.
+__toNumberlo:
+  cmp %r8,   %r9  # конец вычислениям
+  jz  __toNumberex          # выход из цикла
+  xor %rax,  %rax # обнулить регистр для выполнения умножения
+  mov (%r8), %al  # код символа цифры
+  sub $48,   %al  # символ цифры в цифру
+  mul %r11        # умножаем r11 на rax, результат в rax
+  add %rax,  %r10 # накапливаем в r10
+  mov %r11,  %rax # множитель в rax
+  mov $10,   %rcx # будем умножать на 10
+  mul %rcx        # 
+  mov %rax,  %r11 # результат в r11 (1, 10, 100 и т.д.)
+  dec %r8         # к следующему символу
+  jmp __toNumberlo          # к началу цикла
+__toNumberex:
+  ret 
+
+
 __defineVar:
  # адрес имени переменной в $varName
  # адрес типа переменой в $varType
@@ -434,8 +469,38 @@ __setVar:
  inc %r10
  cmp $0, %rsi  
  jnz __getClear
+
+ mov $buf, %r10 
+ mov $lenBuf, %rsi 
+ __getClearBuf:
+ movb $0, (%r10)
+ dec %rsi
+ inc %r10
+ cmp $0, %rsi  
+ jnz __getClearBuf 
  
- #__getNow:
+ __getMeta:
+
+ mov $buf, %rsi 
+ add (valSize), %rbx 
+ mov $1, %dl  
+ __getMetaLocal:
+ cmp $'*', %dl 
+ jz __getNow 
+ mov (%rbx), %dl
+ mov %dl, (%rsi)  
+ inc %rbx 
+ inc %rsi  
+ jmp __getMetaLocal
+ 
+ __getNow:
+ call __toNumber
+ cmp $21, %r10 
+ jnz neOk 
+ 
+ mov $data1, %rsi 
+ call __print 
+ neOk:
  #cmp $0, %r12 
  #jz __getVarRet
  #mov (%rax), %dl 
@@ -534,8 +599,8 @@ _start:
  mov $lenVarName1, %rax 
  mov $varName1, %rdi 
  call __set
- #call __getVar 
- call __printHeap
+ call __getVar 
+ #call __printHeap
 
 __stop:
  mov $60,  %rax      # номер системного вызова exit
