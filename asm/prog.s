@@ -49,7 +49,7 @@ data0:
 .space 1, 0
 lenData0 = . - data0 
 data1:
-.ascii "Hello world!"
+.ascii "Привет, мир!"
 .space 1, 0
 lenData1 = . - data1 
 
@@ -101,20 +101,6 @@ __printHeap:
  jmp __printHeapLoop
  __printHeapEx:
  ret 
-
-__raxToStr:
-# значение в %rax 
-# результат в %rsi 
-mov $10, %rbx  
-__itoa:
-  xor %rdx,%rdx       
-  div %rbx         
-  add $'0', %dl      
-  dec %rsi
-  mov %dl, (%rsi)     
-  cmp $0, %rax
-  jnz __itoa
-
 
 
 __toStr:
@@ -371,7 +357,7 @@ __setVar:
  
  add (varNameSize), %rbx 
  add (typeSize), %rbx
- mov %rbx, %r10  
+ mov %rbx, %r10 # сохраняем значение %rbx  
  mov $userData, %rax 
  xor %rdi, %rdi # счетчик количества реально записанных байт 
  __setNow:
@@ -386,9 +372,22 @@ __setVar:
  __setMeta: 
  mov %r10, %rbx 
  add (valSize), %rbx
- movb $'b', (%rbx)
+ mov %rbx, %r10 
+ mov %rdi, %rax 
+ call __toStr 
+ mov $buf2, %rax
+ mov %r10, %rbx 
+ 
+ __setMetaLocal: 
+ mov (%rax), %dl 
+ mov %dl, (%rbx)
+ cmp $0, %dl 
+ jz __setVarRet 
  inc %rbx 
- movb $0, (%rbx)
+ inc %rax 
+
+ jmp __setMetaLocal
+
  __setVarRet:
  ret
 
@@ -506,17 +505,17 @@ _start:
  mov $varType, %rdx  
  call __defineVar
 
- #mov $lenVarName, %rsi 
- #mov $varName, %rdx 
- #mov $lenVarName1, %rax 
- #mov $varName1, %rdi 
- #call __set 
- #mov $lenUserData, %rsi 
- #mov $userData, %rdx 
- #mov $lenData1, %rax 
- #mov $data1, %rdi 
-# call __set
-# call __setVar 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
+ call __set 
+ mov $lenUserData, %rsi 
+ mov $userData, %rdx 
+ mov $lenData1, %rax 
+ mov $data1, %rdi 
+ call __set
+ call __setVar 
 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -537,6 +536,7 @@ _start:
  call __set
  #call __getVar 
  call __printHeap
+
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
