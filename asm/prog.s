@@ -63,9 +63,13 @@ data0:
 .space 1, 0
 lenData0 = . - data0 
 data1:
-.ascii "Привет, мир!"
+.ascii "Hello, world!"
 .space 1, 0
 lenData1 = . - data1 
+data2:
+.ascii "Slava"
+.space 1, 0
+lenData2 = . - data2 
 
 fatalError:
 .ascii "fatal error: internal error\n"
@@ -474,6 +478,17 @@ __setVar:
  
  add (varNameSize), %rbx 
  add (typeSize), %rbx
+ __setVarClear:
+ mov %rbx, %rax 
+ add (valSize), %rax
+ __setVarClearLocal: 
+ cmp %rax, %rbx 
+ jz __setVarClearEnd
+ movb $'*', (%rbx) 
+ inc %rbx 
+ jmp __setVarClearLocal
+ __setVarClearEnd:
+ sub (valSize), %rbx 
  mov %rbx, %r10 # сохраняем значение %rbx  
  mov $userData, %rax 
  xor %rdi, %rdi # счетчик количества реально записанных байт 
@@ -666,8 +681,9 @@ _start:
  mov $varName, %rcx 
  mov $varType, %rdx 
  call __defineVar 
-
- /*mov $lenVarName, %rsi 
+ 
+ # sVar = Привет, мир!
+ mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi 
@@ -679,6 +695,19 @@ _start:
  call __set
  call __setVar 
 
+ # sVar = Slava
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
+ call __set 
+ mov $lenUserData, %rsi 
+ mov $userData, %rdx 
+ mov $lenData2, %rax 
+ mov $data2, %rdi 
+ call __set
+ call __setVar 
+ /*
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName0, %rax 
