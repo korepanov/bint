@@ -466,6 +466,7 @@ __setVar:
  __getMeta:
 
  mov $buf, %rsi 
+ mov %rbx, %r10 
  add (valSize), %rbx 
  mov $1, %dl  
  __getMetaLocal:
@@ -479,21 +480,18 @@ __setVar:
  
  __getNow:
  call __toNumber
- cmp $21, %rax 
- jnz neOk 
- 
- mov $data1, %rsi 
- call __print 
- neOk:
- #cmp $0, %r12 
- #jz __getVarRet
- #mov (%rax), %dl 
- #mov %dl, (%rbx)
- #inc %rbx 
- #inc %rax 
- #dec %r12 
- #jmp __getNow  
- #__getVarRet:
+ mov %r10, %rbx
+ mov $userData, %rsi
+ __getNowLocal:  
+ cmp $0, %rax 
+ jz __getVarRet
+ mov (%rbx), %dl 
+ mov %dl, (%rsi)
+ inc %rsi 
+ inc %rbx  
+ dec %rax 
+ jmp __getNowLocal 
+ __getVarRet:
  ret
 
 
@@ -580,10 +578,12 @@ _start:
 
   mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi 
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi 
  call __set
  call __getVar 
+ mov $userData, %rsi 
+ call __print 
  #call __printHeap
 
 __stop:
