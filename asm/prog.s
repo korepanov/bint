@@ -312,8 +312,19 @@ __defineVar:
  movb $'1', (%r8) 
  jmp __defEnd
  __defFloat:
- mov $floatType, %rsi
- call __print 
+mov %r14, %r8 
+ add (varNameSize), %r8 
+ add (typeSize), %r8
+ movb $'0',(%r8)
+ inc %r8 
+ movb $'.', (%r8)
+ inc %r8 
+ movb $'0', (%r8)
+ mov %r14, %r8 
+ add (varNameSize), %r8 
+ add (typeSize), %r8
+ add (valSize), %r8 
+ movb $'3', (%r8) 
  jmp __defEnd
  __defBool:
  mov $boolType, %rsi
