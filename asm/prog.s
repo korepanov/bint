@@ -44,6 +44,42 @@ lenVarName2 = . - varName2
 varType2:
 .ascii "float"
 lenVarType2 = . - varType2
+initInt:
+.ascii "0"
+.space 1, 0
+lenInitInt = . - initInt
+initFloat:
+.ascii "0.0"
+.space 1, 0
+lenInitFloat = . - initFloat 
+initBool:
+.ascii "0"
+.space 1, 0
+lenIniBool = . - initBool 
+initString:
+.ascii ""
+.space 1, 0
+lenInitString = . - initString 
+intType:
+.ascii "int"
+.space 1, 0
+lenIntType = . - intType
+floatType:
+.ascii "float"
+.space 1, 0
+lenFloatType = . - floatType
+boolType:
+.ascii "bool"
+.space 1, 0
+lenBoolType = . - boolType
+stringType:
+.ascii "string"
+.space 1, 0
+lenStringType = . - stringType
+enter:
+.ascii "\n"
+.space 1, 0
+lenEnter = . - enter 
 data0:
 .ascii "25"
 .space 1, 0
@@ -214,7 +250,7 @@ __defineVar:
  __defOkLocalEx:
  mov %r14, %r8 
  add (varNameSize), %r8 
-  __defOkTypeLocal:
+ __defOkTypeLocal:
  movb (%rdx), %r11b
  cmp $'*', %r11b 
  jz __defOkTypeLocalEx
@@ -223,7 +259,75 @@ __defineVar:
  inc %r8 
  jmp __defOkTypeLocal
  __defOkTypeLocalEx:
+ mov %r14, %r8 
+ add (varNameSize), %r8 
+ add (typeSize), %r8
  
+ # rsi - длина буфера назначения 
+ # rdx - адрес буфера назначения
+ # rax - длина буфера источника 
+ # rdi - адрес буфера источника 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarType, %rax 
+ mov $varType, %rdi 
+ call __set 
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenIntType, %rax 
+ mov $intType, %rdi 
+ call __set 
+  
+ call __compare 
+ cmp $1, %rax 
+ jz __defInt 
+
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenFloatType, %rax 
+ mov $floatType, %rdi 
+ call __set 
+ call __compare
+ cmp $1, %rax 
+ jz __defFloat 
+
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBoolType, %rax 
+ mov $boolType, %rdi 
+ call __set 
+ call __compare
+ cmp $1, %rax  
+ jz __defBool 
+
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi 
+ call __set 
+ call __compare
+ cmp $1, %rax 
+ jz __defString 
+ call __throughError
+
+ __defInt:
+ mov $intType, %rsi
+ call __print  
+ jmp __defEnd
+ __defFloat:
+ mov $floatType, %rsi
+ call __print 
+ jmp __defEnd
+ __defBool:
+ mov $boolType, %rsi
+ call __print 
+ jmp __defEnd
+ __defString:
+ mov $stringType, %rsi
+ call __print 
+
+ __defEnd:
+
  mov %r14, %rax 
  add (varSize), %rax 
  mov %rax, %r14
@@ -324,14 +428,15 @@ __readClear:
  ret 
 
 __compare:
- # сравнить строки по адресу $buf и $varName 
+ # сравнить строки по адресу $buf и $varName  
  mov $buf, %rax 
  mov $varName, %rbx 
  __compareLocal:
- cmp $0, (%rax)  
+ movb (%rax), %dl 
+ cmp $0, %dl 
  jz __equal
  movb (%rax), %dl
- cmp %dl, (%rbx)  
+ cmp %dl, (%rbx) 
  jnz __notEqual
  inc %rax 
  inc %rbx 
@@ -576,14 +681,14 @@ _start:
  call __set
  call __setVar
 
-  mov $lenVarName, %rsi 
+ mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName2, %rax 
  mov $varName2, %rdi 
  call __set
- call __getVar 
- mov $userData, %rsi 
- call __print 
+ #call __getVar 
+ #mov $userData, %rsi 
+ #call __print 
  #call __printHeap
 
 __stop:
