@@ -331,8 +331,11 @@ mov %r14, %r8
  call __print 
  jmp __defEnd
  __defString:
- mov $stringType, %rsi
- call __print 
+ mov %r14, %r8 
+ add (varNameSize), %r8 
+ add (typeSize), %r8
+ add (valSize), %r8 
+ movb $'0', (%r8)
 
  __defEnd:
 
