@@ -35,22 +35,6 @@ lenVarName1 = . - varName1
 varName2:
 .ascii "fVar"
 lenVarName2 = . - varName2
-initInt:
-.ascii "0"
-.space 1, 0
-lenInitInt = . - initInt
-initFloat:
-.ascii "0.0"
-.space 1, 0
-lenInitFloat = . - initFloat 
-initBool:
-.ascii "0"
-.space 1, 0
-lenIniBool = . - initBool 
-initString:
-.ascii ""
-.space 1, 0
-lenInitString = . - initString 
 intType:
 .ascii "int"
 .space 1, 0
