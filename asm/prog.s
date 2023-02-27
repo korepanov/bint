@@ -608,8 +608,40 @@ __setVar:
  __getVarRet:
  ret
 
+__clearBuf:
+mov $buf, %rsi 
+mov $lenBuf, %rdi
+__clearBufLocal: 
+cmp $1, %rdi 
+jz __clearBufEnd
+movb $'*', (%rsi)
+inc %rsi 
+dec %rdi 
+jmp __clearBufLocal
 
+__clearBufEnd:
+movb $0, (%rsi)
+ret
 
+__clearBuf2:
+mov $buf2, %rsi 
+mov $lenBuf2, %rdi
+__clearBufLocal2: 
+cmp $1, %rdi 
+jz __clearBufEnd2
+movb $'*', (%rsi)
+inc %rsi 
+dec %rdi 
+jmp __clearBufLocal2
+
+__clearBufEnd2:
+movb $0, (%rsi)
+ret
+
+__add:
+ #вход: buf и buf2
+ #выход: userData 
+ ret 
 
 .globl _start
 _start:
@@ -633,7 +665,7 @@ _start:
  call __defineVar
  
  #sVar
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi 
@@ -647,7 +679,7 @@ _start:
 
  mov $varName, %rcx 
  mov $varType, %rdx  
- call __defineVar
+ call __defineVar*/
  
 #fVar
  mov $lenVarName, %rsi 
@@ -684,7 +716,7 @@ _start:
  call __defineVar 
  
  # sVar = Привет, мир!
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi 
@@ -694,10 +726,10 @@ _start:
  mov $lenData1, %rax 
  mov $data1, %rdi 
  call __set
- call __setVar 
+ call __setVar*/ 
 
  # sVar = Slava
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi 
@@ -707,7 +739,7 @@ _start:
  mov $lenData2, %rax 
  mov $data2, %rdi 
  call __set
- call __setVar 
+ call __setVar*/ 
  /*
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -729,7 +761,11 @@ _start:
  #call __getVar 
  #mov $userData, %rsi 
  #call __print 
- call __printHeap
+ #call __printHeap
+ call __clearBuf2
+ mov $buf2, %rsi 
+ call __print 
+ 
 
 __stop:
  mov $60,  %rax      # номер системного вызова exit
