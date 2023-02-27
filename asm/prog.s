@@ -17,6 +17,12 @@ lenBuf = . - buf
 buf2:
 .quad 0, 0, 0, 0
 lenBuf2 = . - buf2 
+buf3:
+.quad 0, 0, 0, 0
+lenBuf3 = . - buf3
+buf4:
+.quad 0, 0, 0, 0
+lenBuf4 = . - buf4
 varType:
 .quad 0, 0, 0, 0
 lenVarType = . - varType 
@@ -38,6 +44,9 @@ lenVarName2 = . - varName2
 varName3:
 .ascii "bVar"
 lenVarName3 = . - varName3
+varName4:
+.ascii "iVar2"
+lenVarName4 = . - varName4 
 intType:
 .ascii "int"
 .space 1, 0
@@ -70,6 +79,10 @@ data2:
 .ascii "Slava"
 .space 1, 0
 lenData2 = . - data2 
+data3:
+.ascii "37"
+.space 1, 0
+lenData3 = . - data3 
 
 fatalError:
 .ascii "fatal error: internal error\n"
@@ -638,9 +651,83 @@ __clearBufEnd2:
 movb $0, (%rsi)
 ret
 
+__clearUserData:
+mov $userData, %rsi 
+mov $lenUserData, %rdi
+__clearUserDataLocal: 
+cmp $1, %rdi 
+jz __clearUserDataEnd
+movb $'*', (%rsi)
+inc %rsi 
+dec %rdi 
+jmp __clearUserDataLocal
+
+__clearUserDataEnd:
+movb $0, (%rsi)
+ret
+
+__clearBuf3:
+mov $buf3, %rsi 
+mov $lenBuf3, %rdi
+__clearBufLocal3: 
+cmp $1, %rdi 
+jz __clearBufEnd3
+movb $'*', (%rsi)
+inc %rsi 
+dec %rdi 
+jmp __clearBufLocal3
+
+__clearBufEnd3:
+movb $0, (%rsi)
+ret
+
+__clearBuf4:
+mov $buf4, %rsi 
+mov $lenBuf4, %rdi
+__clearBufLocal4: 
+cmp $1, %rdi 
+jz __clearBufEnd4
+movb $'*', (%rsi)
+inc %rsi 
+dec %rdi 
+jmp __clearBufLocal4
+
+__clearBufEnd4:
+movb $0, (%rsi)
+ret
+
 __add:
- #вход: buf и buf2
- #выход: userData 
+ # вход: buf и buf2
+ # %rax - тип операции 
+ # 0 - целочисленное сложение 
+ # 1 - сложение вещественных чисел  
+ # выход: userData 
+ call __clearUserData
+ cmp $0, %rax 
+ jz __addInt 
+ cmp $1, %rax 
+ jz __addFloat 
+ call __throughError
+
+ __addInt:
+ call __toNumber
+ mov %rax, %rbx 
+ call __clearBuf
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi 
+ call __set 
+ call __toNumber
+ add %rbx, %rax
+ call __toStr 
+ mov $lenUserData, %rsi 
+ mov $userData, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi 
+ call __set 
+ ret 
+ __addFloat: 
  ret 
 
 .globl _start
@@ -652,6 +739,23 @@ _start:
  mov $varName, %rdx 
  mov $lenVarName0, %rax 
  mov $varName0, %rdi 
+ call __set 
+
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenIntType, %rax 
+ mov $intType, %rdi 
+ call __set 
+
+ mov $varName, %rcx 
+ mov $varType, %rdx  
+ call __defineVar
+
+ #iVar2
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName4, %rax 
+ mov $varName4, %rdi 
  call __set 
 
  mov $lenVarType, %rsi 
@@ -740,7 +844,7 @@ _start:
  mov $data2, %rdi 
  call __set
  call __setVar*/ 
- /*
+ 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName0, %rax 
@@ -753,7 +857,20 @@ _start:
  call __set
  call __setVar
 
+
  mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName4, %rax 
+ mov $varName4, %rdi 
+ call __set 
+ mov $lenUserData, %rsi 
+ mov $userData, %rdx 
+ mov $lenData3, %rax 
+ mov $data3, %rdi 
+ call __set
+ call __setVar
+
+/* mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName2, %rax 
  mov $varName2, %rdi 
@@ -761,10 +878,57 @@ _start:
  #call __getVar 
  #mov $userData, %rsi 
  #call __print 
- #call __printHeap
- call __clearBuf2
- mov $buf2, %rsi 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi 
+ call __set 
+ call __getVar 
+
+ call __clearBuf3
+ mov $lenBuf3, %rsi 
+ mov $buf3, %rdx 
+ mov $lenUserData, %rax 
+ mov $userData, %rdi 
+ call __set 
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName4, %rax 
+ mov $varName4, %rdi 
+ call __set 
+ call __getVar
+
+ call __clearBuf4
+ mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenUserData, %rax 
+ mov $userData, %rdi 
+ call __set
+ # целочисленное сложение
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf3, %rax 
+ mov $buf3, %rdi 
+ call __set
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi 
+ call __set
+
+ mov $0, %rax
+ mov $buf, %rsi 
+ #call __print  
+ call __add 
+ mov $userData, %rsi 
  call __print 
+
+ /*call __clearBuf
+ call __clearBuf2
+ 
+ call __set
+ call __printHeap*/ 
  
 
 __stop:
