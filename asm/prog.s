@@ -476,11 +476,11 @@ __setVar:
  cmp $0, %rax 
  jz __setVarSearch
  
+ mov %rbx, %rax 
  add (varNameSize), %rbx 
  add (typeSize), %rbx
  __setVarClear:
- mov %rbx, %rax 
- add (valSize), %rax
+ add (varSize), %rax 
  __setVarClearLocal: 
  cmp %rax, %rbx 
  jz __setVarClearEnd
@@ -489,6 +489,7 @@ __setVar:
  jmp __setVarClearLocal
  __setVarClearEnd:
  sub (valSize), %rbx 
+ sub (metaSize), %rbx 
  mov %rbx, %r10 # сохраняем значение %rbx  
  mov $userData, %rax 
  xor %rdi, %rdi # счетчик количества реально записанных байт 
