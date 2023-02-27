@@ -35,6 +35,9 @@ lenVarName1 = . - varName1
 varName2:
 .ascii "fVar"
 lenVarName2 = . - varName2
+varName3:
+.ascii "bVar"
+lenVarName3 = . - varName3
 intType:
 .ascii "int"
 .space 1, 0
@@ -302,8 +305,12 @@ mov %r14, %r8
  movb $'3', (%r8) 
  jmp __defEnd
  __defBool:
- mov $boolType, %rsi
- call __print 
+ mov %r14, %r8 
+ add (varNameSize), %r8 
+ add (typeSize), %r8
+ movb $'0',(%r8)
+ add (valSize), %r8 
+ movb $'1', (%r8)  
  jmp __defEnd
  __defString:
  mov %r14, %r8 
@@ -642,6 +649,23 @@ _start:
  mov $varName, %rcx 
  mov $varType, %rdx  
  call __defineVar
+
+ #bvar
+ mov $lenVarName, %rsi
+ mov $varName, %rdx 
+ mov $lenVarName3, %rax 
+ mov $varName3, %rdi 
+ call __set 
+
+ mov $lenBoolType, %rsi 
+ mov $varType, %rdx 
+ mov $lenBoolType, %rax 
+ mov $boolType, %rdi 
+ call __set 
+
+ mov $varName, %rcx 
+ mov $varType, %rdx 
+ call __defineVar 
 
  /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
