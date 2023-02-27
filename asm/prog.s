@@ -169,38 +169,22 @@ __set: #set strings
  ret 
 
 __toNumber:
-  # вход: buf 
-  # выход: %r10
-  mov $buf2, %rdx 
-  mov $lenBuf2, %rsi 
-   __toNumberClear:
-  movb $0, (%rdx)
-  dec %rsi
-  inc %rdx
-  cmp $0, %rsi  
-  jnz __toNumberClear
-
-  mov $buf2,  %r8
-  dec %r8         # указывает на младший разряд числа
-  mov $buf, %r9   # последний разряд числа
-  xor %r10, %r10  # здесь будет копиться сумма
-  mov $1,   %r11  # в начале умножаем на 1, потом на 10 и т.д.
-__toNumberlo:
-  cmp %r8,   %r9  # конец вычислениям
-  jz  __toNumberex          # выход из цикла
-  xor %rax,  %rax # обнулить регистр для выполнения умножения
-  mov (%r8), %al  # код символа цифры
-  sub $48,   %al  # символ цифры в цифру
-  mul %r11        # умножаем r11 на rax, результат в rax
-  add %rax,  %r10 # накапливаем в r10
-  mov %r11,  %rax # множитель в rax
-  mov $10,   %rcx # будем умножать на 10
-  mul %rcx        # 
-  mov %rax,  %r11 # результат в r11 (1, 10, 100 и т.д.)
-  dec %r8         # к следующему символу
-  jmp __toNumberlo          # к началу цикла
-__toNumberex:
-  ret 
+ # вход: buf 
+ # выход:  %rax 
+ mov $buf, %rdx # our string
+ __toNumberAtoi:
+ xor %rax, %rax # zero a "result so far"
+ __toNumberTop:
+ movzx (%rdx), %rcx # get a character
+ inc %rdx # ready for next one
+ cmp $0, %rcx # end?
+ jz __toNumberDone
+ sub $48, %rcx # "convert" character to number
+ imul $10, %rax # multiply "result so far" by ten
+ add %rcx, %rax # add in current digit
+ jmp __toNumberTop # until done
+ __toNumberDone:
+ ret
 
 
 __defineVar:
@@ -495,7 +479,7 @@ __setVar:
  
  __getNow:
  call __toNumber
- cmp $21, %r10 
+ cmp $21, %rax 
  jnz neOk 
  
  mov $data1, %rsi 
