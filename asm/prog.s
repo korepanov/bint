@@ -29,21 +29,12 @@ lenUserData = . - userData
 varName0:
 .ascii "iVar"
 lenVarName0 = . - varName0
-varType0:
-.ascii "int"
-lenVarType0 = . - varType0
 varName1:
 .ascii "sVar"
 lenVarName1 = . - varName1
-varType1:
-.ascii "string"
-lenVarType1 = . - varType1
 varName2:
 .ascii "fVar"
 lenVarName2 = . - varName2
-varType2:
-.ascii "float"
-lenVarType2 = . - varType2
 initInt:
 .ascii "0"
 .space 1, 0
@@ -626,8 +617,8 @@ _start:
 
  mov $lenVarType, %rsi 
  mov $varType, %rdx 
- mov $lenVarType0, %rax 
- mov $varType0, %rdi 
+ mov $lenIntType, %rax 
+ mov $intType, %rdi 
  call __set 
 
  mov $varName, %rcx 
@@ -643,8 +634,8 @@ _start:
 
  mov $lenVarType, %rsi 
  mov $varType, %rdx 
- mov $lenVarType1, %rax 
- mov $varType1, %rdi 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi 
  call __set
 
  mov $varName, %rcx 
@@ -660,8 +651,8 @@ _start:
 
  mov $lenVarType, %rsi 
  mov $varType, %rdx 
- mov $lenVarType2, %rax 
- mov $varType2, %rdi 
+ mov $lenFloatType, %rax 
+ mov $floatType, %rdi 
  call __set
 
  mov $varName, %rcx 
