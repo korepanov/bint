@@ -259,14 +259,7 @@ __defineVar:
  inc %r8 
  jmp __defOkTypeLocal
  __defOkTypeLocalEx:
- mov %r14, %r8 
- add (varNameSize), %r8 
- add (typeSize), %r8
  
- # rsi - длина буфера назначения 
- # rdx - адрес буфера назначения
- # rax - длина буфера источника 
- # rdi - адрес буфера источника 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarType, %rax 
@@ -311,8 +304,12 @@ __defineVar:
  call __throughError
 
  __defInt:
- mov $intType, %rsi
- call __print  
+ mov %r14, %r8 
+ add (varNameSize), %r8 
+ add (typeSize), %r8
+ movb $'0',(%r8)
+ add (valSize), %r8 
+ movb $'1', (%r8) 
  jmp __defEnd
  __defFloat:
  mov $floatType, %rsi
@@ -657,7 +654,7 @@ _start:
  mov $varType, %rdx  
  call __defineVar
 
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi 
@@ -685,11 +682,11 @@ _start:
  mov $varName, %rdx 
  mov $lenVarName2, %rax 
  mov $varName2, %rdi 
- call __set
+ call __set*/
  #call __getVar 
  #mov $userData, %rsi 
  #call __print 
- #call __printHeap
+ call __printHeap
 
 __stop:
  mov $60,  %rax      # номер системного вызова exit
