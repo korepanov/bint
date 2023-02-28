@@ -83,6 +83,10 @@ data3:
 .ascii "37"
 .space 1, 0
 lenData3 = . - data3 
+data4:
+.ascii "957.23"
+.space 1, 0
+lenData4 = . - data4 
 
 fatalError:
 .ascii "fatal error: internal error\n"
@@ -733,10 +737,13 @@ __add:
  ret 
 
 __parseFloat:
-// $buf - источник 
-// %xmm0 - результат
+# $buf - источник (строка)
+# %xmm0 - результат
 mov $buf, %rax 
-mov $buf2, %rbx
+call __clearBuf2
+call __clearBuf3
+mov $buf2, %rbx # здесь будет содержаться целая часть 
+mov $buf3, %rcx # здесь будет содержаться дробная часть 
 __parseFloatLocal: 
 mov (%rax), %dl 
 cmp $'.', %dl
@@ -745,7 +752,20 @@ mov %dl, (%rbx)
 inc %rax 
 inc %rbx 
 jmp __parseFloatLocal
-__point:             
+__point:
+movb $0, (%rbx) 
+__pointLocal:             
+inc %rax
+cmp $0, (%rax) 
+jz __parseNow
+mov (%rax), %dl 
+mov %dl, (%rcx) 
+inc %rcx 
+jmp __pointLocal   
+__parseNow:
+movb $0, (%rcx)
+mov $buf3, %rsi 
+call __print 
 ret 
 
 .globl _start
@@ -888,6 +908,18 @@ _start:
  call __set
  call __setVar
 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi 
+ call __set 
+ mov $lenUserData, %rsi 
+ mov $userData, %rdx 
+ mov $lenData4, %rax 
+ mov $data4, %rdi 
+ call __set
+ call __setVar
+
 /* mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName2, %rax 
@@ -957,8 +989,10 @@ _start:
  mov $lenUserData, %rax 
  mov $userData, %rdi 
  call __set 
- mov $buf, %rsi 
- call __print 
+ 
+ call __parseFloat
+ 
+ //call __printHeap
 
 __stop:
  mov $60,  %rax      # номер системного вызова exit
