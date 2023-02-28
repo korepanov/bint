@@ -315,6 +315,8 @@ mov %r14, %r8
  movb $'.', (%r8)
  inc %r8 
  movb $'0', (%r8)
+ inc %r8 
+ movb $0, (%r8)
  mov %r14, %r8 
  add (varNameSize), %r8 
  add (typeSize), %r8
@@ -730,6 +732,22 @@ __add:
  __addFloat: 
  ret 
 
+__parseFloat:
+// $buf - источник 
+// %xmm0 - результат
+mov $buf, %rax 
+mov $buf2, %rbx
+__parseFloatLocal: 
+mov (%rax), %dl 
+cmp $'.', %dl
+jz __point
+mov %dl, (%rbx)
+inc %rax 
+inc %rbx 
+jmp __parseFloatLocal
+__point:             
+ret 
+
 .globl _start
 _start:
  call __firstMem
@@ -923,13 +941,24 @@ _start:
  call __add 
  mov $userData, %rsi 
  call __print 
+ mov $enter, %rsi 
+ call __print 
 
- /*call __clearBuf
- call __clearBuf2
- 
+ call __clearBuf  
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi 
  call __set
- call __printHeap*/ 
- 
+ call __getVar
+
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenUserData, %rax 
+ mov $userData, %rdi 
+ call __set 
+ mov $buf, %rsi 
+ call __print 
 
 __stop:
  mov $60,  %rax      # номер системного вызова exit
