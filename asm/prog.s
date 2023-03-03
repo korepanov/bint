@@ -785,7 +785,7 @@ fld (buf)
 cmp $0, %r10
 jz __floatToStrOk
 dec %r10 
-mov $ten, %rcx 
+mov (ten), %rcx 
 mov %rcx, (buf)
 fmul (buf)
 fstp (buf)
@@ -853,7 +853,7 @@ fld (buf)
 cmp $0, %rbx 
 jz __floatOk
 dec %rbx 
-mov $ten, %rcx 
+mov (ten), %rcx 
 mov %rcx, (buf)
 fdiv (buf)
 fstp (buf)
