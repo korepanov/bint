@@ -114,6 +114,21 @@ __print:
 __printEx:
  ret
 
+# посчитать количество символов до 0
+# адрес начала в %rsi
+# результат в %rax  
+ __len:
+ xor %rax, %rax 
+ __lenLocal:
+ mov (%rsi), %dl	
+ cmp $0, %dl	
+ jz  __lenEx				    
+ inc %rsi		  	
+ inc %rax 	    
+ jmp __lenLocal  
+__lenEx:
+ ret
+
  __printSymbol:
  mov (%rsi), %al				
  mov $1, %rdi	
@@ -764,8 +779,24 @@ inc %rcx
 jmp __pointLocal   
 __parseNow:
 movb $0, (%rcx)
-mov $buf3, %rsi 
+
+call __clearBuf
+mov $lenBuf, %rsi 
+mov $buf, %rdx 
+mov $lenBuf3, %rax 
+mov $buf3, %rdi 
+call __set
+mov $buf, %rsi 
+call __len 
+call __toStr 
+mov $buf2, %rsi 
 call __print 
+#call __toNumber
+#call __clearBuf
+#mov %rax, (buf)
+#fld (buf)
+
+
 ret 
 
 .globl _start
@@ -971,10 +1002,10 @@ _start:
  mov $buf, %rsi 
  #call __print  
  call __add 
- mov $userData, %rsi 
- call __print 
- mov $enter, %rsi 
- call __print 
+ #mov $userData, %rsi 
+ #call __print 
+ #mov $enter, %rsi 
+ #call __print 
 
  call __clearBuf  
  mov $lenVarName, %rsi 
