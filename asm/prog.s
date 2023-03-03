@@ -87,6 +87,8 @@ data4:
 .ascii "957.23"
 .space 1, 0
 lenData4 = . - data4 
+ten:
+.float 10.0 
 
 fatalError:
 .ascii "fatal error: internal error\n"
@@ -751,6 +753,27 @@ __add:
  __addFloat: 
  ret 
 
+__floatToStr:
+# вход: buf 
+mov $2, %rbx 
+
+__floatToStrLocal:
+fld (buf)
+cmp $0, %rbx 
+jz __floatToStrOk
+dec %rbx 
+mov $ten, %rcx 
+mov %rcx, (buf)
+fmul (buf)
+fstp (buf)
+jmp __floatToStrLocal
+__floatToStrOk:
+mov (buf), %rax 
+call __toStr
+mov $buf2, %rsi 
+call __print  
+ret 
+
 __parseFloat:
 # $buf - источник (строка)
 # %xmm0 - результат
@@ -788,14 +811,23 @@ mov $buf3, %rdi
 call __set
 mov $buf, %rsi 
 call __len 
-call __toStr 
-mov $buf2, %rsi 
-call __print 
-#call __toNumber
-#call __clearBuf
-#mov %rax, (buf)
-#fld (buf)
+mov %rax, %rbx # длина дробной части числа в %rbx 
 
+call __toNumber
+mov %rax, (buf)
+
+__floatLocal:
+fld (buf)
+cmp $0, %rbx 
+jz __floatOk
+dec %rbx 
+mov $ten, %rcx 
+mov %rcx, (buf)
+fdiv (buf)
+fstp (buf)
+jmp __floatLocal
+__floatOk:
+call __floatToStr   
 
 ret 
 
