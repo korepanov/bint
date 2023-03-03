@@ -89,6 +89,8 @@ data4:
 lenData4 = . - data4 
 ten:
 .float 10.0 
+one:
+.float 1.0 
 
 fatalError:
 .ascii "fatal error: internal error\n"
@@ -754,14 +756,35 @@ __add:
  ret 
 
 __floatToStr:
-# вход: buf 
-mov $2, %rbx 
+# вход: buf
+/*xor %r10, %r10
+__floatToStrLocal:
+flds (buf)
+flds one 
+fcomip 
+fstp   %st(0)
+jl __floatToStrOk
+inc %r10
+mov %r10, %rax 
+call __toStr
+mov $buf2, %rsi 
+call __print  
+mov $enter, %rsi 
+call __print
+mov $one, %rcx 
+mov %rcx, (buf)
+fsub (buf)
+fstp (buf)
+jmp __floatToStrLocal
+__floatToStrOk:
+ret */
+mov $2, %r10 
 
 __floatToStrLocal:
 fld (buf)
-cmp $0, %rbx 
+cmp $0, %r10
 jz __floatToStrOk
-dec %rbx 
+dec %r10 
 mov $ten, %rcx 
 mov %rcx, (buf)
 fmul (buf)
@@ -806,6 +829,15 @@ movb $0, (%rcx)
 call __clearBuf
 mov $lenBuf, %rsi 
 mov $buf, %rdx 
+mov $lenBuf2, %rax 
+mov $buf2, %rdi 
+call __set 
+call __toNumber
+mov %rax, %r10 # целая часть числа в %r10
+
+call __clearBuf
+mov $lenBuf, %rsi 
+mov $buf, %rdx 
 mov $lenBuf3, %rax 
 mov $buf3, %rdi 
 call __set
@@ -827,6 +859,13 @@ fdiv (buf)
 fstp (buf)
 jmp __floatLocal
 __floatOk:
+fld (buf) 
+mov %r10, (buf)
+#movss (buf), %xmm0
+#cvtdq2ps %xmm0, %xmm0
+#movss %xmm0, (buf) # целая часть числа 
+fadd (buf)
+fstp (buf)
 call __floatToStr   
 
 ret 
