@@ -84,7 +84,7 @@ data3:
 .space 1, 0
 lenData3 = . - data3 
 data4:
-.ascii "0.01"
+.ascii "0.000024"
 .space 1, 0
 lenData4 = . - data4 
 ten:
@@ -835,7 +835,7 @@ movb $0, (%rax)
 __floatToStrZeros:
 mov $buf2, %rsi 
 call __len 
-cmp $11, %rax 
+cmp $12, %rax 
 jz __floatToStrEndZeros
 
 mov $lenBuf, %r8 
