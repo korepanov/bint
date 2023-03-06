@@ -785,13 +785,13 @@ fld (buf)
 cmp $0, %r10
 jz __floatToStrOk
 dec %r10 
-mov (ten), %rcx 
-mov %rcx, (buf)
+movss (ten), %xmm0
+movss %xmm0, (buf)
 fmul (buf)
 fstp (buf)
 jmp __floatToStrLocal
 __floatToStrOk:
-mov (buf), %rax 
+cvtss2si (buf), %rax 
 call __toStr
 mov $buf2, %rsi 
 call __print  
@@ -847,23 +847,23 @@ mov %rax, %rbx # длина дробной части числа в %rbx
 
 call __toNumber
 mov %rax, (buf)
+cvtsi2ss (buf), %xmm0  
+movss %xmm0, (buf)
 
 __floatLocal:
 fld (buf)
 cmp $0, %rbx 
 jz __floatOk
 dec %rbx 
-mov (ten), %rcx 
-mov %rcx, (buf)
+movss (ten), %xmm0
+movss %xmm0, (buf)
 fdiv (buf)
 fstp (buf)
 jmp __floatLocal
 __floatOk:
-fld (buf) 
 mov %r10, (buf)
-#movss (buf), %xmm0
-#cvtdq2ps %xmm0, %xmm0
-#movss %xmm0, (buf) # целая часть числа 
+cvtsi2ss (buf), %xmm0    
+movss %xmm0, (buf) # целая часть числа 
 fadd (buf)
 fstp (buf)
 call __floatToStr   
