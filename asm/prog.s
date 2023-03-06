@@ -188,7 +188,8 @@ __toStrexc:
   dec %rcx        # в обратном порядке  
   inc %rbx        # продвигаемся в новом буфере
   dec %rdx        # а в старом в обратном порядке
-  jnz __toStrexc         # проверка конца алгоритма
+  jnz __toStrexc         # проверка конца алгоритма 
+  movb $0, (%rbx)
   ret
 
 __set: #set strings
@@ -256,8 +257,7 @@ __concatinate:
  #dec %r10  
  cmp $0, %dl 
  jnz __concLocal
- dec %r8 
- movb $0, (%r8)
+ #movb $0, (%r8)
  
  ret 
 
@@ -798,6 +798,7 @@ __add:
 
 __floatToStr:
 # вход: buf
+# выход userData
 cvtss2si (buf), %r12 # здесь содержится целое значение 
 
 fld (buf)
@@ -858,8 +859,6 @@ mov $buf, %r9
 mov $buf3, %r11 
 call __concatinate 
 
-mov $userData, %rsi 
-call __print 
 ret 
 
 __parseFloat:
@@ -931,7 +930,7 @@ cvtsi2ss (buf), %xmm0
 movss %xmm0, (buf) # целая часть числа 
 fadd (buf)
 fstp (buf)
-call __floatToStr   
+movss (buf), %xmm0  
 
 ret 
 
@@ -1158,6 +1157,10 @@ _start:
  call __set 
  
  call __parseFloat
+ movss %xmm0, (buf)
+ call __floatToStr
+ mov $userData, %rsi 
+ call __print 
  
  //call __printHeap
 
