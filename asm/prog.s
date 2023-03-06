@@ -757,27 +757,22 @@ __add:
 
 __floatToStr:
 # вход: buf
-/*xor %r10, %r10
-__floatToStrLocal:
-flds (buf)
-flds one 
-fcomip 
-fstp   %st(0)
-jl __floatToStrOk
-inc %r10
-mov %r10, %rax 
-call __toStr
-mov $buf2, %rsi 
-call __print  
-mov $enter, %rsi 
-call __print
-mov $one, %rcx 
-mov %rcx, (buf)
-fsub (buf)
+cvtss2si (buf), %r10 # здесь содержится целое значение 
+
+call __clearBuf3
+mov $lenBuf3, %rsi 
+mov $buf3, %rdx 
+mov $lenBuf2, %rax 
+mov $buf2, %rdi 
+call __set 
+
+fld (buf)
+cvtsi2ss %r10, %xmm0 
+movss %xmm0, (buf) 
+fsub (buf) # вычитаем из значения целое значение, получаем дробное 
 fstp (buf)
-jmp __floatToStrLocal
-__floatToStrOk:
-ret */
+
+
 mov $2, %r10 
 
 __floatToStrLocal:
