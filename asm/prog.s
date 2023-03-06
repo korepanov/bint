@@ -84,7 +84,7 @@ data3:
 .space 1, 0
 lenData3 = . - data3 
 data4:
-.ascii "957.23"
+.ascii "0.01"
 .space 1, 0
 lenData4 = . - data4 
 ten:
@@ -227,9 +227,9 @@ __concatinate:
  # входные параметры 
  # r8 - длина буфера первого операнда 
  # r9 - адрес буфера первого операнда
- # r11 - адрес буфера второго операнда 
+ # r10 - адрес буфера второго операнда 
  # выход
- # userData  
+ # userData   
  call __clearUserData
  mov $lenUserData, %rsi # присваиваем в userData первый операнд  
  mov $userData, %rdx 
@@ -237,23 +237,25 @@ __concatinate:
  mov %r9, %rdi 
 
  mov %r8, %rbx 
- mov %r11, %rcx
+ mov %r10, %rcx
  call __set
  mov %rbx, %r8 
- mov %rcx, %r11  
- 
+ mov %rcx, %r10  
+
  mov $userData, %r8
  __concNext:
- cmp $0, (%r8) 
+ mov (%r8), %dl 
+ cmp $0, %dl 
  jz __concLocal 
  inc %r8   
- jmp __concNext
-
+ jmp __concNext 
+  
  __concLocal:
- mov (%r11), %dl 
+ 
+ mov (%r10), %dl 
  movb %dl, (%r8)
  inc %r8 
- inc %r11 
+ inc %r10
  #dec %r10  
  cmp $0, %dl 
  jnz __concLocal
@@ -808,7 +810,7 @@ fsub (buf) # вычитаем из значения целое значение,
 fstp (buf)
 
 
-mov $12, %r10 # 12 знаков после запятой 
+mov $12, %r10 # 11 знаков после запятой 
 
 __floatToStrLocal:
 fld (buf)
@@ -823,6 +825,38 @@ jmp __floatToStrLocal
 __floatToStrOk:
 cvtss2si (buf), %rax # здесь содержится дробное значение 
 call __toStr
+
+call __clearBuf
+mov $buf, %rax 
+movb $48, (%rax)
+inc %rax 
+movb $0, (%rax)
+
+__floatToStrZeros:
+mov $buf2, %rsi 
+call __len 
+cmp $11, %rax 
+jz __floatToStrEndZeros
+
+mov $lenBuf, %r8 
+mov $buf, %r9 
+mov $buf2, %r10
+call __concatinate
+
+/*mov $lenBuf2, %rsi 
+mov $buf2, %rdx 
+mov $lenUserData, %rax 
+mov $userData, %rdi 
+call __set*/
+
+mov $userData, %rsi 
+call __print 
+mov $enter, %rsi 
+call __print 
+call __throughError
+//jmp __floatToStrZeros
+
+__floatToStrEndZeros:
 
 call __clearBuf3 # в buf3 содержится дробное значение в виде строки 
 mov $lenBuf3, %rsi 
