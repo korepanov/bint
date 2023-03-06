@@ -84,7 +84,7 @@ data3:
 .space 1, 0
 lenData3 = . - data3 
 data4:
-.ascii "3.1415926535"
+.ascii "2.71828182"
 .space 1, 0
 lenData4 = . - data4 
 ten:
@@ -801,7 +801,9 @@ __add:
 __floatToStr:
 # вход: buf
 # выход userData
-cvtss2si (buf), %r12 # здесь содержится целое значение 
+#cvtss2si (buf), %r12 # здесь содержится целое значение 
+movss (buf), %xmm0 
+roundps %xmm0, %xmm0, 3
 
 fld (buf)
 cvtsi2ss %r10, %xmm0 
@@ -810,7 +812,7 @@ fsub (buf) # вычитаем из значения целое значение,
 fstp (buf)
 
 
-mov $7, %r10 # 6 знаков после запятой 
+mov $6, %r10 # 6 знаков после запятой 
 
 __floatToStrLocal:
 fld (buf)
@@ -835,7 +837,7 @@ movb $0, (%rax)
 __floatToStrZeros:
 mov $buf2, %rsi 
 call __len 
-cmp $7, %rax 
+cmp $6, %rax 
 jz __floatToStrEndZeros
 
 mov $lenBuf, %r8 
