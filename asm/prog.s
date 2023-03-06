@@ -84,7 +84,7 @@ data3:
 .space 1, 0
 lenData3 = . - data3 
 data4:
-.ascii "0.000024"
+.ascii "3.1415926535"
 .space 1, 0
 lenData4 = . - data4 
 ten:
@@ -810,7 +810,7 @@ fsub (buf) # вычитаем из значения целое значение,
 fstp (buf)
 
 
-mov $12, %r10 # 11 знаков после запятой 
+mov $7, %r10 # 6 знаков после запятой 
 
 __floatToStrLocal:
 fld (buf)
@@ -835,7 +835,7 @@ movb $0, (%rax)
 __floatToStrZeros:
 mov $buf2, %rsi 
 call __len 
-cmp $12, %rax 
+cmp $7, %rax 
 jz __floatToStrEndZeros
 
 mov $lenBuf, %r8 
