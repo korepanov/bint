@@ -12,16 +12,16 @@ metaSize:
 valSize:
 .quad 64 
 buf:
-.quad 0, 0, 0, 0
+.quad 0, 0, 0, 0, 0, 0, 0, 0
 lenBuf = . - buf 
 buf2:
-.quad 0, 0, 0, 0
+.quad 0, 0, 0, 0, 0, 0, 0, 0
 lenBuf2 = . - buf2 
 buf3:
-.quad 0, 0, 0, 0
+.quad 0, 0, 0, 0, 0, 0, 0, 0
 lenBuf3 = . - buf3
 buf4:
-.quad 0, 0, 0, 0
+.quad 0, 0, 0, 0, 0, 0, 0, 0
 lenBuf4 = . - buf4
 varType:
 .quad 0, 0, 0, 0
@@ -226,12 +226,11 @@ __concatinate:
  # входные параметры 
  # r8 - длина буфера первого операнда 
  # r9 - адрес буфера первого операнда
- # r10 - длина буфера второго операнда
  # r11 - адрес буфера второго операнда 
  # выход
- # userData 
+ # userData  
  call __clearUserData
- mov $lenUserData, %rsi # присваиваем userData первый операнд  
+ mov $lenUserData, %rsi # присваиваем в userData первый операнд  
  mov $userData, %rdx 
  mov %r8, %rax 
  mov %r9, %rdi 
@@ -254,10 +253,12 @@ __concatinate:
  movb %dl, (%r8)
  inc %r8 
  inc %r11 
- dec %r10  
- cmp $0, %r10 
+ #dec %r10  
+ cmp $0, %dl 
  jnz __concLocal
+ dec %r8 
  movb $0, (%r8)
+ 
  ret 
 
 __toNumber:
@@ -839,9 +840,24 @@ movb $0, (%rax)
 
 mov $lenBuf2, %r8 
 mov $buf2, %r9 
-mov $lenBuf, %r10 
 mov $buf, %r11 
 call __concatinate
+
+
+
+call __clearBuf 
+mov $lenBuf, %rsi 
+mov $buf, %rdx 
+mov $lenUserData, %rax 
+mov $userData, %rdi 
+call __set
+
+
+mov $lenBuf, %r8
+mov $buf, %r9 
+mov $buf3, %r11 
+call __concatinate 
+
 mov $userData, %rsi 
 call __print 
 ret 
