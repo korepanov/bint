@@ -227,7 +227,7 @@ __concatinate:
  # входные параметры 
  # r8 - длина буфера первого операнда 
  # r9 - адрес буфера первого операнда
- # r10 - адрес буфера второго операнда 
+ # r11 - адрес буфера второго операнда 
  # выход
  # userData   
  call __clearUserData
@@ -237,10 +237,10 @@ __concatinate:
  mov %r9, %rdi 
 
  mov %r8, %rbx 
- mov %r10, %rcx
+ mov %r11, %rcx
  call __set
  mov %rbx, %r8 
- mov %rcx, %r10  
+ mov %rcx, %r11 
 
  mov $userData, %r8
  __concNext:
@@ -252,10 +252,10 @@ __concatinate:
   
  __concLocal:
  
- mov (%r10), %dl 
+ mov (%r11), %dl 
  movb %dl, (%r8)
  inc %r8 
- inc %r10
+ inc %r11
  #dec %r10  
  cmp $0, %dl 
  jnz __concLocal
@@ -840,21 +840,16 @@ jz __floatToStrEndZeros
 
 mov $lenBuf, %r8 
 mov $buf, %r9 
-mov $buf2, %r10
+mov $buf2, %r11
 call __concatinate
 
-/*mov $lenBuf2, %rsi 
+mov $lenBuf2, %rsi 
 mov $buf2, %rdx 
 mov $lenUserData, %rax 
 mov $userData, %rdi 
-call __set*/
+call __set
 
-mov $userData, %rsi 
-call __print 
-mov $enter, %rsi 
-call __print 
-call __throughError
-//jmp __floatToStrZeros
+jmp __floatToStrZeros
 
 __floatToStrEndZeros:
 
