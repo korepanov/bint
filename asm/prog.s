@@ -222,6 +222,44 @@ __set: #set strings
  movb $0, (%rdx)
  ret 
 
+__concatinate:
+ # входные параметры 
+ # r8 - длина буфера первого операнда 
+ # r9 - адрес буфера первого операнда
+ # r10 - длина буфера второго операнда
+ # r11 - адрес буфера второго операнда 
+ # выход
+ # userData 
+ call __clearUserData
+ mov $lenUserData, %rsi # присваиваем userData первый операнд  
+ mov $userData, %rdx 
+ mov %r8, %rax 
+ mov %r9, %rdi 
+
+ mov %r8, %rbx 
+ mov %r11, %rcx
+ call __set
+ mov %rbx, %r8 
+ mov %rcx, %r11  
+ 
+ mov $userData, %r8
+ __concNext:
+ cmp $0, (%r8) 
+ jz __concLocal 
+ inc %r8   
+ jmp __concNext
+
+ __concLocal:
+ mov (%r11), %dl 
+ movb %dl, (%r8)
+ inc %r8 
+ inc %r11 
+ dec %r10  
+ cmp $0, %r10 
+ jnz __concLocal
+ movb $0, (%r8)
+ ret 
+
 __toNumber:
  # вход: buf 
  # выход:  %rax 
@@ -725,13 +763,14 @@ __add:
  # вход: buf и buf2
  # %rax - тип операции 
  # 0 - целочисленное сложение 
- # 1 - сложение вещественных чисел  
+ # 1 - сложение вещественных чисел   
  # выход: userData 
  call __clearUserData
  cmp $0, %rax 
  jz __addInt 
  cmp $1, %rax 
- jz __addFloat 
+ jz __addFloat
+
  call __throughError
 
  __addInt:
@@ -755,16 +794,10 @@ __add:
  __addFloat: 
  ret 
 
+
 __floatToStr:
 # вход: buf
-cvtss2si (buf), %r10 # здесь содержится целое значение 
-
-call __clearBuf3
-mov $lenBuf3, %rsi 
-mov $buf3, %rdx 
-mov $lenBuf2, %rax 
-mov $buf2, %rdi 
-call __set 
+cvtss2si (buf), %r12 # здесь содержится целое значение 
 
 fld (buf)
 cvtsi2ss %r10, %xmm0 
@@ -773,7 +806,7 @@ fsub (buf) # вычитаем из значения целое значение,
 fstp (buf)
 
 
-mov $2, %r10 
+mov $12, %r10 # 12 знаков после запятой 
 
 __floatToStrLocal:
 fld (buf)
@@ -786,10 +819,31 @@ fmul (buf)
 fstp (buf)
 jmp __floatToStrLocal
 __floatToStrOk:
-cvtss2si (buf), %rax 
+cvtss2si (buf), %rax # здесь содержится дробное значение 
 call __toStr
-mov $buf2, %rsi 
-call __print  
+
+call __clearBuf3 # в buf3 содержится дробное значение в виде строки 
+mov $lenBuf3, %rsi 
+mov $buf3, %rdx 
+mov $lenBuf2, %rax 
+mov $buf2, %rdi 
+call __set 
+
+mov %r12, %rax 
+call __toStr # в buf2 содержится целое значение в виде строки
+call __clearBuf
+mov $buf, %rax 
+movb $'.', (%rax)
+inc %rax 
+movb $0, (%rax) 
+
+mov $lenBuf2, %r8 
+mov $buf2, %r9 
+mov $lenBuf, %r10 
+mov $buf, %r11 
+call __concatinate
+mov $userData, %rsi 
+call __print 
 ret 
 
 __parseFloat:
