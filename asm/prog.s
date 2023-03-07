@@ -84,7 +84,7 @@ data3:
 .space 1, 0
 lenData3 = . - data3 
 data4:
-.ascii "3.141592"
+.ascii "9999999.0"
 .space 1, 0
 lenData4 = . - data4 
 ten:
@@ -910,7 +910,23 @@ inc %rax
 inc %rbx 
 jmp __parseFloatLocal
 __point:
+movb $0, (%rbx)
+mov %rax, %rbx 
+mov $buf2, %rsi 
+call __len 
+cmp $8, %rax # целое число - не более 7 цифр 
+jl __parseFloatZ
+mov $buf2, %rbx 
+movb $48, (%rbx)
+inc %rbx 
 movb $0, (%rbx) 
+mov $buf3, %rbx 
+movb $48, (%rbx)
+inc %rbx 
+movb $0, (%rbx) 
+__parseFloatZ: 
+mov %rbx, %rax 
+ 
 __pointLocal:             
 inc %rax
 cmp $0, (%rax) 
