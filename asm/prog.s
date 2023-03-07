@@ -84,7 +84,7 @@ data3:
 .space 1, 0
 lenData3 = . - data3 
 data4:
-.ascii "3.14159265358"
+.ascii "1000000.0"
 .space 1, 0
 lenData4 = . - data4 
 ten:
@@ -923,7 +923,8 @@ movb $0, (%rbx)
 mov $buf3, %rbx 
 movb $48, (%rbx)
 inc %rbx 
-movb $0, (%rbx) 
+movb $0, (%rbx)
+jmp __parseNow 
 __parseFloatZ: 
 mov %rbx, %rax 
 
