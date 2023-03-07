@@ -801,7 +801,29 @@ __add:
  mov $buf2, %rdi 
  call __set 
  ret 
- __addFloat: 
+ __addFloat:
+ call __clearBuf4
+ mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi 
+ call __set
+ call __parseFloat
+ movss %xmm0, %xmm1 
+ call __clearBuf
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi 
+ call __set
+ call __parseFloat
+ movss %xmm0, (buf)
+ fld (buf)
+ movss %xmm1, (buf)
+ fadd (buf)
+ fstp (buf)
+ call __floatToStr
+
  ret 
 
 
@@ -1260,13 +1282,50 @@ _start:
  mov $userData, %rdi 
  call __set 
  
- call __parseFloat
- #movss %xmm0, (buf)
- #call __floatToStr
- #mov $userData, %rsi 
- #call __print 
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi 
+ call __set
+ call __getVar
+ call __clearBuf3
+ mov $lenBuf3, %rsi 
+ mov $buf3, %rdx 
+ mov $lenUserData, %rax 
+ mov $userData, %rdi 
+ call __set 
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName5, %rax 
+ mov $varName5, %rdi 
+ call __set
+ call __getVar
+ call __clearBuf4
+ mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenUserData, %rax 
+ mov $userData, %rdi 
+ call __set 
  
- call __printHeap
+ call __clearBuf
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf3, %rax 
+ mov $buf3, %rdi 
+ call __set
+ call __clearBuf2 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi 
+ call __set 
+
+ mov $1, %rax 
+ call __add 
+ mov $userData, %rsi 
+ call __print 
 
 __stop:
  mov $60,  %rax      # номер системного вызова exit
