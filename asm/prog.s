@@ -84,7 +84,7 @@ data3:
 .space 1, 0
 lenData3 = . - data3 
 data4:
-.ascii "9999999.0"
+.ascii "3.14159265358"
 .space 1, 0
 lenData4 = . - data4 
 ten:
@@ -926,7 +926,7 @@ inc %rbx
 movb $0, (%rbx) 
 __parseFloatZ: 
 mov %rbx, %rax 
- 
+
 __pointLocal:             
 inc %rax
 cmp $0, (%rax) 
@@ -953,10 +953,17 @@ mov $buf, %rdx
 mov $lenBuf3, %rax 
 mov $buf3, %rdi 
 call __set
+
 mov $buf, %rsi 
 call __len 
 mov %rax, %rbx # длина дробной части числа в %rbx 
-
+cmp $6, %rbx # дробная часть не более шести знаков 
+jl __parseFloatCut
+mov $buf, %rsi 
+add $6, %rsi 
+movb $0, (%rsi)
+mov $6, %rbx 
+__parseFloatCut: 
 call __toNumber
 mov %rax, (buf)
 cvtsi2ss (buf), %xmm0  
