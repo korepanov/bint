@@ -47,6 +47,9 @@ lenVarName3 = . - varName3
 varName4:
 .ascii "iVar2"
 lenVarName4 = . - varName4 
+varName5:
+.ascii "fVar2"
+lenVarName5 = . - varName5
 intType:
 .ascii "int"
 .space 1, 0
@@ -84,9 +87,13 @@ data3:
 .space 1, 0
 lenData3 = . - data3 
 data4:
-.ascii "1000000.0"
+.ascii "957.24"
 .space 1, 0
 lenData4 = . - data4 
+data5:
+.ascii "2.7"
+.space 1, 0 
+lenData5 = . - data5 
 ten:
 .float 10.0 
 one:
@@ -900,7 +907,14 @@ mov $buf, %rax
 call __clearBuf2
 call __clearBuf3
 mov $buf2, %rbx # здесь будет содержаться целая часть 
-mov $buf3, %rcx # здесь будет содержаться дробная часть 
+mov $buf3, %rcx # здесь будет содержаться дробная часть
+mov (%rax), %dl 
+cmp $'-', %dl 
+jnz isPos
+mov $1, %r12 # признак отрицательного числа 
+jmp __parseFloatLocal 
+isPos:
+mov $0, %r12 
 __parseFloatLocal: 
 mov (%rax), %dl 
 cmp $'.', %dl
@@ -987,7 +1001,11 @@ movss %xmm0, (buf) # целая часть числа
 fadd (buf)
 fstp (buf)
 movss (buf), %xmm0  
-
+cmp $1, %r12 
+jnz __pos
+mov $data1, %rsi 
+call __print  
+__pos:
 ret 
 
 .globl _start
@@ -1061,6 +1079,24 @@ _start:
  mov $varName, %rcx 
  mov $varType, %rdx  
  call __defineVar
+
+ #fVar2
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName5, %rax 
+ mov $varName5, %rdi 
+ call __set 
+
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenFloatType, %rax 
+ mov $floatType, %rdi 
+ call __set
+
+ mov $varName, %rcx 
+ mov $varType, %rdx  
+ call __defineVar
+ 
 
  #bvar
  mov $lenVarName, %rsi
@@ -1142,6 +1178,18 @@ _start:
  call __set
  call __setVar
 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName5, %rax 
+ mov $varName5, %rdi 
+ call __set 
+ mov $lenUserData, %rsi 
+ mov $userData, %rdx 
+ mov $lenData5, %rax 
+ mov $data5, %rdi 
+ call __set
+ call __setVar
+
 /* mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName2, %rax 
@@ -1213,12 +1261,12 @@ _start:
  call __set 
  
  call __parseFloat
- movss %xmm0, (buf)
- call __floatToStr
- mov $userData, %rsi 
- call __print 
+ #movss %xmm0, (buf)
+ #call __floatToStr
+ #mov $userData, %rsi 
+ #call __print 
  
- //call __printHeap
+ call __printHeap
 
 __stop:
  mov $60,  %rax      # номер системного вызова exit
