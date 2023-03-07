@@ -84,7 +84,7 @@ data3:
 .space 1, 0
 lenData3 = . - data3 
 data4:
-.ascii "2.71828182"
+.ascii "3.141592"
 .space 1, 0
 lenData4 = . - data4 
 ten:
