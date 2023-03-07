@@ -87,17 +87,19 @@ data3:
 .space 1, 0
 lenData3 = . - data3 
 data4:
-.ascii "957.24"
+.ascii "3.14159265358"
 .space 1, 0
 lenData4 = . - data4 
 data5:
-.ascii "2.7"
+.ascii "-2.71828182"
 .space 1, 0 
 lenData5 = . - data5 
 ten:
 .float 10.0 
 one:
 .float 1.0 
+zero:
+.float 0.0 
 
 fatalError:
 .ascii "fatal error: internal error\n"
@@ -934,6 +936,7 @@ mov (%rax), %dl
 cmp $'-', %dl 
 jnz isPos
 mov $1, %r12 # признак отрицательного числа 
+inc %rax 
 jmp __parseFloatLocal 
 isPos:
 mov $0, %r12 
@@ -1025,8 +1028,13 @@ fstp (buf)
 movss (buf), %xmm0  
 cmp $1, %r12 
 jnz __pos
-mov $data1, %rsi 
-call __print  
+mov (zero), %rax   
+mov %rax, (buf)
+fld (buf)
+movss %xmm0, (buf)
+fsub (buf)
+fstp (buf)
+movss (buf), %xmm0 
 __pos:
 ret 
 
