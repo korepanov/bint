@@ -802,12 +802,13 @@ __floatToStr:
 # вход: buf
 # выход userData
 #cvtss2si (buf), %r12 # здесь содержится целое значение 
-movss (buf), %xmm0 
-roundps %xmm0, %xmm0, 3
+
 
 fld (buf)
-cvtsi2ss %r10, %xmm0 
-movss %xmm0, (buf) 
+movss (buf), %xmm0 
+roundps $3, %xmm0, %xmm0
+movss %xmm0, (buf)
+cvtss2si (buf), %r12
 fsub (buf) # вычитаем из значения целое значение, получаем дробное 
 fstp (buf)
 
