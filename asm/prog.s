@@ -87,11 +87,11 @@ data3:
 .space 1, 0
 lenData3 = . - data3 
 data4:
-.ascii "3.14159265358"
+.ascii "-3.14159265358"
 .space 1, 0
 lenData4 = . - data4 
 data5:
-.ascii "-2.71828182"
+.ascii "2.71828182"
 .space 1, 0 
 lenData5 = . - data5 
 ten:
@@ -832,8 +832,16 @@ __add:
 __floatToStr:
 # вход: buf
 # выход userData
-#cvtss2si (buf), %r12 # здесь содержится целое значение 
-
+# проверяем, является ли число отрицательным
+movss (zero), %xmm0 
+movss (buf), %xmm1 
+cmpss $1, %xmm0, %xmm1
+pextrb $3, %xmm1, %rax
+cmp $0, %rax 
+jz __floatToStrIsPos
+mov $data1, %rsi 
+call __print 
+__floatToStrIsPos:
 
 fld (buf)
 movss (buf), %xmm0 
