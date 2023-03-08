@@ -55,8 +55,8 @@ func ParseArgs() (int, string, string, string, error) {
 	flag.StringVar(&ciFlag, "ci", "", "file to translate from bend to benc (need to specify key file!)")
 	flag.StringVar(&coFlag, "co", "", "output file translating bend to benc (need to specify key file!)")
 	flag.StringVar(&ceFlag, "ce", "", "execute benc file (need to specify key file!)")
-	flag.StringVar(&biFlag, "bi", "", "basm file to compile")
-	flag.StringVar(&boFlag, "bo", "", "output file compiling basm")
+	//flag.StringVar(&biFlag, "bi", "", "basm file to compile")
+	//flag.StringVar(&boFlag, "bo", "", "output file compiling basm")
 	flag.StringVar(&kFlag, "k", "", "specify key file")
 	flag.Parse()
 
@@ -64,6 +64,8 @@ func ParseArgs() (int, string, string, string, error) {
 	if nil != err {
 		panic(err)
 	}
+	biFlag = ""
+	boFlag = ""
 
 	if *help {
 		flag.Usage()
@@ -105,11 +107,12 @@ func ParseArgs() (int, string, string, string, error) {
 		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && *vFlag && "" == biFlag && "" == boFlag {
 		fmt.Println("bint version 2.2")
 		os.Exit(0)
-	} else if "" == iFlag && "" == oFlag && "" == eFlag && "" == piFlag && "" == poFlag && "" == peFlag &&
-		"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && !*vFlag && "" != biFlag && "" != boFlag {
-		toTranslate = options.Compile
-		rootSource = mydir + "/" + biFlag
-		rootDest = mydir + "/" + boFlag
+		/*else if "" == iFlag && "" == oFlag && "" == eFlag && "" == piFlag && "" == poFlag && "" == peFlag &&
+			"" == ciFlag && "" == coFlag && "" == ceFlag && "" == kFlag && !*sFlag && !*vFlag && "" != biFlag && "" != boFlag {
+			toTranslate = options.Compile
+			rootSource = mydir + "/" + biFlag
+			rootDest = mydir + "/" + boFlag
+		}*/
 	} else {
 		flag.Usage()
 		err := errors.New("invalid arguments")
