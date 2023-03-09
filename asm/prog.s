@@ -23,6 +23,9 @@ lenBuf3 = . - buf3
 buf4:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenBuf4 = . - buf4
+isNeg:
+.byte 0 
+lenIsNeg = . - isNeg
 varType:
 .quad 0, 0, 0, 0
 lenVarType = . - varType 
@@ -839,10 +842,16 @@ cmpss $1, %xmm0, %xmm1
 pextrb $3, %xmm1, %rax
 cmp $0, %rax 
 jz __floatToStrIsPos
-mov $data1, %rsi 
-call __print 
+# меняем знак 
+fld (zero) 
+fsub (one)
+fmul (buf)
+fstp (buf)
+movb $1, (isNeg) # признак отрицательного числа 
+jmp __floatToStrIsNeg
 __floatToStrIsPos:
-
+movb $0, (isNeg)
+__floatToStrIsNeg:
 fld (buf)
 movss (buf), %xmm0 
 roundps $3, %xmm0, %xmm0
@@ -930,6 +939,28 @@ mov $buf, %r9
 mov $buf3, %r11 
 call __concatinate 
 
+# число отрицательное?
+mov (isNeg), %dl 
+cmp $1, %dl  
+jnz __floatToStrEnd 
+call __clearBuf
+mov $buf, %rax 
+movb $'-', (%rax)
+inc %rax 
+movb $0, (%rax)
+
+mov $lenBuf3, %rsi 
+mov $buf3, %rdx 
+mov $lenUserData, %rax 
+mov $userData, %rdi 
+call __set 
+
+mov $lenBuf, %r8 
+mov $buf, %r9 
+mov $buf3, %r11 
+call __concatinate
+
+__floatToStrEnd:
 ret 
 
 __parseFloat:
