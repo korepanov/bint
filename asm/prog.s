@@ -97,6 +97,10 @@ data5:
 .ascii "2.71828182"
 .space 1, 0 
 lenData5 = . - data5 
+data6:
+.ascii "1.2"
+.space 1, 0 
+lenData6 = . - data6 
 ten:
 .float 10.0 
 one:
@@ -1307,72 +1311,12 @@ _start:
  call __set
 
  mov $0, %rax
- mov $buf, %rsi 
- #call __print  
- call __add 
- #mov $userData, %rsi 
- #call __print 
- #mov $enter, %rsi 
- #call __print 
-
- call __clearBuf  
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName2, %rax 
- mov $varName2, %rdi 
- call __set
- call __getVar
-
- mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenUserData, %rax 
- mov $userData, %rdi 
- call __set 
- 
-
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName2, %rax 
- mov $varName2, %rdi 
- call __set
- call __getVar
- call __clearBuf3
- mov $lenBuf3, %rsi 
- mov $buf3, %rdx 
- mov $lenUserData, %rax 
- mov $userData, %rdi 
- call __set 
-
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName5, %rax 
- mov $varName5, %rdi 
- call __set
- call __getVar
- call __clearBuf4
- mov $lenBuf4, %rsi 
- mov $buf4, %rdx 
- mov $lenUserData, %rax 
- mov $userData, %rdi 
- call __set 
- 
- call __clearBuf
- mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenBuf3, %rax 
- mov $buf3, %rdi 
- call __set
- call __clearBuf2 
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenBuf4, %rax 
- mov $buf4, %rdi 
- call __set 
-
- mov $1, %rax 
  call __add 
  mov $userData, %rsi 
  call __print 
+ mov $enter, %rsi 
+ call __print 
+ 
 
 __stop:
  mov $60,  %rax      # номер системного вызова exit
