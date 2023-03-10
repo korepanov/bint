@@ -66,6 +66,3 @@ fatalError:
 .ascii "fatal error: internal error\n"
 .space 1, 0 
 
-msg0:
-.ascii "Hello world!\n"
-.space 1, 0

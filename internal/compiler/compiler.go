@@ -45,36 +45,33 @@ func CompileAsm(rootDest string) error {
 }
 
 func InitData() (*os.File, error) {
-	f, err := os.Create("asm/data.s")
+	_, err := Copy("asm/pdata.s", "asm/data.s")
+	if nil != err {
+		fmt.Println("could not init file data.s")
+		return nil, err
+	}
+	f, err := os.OpenFile("asm/data.s", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	if nil != err {
 		fmt.Println("could not create file data.s")
 		return f, err
 	}
-	_, err = f.Write([]byte(".data\n$buf:\n.space 256, 0\n$buf2:\n.space 256, 0\n"))
-	return f, err
+
+	return f, nil
 }
 
 func InitProg() (*os.File, error) {
-	f, err := os.Open("asm/pattern.s")
+	_, err := Copy("asm/pprogram.s", "asm/program.s")
 	if nil != err {
-		fmt.Println(err)
-		os.Exit(1)
+		fmt.Println("could not init file program.s")
+		return nil, err
 	}
-	f2, err := os.Create("asm/program.s")
+	f, err := os.OpenFile("asm/program.s", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	if nil != err {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	_, err = io.Copy(f2, f)
-	if nil != err {
-		panic(err)
-	}
-	err = f.Close()
-	if nil != err {
-		panic(err)
+		fmt.Println("could not create file program.s")
+		return f, err
 	}
 
-	return f2, err
+	return f, nil
 }
 
 func FinishProg(f *os.File) error {
@@ -1149,7 +1146,7 @@ func CompileTree(infoList []interface{}, variables [][]interface{},
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			_, err = progFile.Write([]byte("mov $msg" + fmt.Sprintf("%v", number) + ", %rsi\ncall print\n"))
+			_, err = progFile.Write([]byte("mov $msg" + fmt.Sprintf("%v", number) + ", %rsi\ncall __print\n"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)

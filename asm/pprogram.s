@@ -997,8 +997,3 @@ ret
 .globl _start
 _start:
 
-mov $msg0, %rsi
-call __print
-mov $60,  %rax
-xor %rdi, %rdi
-syscall
