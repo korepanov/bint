@@ -653,6 +653,45 @@ __setVar:
  __setVarClearEnd:
  sub (valSize), %rbx 
  sub (metaSize), %rbx 
+ sub (typeSize), %rbx 
+ mov %rbx, %r12 
+ call __read 
+ add (typeSize), %rbx 
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi 
+ call __set
+ mov %rbx, %r12 
+ call __compare
+ mov %r12, %rbx 
+ cmp $0, %rax 
+ jz __setVarIsNotStr
+ mov (strPointer), %rax
+ mov %rbx, %r12
+ call __toStr 
+ mov %r12, %rbx 
+ mov $buf2, %rsi 
+ call __len 
+ mov %rax, %rdi # счетчик количества реально записанных байт 
+ mov %rbx, %r10 # сохраняем значение %rbx  
+
+ mov $buf2, %rax 
+ __setVarAddr:
+ mov (%rax), %dl 
+ cmp $0, %dl
+ jz __setVarM 
+ mov %dl, (%rbx)
+ inc %rax 
+ inc %rbx 
+ jmp __setVarAddr 
+ __setVarM:
+
+ jmp __setMeta 
+ __setVarIsNotStr:
+ 
+ #call __throughError
  mov %rbx, %r10 # сохраняем значение %rbx  
  mov $userData, %rax 
  xor %rdi, %rdi # счетчик количества реально записанных байт 
@@ -1408,9 +1447,22 @@ _start:
  call __print 
  #mov $userData, %rsi 
  #call __print 
- call __printHeap 
+ #call __printHeap 
  
-
+ #sVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
+ call __set 
+ mov $lenUserData, %rsi 
+ mov $userData, %rdx 
+ mov $lenData1, %rax 
+ mov $data1, %rdi 
+ call __set
+ call __setVar
+ 
+ call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
