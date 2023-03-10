@@ -996,4 +996,5 @@ ret
 
 .globl _start
 _start:
+call __firstMem
 

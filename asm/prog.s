@@ -23,6 +23,15 @@ lenBuf3 = . - buf3
 buf4:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenBuf4 = . - buf4
+strBegin:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenStrBegin = . - strBegin
+strPointer:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenStrPointer = . - strPointer
+strMax:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenStrMax = . - strMax 
 isNeg:
 .byte 0 
 lenIsNeg = . - isNeg
@@ -160,7 +169,7 @@ __lenEx:
 __printHeap:  
  mov %r13, %r8  
  __printHeapLoop:
- cmp %r15, %r8 
+ cmp (strMax), %r8 
  jz __printHeapEx
  mov %r8, %rsi 
  mov $1, %rdi	
@@ -489,6 +498,38 @@ __firstMem:
  jmp __lo
  __ex:
  ret 
+
+ __firstStrMem:
+ # адрес начала области для выделения памяти
+ mov %r15, %rax
+# запомнить адрес начала выделяемой памяти
+ mov %rax, %r8  
+ mov %rax, (strBegin)
+ mov %rax, (strPointer)
+ mov %rax, %r9 
+ add (pageSize), %r9
+ mov %r9, (strMax)
+# выделить динамическую память
+ mov (pageSize), %rdi
+ add %rax, %rdi
+ mov $12, %rax
+ syscall
+# обработка ошибки
+ cmp $-1, %rax
+ jz __throughError
+# заполним выделенную память
+ mov $'*', %dl
+ mov $0, %rbx
+ __firstStrMemLo:
+ movb %dl, (%r8)
+ inc %rbx
+ inc %r8 
+ cmp (pageSize), %rbx
+ jz  __firstStrMemEx
+ jmp __firstStrMemLo
+ __firstStrMemEx:
+ ret 
+
 
  __newMem:
  # адрес начала выделяемой памяти в  %r8 
@@ -1109,7 +1150,7 @@ ret
 .globl _start
 _start:
  call __firstMem
-
+ call __firstStrMem
  #iVar 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -1367,7 +1408,7 @@ _start:
  call __print 
  #mov $userData, %rsi 
  #call __print 
- #call __printHeap 
+ call __printHeap 
  
 
 __stop:
