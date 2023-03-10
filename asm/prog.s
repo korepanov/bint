@@ -713,8 +713,6 @@ __setVar:
  jmp __getMetaLocal
  
  __getNow:
- mov $buf, %rsi 
- call __print 
  call __toNumber
  mov %r10, %rbx
  mov $userData, %rsi
@@ -1365,6 +1363,8 @@ _start:
  mov $varName1, %rdi 
  call __set 
  call __getVar
+ mov $userData, %rsi 
+ call __print 
  #mov $userData, %rsi 
  #call __print 
  #call __printHeap 
