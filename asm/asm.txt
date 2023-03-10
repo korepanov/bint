@@ -1,0 +1,2 @@
+as --64 prog.s -o prog.o
+ld -s prog.o -o prog 
