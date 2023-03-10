@@ -74,7 +74,7 @@ enter:
 .space 1, 0
 lenEnter = . - enter 
 data0:
-.ascii "-25"
+.ascii "25"
 .space 1, 0
 lenData0 = . - data0 
 data1:
@@ -176,8 +176,16 @@ __printHeap:
 __toStr:
  # число в %rax 
  # подготовка преобразования числа в строку
-  
+  cmp $0, %rax 
+  jg __toStrPos
+  mov $0, %rdx 
+  sub $1, %rdx 
+  imul %rdx  
+  movb $'-', (buf2)
+  jmp __toStrNeg 
+  __toStrPos:
   movq $0, (buf2)
+  __toStrNeg:
   mov $10, %r8    # делитель
   mov $buf, %rsi  # адрес начала буфера 
   xor %rdi, %rdi  # обнуляем счетчик
@@ -194,6 +202,11 @@ __toStrlo:
 # число записано в обратном порядке,
 # вернем правильный, перенеся в другой буфер 
   mov $buf2, %rbx # начало нового буфера
+  mov (%rbx), %dl 
+  cmp $'-', %dl
+  jnz __toStrEmpty
+  inc %rbx 
+  __toStrEmpty:
   mov $buf, %rcx  # старый буфер
   add %rdi, %rcx  # в конец
   dec %rcx        # старого буфера
