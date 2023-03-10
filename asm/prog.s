@@ -687,6 +687,26 @@ __setVar:
  inc %rbx 
  jmp __setVarAddr 
  __setVarM:
+ mov %r10, %rbx 
+ add (valSize), %rbx
+ mov %rbx, %r10 
+ mov %rdi, %rax 
+ call __toStr 
+ mov $buf2, %rax
+ mov %r10, %rbx 
+ 
+ __setMetaLocal0: 
+ mov (%rax), %dl 
+ mov %dl, (%rbx)
+ cmp $0, %dl 
+ jz __setVarMeta0  
+ inc %rbx 
+ inc %rax 
+
+ jmp __setMetaLocal0
+
+ __setVarMeta0:
+
  mov (strPointer), %rbx 
  #jmp __setMeta 
  __setVarIsNotStr:
