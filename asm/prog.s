@@ -74,7 +74,7 @@ enter:
 .space 1, 0
 lenEnter = . - enter 
 data0:
-.ascii "25"
+.ascii "-25"
 .space 1, 0
 lenData0 = . - data0 
 data1:
@@ -176,6 +176,7 @@ __printHeap:
 __toStr:
  # число в %rax 
  # подготовка преобразования числа в строку
+  
   movq $0, (buf2)
   mov $10, %r8    # делитель
   mov $buf, %rsi  # адрес начала буфера 
@@ -283,6 +284,10 @@ __toNumber:
  # вход: buf 
  # выход:  %rax 
  mov $buf, %rdx # our string
+ movzx (%rdx), %rcx 
+ cmp $'-', %rcx 
+ jnz __toNumberAtoi
+ inc %rdx 
  __toNumberAtoi:
  xor %rax, %rax # zero a "result so far"
  __toNumberTop:
@@ -295,6 +300,15 @@ __toNumber:
  add %rcx, %rax # add in current digit
  jmp __toNumberTop # until done
  __toNumberDone:
+ mov $buf, %rdx 
+ movzx (%rdx), %rcx 
+ cmp $'-', %rcx 
+ jnz __toNumberIsPos
+ mov $0, %rdx 
+ sub $1, %rdx 
+ //mov %rdx, (buf)
+ imul %rdx 
+ __toNumberIsPos:
  ret
 
 
