@@ -700,21 +700,21 @@ __setVar:
  jnz __getClearBuf 
  
  __getMeta:
-
  mov $buf, %rsi 
  mov %rbx, %r10 
  add (valSize), %rbx 
- mov $1, %dl  
  __getMetaLocal:
+ mov (%rbx), %dl  
  cmp $'*', %dl 
  jz __getNow 
- mov (%rbx), %dl
  mov %dl, (%rsi)  
  inc %rbx 
  inc %rsi  
  jmp __getMetaLocal
  
  __getNow:
+ mov $buf, %rsi 
+ call __print 
  call __toNumber
  mov %r10, %rbx
  mov $userData, %rsi
@@ -1179,6 +1179,22 @@ _start:
  mov $varName, %rcx 
  mov $varType, %rdx  
  call __defineVar
+ #sVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
+ call __set 
+
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi 
+ call __set
+
+ mov $varName, %rcx 
+ mov $varType, %rdx  
+ call __defineVar
 
  #fVar2
  mov $lenVarName, %rsi 
@@ -1326,7 +1342,7 @@ _start:
  mov $userData, %rdi 
  call __set
  # целочисленное сложение
- mov $lenBuf, %rsi 
+ /*mov $lenBuf, %rsi 
  mov $buf, %rdx 
  mov $lenBuf3, %rax 
  mov $buf3, %rdi 
@@ -1342,7 +1358,16 @@ _start:
  mov $userData, %rsi 
  call __print 
  mov $enter, %rsi 
- call __print 
+ call __print*/
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
+ call __set 
+ call __getVar
+ #mov $userData, %rsi 
+ #call __print 
+ #call __printHeap 
  
 
 __stop:
