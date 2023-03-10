@@ -687,8 +687,8 @@ __setVar:
  inc %rbx 
  jmp __setVarAddr 
  __setVarM:
-
- jmp __setMeta 
+ mov (strPointer), %rbx 
+ #jmp __setMeta 
  __setVarIsNotStr:
  
  #call __throughError
