@@ -611,7 +611,7 @@ __compare:
 
 __setVar:
  # имя переменной по адресу $varName 
- # данные в $userData 
+ # данные по указателю в (userData) 
  mov %r13, %rbx
  __setVarLocal:
  cmp %r15, %rbx
@@ -713,7 +713,7 @@ __setVar:
  
  #call __throughError
  mov %rbx, %r10 # сохраняем значение %rbx  
- mov $userData, %rax 
+ mov (userData), %rax 
  xor %rdi, %rdi # счетчик количества реально записанных байт 
  __setNow:
  mov (%rax), %dl
@@ -1227,7 +1227,16 @@ _start:
  mov $varType, %rdx  
  call __defineVar
 
- 
+ #set iVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi 
+ call __set
+
+ mov $data0, %rax  
+ mov %rax, (userData)
+ call __setVar 
  
  call __printHeap
 __stop:
