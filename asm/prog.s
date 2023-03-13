@@ -729,6 +729,7 @@ __setVar:
  inc %rdi 
  jmp __setNow 
  __setMeta: 
+ mov %dl, (%rbx)
  mov %r10, %rbx 
  add (valSize), %rbx
  mov %rbx, %r10 
@@ -1234,9 +1235,10 @@ _start:
  call __set 
 
  call __getVar
-
+ mov (userData), %rsi 
+ call __print 
  
- call __printHeap
+ #call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
