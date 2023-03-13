@@ -454,6 +454,7 @@ mov %r14, %r8
  mov %r14, %r8 
  add (varNameSize), %r8 
  add (typeSize), %r8
+ movb $0, (%r8)
  add (valSize), %r8 
  movb $'0', (%r8)
 
@@ -614,6 +615,7 @@ __compare:
  ret 
 
 __setVar:
+ # вход: 
  # имя переменной по адресу $varName 
  # данные по указателю в (userData) 
  mov %r13, %rbx
@@ -1227,18 +1229,24 @@ _start:
  mov %rax, (userData)
  call __setVar 
 
- #get iVar 
+ #sVar
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName0, %rax 
- mov $varName0, %rdi 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
  call __set 
 
- call __getVar
- mov (userData), %rsi 
- call __print 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi 
+ call __set 
+
+ mov $varName, %rcx 
+ mov $varType, %rdx  
+ call __defineVar
  
- #call __printHeap
+ call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
