@@ -1,4 +1,5 @@
 package compilerVars
 
-var CompilerVars map[string]string // карта, которая хранит соответствие переменной asm и переменной кучи
-var VarsCounter int                // счетчик переменных asm
+var CompilerVars map[string]int // карта, которая хранит соответствие имен переменных кучи и номеров имен переменных asm
+var VarsCounter int             // счетчик переменных asm
+var DataNumber int

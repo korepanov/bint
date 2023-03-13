@@ -85,3 +85,11 @@ lenVarName0 = . - varName0
 varName1:
 .ascii "b"
 lenVarName1 = . - varName1
+data0:
+.ascii "5"
+.space 1, 0
+lenData0 = . - data0
+data1:
+.ascii "10"
+.space 1, 0
+lenData1 = . - data1

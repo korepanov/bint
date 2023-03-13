@@ -1,6 +1,7 @@
 package compiler
 
 import (
+	. "bint.com/internal/compilerVars"
 	. "bint.com/pkg/serviceTools"
 	"errors"
 	"fmt"
@@ -13,10 +14,6 @@ import (
 	"strings"
 	"unicode"
 )
-
-var number int
-var markNumber int
-var dataNumber int
 
 func CompileAsm(rootDest string) error {
 	cmd := exec.Command("as", "--64", "asm/data.s", "asm/program.s", "-o", "asm/program.o")
@@ -88,7 +85,8 @@ func FinishProg(f *os.File) error {
 	return err
 }
 
-func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interface{}, dataFile *os.File, progFile *os.File) ([]interface{}, []interface{}, error) {
+func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interface{}, dataFile *os.File, progFile *os.File,
+	variables [][]interface{}) ([]interface{}, []interface{}, error) {
 	if "print" == OP {
 		return []interface{}{"print", LO}, systemStack, nil
 	} else if "reg_find" == OP {
@@ -328,54 +326,44 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 		return []interface{}{BoolToStr(floatLO >= floatRO)}, systemStack, nil
 	} else if "+" == OP {
+		var typeLO string
+		var typeRO string
 
-		if "int" == WhatsType(fmt.Sprintf("%v", LO[0])) {
-			intLO, err := strconv.Atoi(fmt.Sprintf("%v", LO[0]))
-			if nil != err {
-				return LO, systemStack, err
+		newVariable := EachVariable(variables)
+
+		for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
+			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
+				typeLO = fmt.Sprintf("%v", v[0])
+				LO[0] = "varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
 			}
-
-			if "int" == WhatsType(fmt.Sprintf("%v", RO[0])) {
-				intRO, err := strconv.Atoi(fmt.Sprintf("%v", RO[0]))
-				if nil != err {
-					return RO, systemStack, err
-				}
-
-				return []interface{}{intLO + intRO}, systemStack, nil
-			}
-
-			if "float" == WhatsType(fmt.Sprintf("%v", RO[0])) {
-				floatRO, err := strconv.ParseFloat(fmt.Sprintf("%v", RO[0]), 64)
-				if nil != err {
-					return RO, systemStack, err
-				}
-				floatLO, err := strconv.ParseFloat(fmt.Sprintf("%v", LO[0]), 64)
-				if nil != err {
-					return RO, systemStack, err
-				}
-
-				return []interface{}{floatLO + floatRO}, systemStack, nil
-			}
-
-		}
-
-		if "float" == WhatsType(fmt.Sprintf("%v", LO[0])) {
-			floatLO, err := strconv.ParseFloat(fmt.Sprintf("%v", LO[0]), 64)
-
-			if nil != err {
-				return LO, systemStack, err
-			}
-
-			if "float" == WhatsType(fmt.Sprintf("%v", RO[0])) || "int" == WhatsType(fmt.Sprintf("%v", RO[0])) {
-				floatRO, err := strconv.ParseFloat(fmt.Sprintf("%v", RO[0]), 64)
-				if nil != err {
-					return LO, systemStack, err
-				}
-
-				return []interface{}{floatLO + floatRO}, systemStack, nil
+			if fmt.Sprintf("%v", RO[0]) == fmt.Sprintf("%v", v[1]) {
+				typeRO = fmt.Sprintf("%v", v[0])
+				RO[0] = "varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", RO[0])])
 			}
 		}
 
+		if "" == typeLO {
+			typeLO = WhatsType(fmt.Sprintf("%v", LO[0]))
+		}
+		if "" == typeRO {
+			typeRO = WhatsType(fmt.Sprintf("%v", RO[0]))
+		}
+
+		if "int" == typeLO && "int" == typeRO {
+			progFile.Write([]byte(""))
+			//return []interface{}{floatLO + floatRO}, systemStack, nil
+		}
+
+		if "float" == typeLO && "float" == typeRO {
+			//
+		}
+
+		if "int" == typeLO && "float" == typeRO {
+			//
+		}
+		if "float" == typeLO && "int" == typeRO {
+			//
+		}
 		if len(fmt.Sprintf("%v", LO[0])) >= 2 && "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
 		}
@@ -555,47 +543,31 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 	} else if "str" == OP {
 		return []interface{}{"\"" + fmt.Sprintf("%v", LO[0]) + "\""}, systemStack, nil
 	} else if "=" == OP {
-		if "$" != string(fmt.Sprintf("%v", RO[0])[0]) {
-			_, err := dataFile.Write([]byte("data" + fmt.Sprintf("%v", dataNumber) + ":\n"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-			_, err = dataFile.Write([]byte(".ascii " + fmt.Sprintf("%v", RO[0]) + "\n.space 1, 0\n"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-			_, err = progFile.Write([]byte("mov $data" + fmt.Sprintf("%v", dataNumber) + ", %esi\n"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-			dataNumber++
-		} else {
-			_, err := progFile.Write([]byte("mov " + fmt.Sprintf("%v", RO[0]) + ", %esi\n"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-		}
-		_, err := progFile.Write([]byte("mov " + fmt.Sprintf("%v", LO[0]) + ", %edi\n"))
+
+		_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":\n"))
 		if nil != err {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		_, err = progFile.Write([]byte("mark" + fmt.Sprintf("%v", markNumber) + ":\n"))
+		_, err = dataFile.Write([]byte(".ascii \"" + fmt.Sprintf("%v", RO[0]) + "\"\n.space 1, 0"))
 		if nil != err {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		_, err = progFile.Write([]byte("mov (%esi), %al\nmov %al, (%edi)\ninc %esi\ninc %edi\ncmp $0, (%esi)\njnz mark" +
-			fmt.Sprintf("%v", markNumber) + "\n"))
+		_, err = dataFile.Write([]byte("\nlenData" + fmt.Sprintf("%v", DataNumber) + " = . - data" + fmt.Sprintf("%v", DataNumber)))
 		if nil != err {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		markNumber++
+		_, err = progFile.Write([]byte("\n mov $lenVarName, %rsi \n mov $varName, %rdx " +
+			"\n mov $lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])]) +
+			", %rax \n mov $varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])]) + ", %rdi \n" +
+			"call __set\n\n mov $data" + fmt.Sprintf("%v", DataNumber) + ", %rax  \n mov %rax, (userData)\n call __setVar"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		DataNumber++
 
 		return []interface{}{0}, systemStack, nil // успех
 	} else if "." == OP {
@@ -878,7 +850,7 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 					err = errors.New("executor: input: ERROR: data type mismatch")
 					panic(err)
 				}
-				v[2], systemStack, err = compile(systemStack, OP, LO, RO, dataFile, progFile)
+				v[2], systemStack, err = compile(systemStack, OP, LO, RO, dataFile, progFile, variables)
 				if nil != err {
 					panic(err)
 				}
@@ -905,7 +877,7 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 
 				var err error
 
-				v[2], systemStack, err = compile(systemStack, OP, LO, RO, dataFile, progFile)
+				v[2], systemStack, err = compile(systemStack, OP, LO, RO, dataFile, progFile, variables)
 
 				if nil != err {
 					panic(err)
@@ -943,7 +915,7 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 							"end" == fmt.Sprintf("%v", rightVar[2].([]interface{})[0]) {
 							rightVar[2].([]interface{})[0] = []interface{}{"end"}
 						}
-						RO[0] = "$" + fmt.Sprintf("%v", rightVar[1])
+						RO[0] = fmt.Sprintf("%v", rightVar[1])
 						//RO[0] = ValueFoldInterface(rightVar[2])
 						typeRO = fmt.Sprintf("%v", rightVar[0])
 						break
@@ -1066,42 +1038,6 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 			}
 
 		}
-	} else {
-		newVariable := EachVariable(variables)
-		wasLO := false
-		wasRO := false
-
-		for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
-			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
-				if "print" == OP && "string" != v[0] {
-					panic(errors.New("sysExecuteTree: ERROR: print: dataTypeMismatch"))
-				}
-				if "len" == OP && "string" != v[0] {
-					panic(errors.New("sysExecuteTree: ERROR: len: dataTypeMismatch"))
-				}
-
-				if "string" == fmt.Sprintf("%T", v[2]) && !wasLO {
-					//LO = []interface{}{v[2]}
-					LO[0] = "$" + fmt.Sprintf("%v", LO[0])
-					wasLO = true
-				} else if !wasLO {
-					//LO = v[2].([]interface{})
-					LO[0] = "$" + fmt.Sprintf("%v", LO[0])
-					wasLO = true
-				}
-			}
-			if fmt.Sprintf("%v", RO[0]) == fmt.Sprintf("%v", v[1]) {
-				if "string" == fmt.Sprintf("%T", v[2]) && !wasRO {
-					//RO = []interface{}{v[2]}
-					RO[0] = "$" + fmt.Sprintf("%v", RO[0])
-					wasRO = true
-				} else if !wasRO {
-					//RO = v[2].([]interface{})
-					RO[0] = "$" + fmt.Sprintf("%v", RO[0])
-					wasRO = true
-				}
-			}
-		}
 	}
 
 	var res []interface{}
@@ -1117,7 +1053,7 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 			passRO = append(passRO, el)
 		}
 
-		res, systemStack, err = compile(systemStack, OP, passLO, passRO, dataFile, progFile)
+		res, systemStack, err = compile(systemStack, OP, passLO, passRO, dataFile, progFile, variables)
 		if nil != err {
 			panic(err)
 		}
@@ -1135,7 +1071,7 @@ func CompileTree(infoList []interface{}, variables [][]interface{},
 	res, variables, systemStack, _ := sysCompileTree(infoList, variables, systemStack, 0, dataFile, progFile)
 
 	if "print" == res[0] {
-		if "$" != string(fmt.Sprintf("%v", ValueFoldInterface(res[1]))[0]) {
+		/*if "$" != string(fmt.Sprintf("%v", ValueFoldInterface(res[1]))[0]) {
 			_, err := dataFile.Write([]byte("msg" + fmt.Sprintf("%v", number) + ":\n"))
 			if nil != err {
 				fmt.Println(err)
@@ -1158,7 +1094,7 @@ func CompileTree(infoList []interface{}, variables [][]interface{},
 				fmt.Println(err)
 				os.Exit(1)
 			}
-		}
+		}*/
 
 	}
 }

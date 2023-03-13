@@ -167,8 +167,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/internal/print_format.basm"}
 			}
 		} else if options.UserTranslate == toTranslate {
-			rootSource = "examples/quadratic_equation/main.b"
-			rootDest = "examples/program.basm"
+			rootSource = "program.b"
+			rootDest = "program.basm"
 			//filesListToExecute = []string{"benv/import.basm"}
 			if execBenv {
 				filesListToExecute = []string{"benv/build/import",
@@ -907,7 +907,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	}
 
 	if options.Compile == sysMod {
-		compilerVars.CompilerVars = map[string]string{}
+		compilerVars.CompilerVars = map[string]int{}
 
 		dataFile, err := compiler.InitData()
 		if nil != err {

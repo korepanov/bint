@@ -348,8 +348,7 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 								fmt.Println(err)
 								os.Exit(1)
 							}
-
-							CompilerVars["varName"+fmt.Sprintf("%v", VarsCounter)] = fmt.Sprintf("%v", variables[len(variables)-1][1])
+							CompilerVars[fmt.Sprintf("%v", variables[len(variables)-1][1])] = VarsCounter
 							VarsCounter++
 						} else if "float" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
 							print("")
