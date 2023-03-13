@@ -44,6 +44,9 @@ lenVarName = . - varName
 userData:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenUserData = . - userData
+metaData:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMetaData = . - metaData
 varName0:
 .ascii "iVar"
 lenVarName0 = . - varName0
@@ -586,6 +589,7 @@ __readClear:
  movb $'*', (%r10)
  __readOk:
  ret 
+ 
 
 __compare:
  # сравнить строки по адресу $buf и $varName  
@@ -748,7 +752,7 @@ __setVar:
 
  __getVar:
  # вход: имя переменной по адресу $varName 
- # выход: $userData 
+ # выход: указатель на данные в (userData) и длинна данных в байтах в (metaData)
  mov %r13, %rbx
  __getVarLocal:
  cmp %r15, %rbx
@@ -778,26 +782,8 @@ __setVar:
  
  add (varNameSize), %rbx 
  add (typeSize), %rbx 
- mov $userData, %rax 
- mov $lenUserData, %r12 
-
- mov $userData, %r10 
- mov $lenUserData, %rsi 
- __getClear:
- movb $0, (%r10)
- dec %rsi
- inc %r10
- cmp $0, %rsi  
- jnz __getClear
-
- mov $buf, %r10 
- mov $lenBuf, %rsi 
- __getClearBuf:
- movb $0, (%r10)
- dec %rsi
- inc %r10
- cmp $0, %rsi  
- jnz __getClearBuf 
+ #mov $userData, %rax 
+ #mov $lenUserData, %r12 
  
  __getMeta:
  mov $buf, %rsi 
@@ -814,8 +800,10 @@ __setVar:
  
  __getNow:
  call __toNumber
- mov %r10, %rbx
- mov $userData, %rsi
+ mov %rax, (metaData)
+ mov %r10, (userData)
+ ret 
+ /*mov $userData, %rsi
  __getNowLocal:  
  cmp $0, %rax 
  jz __getVarRet
@@ -826,7 +814,7 @@ __setVar:
  dec %rax 
  jmp __getNowLocal 
  __getVarRet:
- ret
+ ret*/
 
 __clearBuf:
 mov $buf, %rsi 
@@ -1237,6 +1225,16 @@ _start:
  mov $data0, %rax  
  mov %rax, (userData)
  call __setVar 
+
+ #get iVar 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi 
+ call __set 
+
+ call __getVar
+
  
  call __printHeap
 __stop:
