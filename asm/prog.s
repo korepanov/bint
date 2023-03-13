@@ -1217,6 +1217,7 @@ _start:
  mov $varName, %rcx 
  mov $varType, %rdx  
  call __defineVar
+ 
 
  #set iVar
  mov $lenVarName, %rsi 
@@ -1246,6 +1247,16 @@ _start:
  mov $varType, %rdx  
  call __defineVar
  
+ #setVar sVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
+ call __set
+ mov $data1, %rax  
+ mov %rax, (userData)
+ call __setVar 
+
  call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
