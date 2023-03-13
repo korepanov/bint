@@ -1,6 +1,7 @@
 package lexer
 
 import (
+	. "bint.com/internal/compilerVars"
 	"bint.com/internal/const/options"
 	. "bint.com/pkg/serviceTools"
 	"errors"
@@ -10,7 +11,8 @@ import (
 )
 
 func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, toCompile bool,
-	transpileDest *os.File, toPrimitive bool, primitiveDest *os.File, dataFile *os.File) ([][]interface{}, [][]interface{}, error) {
+	transpileDest *os.File, toPrimitive bool, primitiveDest *os.File, dataFile *os.File,
+	progFile *os.File) ([][]interface{}, [][]interface{}, error) {
 
 	var res [][]interface{}
 
@@ -329,7 +331,26 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 								os.Exit(1)
 							}
 						} else if "int" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
-							print("")
+							_, err := dataFile.Write([]byte("\nvarName" + fmt.Sprintf("%v", VarsCounter) + ":" +
+								"\n.ascii \"" + fmt.Sprintf("%v", variables[len(variables)-1][1]) +
+								"\"\nlenVarName" + fmt.Sprintf("%v", VarsCounter) + " = . - varName" + fmt.Sprintf("%v", VarsCounter)))
+							if nil != err {
+								fmt.Println(err)
+								os.Exit(1)
+							}
+
+							_, err = progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx" +
+								"\n mov $lenVarName" + fmt.Sprintf("%v", VarsCounter) + ", %rax \n mov $varName" +
+								fmt.Sprintf("%v", VarsCounter) + ", %rdi \n call __set \n mov $lenVarType, %rsi \n mov $varType, %rdx " +
+								"\n mov $lenIntType, %rax \n mov $intType, %rdi \n call __set \n mov $varName, %rcx \n mov $varType, %rdx  " +
+								"\n call __defineVar"))
+							if nil != err {
+								fmt.Println(err)
+								os.Exit(1)
+							}
+
+							CompilerVars["varName"+fmt.Sprintf("%v", VarsCounter)] = fmt.Sprintf("%v", variables[len(variables)-1][1])
+							VarsCounter++
 						} else if "float" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
 							print("")
 						} else if "bool" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {

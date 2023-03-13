@@ -2,6 +2,7 @@ package internalTools
 
 import (
 	"bint.com/internal/compiler"
+	"bint.com/internal/compilerVars"
 	"bint.com/internal/const/options"
 	"bint.com/internal/decryptor"
 	"bint.com/internal/encrypter"
@@ -612,7 +613,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 
 				} else {
 					exprList, variables, err = LexicalAnalyze(inputedCode,
-						variables, options.Transpile == sysMod, false, transpileDest, options.Primitive == sysMod, primitiveDest, nil)
+						variables, options.Transpile == sysMod, false, transpileDest, options.Primitive == sysMod, primitiveDest, nil, nil)
 				}
 			} else {
 				var temp string
@@ -657,7 +658,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			} else if options.InterpPrimitive == sysMod || options.ExecEncrypt == sysMod {
 				if isBasmStyle {
 					exprList, variables, err = LexicalAnalyze(inputedCode,
-						variables, options.Transpile == sysMod, false, transpileDest, options.Primitive == sysMod, primitiveDest, nil)
+						variables, options.Transpile == sysMod, false, transpileDest, options.Primitive == sysMod, primitiveDest, nil, nil)
 					_, infoListList, systemStack, err = parser.Parse(exprList, variables, systemStack, options.HideTree,
 						options.Transpile == sysMod, options.Primitive == sysMod, primitiveDest, transpileDest)
 					if nil != err {
@@ -906,6 +907,8 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	}
 
 	if options.Compile == sysMod {
+		compilerVars.CompilerVars = map[string]string{}
+
 		dataFile, err := compiler.InitData()
 		if nil != err {
 			fmt.Println(err)
@@ -930,7 +933,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 				panic(err)
 			}
 			inputedCode := CodeInput(chunk, false)
-			exprList, variables, err = LexicalAnalyze(inputedCode, variables, false, true, nil, false, nil, dataFile)
+			exprList, variables, err = LexicalAnalyze(inputedCode, variables, false, true, nil, false, nil, dataFile, progFile)
 			if nil != err {
 				panic(err)
 			}

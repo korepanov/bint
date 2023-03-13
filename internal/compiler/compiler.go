@@ -75,15 +75,15 @@ func InitProg() (*os.File, error) {
 }
 
 func FinishProg(f *os.File) error {
-	_, err := f.Write([]byte("mov $60,  %rax\n"))
+	_, err := f.Write([]byte("\nmov $60,  %rax"))
 	if nil != err {
 		return err
 	}
-	_, err = f.Write([]byte("xor %rdi, %rdi\n"))
+	_, err = f.Write([]byte("\nxor %rdi, %rdi"))
 	if nil != err {
 		return err
 	}
-	_, err = f.Write([]byte("syscall\n"))
+	_, err = f.Write([]byte("\nsyscall"))
 
 	return err
 }

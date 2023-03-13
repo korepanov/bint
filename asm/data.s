@@ -23,6 +23,15 @@ lenBuf3 = . - buf3
 buf4:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenBuf4 = . - buf4
+strBegin:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenStrBegin = . - strBegin
+strPointer:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenStrPointer = . - strPointer
+strMax:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenStrMax = . - strMax 
 isNeg:
 .byte 0 
 lenIsNeg = . - isNeg
@@ -35,6 +44,9 @@ lenVarName = . - varName
 userData:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenUserData = . - userData
+metaData:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMetaData = . - metaData
 intType:
 .ascii "int"
 .space 1, 0
@@ -66,6 +78,10 @@ fatalError:
 .ascii "fatal error: internal error\n"
 .space 1, 0 
 
-msg0:
-.ascii "Hello world!\n"
-.space 1, 0
+
+varName0:
+.ascii "a"
+lenVarName0 = . - varName0
+varName1:
+.ascii "b"
+lenVarName1 = . - varName1
