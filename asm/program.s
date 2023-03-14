@@ -1121,3 +1121,54 @@ call __set
  mov $data1, %rax  
  mov %rax, (userData)
  call __setVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+mov $lenVarName0, %rax 
+ mov $varName0, %rdi 
+ call __set
+ call __getVar 
+ mov $lenBuf3, %rsi 
+ mov $buf3, %rdx 
+ mov (metaData),%rax 
+ mov (userData), %rdi 
+ call __set
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+mov $lenVarName0, %rax 
+ mov $varName1, %rdi 
+ call __set
+ call __getVar 
+ mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov (metaData),%rax 
+ mov (userData), %rdi 
+ call __set
+mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf3, %rax 
+mov $buf3, %rdi 
+ call __set
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenBuf4, %rax 
+mov $buf4, %rdi 
+ call __set
+
+ mov $0, %rax 
+ call __add 
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi 
+ call __set
+mov $lenBuf3, %rsi 
+ mov $buf3, %rdx
+ mov $lenUserData, %rax 
+ mov $userData, %rdi 
+ call __set 
+ mov $buf3, %rax 
+ mov %rax, (userData) 
+call __setVar
+mov $60,  %rax
+xor %rdi, %rdi
+syscall

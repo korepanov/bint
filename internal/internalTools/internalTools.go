@@ -948,7 +948,11 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 				}
 			}
 		}
-
+		err = compiler.FinishData(dataFile)
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 		err = compiler.FinishProg(progFile)
 		if nil != err {
 			fmt.Println(err)
