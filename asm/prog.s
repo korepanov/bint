@@ -794,7 +794,7 @@ __setVar:
  jz __getVarSearch
  
  add (varNameSize), %rbx 
- /*mov %rbx, %r12 
+ mov %rbx, %r12 
  call __read 
  mov $lenBuf2, %rsi 
  mov $buf2, %rdx 
@@ -806,7 +806,8 @@ __setVar:
  jnz __getVarNotStr
  mov $data1, %rsi 
  call __print
- __getVarNotStr:*/
+ __getVarNotStr:
+ mov %r12, %rbx 
  add (typeSize), %rbx  
  
  __getMeta:
