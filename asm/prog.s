@@ -700,7 +700,7 @@ __setVar:
  __setVarM:
  mov %r10, %rbx 
  add (valSize), %rbx
- mov %rbx, %r10 
+ mov %rbx, %r10 # запомнили адрес для записи метаинформации  
  mov %rdi, %rax 
  call __toStr 
  mov $buf2, %rax
@@ -717,7 +717,7 @@ __setVar:
  jmp __setMetaLocal0
 
  __setVarMeta0:
-
+ 
  mov (strPointer), %rbx 
  #jmp __setMeta 
  __setVarIsNotStr:
@@ -729,12 +729,13 @@ __setVar:
  __setNow:
  mov (%rax), %dl
  cmp $0, %dl 
- jz __setMeta  
+ jz __setMeta 
  mov %dl, (%rbx)
  inc %rbx 
  inc %rax 
  inc %rdi 
  jmp __setNow 
+
  __setMeta: 
  mov %dl, (%rbx)
  mov %r10, %rbx 
@@ -1365,7 +1366,10 @@ _start:
  mov $varName1, %rdi 
  call __set
  call __getVar
- mov (userData), %rsi 
+ #mov (userData), %rsi
+ mov (metaData), %rax 
+ call __toStr 
+ mov $buf2, %rsi  
  #call __print 
  call __printHeap
 __stop:
