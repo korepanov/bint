@@ -804,9 +804,11 @@ __setVar:
  call __compare 
  cmp $1, %rax 
  jnz __getVarNotStr
- mov $data1, %rsi 
- call __print
+ mov $1, %r11
+ jmp __getVarNotStrEnd
  __getVarNotStr:
+ mov $0, %r11 
+ __getVarNotStrEnd:
  mov %r12, %rbx 
  add (typeSize), %rbx  
  
@@ -825,8 +827,14 @@ __setVar:
  
  __getNow:
  call __toNumber
+ cmp $1, %r11
+ jz __getVarGetStr
  mov %rax, (metaData)
  mov %r10, (userData)
+ ret 
+ __getVarGetStr:
+ mov $data1, %rsi 
+ call __print 
  ret 
  /*mov $userData, %rsi
  __getNowLocal:  
