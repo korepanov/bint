@@ -833,8 +833,11 @@ __setVar:
  mov %r10, (userData)
  ret 
  __getVarGetStr:
- mov $data1, %rsi 
- call __print 
+ mov %rax, (metaData)
+ mov %r10, %r12 
+ call __read 
+ call __toNumber
+ mov %rax, (userData) 
  ret 
  /*mov $userData, %rsi
  __getNowLocal:  
@@ -1362,8 +1365,9 @@ _start:
  mov $varName1, %rdi 
  call __set
  call __getVar
-
- #call __printHeap
+ mov (userData), %rsi 
+ #call __print 
+ call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
