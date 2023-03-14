@@ -374,8 +374,8 @@ __defineVar:
  jmp __defOkTypeLocal
  __defOkTypeLocalEx:
  
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
  mov $lenVarType, %rax 
  mov $varType, %rdi 
  call __set 
@@ -593,9 +593,9 @@ __readClear:
  
 
 __compare:
- # сравнить строки по адресу $buf и $varName  
+ # сравнить строки по адресу $buf и $buf2
  mov $buf, %rax 
- mov $varName, %rbx 
+ mov $buf2, %rbx 
  __compareLocal:
  movb (%rax), %dl 
  cmp $0, %dl 
@@ -640,6 +640,11 @@ __setVar:
  jz __throughError
  mov $buf, %rsi 
  mov %rbx, %r12 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
  call __compare
  mov %r12, %rbx 
  cmp $0, %rax 
@@ -664,8 +669,8 @@ __setVar:
  call __read 
  add (typeSize), %rbx 
 
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
  mov $lenStringType, %rax 
  mov $stringType, %rdi 
  call __set
@@ -778,15 +783,31 @@ __setVar:
  jz __throughError
  mov $buf, %rsi 
  mov %rbx, %r12 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
  call __compare
  mov %r12, %rbx 
  cmp $0, %rax 
  jz __getVarSearch
  
  add (varNameSize), %rbx 
- add (typeSize), %rbx 
- #mov $userData, %rax 
- #mov $lenUserData, %r12 
+ /*mov %rbx, %r12 
+ call __read 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi 
+ call __set
+ call __compare 
+ cmp $1, %rax 
+ jnz __getVarNotStr
+ mov $data1, %rsi 
+ call __print
+ __getVarNotStr:*/
+ add (typeSize), %rbx  
  
  __getMeta:
  mov $buf, %rsi 
@@ -1324,7 +1345,15 @@ _start:
  mov $0, %rax 
  call __add 
  mov $userData, %rsi 
- call __print 
+ #call __print 
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
+ call __set
+ call __getVar
+
  #call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
