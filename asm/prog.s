@@ -722,7 +722,7 @@ __setVar:
  mov %rbx, %r8 
  mov %rbx, %rax 
  __setVarClear:
- add (varSize), %rax 
+ add (valSize), %rax 
  __setVarClearLocal: 
  cmp %rax, %rbx 
  jz __setVarClearEnd
@@ -1234,6 +1234,20 @@ _start:
  call __set 
  call __defineVar
 
+# iVar2  
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName4, %rax 
+ mov $varName4, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenIntType, %rax 
+ mov $intType, %rdi
+ call __set 
+ call __defineVar
+ 
+ #set iVar
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName0, %rax 
@@ -1309,14 +1323,14 @@ _start:
  mov %rax, (userData)
  call __setVar
  # get iVar  
- /*mov $lenVarName, %rsi 
+ mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName0, %rax 
  mov $varName0, %rdi
  call __set
  call __getVar
  mov (userData), %rsi 
- call __print*/ 
+ //call __print
  # get sVar2
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -1339,7 +1353,7 @@ _start:
  call __getVar
  mov (userData), %rsi 
  call __print
- #call __printHeap
+ //call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
