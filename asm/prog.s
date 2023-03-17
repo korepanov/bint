@@ -736,11 +736,8 @@ __setVar:
  __setVarStr:
  mov %rbx, %r12 
  call __read 
- mov $buf, %rsi 
- call __print 
- call __printHeap
- call __throughError
- mov (strPointer), %rbx 
+ call __toNumber
+ mov %rax, %rbx  
 
  __setVarIsNotStr:
  
@@ -1280,8 +1277,8 @@ _start:
  mov $stringType, %rdi
  call __set 
  call __defineVar
- call __printHeap
- /*mov $lenVarName, %rsi 
+
+ mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
@@ -1289,9 +1286,9 @@ _start:
  mov $data1, %rax 
  mov %rax, (userData)
  call __setVar
-
+ 
  # sVar2
- /*mov $lenVarName, %rsi 
+ mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName6, %rax 
  mov $varName6, %rdi
@@ -1329,7 +1326,7 @@ _start:
  call __getVar
  mov (userData), %rsi 
  call __print*/
- #call __printHeap
+ call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
