@@ -60,6 +60,9 @@ lenVarName4 = . - varName4
 varName5:
 .ascii "fVar2"
 lenVarName5 = . - varName5
+varName6:
+.ascii "sVar2"
+lenVarName6 = . - varName6
 intType:
 .ascii "int"
 .space 1, 0
@@ -108,6 +111,10 @@ data6:
 .ascii "1.2"
 .space 1, 0 
 lenData6 = . - data6 
+data7:
+.ascii "Slava"
+.space 1, 0 
+lenData7 = . - data7
 ten:
 .float 10.0 
 one:
@@ -417,9 +424,11 @@ __defineVar:
  add (varNameSize), %r8 
  add (typeSize), %r8
  movb $'0',(%r8)
+ inc %r8 
+ movb $0, (%r8)
  jmp __defEnd
  __defFloat:
-mov %r14, %r8 
+ mov %r14, %r8 
  add (varNameSize), %r8 
  add (typeSize), %r8
  movb $'0',(%r8)
@@ -437,7 +446,9 @@ mov %r14, %r8
  mov %r14, %r8 
  add (varNameSize), %r8 
  add (typeSize), %r8
- movb $'0',(%r8) 
+ movb $'0',(%r8)
+ inc %r8 
+ movb $0, (%r8) 
  jmp __defEnd
  __defString:
  mov %r14, %r8 
@@ -576,6 +587,7 @@ __firstMem:
  # адрес начала выделяемой памяти в  %r8 
 # запомнить адрес начала выделяемой памяти
  #mov %r8, %r14
+
  mov %r8, %r9 
  add (pageSize), %r9 
  mov %r9, (strMax)
@@ -687,20 +699,9 @@ __setVar:
  cmp $0, %rax 
  jz __setVarSearch
  
- mov %rbx, %rax 
+
  add (varNameSize), %rbx 
- add (typeSize), %rbx
- __setVarClear:
- add (varSize), %rax 
- __setVarClearLocal: 
- cmp %rax, %rbx 
- jz __setVarClearEnd
- movb $'*', (%rbx) 
- inc %rbx 
- jmp __setVarClearLocal
- __setVarClearEnd:
- sub (valSize), %rbx 
- sub (typeSize), %rbx 
+ mov %rbx, %rax 
  mov %rbx, %r12 
  call __read  
  add (typeSize), %rbx 
@@ -714,34 +715,31 @@ __setVar:
  call __compare
  mov %r12, %rbx 
  cmp $0, %rax 
- jz __setVarIsNotStr
- mov (strPointer), %rax
- mov %rbx, %r12
- call __toStr 
- mov %r12, %rbx 
- mov $buf2, %rsi 
- call __len 
- mov %rax, %rdi # счетчик количества реально записанных байт 
- mov %rbx, %r10 # сохраняем значение %rbx  
-
- mov $buf2, %rax 
- __setVarAddr:
- mov (%rax), %dl 
- cmp $0, %dl
- jz __setVarM 
- mov %dl, (%rbx)
- inc %rax 
- inc %rbx 
- jmp __setVarAddr 
- __setVarM:
- mov %r10, %rbx 
- add (valSize), %rbx
- mov %rbx, %r10 # запомнили адрес для записи метаинформации  
- mov %rdi, %rax 
- call __toStr 
- mov $buf2, %rax
- mov %r10, %rbx 
+ jnz __setVarStr
  
+ #add (varNameSize), %rbx 
+ #add (typeSize), %rbx
+ mov %rbx, %r8 
+ mov %rbx, %rax 
+ __setVarClear:
+ add (varSize), %rax 
+ __setVarClearLocal: 
+ cmp %rax, %rbx 
+ jz __setVarClearEnd
+ movb $'*', (%rbx) 
+ inc %rbx 
+ jmp __setVarClearLocal
+ __setVarClearEnd:
+ mov %r8, %rbx 
+ jmp __setVarIsNotStr
+
+ __setVarStr:
+ mov %rbx, %r12 
+ call __read 
+ mov $buf, %rsi 
+ call __print 
+ call __printHeap
+ call __throughError
  mov (strPointer), %rbx 
 
  __setVarIsNotStr:
@@ -1247,7 +1245,7 @@ _start:
  mov $data3, %rax 
  mov %rax, (userData)
  call __setVar
-
+ 
  # fVar 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -1269,7 +1267,7 @@ _start:
  mov $data4, %rax 
  mov %rax, (userData)
  call __setVar
-
+ 
  # sVar 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -1282,8 +1280,8 @@ _start:
  mov $stringType, %rdi
  call __set 
  call __defineVar
-
- mov $lenVarName, %rsi 
+ call __printHeap
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
@@ -1292,6 +1290,27 @@ _start:
  mov %rax, (userData)
  call __setVar
 
+ # sVar2
+ /*mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName6, %rax 
+ mov $varName6, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName6, %rax 
+ mov $varName6, %rdi
+ call __set 
+ mov $data7, %rax 
+ mov %rax, (userData)
+ call __setVar
  # get iVar  
  /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -1310,7 +1329,7 @@ _start:
  call __getVar
  mov (userData), %rsi 
  call __print*/
- call __printHeap
+ #call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
