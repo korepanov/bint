@@ -1311,22 +1311,35 @@ _start:
  # get iVar  
  /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName2, %rax 
- mov $varName2, %rdi
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi
  call __set
  call __getVar
  mov (userData), %rsi 
  call __print*/ 
+ # get sVar2
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName6, %rax 
+ mov $varName6, %rdi
+ call __set
+ call __getVar
+ mov (userData), %rsi 
+ call __print
+
+ mov $enter, %rsi 
+ call __print 
+
  # get sVar
- /*mov $lenVarName, %rsi 
+ mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
  call __set
  call __getVar
  mov (userData), %rsi 
- call __print*/
- call __printHeap
+ call __print
+ #call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
