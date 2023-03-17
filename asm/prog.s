@@ -1283,14 +1283,14 @@ _start:
  call __set 
  call __defineVar
 
- /*mov $lenVarName, %rsi 
+ mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName2, %rax 
- mov $varName2, %rdi
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
  call __set 
- mov $data4, %rax 
+ mov $data1, %rax 
  mov %rax, (userData)
- call __setVar*/
+ call __setVar
 
  # get iVar  
  /*mov $lenVarName, %rsi 
