@@ -325,11 +325,21 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 						if "stack" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
 							print("")
 						} else if "string" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
-							_, err := dataFile.Write([]byte(varName + ":\n.space 256, 0\n"))
+							_, err := dataFile.Write([]byte("\nvarName" + fmt.Sprintf("%v", VarsCounter) + ":" +
+								"\n.ascii \"" + fmt.Sprintf("%v", variables[len(variables)-1][1]) +
+								"\"\nlenVarName" + fmt.Sprintf("%v", VarsCounter) + " = . - varName" + fmt.Sprintf("%v", VarsCounter)))
 							if nil != err {
 								fmt.Println(err)
 								os.Exit(1)
 							}
+
+							_, err = progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov $lenVarName" +
+								fmt.Sprintf("%v", VarsCounter) + ", %rax \n mov $varName" + fmt.Sprintf("%v", VarsCounter) +
+								", %rdi\n call __set \n mov $lenVarType, %rsi \n mov $varType, %rdx \n mov $lenStringType, %rax" +
+								"\n mov $stringType, %rdi\n call __set \n call __defineVar"))
+
+							CompilerVars[fmt.Sprintf("%v", variables[len(variables)-1][1])] = VarsCounter
+							VarsCounter++
 						} else if "int" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
 							_, err := dataFile.Write([]byte("\nvarName" + fmt.Sprintf("%v", VarsCounter) + ":" +
 								"\n.ascii \"" + fmt.Sprintf("%v", variables[len(variables)-1][1]) +

@@ -88,3 +88,6 @@ data1:
 .ascii "10"
 .space 1, 0
 lenData1 = . - data1
+varName2:
+.ascii "s"
+lenVarName2 = . - varName2

@@ -1353,7 +1353,7 @@ _start:
  call __getVar
  mov (userData), %rsi 
  call __print
- //call __printHeap
+ call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
