@@ -248,8 +248,8 @@ __defineVar:
  jmp __defOkTypeLocal
  __defOkTypeLocalEx:
  
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
  mov $lenVarType, %rax 
  mov $varType, %rdi 
  call __set 
@@ -296,11 +296,11 @@ __defineVar:
  add (varNameSize), %r8 
  add (typeSize), %r8
  movb $'0',(%r8)
- add (valSize), %r8 
- movb $'1', (%r8) 
+ inc %r8 
+ movb $0, (%r8)
  jmp __defEnd
  __defFloat:
-mov %r14, %r8 
+ mov %r14, %r8 
  add (varNameSize), %r8 
  add (typeSize), %r8
  movb $'0',(%r8)
@@ -312,26 +312,44 @@ mov %r14, %r8
  movb $0, (%r8)
  mov %r14, %r8 
  add (varNameSize), %r8 
- add (typeSize), %r8
- add (valSize), %r8 
- movb $'3', (%r8) 
+ add (typeSize), %r8 
  jmp __defEnd
  __defBool:
  mov %r14, %r8 
  add (varNameSize), %r8 
  add (typeSize), %r8
  movb $'0',(%r8)
- add (valSize), %r8 
- movb $'1', (%r8)  
+ inc %r8 
+ movb $0, (%r8) 
  jmp __defEnd
  __defString:
  mov %r14, %r8 
  add (varNameSize), %r8 
  add (typeSize), %r8
- movb $0, (%r8)
- add (valSize), %r8 
- movb $'0', (%r8)
-
+ mov (strPointer), %rax 
+ movb $0, (%rax)
+ mov %r8, %r12 
+ call __toStr 
+ mov %r12, %r8 
+ mov $buf2, %rax
+ __defAddr:
+ mov (%rax), %dl 
+ cmp $0, %dl  
+ jz __defStrEnd 
+ mov %dl, (%r8)
+ inc %rax 
+ inc %r8 
+ jmp __defAddr
+ __defStrEnd:
+ mov (strPointer), %rax 
+ add (valSize), %rax 
+ cmp (strMax), %rax 
+ jg __defStrNewMem
+ mov %rax, (strPointer)
+ jmp __defEnd 
+ __defStrNewMem:
+ mov %rax, (strPointer)
+ call __newStrMem
  __defEnd:
 
  mov %r14, %rax 
@@ -435,6 +453,35 @@ __firstMem:
  jz  __newMemEx
  jmp __newMemlo
  __newMemEx:
+ ret  
+
+ __newStrMem:
+ # адрес начала выделяемой памяти в  %r8 
+# запомнить адрес начала выделяемой памяти
+ #mov %r8, %r14
+
+ mov %r8, %r9 
+ add (pageSize), %r9 
+ mov %r9, (strMax)
+# выделить динамическую память
+ mov (pageSize), %rdi
+ add %rax, %rdi
+ mov $12, %rax
+ syscall
+# обработка ошибки
+ cmp $-1, %rax
+ jz __throughError
+# заполним выделенную память
+ mov $'*', %dl
+ mov $0, %rbx
+ __newStrMemlo:
+ movb %dl, (%r8)
+ inc %rbx
+ inc %r8 
+ cmp (pageSize), %rbx
+ jz  __newStrMemEx
+ jmp __newStrMemlo
+ __newStrMemEx:
  ret 
 
 __read: 
@@ -467,9 +514,9 @@ __readClear:
  
 
 __compare:
- # сравнить строки по адресу $buf и $varName  
+ # сравнить строки по адресу $buf и $buf2
  mov $buf, %rax 
- mov $varName, %rbx 
+ mov $buf2, %rbx 
  __compareLocal:
  movb (%rax), %dl 
  cmp $0, %dl 
@@ -514,32 +561,25 @@ __setVar:
  jz __throughError
  mov $buf, %rsi 
  mov %rbx, %r12 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
  call __compare
  mov %r12, %rbx 
  cmp $0, %rax 
  jz __setVarSearch
  
- mov %rbx, %rax 
+
  add (varNameSize), %rbx 
- add (typeSize), %rbx
- __setVarClear:
- add (varSize), %rax 
- __setVarClearLocal: 
- cmp %rax, %rbx 
- jz __setVarClearEnd
- movb $'*', (%rbx) 
- inc %rbx 
- jmp __setVarClearLocal
- __setVarClearEnd:
- sub (valSize), %rbx 
- sub (metaSize), %rbx 
- sub (typeSize), %rbx 
+ mov %rbx, %rax 
  mov %rbx, %r12 
- call __read 
+ call __read  
  add (typeSize), %rbx 
 
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
  mov $lenStringType, %rax 
  mov $stringType, %rdi 
  call __set
@@ -547,48 +587,30 @@ __setVar:
  call __compare
  mov %r12, %rbx 
  cmp $0, %rax 
- jz __setVarIsNotStr
- mov (strPointer), %rax
- mov %rbx, %r12
- call __toStr 
- mov %r12, %rbx 
- mov $buf2, %rsi 
- call __len 
- mov %rax, %rdi # счетчик количества реально записанных байт 
- mov %rbx, %r10 # сохраняем значение %rbx  
-
- mov $buf2, %rax 
- __setVarAddr:
- mov (%rax), %dl 
- cmp $0, %dl
- jz __setVarM 
- mov %dl, (%rbx)
- inc %rax 
- inc %rbx 
- jmp __setVarAddr 
- __setVarM:
- mov %r10, %rbx 
- add (valSize), %rbx
- mov %rbx, %r10 
- mov %rdi, %rax 
- call __toStr 
- mov $buf2, %rax
- mov %r10, %rbx 
+ jnz __setVarStr
  
- __setMetaLocal0: 
- mov (%rax), %dl 
- mov %dl, (%rbx)
- cmp $0, %dl 
- jz __setVarMeta0  
+ #add (varNameSize), %rbx 
+ #add (typeSize), %rbx
+ mov %rbx, %r8 
+ mov %rbx, %rax 
+ __setVarClear:
+ add (valSize), %rax 
+ __setVarClearLocal: 
+ cmp %rax, %rbx 
+ jz __setVarClearEnd
+ movb $'*', (%rbx) 
  inc %rbx 
- inc %rax 
+ jmp __setVarClearLocal
+ __setVarClearEnd:
+ mov %r8, %rbx 
+ jmp __setVarIsNotStr
 
- jmp __setMetaLocal0
+ __setVarStr:
+ mov %rbx, %r12 
+ call __read 
+ call __toNumber
+ mov %rax, %rbx  
 
- __setVarMeta0:
-
- mov (strPointer), %rbx 
- #jmp __setMeta 
  __setVarIsNotStr:
  
  #call __throughError
@@ -598,38 +620,20 @@ __setVar:
  __setNow:
  mov (%rax), %dl
  cmp $0, %dl 
- jz __setMeta  
+ jz __setVarRet 
  mov %dl, (%rbx)
  inc %rbx 
  inc %rax 
  inc %rdi 
  jmp __setNow 
- __setMeta: 
- mov %dl, (%rbx)
- mov %r10, %rbx 
- add (valSize), %rbx
- mov %rbx, %r10 
- mov %rdi, %rax 
- call __toStr 
- mov $buf2, %rax
- mov %r10, %rbx 
- 
- __setMetaLocal: 
- mov (%rax), %dl 
- mov %dl, (%rbx)
- cmp $0, %dl 
- jz __setVarRet 
- inc %rbx 
- inc %rax 
-
- jmp __setMetaLocal
 
  __setVarRet:
+ movb $0, (%rbx) 
  ret
 
  __getVar:
  # вход: имя переменной по адресу $varName 
- # выход: указатель на данные в (userData) и длинна данных в байтах в (metaData)
+ # выход: указатель на данные в (userData)
  mov %r13, %rbx
  __getVarLocal:
  cmp %r15, %rbx
@@ -652,33 +656,46 @@ __setVar:
  jz __throughError
  mov $buf, %rsi 
  mov %rbx, %r12 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
  call __compare
  mov %r12, %rbx 
  cmp $0, %rax 
  jz __getVarSearch
  
  add (varNameSize), %rbx 
- add (typeSize), %rbx 
- #mov $userData, %rax 
- #mov $lenUserData, %r12 
- 
- __getMeta:
- mov $buf, %rsi 
- mov %rbx, %r10 
- add (valSize), %rbx 
- __getMetaLocal:
- mov (%rbx), %dl  
- cmp $'*', %dl 
- jz __getNow 
- mov %dl, (%rsi)  
- inc %rbx 
- inc %rsi  
- jmp __getMetaLocal
+ mov %rbx, %r12 
+ call __read 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi 
+ call __set
+ call __compare 
+ cmp $1, %rax 
+ jnz __getVarNotStr
+ mov $1, %r11
+ jmp __getVarNotStrEnd
+ __getVarNotStr:
+ mov $0, %r11 
+ __getVarNotStrEnd:
+ mov %r12, %rbx 
+ add (typeSize), %rbx  
  
  __getNow:
+ #call __toNumber
+ cmp $1, %r11
+ jz __getVarGetStr
+ mov %rbx, (userData)
+ ret 
+ __getVarGetStr:
+ mov %rbx, %r12 
+ call __read 
  call __toNumber
- mov %rax, (metaData)
- mov %r10, (userData)
+ mov %rax, (userData) 
  ret 
  /*mov $userData, %rsi
  __getNowLocal:  

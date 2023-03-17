@@ -4,10 +4,8 @@ pageSize:
 varNameSize:
 .quad 32
 varSize:
-.quad 160 
+.quad 128
 typeSize:
-.quad 32 
-metaSize:
 .quad 32 
 valSize:
 .quad 64 
@@ -44,9 +42,6 @@ lenVarName = . - varName
 userData:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenUserData = . - userData
-metaData:
-.quad 0, 0, 0, 0, 0, 0, 0, 0
-lenMetaData = . - metaData
 intType:
 .ascii "int"
 .space 1, 0

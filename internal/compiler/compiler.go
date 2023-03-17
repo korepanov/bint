@@ -367,7 +367,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				// присвоить значение переменной в buf3
 				_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n" +
 					"mov $" + lenLO + ", %rax \n mov $" + fmt.Sprintf("%v", LO[0]) + ", %rdi " +
-					"\n call __set\n call __getVar \n mov $lenBuf3, %rsi \n mov $buf3, %rdx \n mov (metaData)," +
+					"\n call __set\n call __getVar \n mov $lenBuf3, %rsi \n mov $buf3, %rdx \n mov $lenUserData," +
 					"%rax \n mov (userData), %rdi \n call __set"))
 				if nil != err {
 					fmt.Println(err)
@@ -376,7 +376,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				// присвоить значение переменной в buf4
 				_, err = progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n" +
 					"mov $" + lenRO + ", %rax \n mov $" + fmt.Sprintf("%v", RO[0]) + ", %rdi " +
-					"\n call __set\n call __getVar \n mov $lenBuf4, %rsi \n mov $buf4, %rdx \n mov (metaData)," +
+					"\n call __set\n call __getVar \n mov $lenBuf4, %rsi \n mov $buf4, %rdx \n mov $lenUserData," +
 					"%rax \n mov (userData), %rdi \n call __set"))
 				if nil != err {
 					fmt.Println(err)
