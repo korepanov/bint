@@ -443,8 +443,30 @@ mov %r14, %r8
  mov %r14, %r8 
  add (varNameSize), %r8 
  add (typeSize), %r8
- movb $0, (%r8)
-
+ mov (strPointer), %rax 
+ movb $0, (%rax)
+ mov %r8, %r12 
+ call __toStr 
+ mov %r12, %r8 
+ mov $buf2, %rax
+ __defAddr:
+ mov (%rax), %dl 
+ cmp $0, %dl  
+ jz __defStrEnd 
+ mov %dl, (%r8)
+ inc %rax 
+ inc %r8 
+ jmp __defAddr
+ __defStrEnd:
+ mov (strPointer), %rax 
+ add (valSize), %rax 
+ cmp (strMax), %rax 
+ jg __defStrNewMem
+ mov %rax, (strPointer)
+ jmp __defEnd 
+ __defStrNewMem:
+ mov %rax, (strPointer)
+ call __newStrMem
  __defEnd:
 
  mov %r14, %rax 
@@ -548,6 +570,34 @@ __firstMem:
  jz  __newMemEx
  jmp __newMemlo
  __newMemEx:
+ ret  
+
+ __newStrMem:
+ # адрес начала выделяемой памяти в  %r8 
+# запомнить адрес начала выделяемой памяти
+ #mov %r8, %r14
+ mov %r8, %r9 
+ add (pageSize), %r9 
+ mov %r9, (strMax)
+# выделить динамическую память
+ mov (pageSize), %rdi
+ add %rax, %rdi
+ mov $12, %rax
+ syscall
+# обработка ошибки
+ cmp $-1, %rax
+ jz __throughError
+# заполним выделенную память
+ mov $'*', %dl
+ mov $0, %rbx
+ __newStrMemlo:
+ movb %dl, (%r8)
+ inc %rbx
+ inc %r8 
+ cmp (pageSize), %rbx
+ jz  __newStrMemEx
+ jmp __newStrMemlo
+ __newStrMemEx:
  ret 
 
 __read: 
@@ -652,7 +702,7 @@ __setVar:
  sub (valSize), %rbx 
  sub (typeSize), %rbx 
  mov %rbx, %r12 
- call __read 
+ call __read  
  add (typeSize), %rbx 
 
  mov $lenBuf2, %rsi 
@@ -1198,7 +1248,7 @@ _start:
  mov %rax, (userData)
  call __setVar
 
-  # fVar 
+ # fVar 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName2, %rax 
@@ -1220,16 +1270,47 @@ _start:
  mov %rax, (userData)
  call __setVar
 
- # get iVar  
+ # sVar 
  mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
+
+ /*mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi
+ call __set 
+ mov $data4, %rax 
+ mov %rax, (userData)
+ call __setVar*/
+
+ # get iVar  
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName2, %rax 
  mov $varName2, %rdi
  call __set
  call __getVar
  mov (userData), %rsi 
- call __print 
- #call __printHeap
+ call __print*/ 
+ # get sVar
+ /*mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
+ call __set
+ call __getVar
+ mov (userData), %rsi 
+ call __print*/
+ call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
