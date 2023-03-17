@@ -7,8 +7,6 @@ varSize:
 .quad 160 
 typeSize:
 .quad 32 
-metaSize:
-.quad 32 
 valSize:
 .quad 64 
 buf:
@@ -44,9 +42,6 @@ lenVarName = . - varName
 userData:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenUserData = . - userData
-metaData:
-.quad 0, 0, 0, 0, 0, 0, 0, 0
-lenMetaData = . - metaData
 varName0:
 .ascii "iVar"
 lenVarName0 = . - varName0
@@ -422,8 +417,6 @@ __defineVar:
  add (varNameSize), %r8 
  add (typeSize), %r8
  movb $'0',(%r8)
- add (valSize), %r8 
- movb $'1', (%r8) 
  jmp __defEnd
  __defFloat:
 mov %r14, %r8 
@@ -438,25 +431,19 @@ mov %r14, %r8
  movb $0, (%r8)
  mov %r14, %r8 
  add (varNameSize), %r8 
- add (typeSize), %r8
- add (valSize), %r8 
- movb $'3', (%r8) 
+ add (typeSize), %r8 
  jmp __defEnd
  __defBool:
  mov %r14, %r8 
  add (varNameSize), %r8 
  add (typeSize), %r8
- movb $'0',(%r8)
- add (valSize), %r8 
- movb $'1', (%r8)  
+ movb $'0',(%r8) 
  jmp __defEnd
  __defString:
  mov %r14, %r8 
  add (varNameSize), %r8 
  add (typeSize), %r8
  movb $0, (%r8)
- add (valSize), %r8 
- movb $'0', (%r8)
 
  __defEnd:
 
@@ -663,7 +650,6 @@ __setVar:
  jmp __setVarClearLocal
  __setVarClearEnd:
  sub (valSize), %rbx 
- sub (metaSize), %rbx 
  sub (typeSize), %rbx 
  mov %rbx, %r12 
  call __read 
@@ -706,20 +692,8 @@ __setVar:
  mov $buf2, %rax
  mov %r10, %rbx 
  
- __setMetaLocal0: 
- mov (%rax), %dl 
- mov %dl, (%rbx)
- cmp $0, %dl 
- jz __setVarMeta0  
- inc %rbx 
- inc %rax 
-
- jmp __setMetaLocal0
-
- __setVarMeta0:
- 
  mov (strPointer), %rbx 
- #jmp __setMeta 
+
  __setVarIsNotStr:
  
  #call __throughError
@@ -729,39 +703,19 @@ __setVar:
  __setNow:
  mov (%rax), %dl
  cmp $0, %dl 
- jz __setMeta 
+ jz __setVarRet 
  mov %dl, (%rbx)
  inc %rbx 
  inc %rax 
  inc %rdi 
  jmp __setNow 
 
- __setMeta: 
- mov %dl, (%rbx)
- mov %r10, %rbx 
- add (valSize), %rbx
- mov %rbx, %r10 
- mov %rdi, %rax 
- call __toStr 
- mov $buf2, %rax
- mov %r10, %rbx 
- 
- __setMetaLocal: 
- mov (%rax), %dl 
- mov %dl, (%rbx)
- cmp $0, %dl 
- jz __setVarRet 
- inc %rbx 
- inc %rax 
-
- jmp __setMetaLocal
-
  __setVarRet:
  ret
 
  __getVar:
  # вход: имя переменной по адресу $varName 
- # выход: указатель на данные в (userData) и длинна данных в байтах в (metaData)
+ # выход: указатель на данные в (userData)
  mov %r13, %rbx
  __getVarLocal:
  cmp %r15, %rbx
@@ -813,28 +767,13 @@ __setVar:
  mov %r12, %rbx 
  add (typeSize), %rbx  
  
- __getMeta:
- mov $buf, %rsi 
- mov %rbx, %r10 
- add (valSize), %rbx 
- __getMetaLocal:
- mov (%rbx), %dl  
- cmp $'*', %dl 
- jz __getNow 
- mov %dl, (%rsi)  
- inc %rbx 
- inc %rsi  
- jmp __getMetaLocal
- 
  __getNow:
  call __toNumber
  cmp $1, %r11
  jz __getVarGetStr
- mov %rax, (metaData)
  mov %r10, (userData)
  ret 
  __getVarGetStr:
- mov %rax, (metaData)
  mov %r10, %r12 
  call __read 
  call __toNumber
@@ -1235,142 +1174,27 @@ ret
 _start:
  call __firstMem
  call __firstStrMem
- #iVar 
+ 
+ # iVar 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName0, %rax 
- mov $varName0, %rdi 
+ mov $varName0, %rdi
  call __set 
-
  mov $lenVarType, %rsi 
  mov $varType, %rdx 
  mov $lenIntType, %rax 
- mov $intType, %rdi 
+ mov $intType, %rdi
  call __set 
-
- mov $varName, %rcx 
- mov $varType, %rdx  
  call __defineVar
-
- #iVar2
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName4, %rax 
- mov $varName4, %rdi 
- call __set 
-
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenIntType, %rax 
- mov $intType, %rdi 
- call __set 
-
- mov $varName, %rcx 
- mov $varType, %rdx  
- call __defineVar
- 
-
- #set iVar
- mov $lenVarName, %rsi 
+/* mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName0, %rax 
- mov $varName0, %rdi 
- call __set
-
- mov $data0, %rax  
- mov %rax, (userData)
- call __setVar 
-
-#set iVar2
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName4, %rax 
- mov $varName4, %rdi 
- call __set
-
- mov $data3, %rax  
- mov %rax, (userData)
- call __setVar 
-
- #sVar
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi 
+ mov $varName0, %rdi
  call __set 
-
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenStringType, %rax 
- mov $stringType, %rdi 
- call __set 
-
- mov $varName, %rcx 
- mov $varType, %rdx  
- call __defineVar
- 
- #setVar sVar
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi 
- call __set
- mov $data1, %rax  
+ mov $data3, %rax 
  mov %rax, (userData)
- call __setVar 
-
- # buf3 = iVar
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName0, %rax 
- mov $varName0, %rdi 
- call __set
- call __getVar 
- mov $lenBuf3, %rsi 
- mov $buf3, %rdx 
- mov (metaData), %rax 
- mov (userData), %rdi 
- call __set
- #buf4 = iVar2 
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName4, %rax 
- mov $varName4, %rdi 
- call __set
- call __getVar 
- mov $lenBuf4, %rsi 
- mov $buf4, %rdx 
- mov (metaData), %rax 
- mov (userData), %rdi 
- call __set
- 
- mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenBuf3, %rax 
- mov $buf3, %rdi 
- call __set
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenBuf4, %rax 
- mov $buf4, %rdi 
- call __set
-
- mov $0, %rax 
- call __add 
- mov $userData, %rsi 
- #call __print 
-
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi 
- call __set
- call __getVar
- #mov (userData), %rsi
- mov (metaData), %rax 
- call __toStr 
- mov $buf2, %rsi  
- #call __print 
+ call __setVar*/
  call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
