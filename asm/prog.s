@@ -4,7 +4,7 @@ pageSize:
 varNameSize:
 .quad 32
 varSize:
-.quad 160 
+.quad 128
 typeSize:
 .quad 32 
 valSize:
@@ -1187,14 +1187,15 @@ _start:
  mov $intType, %rdi
  call __set 
  call __defineVar
-/* mov $lenVarName, %rsi 
+
+ mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName0, %rax 
  mov $varName0, %rdi
  call __set 
  mov $data3, %rax 
  mov %rax, (userData)
- call __setVar*/
+ call __setVar
  call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
