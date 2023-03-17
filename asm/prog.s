@@ -711,6 +711,7 @@ __setVar:
  jmp __setNow 
 
  __setVarRet:
+ movb $0, (%rbx) 
  ret
 
  __getVar:
@@ -768,13 +769,13 @@ __setVar:
  add (typeSize), %rbx  
  
  __getNow:
- call __toNumber
+ #call __toNumber
  cmp $1, %r11
  jz __getVarGetStr
- mov %r10, (userData)
+ mov %rbx, (userData)
  ret 
  __getVarGetStr:
- mov %r10, %r12 
+ mov %rbx, %r12 
  call __read 
  call __toNumber
  mov %rax, (userData) 
@@ -1196,7 +1197,39 @@ _start:
  mov $data3, %rax 
  mov %rax, (userData)
  call __setVar
- call __printHeap
+
+  # fVar 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenFloatType, %rax 
+ mov $floatType, %rdi
+ call __set 
+ call __defineVar
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi
+ call __set 
+ mov $data4, %rax 
+ mov %rax, (userData)
+ call __setVar
+
+ # get iVar  
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi
+ call __set
+ call __getVar
+ mov (userData), %rsi 
+ call __print 
+ #call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
