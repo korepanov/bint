@@ -1173,17 +1173,17 @@ func CompileTree(infoList []interface{}, variables [][]interface{},
 			}
 		}
 		if !wasVar {
-			_, err := dataFile.Write([]byte("data" + fmt.Sprintf("%v", DataNumber) + ":\n"))
+			_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			_, err = dataFile.Write([]byte(".ascii " + fmt.Sprintf("%v", ValueFoldInterface(res[1])) + "\n.space 1, 0\n"))
+			_, err = dataFile.Write([]byte("\n.ascii " + fmt.Sprintf("%v", ValueFoldInterface(res[1])) + "\n.space 1, 0"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			_, err = progFile.Write([]byte("mov $data" + fmt.Sprintf("%v", DataNumber) + ", %rsi\ncall __print\n"))
+			_, err = progFile.Write([]byte("\nmov $data" + fmt.Sprintf("%v", DataNumber) + ", %rsi\ncall __print"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)

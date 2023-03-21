@@ -1217,3 +1217,8 @@ mov $lenVarName, %rsi
  call __getVar
  mov (userData), %rsi 
  call __print
+mov $data2, %rsi
+call __print
+mov $60,  %rax
+xor %rdi, %rdi
+syscall
