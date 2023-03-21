@@ -136,7 +136,7 @@ __set: #set strings
  dec %rax  
  cmp $0, %rax
  jnz __setLocal
- movb $0, (%rdx)
+ #movb $0, (%rdx)
  ret 
 
 __concatinate:
@@ -258,6 +258,7 @@ __defineVar:
  mov $lenIntType, %rax 
  mov $intType, %rdi 
  call __set 
+  
  call __compare 
  cmp $1, %rax 
  jz __defInt 
@@ -814,7 +815,7 @@ __add:
  mov $userData, %rdx 
  mov $lenBuf2, %rax 
  mov $buf2, %rdi 
- call __set  
+ call __set 
  ret 
  __addFloat:
  call __clearBuf4

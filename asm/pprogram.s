@@ -136,7 +136,7 @@ __set: #set strings
  dec %rax  
  cmp $0, %rax
  jnz __setLocal
- movb $0, (%rdx)
+ #movb $0, (%rdx)
  ret 
 
 __concatinate:
