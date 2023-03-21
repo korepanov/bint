@@ -90,4 +90,4 @@ data1:
 lenData1 = . - data1
 varName2:
 .ascii "s"
-lenVarName2 = . - varName2
+lenVarName2 = . - varName2data2:

@@ -391,6 +391,8 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 					"mov $buf4, %rdi \n call __set\n\n mov $0, %rax \n call __add "))
 
 				return []interface{}{nil}, systemStack, nil // успех, результат по адресу $userData
+			} else {
+				panic("unrealized case")
 			}
 
 		}
@@ -582,57 +584,85 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 		return []interface{}{math.Pow(floatLO, floatRO)}, systemStack, nil
 	} else if "str" == OP {
-		return []interface{}{"\"" + fmt.Sprintf("%v", LO[0]) + "\""}, systemStack, nil
+		return []interface{}{fmt.Sprintf("%v", LO[0])}, systemStack, nil
 	} else if "=" == OP {
-		if nil == RO[0] {
-			// справа разультат вычислений, находящийся по адресу $userData
-			varName := "varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
-			lenVarName := "lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+		var wasVar bool
 
-			// присвоить в varName имя текущей переменной
-			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov $" + lenVarName +
-				", %rax \n mov $" + varName + ", %rdi \n call __set"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
+		if nil != RO[0] {
+			newVariable := EachVariable(variables)
+			for v := newVariable(); "end" != v[0]; v = newVariable() {
+				if fmt.Sprintf("%v", ValueFoldInterface(RO[0])) == fmt.Sprintf("%v", v[1]) {
+					wasVar = true
+					// getVar, результат в userData
+					numberS := fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", ValueFoldInterface(v[1]))])
+					_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx" +
+						"\n mov $lenVarName" + numberS +
+						", %rax \n mov $varName" + numberS + ", %rdi\n call __set\n call __getVar"))
+					if nil != err {
+						fmt.Println(err)
+						os.Exit(1)
+					}
+					numberS = fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", ValueFoldInterface(LO[0]))])
+					_, err = progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx" +
+						"\n mov $lenVarName" + numberS + ", %rax \n mov $varName" + numberS + ", %rdi\n call __set \n call __setVar"))
+					if nil != err {
+						fmt.Println(err)
+						os.Exit(1)
+					}
+				}
 			}
-			// buf3 = userData
-			// (userData) = $buf3
-			// call __setVar
-			_, err = progFile.Write([]byte("\nmov $lenBuf3, %rsi \n mov $buf3, %rdx" +
-				"\n mov $lenUserData, %rax \n mov $userData, %rdi \n call __set \n mov $buf3, %rax \n mov %rax, (userData) \n" +
-				"call __setVar"))
+		}
+		if !wasVar {
+			if nil == RO[0] {
+				// справа разультат вычислений, находящийся по адресу $userData
+				varName := "varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+				lenVarName := "lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
 
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
+				// присвоить в varName имя текущей переменной
+				_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov $" + lenVarName +
+					", %rax \n mov $" + varName + ", %rdi \n call __set"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				// buf3 = userData
+				// (userData) = $buf3
+				// call __setVar
+				_, err = progFile.Write([]byte("\nmov $lenBuf3, %rsi \n mov $buf3, %rdx" +
+					"\n mov $lenUserData, %rax \n mov $userData, %rdi \n call __set \n mov $buf3, %rax \n mov %rax, (userData) \n" +
+					"call __setVar"))
+
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+			} else {
+				// справа данные
+				_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":\n"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				_, err = dataFile.Write([]byte(".ascii \"" + fmt.Sprintf("%v", RO[0]) + "\"\n.space 1, 0"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				_, err = dataFile.Write([]byte("\nlenData" + fmt.Sprintf("%v", DataNumber) + " = . - data" + fmt.Sprintf("%v", DataNumber)))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				_, err = progFile.Write([]byte("\n mov $lenVarName, %rsi \n mov $varName, %rdx " +
+					"\n mov $lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])]) +
+					", %rax \n mov $varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])]) + ", %rdi \n" +
+					"call __set\n\n mov $data" + fmt.Sprintf("%v", DataNumber) + ", %rax  \n mov %rax, (userData)\n call __setVar"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				DataNumber++
 			}
-		} else {
-			// справа данные
-			_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":\n"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-			_, err = dataFile.Write([]byte(".ascii \"" + fmt.Sprintf("%v", RO[0]) + "\"\n.space 1, 0"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-			_, err = dataFile.Write([]byte("\nlenData" + fmt.Sprintf("%v", DataNumber) + " = . - data" + fmt.Sprintf("%v", DataNumber)))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-			_, err = progFile.Write([]byte("\n mov $lenVarName, %rsi \n mov $varName, %rdx " +
-				"\n mov $lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])]) +
-				", %rax \n mov $varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])]) + ", %rdi \n" +
-				"call __set\n\n mov $data" + fmt.Sprintf("%v", DataNumber) + ", %rax  \n mov %rax, (userData)\n call __setVar"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-			DataNumber++
 		}
 		return []interface{}{0}, systemStack, nil // успех
 	} else if "." == OP {
@@ -970,8 +1000,6 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 		newVariable := EachVariable(variables)
 		for v := newVariable(); "end" != v[0]; v = newVariable() {
 			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
-				typeLO := fmt.Sprintf("%v", v[0])
-				var typeRO string
 				newRightVar := EachVariable(variables)
 				for rightVar := newRightVar(); "end" != rightVar[0]; rightVar = newRightVar() {
 					if fmt.Sprintf("%v", RO[0]) == fmt.Sprintf("%v", rightVar[1]) {
@@ -981,20 +1009,13 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 							rightVar[2].([]interface{})[0] = []interface{}{"end"}
 						}
 						RO[0] = fmt.Sprintf("%v", rightVar[1])
-						//RO[0] = ValueFoldInterface(rightVar[2])
-						typeRO = fmt.Sprintf("%v", rightVar[0])
 						break
 					}
 				}
-				if "" == typeRO {
-					typeRO = WhatsType(fmt.Sprintf("%v", RO[0]))
-				}
-				if typeLO == typeRO || ("float" == typeLO && "int" == typeRO) {
+
+				if nil != RO[0] {
 					v[2] = RO
 					break
-				} else if nil != RO[0] {
-					err := errors.New("executor: ERROR: data type mismatch in assignment")
-					panic(err)
 				}
 			}
 		}
@@ -1136,8 +1157,23 @@ func CompileTree(infoList []interface{}, variables [][]interface{},
 	res, variables, systemStack, _ := sysCompileTree(infoList, variables, systemStack, 0, dataFile, progFile)
 
 	if "print" == res[0] {
-		/*if "$" != string(fmt.Sprintf("%v", ValueFoldInterface(res[1]))[0]) {
-			_, err := dataFile.Write([]byte("msg" + fmt.Sprintf("%v", number) + ":\n"))
+		var wasVar bool
+		newVariable := EachVariable(variables)
+		for v := newVariable(); "end" != v[0]; v = newVariable() {
+			if fmt.Sprintf("%v", ValueFoldInterface(res[1])) == fmt.Sprintf("%v", v[1]) {
+				wasVar = true
+				numberS := fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", ValueFoldInterface(res[1]))])
+				_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx" +
+					"\n mov $lenVarName" + numberS +
+					", %rax \n mov $varName" + numberS + ", %rdi\n call __set\n call __getVar" +
+					"\n mov (userData), %rsi \n call __print"))
+				if nil != err {
+					panic(err)
+				}
+			}
+		}
+		if !wasVar {
+			_, err := dataFile.Write([]byte("data" + fmt.Sprintf("%v", DataNumber) + ":\n"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
@@ -1147,19 +1183,13 @@ func CompileTree(infoList []interface{}, variables [][]interface{},
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			_, err = progFile.Write([]byte("mov $msg" + fmt.Sprintf("%v", number) + ", %rsi\ncall __print\n"))
+			_, err = progFile.Write([]byte("mov $data" + fmt.Sprintf("%v", DataNumber) + ", %rsi\ncall __print\n"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			number++
-		} else {
-			_, err := progFile.Write([]byte("mov " + fmt.Sprintf("%v", ValueFoldInterface(res[1])) + ", %rsi\ncall print\n"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-		}*/
+			DataNumber++
+		}
 
 	}
 }

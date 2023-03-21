@@ -1197,7 +1197,23 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
- call __printHeap
-mov $60,  %rax
-xor %rdi, %rdi
-syscall
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi
+ call __set
+ call __getVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi
+ call __set 
+ call __setVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi
+ call __set
+ call __getVar
+ mov (userData), %rsi 
+ call __print
