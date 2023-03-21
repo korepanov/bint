@@ -362,13 +362,41 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			typeRO = WhatsType(fmt.Sprintf("%v", RO[0]))
 		}
 
-		if "int" == typeLO && "int" == typeRO {
+		if ("int" == typeLO || nil == LO[0]) && "int" == typeRO {
 			if isVarLO && isVarRO {
 				// присвоить значение переменной в buf3
 				_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n" +
 					"mov $" + lenLO + ", %rax \n mov $" + fmt.Sprintf("%v", LO[0]) + ", %rdi " +
 					"\n call __set\n call __getVar \n mov $lenBuf3, %rsi \n mov $buf3, %rdx \n mov $lenUserData," +
 					"%rax \n mov (userData), %rdi \n call __set"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				// присвоить значение переменной в buf4
+				_, err = progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n" +
+					"mov $" + lenRO + ", %rax \n mov $" + fmt.Sprintf("%v", RO[0]) + ", %rdi " +
+					"\n call __set\n call __getVar \n mov $lenBuf4, %rsi \n mov $buf4, %rdx \n mov $lenUserData," +
+					"%rax \n mov (userData), %rdi \n call __set"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				// buf = buf3
+				// buf2 = buf4
+				// rax = 0
+				// add
+				_, err = progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n" +
+					"mov $buf3, %rdi \n call __set\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenBuf4, %rax \n" +
+					"mov $buf4, %rdi \n call __set\n\n mov $0, %rax \n call __add "))
+
+				return []interface{}{nil}, systemStack, nil // успех, результат по адресу $userData
+			} else if nil == LO[0] {
+				// LO[0] по адресу $userData
+				// присвоить значение переменной в buf3
+				_, err := progFile.Write([]byte("\nmov $lenBuf3, %rsi \n mov $buf3, %rdx \n" +
+					"mov $lenUserData, %rax \n mov $userData, %rdi " +
+					"\n call __set"))
 				if nil != err {
 					fmt.Println(err)
 					os.Exit(1)
