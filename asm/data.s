@@ -85,12 +85,6 @@ data0:
 .space 1, 0
 lenData0 = . - data0
 data1:
-.ascii "10"
+.ascii "-10"
 .space 1, 0
 lenData1 = . - data1
-varName2:
-.ascii "s"
-lenVarName2 = . - varName2
-data2:
-.ascii "\n"
-.space 1, 0
