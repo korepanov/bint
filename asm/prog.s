@@ -42,6 +42,9 @@ lenVarName = . - varName
 userData:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenUserData = . - userData
+lastUserData:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenLastUserData = . - lastUserData
 varName0:
 .ascii "iVar"
 lenVarName0 = . - varName0

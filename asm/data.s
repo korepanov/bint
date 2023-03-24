@@ -42,6 +42,9 @@ lenVarName = . - varName
 userData:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenUserData = . - userData
+lastUserData:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenLastUserData = . - lastUserData
 intType:
 .ascii "int"
 .space 1, 0
@@ -80,6 +83,9 @@ lenVarName0 = . - varName0
 varName1:
 .ascii "b"
 lenVarName1 = . - varName1
+varName2:
+.ascii "c"
+lenVarName2 = . - varName2
 data0:
 .ascii "5"
 .space 1, 0
@@ -88,3 +94,9 @@ data1:
 .ascii "-10"
 .space 1, 0
 lenData1 = . - data1
+varName3:
+.ascii "s"
+lenVarName3 = . - varName3
+data2:
+.ascii "\n"
+.space 1, 0

@@ -1,9 +1,10 @@
 int a;
 int b;
+int c;
 a = 5;
 b = -10;
-a = (b + 1); 
+c = ((a + b) + (a + b)); 
 string s; 
-s = str(a); 
+s = str(c); 
 print(s);
 print("\n"); 
