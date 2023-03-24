@@ -482,7 +482,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 					"mov $buf4, %rdi \n call __set\n\n mov $0, %rax \n call __add "))
 
 				return []interface{}{nil}, systemStack, nil // успех, результат по адресу $userData
-			} else if isVarLO && !isVarRO {
+			} else if isVarLO && !isVarRO && nil != RO[0] {
 				_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
 				if nil != err {
 					fmt.Println(err)
@@ -530,7 +530,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 					os.Exit(1)
 				}
 				return []interface{}{nil}, systemStack, nil // успех, результат по адресу $userData
-			} else if !isVarLO && isVarRO {
+			} else if !isVarLO && nil != LO[0] && isVarRO {
 				_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
 				if nil != err {
 					fmt.Println(err)
@@ -578,7 +578,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 					os.Exit(1)
 				}
 				return []interface{}{nil}, systemStack, nil // успех, результат по адресу $userData
-			} else if !isVarLO && !isVarRO {
+			} else if !isVarLO && !isVarRO && nil != LO[0] && nil != RO[0] {
 				_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
 				if nil != err {
 					fmt.Println(err)
