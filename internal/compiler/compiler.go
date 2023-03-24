@@ -530,6 +530,118 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 					os.Exit(1)
 				}
 				return []interface{}{nil}, systemStack, nil // успех, результат по адресу $userData
+			} else if !isVarLO && isVarRO {
+				_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				_, err = dataFile.Write([]byte("\n.ascii \"" + fmt.Sprintf("%v", ValueFoldInterface(LO[0])) + "\"\n.space 1, 0"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				_, err = dataFile.Write([]byte("\nlenData" + fmt.Sprintf("%v", DataNumber) + " = . - data" + fmt.Sprintf("%v", DataNumber)))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				_, err = progFile.Write([]byte("\nmov $lenBuf3, %rsi \n mov $buf3, %rdx \n" +
+					"mov $lenData" + fmt.Sprintf("%v", DataNumber) + ", %rax \n mov $data" + fmt.Sprintf("%v", DataNumber) + ", %rdi " +
+					"\n call __set"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+
+				DataNumber++
+
+				// присвоить значение переменной в buf4
+				_, err = progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n" +
+					"mov $" + lenRO + ", %rax \n mov $" + fmt.Sprintf("%v", RO[0]) + ", %rdi " +
+					"\n call __set\n call __getVar \n mov $lenBuf4, %rsi \n mov $buf4, %rdx \n mov $lenUserData," +
+					"%rax \n mov (userData), %rdi \n call __set"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+
+				// buf = buf3
+				// buf2 = buf4
+				// rax = 0
+				// add
+				_, err = progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n" +
+					"mov $buf3, %rdi \n call __set\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenBuf4, %rax \n" +
+					"mov $buf4, %rdi \n call __set\n\n mov $0, %rax \n call __add "))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				return []interface{}{nil}, systemStack, nil // успех, результат по адресу $userData
+			} else if !isVarLO && !isVarRO {
+				_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				_, err = dataFile.Write([]byte("\n.ascii \"" + fmt.Sprintf("%v", ValueFoldInterface(LO[0])) + "\"\n.space 1, 0"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				_, err = dataFile.Write([]byte("\nlenData" + fmt.Sprintf("%v", DataNumber) + " = . - data" + fmt.Sprintf("%v", DataNumber)))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				_, err = progFile.Write([]byte("\nmov $lenBuf3, %rsi \n mov $buf3, %rdx \n" +
+					"mov $lenData" + fmt.Sprintf("%v", DataNumber) + ", %rax \n mov $data" + fmt.Sprintf("%v", DataNumber) + ", %rdi " +
+					"\n call __set"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+
+				DataNumber++
+
+				_, err = dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				_, err = dataFile.Write([]byte("\n.ascii \"" + fmt.Sprintf("%v", ValueFoldInterface(RO[0])) + "\"\n.space 1, 0"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				_, err = dataFile.Write([]byte("\nlenData" + fmt.Sprintf("%v", DataNumber) + " = . - data" + fmt.Sprintf("%v", DataNumber)))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				_, err = progFile.Write([]byte("\nmov $lenBuf4, %rsi \n mov $buf4, %rdx \n" +
+					"mov $lenData" + fmt.Sprintf("%v", DataNumber) + ", %rax \n mov $data" + fmt.Sprintf("%v", DataNumber) + ", %rdi " +
+					"\n call __set"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+
+				DataNumber++
+				// присвоить значение в buf4
+
+				// buf = buf3
+				// buf2 = buf4
+				// rax = 0
+				// add
+				_, err = progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n" +
+					"mov $buf3, %rdi \n call __set\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenBuf4, %rax \n" +
+					"mov $buf4, %rdi \n call __set\n\n mov $0, %rax \n call __add "))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				return []interface{}{nil}, systemStack, nil // успех, результат по адресу $userData
 			} else {
 				panic("unrealized case")
 			}
