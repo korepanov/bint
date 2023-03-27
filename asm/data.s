@@ -106,10 +106,14 @@ data4:
 .ascii "1"
 .space 1, 0
 lenData4 = . - data4
+data5:
+.ascii "2"
+.space 1, 0
+lenData5 = . - data5
 varName3:
 .ascii "s"
 lenVarName3 = . - varName3
-data5:
+data6:
 .ascii "\n"
 .space 1, 0
-lenData5 = . - data5
+lenData6 = . - data6

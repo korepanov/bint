@@ -1449,7 +1449,7 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 		LOType := getType(passLO[0], variables)
 		ROType := getType(passRO[0], variables)
 
-		if len(typeHist) > 0 {
+		if len(typeHist) > 0 && (nil == LO[0] || nil == RO[0]) {
 			if nil == LOType && nil != ROType {
 				LOType = typeHist[len(typeHist)-1]
 			} else if nil == ROType && nil != LOType {
