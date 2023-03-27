@@ -15,6 +15,8 @@ import (
 	"unicode"
 )
 
+var typeHist []string
+
 func CompileAsm(rootDest string) error {
 	cmd := exec.Command("as", "--64", "asm/data.s", "asm/program.s", "-o", "asm/program.o")
 
@@ -175,21 +177,21 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			return []interface{}{StrToBool(fmt.Sprintf("%v", LO[0])) || StrToBool(fmt.Sprintf("%v", RO[0]))}, systemStack, "", nil
 		}
 		err := errors.New("executor: OR: error: data type mismatch")
-		return LO, systemStack, err
+		return LO, systemStack, "", err
 	} else if "XOR" == OP {
 		if "bool" == WhatsType(fmt.Sprintf("%v", LO[0])) && "bool" == WhatsType(fmt.Sprintf("%v", RO[0])) {
 			return []interface{}{StrToBool(fmt.Sprintf("%v", LO[0])) != StrToBool(fmt.Sprintf("%v", RO[0]))}, systemStack, "", nil
 		}
 		err := errors.New("executor: XOR: error: data type mismatch")
-		return LO, systemStack, err
+		return LO, systemStack, "", err
 	} else if "NOT" == OP {
 		if "bool" == WhatsType(fmt.Sprintf("%v", LO[0])) {
 			return []interface{}{!StrToBool(fmt.Sprintf("%v", LO[0]))}, systemStack, "", nil
 		}
 		err := errors.New("executor: NOT: error: data type mismatch")
-		return LO, systemStack, err
+		return LO, systemStack, "", err
 	} else if "L: True" == OP || "L: true" == OP {
-		return LO, systemStack, nil
+		return LO, systemStack, "", nil
 	} else if "L: False" == OP || "L: false" == OP {
 		return RO, systemStack, "", nil
 	} else if "<" == OP {
@@ -1146,7 +1148,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			}
 		}
 
-		return []interface{}{0}, systemStack, nil
+		return []interface{}{0}, systemStack, "", nil
 	} else if "REROUTE" == OP {
 		return []interface{}{"REROUTE", 0}, systemStack, "", nil
 	} else if "UNSET_SOURCE" == OP {
@@ -1185,7 +1187,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemStack []interface{},
 	OPPointer int, dataFile *os.File, progFile *os.File) ([]interface{}, [][]interface{}, []interface{}, int) {
-	// заканчивает свою работу, когда выполнен первый оператор
+
 	OP := fmt.Sprintf("%v", infoList[OPPointer])
 
 	var LO []interface{}
@@ -1443,9 +1445,29 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 			passRO = append(passRO, el)
 		}
 
-		res, systemStack, err = compile(systemStack, OP, passLO, passRO,
-			getType(fmt.Sprintf("%v", passLO[0]), variables), getType(fmt.Sprintf("%v", passRO[0]), variables),
+		var resT string
+		LOType := getType(passLO[0], variables)
+		ROType := getType(passRO[0], variables)
+
+		if len(typeHist) > 0 {
+			if nil == LOType && nil != ROType {
+				LOType = typeHist[len(typeHist)-1]
+			} else if nil == ROType && nil != LOType {
+				ROType = typeHist[len(typeHist)-1]
+			} else if nil == LOType && nil == ROType {
+				ROType = typeHist[len(typeHist)-1]
+				typeHist = typeHist[:len(typeHist)-1]
+				LOType = typeHist[len(typeHist)-1]
+			}
+			typeHist = typeHist[:len(typeHist)-1]
+		}
+
+		res, systemStack, resT, err = compile(systemStack, OP, passLO, passRO,
+			fmt.Sprintf("%v", LOType), fmt.Sprintf("%v", ROType),
 			dataFile, progFile, variables)
+		if "" != resT {
+			typeHist = append(typeHist, resT)
+		}
 
 		if nil != err {
 			panic(err)
