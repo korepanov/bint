@@ -1156,15 +1156,27 @@ mov $lenLastUserData, %rsi
  mov $lenUserData, %rax 
 mov $userData, %rdi 
  call __set
-mov $lenBuf3, %rsi 
- mov $buf3, %rdx 
-mov $lenData2, %rax 
- mov $data2, %rdi 
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+mov $lenVarName0, %rax 
+ mov $varName0, %rdi 
  call __set
-mov $lenBuf4, %rsi 
+ call __getVar 
+ mov $lenBuf3, %rsi 
+ mov $buf3, %rdx 
+ mov $lenUserData,%rax 
+ mov (userData), %rdi 
+ call __set
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+mov $lenVarName0, %rax 
+ mov $varName1, %rdi 
+ call __set
+ call __getVar 
+ mov $lenBuf4, %rsi 
  mov $buf4, %rdx 
-mov $lenData3, %rax 
- mov $data3, %rdi 
+ mov $lenUserData,%rax 
+ mov (userData), %rdi 
  call __set
 mov $lenBuf, %rsi 
  mov $buf, %rdx 
@@ -1184,15 +1196,27 @@ mov $lenLastUserData, %rsi
  mov $lenUserData, %rax 
 mov $userData, %rdi 
  call __set
-mov $lenBuf3, %rsi 
- mov $buf3, %rdx 
-mov $lenData4, %rax 
- mov $data4, %rdi 
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+mov $lenVarName0, %rax 
+ mov $varName0, %rdi 
  call __set
-mov $lenBuf4, %rsi 
+ call __getVar 
+ mov $lenBuf3, %rsi 
+ mov $buf3, %rdx 
+ mov $lenUserData,%rax 
+ mov (userData), %rdi 
+ call __set
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+mov $lenVarName0, %rax 
+ mov $varName1, %rdi 
+ call __set
+ call __getVar 
+ mov $lenBuf4, %rsi 
  mov $buf4, %rdx 
-mov $lenData5, %rax 
- mov $data5, %rdi 
+ mov $lenUserData,%rax 
+ mov (userData), %rdi 
  call __set
 mov $lenBuf, %rsi 
  mov $buf, %rdx 
@@ -1207,11 +1231,6 @@ mov $buf4, %rdi
 
  mov $0, %rax 
  call __add 
-mov $lenLastUserData, %rsi 
- mov $lastUserData, %rdx 
- mov $lenUserData, %rax 
-mov $userData, %rdi 
- call __set
 mov $lenBuf3, %rsi 
  mov $buf3, %rdx 
 mov $lenLastUserData, %rax 
@@ -1279,7 +1298,7 @@ mov $lenVarName, %rsi
  call __getVar
  mov (userData), %rsi 
  call __print
-mov $data6, %rsi
+mov $data2, %rsi
 call __print
 mov $60,  %rax
 xor %rdi, %rdi
