@@ -3,7 +3,7 @@ int b;
 int c;
 a = 5;
 b = -10;
-c = ((1+5) + 4); 
+c = ((10 + 4) + 1); 
 string s; 
 s = str(c); 
 print(s);
