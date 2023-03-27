@@ -359,13 +359,13 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
 			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
 				isVarLO = true
-				lenLO = "lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
-				LO[0] = "varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+				lenLO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+				LO[0] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
 			}
 			if fmt.Sprintf("%v", RO[0]) == fmt.Sprintf("%v", v[1]) {
 				isVarRO = true
-				lenRO = "lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", RO[0])])
-				RO[0] = "varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", RO[0])])
+				lenRO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", RO[0])])
+				RO[0] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", RO[0])])
 			}
 		}
 
