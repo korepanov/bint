@@ -359,18 +359,69 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
 			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
 				isVarLO = true
-				LO[0] = "varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
 				lenLO = "lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+				LO[0] = "varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
 			}
 			if fmt.Sprintf("%v", RO[0]) == fmt.Sprintf("%v", v[1]) {
 				isVarRO = true
-				RO[0] = "varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", RO[0])])
 				lenRO = "lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", RO[0])])
+				RO[0] = "varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", RO[0])])
 			}
 		}
 
+		if "$userData" == fmt.Sprintf("%v", LO[0]) {
+			lenLO = "$lenUserData"
+		}
+		if "$userData" == fmt.Sprintf("%v", RO[0]) {
+			lenRO = "$lenUserData"
+		}
+		if !isVarLO && "$userData" != fmt.Sprintf("%v", LO[0]) {
+			_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = dataFile.Write([]byte("\n.ascii " + fmt.Sprintf("%v", ValueFoldInterface(LO[0])) + "\n.space 1, 0"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = dataFile.Write([]byte("\nlenData" + fmt.Sprintf("%v", DataNumber) + " = . - data" + fmt.Sprintf("%v", DataNumber)))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			LO[0] = "$data" + fmt.Sprintf("%v", DataNumber)
+			lenLO = "$lenData" + fmt.Sprintf("%v", DataNumber)
+			DataNumber++
+		}
+		if !isVarRO && "$userData" != fmt.Sprintf("%v", RO[0]) {
+			_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = dataFile.Write([]byte("\n.ascii " + fmt.Sprintf("%v", ValueFoldInterface(RO[0])) + "\n.space 1, 0"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = dataFile.Write([]byte("\nlenData" + fmt.Sprintf("%v", DataNumber) + " = . - data" + fmt.Sprintf("%v", DataNumber)))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			RO[0] = "$data" + fmt.Sprintf("%v", DataNumber)
+			lenRO = "$lenData" + fmt.Sprintf("%v", DataNumber)
+			DataNumber++
+		}
 		if ("int" == typeLO) && ("int" == typeRO) {
-			//
+			fmt.Println(LO[0], lenLO)
+			fmt.Println(RO[0], lenRO)
+			fmt.Println("--------------------")
+			// true - признак того, что $userData есть переменная asm
+			return []interface{}{true, "$userData"}, systemStack, "int", nil
 		}
 
 		if "float" == typeLO && "float" == typeRO {
@@ -1107,6 +1158,19 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 		var err error
 		var passLO []interface{}
 		var passRO []interface{}
+		var computedLO bool
+		var computedRO bool
+
+		var resT string
+		if 2 == len(LO) && true == LO[0] {
+			computedLO = true
+			LO = []interface{}{LO[1]}
+		}
+
+		if 2 == len(RO) && true == RO[0] {
+			computedRO = true
+			RO = []interface{}{RO[1]}
+		}
 
 		for _, el := range LO {
 			passLO = append(passLO, el)
@@ -1115,16 +1179,15 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 			passRO = append(passRO, el)
 		}
 
-		var resT string
 		LOType := getType(passLO[0], variables)
 		ROType := getType(passRO[0], variables)
 
-		if len(typeHist) > 0 && (nil == LO[0] || nil == RO[0]) {
-			if nil == LOType && nil != ROType {
+		if len(typeHist) > 0 && (computedLO || computedRO) {
+			if computedLO && !computedRO {
 				LOType = typeHist[len(typeHist)-1]
-			} else if nil == ROType && nil != LOType {
+			} else if computedRO && !computedLO {
 				ROType = typeHist[len(typeHist)-1]
-			} else if nil == LOType && nil == ROType {
+			} else if computedLO && computedRO {
 				ROType = typeHist[len(typeHist)-1]
 				typeHist = typeHist[:len(typeHist)-1]
 				LOType = typeHist[len(typeHist)-1]
@@ -1182,17 +1245,20 @@ func CompileTree(infoList []interface{}, variables [][]interface{},
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			_, err = progFile.Write([]byte("\nmov $data" + fmt.Sprintf("%v", DataNumber) + ", %rsi\ncall __print"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
 			_, err = dataFile.Write([]byte("\nlenData" + fmt.Sprintf("%v", DataNumber) + " = . - data" + fmt.Sprintf("%v", DataNumber)))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
 			}
+
+			_, err = progFile.Write([]byte("\nmov $data" + fmt.Sprintf("%v", DataNumber) + ", %rsi\ncall __print"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
 			DataNumber++
+
 		}
 
 	}
