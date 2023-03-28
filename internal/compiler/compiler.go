@@ -54,7 +54,15 @@ func InitData() (*os.File, error) {
 		fmt.Println("could not create file data.s")
 		return f, err
 	}
-
+	// множество временных переменных для расчета арифметических выражений
+	for i := 0; i < 128; i++ {
+		_, err = f.Write([]byte("\n $t" + fmt.Sprintf("%v", i) + ": \n .quad 0, 0, 0, 0, 0, 0, 0, 0 \n lenT" + fmt.Sprintf("%v", i) +
+			" = . - t" + fmt.Sprintf("%v", i)))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+	}
 	return f, nil
 }
 
@@ -109,7 +117,7 @@ func getType(val interface{}, variables [][]interface{}) interface{} {
 
 func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interface{}, typeLO string, typeRO string,
 	dataFile *os.File, progFile *os.File,
-	variables [][]interface{}) ([]interface{}, []interface{}, string, error) {
+	variables [][]interface{}, tNumber int) ([]interface{}, []interface{}, string, error) {
 	if "print" == OP {
 		return []interface{}{"print", LO}, systemStack, "", nil
 	} else if "reg_find" == OP {
@@ -370,10 +378,10 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		if 2 == len(LO) && true == LO[0] {
-			lenLO = "$lenUserData"
+			lenLO = "$lenT" + string(fmt.Sprintf("%v", LO[0])[len(fmt.Sprintf("%v", LO[0]))-1])
 		}
 		if 2 == len(RO) && true == RO[0] {
-			lenRO = "$lenUserData"
+			lenRO = "$lenT" + string(fmt.Sprintf("%v", RO[0])[len(fmt.Sprintf("%v", RO[0]))-1])
 		}
 		if !isVarLO && !(2 == len(LO) && true == LO[0]) {
 			_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
@@ -463,13 +471,14 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			fmt.Println(RO[0], lenRO)
 			fmt.Println("--------------------")
 			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
-				"mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenBuf4, %rax \n mov $buf4, %rdi\n call __set"))
+				"mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenBuf4, %rax \n mov $buf4, %rdi\n call __set \n xor %rax, %rax \n" +
+				"\n call __add"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			// true - признак того, что $userData есть переменная asm
-			return []interface{}{true, "$userData"}, systemStack, "int", nil
+			// true - признак того, что результат в вычисляемой переменной asm
+			return []interface{}{true, "$t" + fmt.Sprintf("%v", tNumber)}, systemStack, "int", nil
 		}
 
 		if "float" == typeLO && "float" == typeRO {
@@ -955,7 +964,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 }
 
 func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemStack []interface{},
-	OPPointer int, dataFile *os.File, progFile *os.File) ([]interface{}, [][]interface{}, []interface{}, int) {
+	OPPointer int, dataFile *os.File, progFile *os.File, tNumber int) ([]interface{}, [][]interface{}, []interface{}, int, int) {
 
 	OP := fmt.Sprintf("%v", infoList[OPPointer])
 
@@ -980,7 +989,7 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 	} else {
 		// операция
 		OPPointer += 1
-		LO, variables, _, OPPointer = sysCompileTree(infoList, variables, systemStack, OPPointer, dataFile, progFile)
+		LO, variables, _, OPPointer, tNumber = sysCompileTree(infoList, variables, systemStack, OPPointer, dataFile, progFile, tNumber)
 	}
 
 	if "True" == infoList[OPPointer+1] {
@@ -995,7 +1004,7 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 	} else {
 		// операция
 		OPPointer += 1
-		RO, variables, _, OPPointer = sysCompileTree(infoList, variables, systemStack, OPPointer, dataFile, progFile)
+		RO, variables, _, OPPointer, tNumber = sysCompileTree(infoList, variables, systemStack, OPPointer, dataFile, progFile, tNumber)
 	}
 
 	if "UNDEFINE" == OP {
@@ -1072,6 +1081,12 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 	}*/
 
 	if "=" == OP {
+		if 2 == len(LO) && true == LO[0] {
+			LO = []interface{}{LO[1]}
+		}
+		if 2 == len(RO) && true == RO[0] {
+			RO = []interface{}{RO[1]}
+		}
 		newVariable := EachVariable(variables)
 		for v := newVariable(); "end" != v[0]; v = newVariable() {
 			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
@@ -1245,7 +1260,7 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 
 		res, systemStack, resT, err = compile(systemStack, OP, passLO, passRO,
 			fmt.Sprintf("%v", LOType), fmt.Sprintf("%v", ROType),
-			dataFile, progFile, variables)
+			dataFile, progFile, variables, tNumber)
 		if "" != resT {
 			typeHist = append(typeHist, resT)
 		}
@@ -1258,13 +1273,13 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 		res = []interface{}{0}
 	}
 
-	return res, variables, systemStack, OPPointer
+	return res, variables, systemStack, OPPointer, tNumber + 1
 }
 
 func CompileTree(infoList []interface{}, variables [][]interface{},
 	systemStack []interface{}, dataFile *os.File, progFile *os.File) {
 
-	res, variables, systemStack, _ := sysCompileTree(infoList, variables, systemStack, 0, dataFile, progFile)
+	res, variables, systemStack, _, _ := sysCompileTree(infoList, variables, systemStack, 0, dataFile, progFile, 0)
 
 	if "print" == res[0] {
 		var wasVar bool
