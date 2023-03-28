@@ -416,10 +416,18 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			lenRO = "$lenData" + fmt.Sprintf("%v", DataNumber)
 			DataNumber++
 		}
+
+		if ("int" == typeLO || "float" == typeLO) && isVarLO {
+			progFile.Write([]byte("mov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
+				"\n call __getVar \n mov (userData), %rsi \n call __len \n mov $lenBuf3, %rsi \n mov $buf3, %rdx \n " +
+				"mov (userData), %rdi\n call __set "))
+		}
 		if ("int" == typeLO) && ("int" == typeRO) {
 			fmt.Println(LO[0], lenLO)
 			fmt.Println(RO[0], lenRO)
 			fmt.Println("--------------------")
+
 			// true - признак того, что $userData есть переменная asm
 			return []interface{}{true, "$userData"}, systemStack, "int", nil
 		}
