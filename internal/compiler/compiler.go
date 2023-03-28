@@ -378,10 +378,10 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		if 2 == len(LO) && true == LO[0] {
-			lenLO = "$lenT" + string(fmt.Sprintf("%v", LO[0])[len(fmt.Sprintf("%v", LO[0]))-1])
+			lenLO = "$lenT" + string(fmt.Sprintf("%v", LO[1])[len(fmt.Sprintf("%v", LO[1]))-1])
 		}
 		if 2 == len(RO) && true == RO[0] {
-			lenRO = "$lenT" + string(fmt.Sprintf("%v", RO[0])[len(fmt.Sprintf("%v", RO[0]))-1])
+			lenRO = "$lenT" + string(fmt.Sprintf("%v", RO[1])[len(fmt.Sprintf("%v", RO[1]))-1])
 		}
 		if !isVarLO && !(2 == len(LO) && true == LO[0]) {
 			_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
@@ -444,7 +444,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			LO = []interface{}{LO[1]}
 		}
 		if 2 == len(RO) && true == RO[0] {
-			RO[0] = []interface{}{RO[1]}
+			RO = []interface{}{RO[1]}
 		}
 		if ("int" == typeLO || "float" == typeLO) && isVarLO {
 			_, err := progFile.Write([]byte("mov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
