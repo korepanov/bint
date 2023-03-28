@@ -57,7 +57,7 @@ func InitData() (*os.File, error) {
 	// множество временных переменных для расчета арифметических выражений
 	for i := 0; i < 128; i++ {
 		_, err = f.Write([]byte("\n $t" + fmt.Sprintf("%v", i) + ": \n .quad 0, 0, 0, 0, 0, 0, 0, 0 \n lenT" + fmt.Sprintf("%v", i) +
-			" = . - t" + fmt.Sprintf("%v", i)))
+			" = . - $t" + fmt.Sprintf("%v", i)))
 		if nil != err {
 			fmt.Println(err)
 			os.Exit(1)
