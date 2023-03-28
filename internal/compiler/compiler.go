@@ -369,13 +369,13 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			}
 		}
 
-		if "$userData" == fmt.Sprintf("%v", LO[0]) {
+		if 2 == len(LO) && true == LO[0] {
 			lenLO = "$lenUserData"
 		}
-		if "$userData" == fmt.Sprintf("%v", RO[0]) {
+		if 2 == len(RO) && true == RO[0] {
 			lenRO = "$lenUserData"
 		}
-		if !isVarLO && "$userData" != fmt.Sprintf("%v", LO[0]) {
+		if !isVarLO && !(2 == len(LO) && true == LO[0]) {
 			_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
 			if nil != err {
 				fmt.Println(err)
@@ -394,9 +394,17 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 			LO[0] = "$data" + fmt.Sprintf("%v", DataNumber)
 			lenLO = "$lenData" + fmt.Sprintf("%v", DataNumber)
+
+			_, err = progFile.Write([]byte("\nmov $lenBuf3, %rsi \n mov $buf3, %rdx \n mov " + lenLO + ", %rax \n mov " +
+				fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
 			DataNumber++
 		}
-		if !isVarRO && "$userData" != fmt.Sprintf("%v", RO[0]) {
+		if !isVarRO && !(2 == len(RO) && true == RO[0]) {
 			_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
 			if nil != err {
 				fmt.Println(err)
@@ -414,20 +422,52 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			}
 			RO[0] = "$data" + fmt.Sprintf("%v", DataNumber)
 			lenRO = "$lenData" + fmt.Sprintf("%v", DataNumber)
+
+			_, err = progFile.Write([]byte("\nmov $lenBuf4, %rsi \n mov $buf4, %rdx \n mov " + lenRO + ", %rax \n mov " +
+				fmt.Sprintf("%v", RO[0]) + ", %rdi\n call __set"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
 			DataNumber++
 		}
-
+		if 2 == len(LO) && true == LO[0] {
+			LO = []interface{}{LO[1]}
+		}
+		if 2 == len(RO) && true == RO[0] {
+			RO[0] = []interface{}{RO[1]}
+		}
 		if ("int" == typeLO || "float" == typeLO) && isVarLO {
-			progFile.Write([]byte("mov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+			_, err := progFile.Write([]byte("mov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
 				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
 				"\n call __getVar \n mov (userData), %rsi \n call __len \n mov $lenBuf3, %rsi \n mov $buf3, %rdx \n " +
 				"mov (userData), %rdi\n call __set "))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		}
+		if ("int" == typeRO || "float" == typeRO) && isVarRO {
+			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenRO +
+				", %rax \n mov " + fmt.Sprintf("%v", RO[0]) + ", %rdi\n call __set " +
+				"\n call __getVar \n mov (userData), %rsi \n call __len \n mov $lenBuf4, %rsi \n mov $buf4, %rdx \n " +
+				"mov (userData), %rdi\n call __set "))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		}
 		if ("int" == typeLO) && ("int" == typeRO) {
 			fmt.Println(LO[0], lenLO)
 			fmt.Println(RO[0], lenRO)
 			fmt.Println("--------------------")
-
+			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
+				"mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenBuf4, %rax \n mov $buf4, %rdi\n call __set"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			// true - признак того, что $userData есть переменная asm
 			return []interface{}{true, "$userData"}, systemStack, "int", nil
 		}
@@ -1172,12 +1212,12 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 		var resT string
 		if 2 == len(LO) && true == LO[0] {
 			computedLO = true
-			LO = []interface{}{LO[1]}
+			//LO = []interface{}{LO[1]}
 		}
 
 		if 2 == len(RO) && true == RO[0] {
 			computedRO = true
-			RO = []interface{}{RO[1]}
+			//RO = []interface{}{RO[1]}
 		}
 
 		for _, el := range LO {
