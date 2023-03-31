@@ -1343,11 +1343,11 @@ _start:
  mov $varName6, %rdi
  call __set
  call __getVar
- mov (userData), %rsi 
- call __print
+ #mov (userData), %rsi 
+ #call __print
 
- mov $enter, %rsi 
- call __print 
+ #mov $enter, %rsi 
+ #call __print 
 
  # get sVar
  mov $lenVarName, %rsi 
@@ -1356,9 +1356,9 @@ _start:
  mov $varName1, %rdi
  call __set
  call __getVar
- mov (userData), %rsi 
- call __print
- call __printHeap
+ #mov (userData), %rsi 
+ #call __print
+ #call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)

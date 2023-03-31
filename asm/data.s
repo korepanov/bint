@@ -479,9 +479,16 @@ data1:
 .space 1, 0
 lenData1 = . - data1
 varName3:
-.ascii "s"
+.ascii "d"
 lenVarName3 = . - varName3
+varName4:
+.ascii "s"
+lenVarName4 = . - varName4
 data2:
 .ascii "\n"
 .space 1, 0
 lenData2 = . - data2
+data3:
+.ascii "\n"
+.space 1, 0
+lenData3 = . - data3
