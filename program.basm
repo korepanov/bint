@@ -3,7 +3,7 @@ int b;
 int c;
 a = 5;
 b = -10;
-c = (((a + b) + (a + b)) + ((a + b) + (a + b)));
+c = ((((a + b) + (a + ((a+(a+b))+b))) + ((a + b) + (a + b))) + a);
 string s; 
 s = str(c); 
 print(s);
