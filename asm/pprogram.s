@@ -131,12 +131,14 @@ __set: #set strings
  __setLocal:
  mov (%rdi), %r11b
  movb %r11b, (%rdx)
+ cmp $0, %rax 
+ jz __setLocalEnd
  inc %rdx
  inc %rdi
  dec %rax  
- cmp $0, %rax
- jnz __setLocal
- #movb $0, (%rdx)
+ jmp __setLocal
+ __setLocalEnd:
+ movb $0, (%rdx)
  ret 
 
 __concatinate:

@@ -469,7 +469,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		if ("int" == typeLO) && ("int" == typeRO) {
 			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
 				"\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenBuf4, %rax \n mov $buf4, %rdi\n call __set \n xor %rax, %rax \n" +
-				"\n call __add \n mov lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $$t" + fmt.Sprintf("%v", tNumber) +
+				"\n call __add \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $$t" + fmt.Sprintf("%v", tNumber) +
 				", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
 			if nil != err {
 				fmt.Println(err)
@@ -702,8 +702,8 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				lenVarName := "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
 
 				// присвоить в varName имя текущей переменной
-				_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov $" + lenVarName +
-					", %rax \n mov $" + varName + ", %rdi \n call __set"))
+				_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenVarName +
+					", %rax \n mov " + varName + ", %rdi \n call __set"))
 				if nil != err {
 					fmt.Println(err)
 					os.Exit(1)
