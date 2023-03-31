@@ -1,4 +1,11 @@
-float a;
-float b;
-a = 5;
-b = 10.3;
+int c;
+int a;
+
+a = 10;
+
+c = ((10 + 5) + 7);
+
+string s;
+s = str(c);
+print(s);
+print("\n"); 
