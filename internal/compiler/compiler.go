@@ -683,8 +683,13 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		return []interface{}{fmt.Sprintf("%v", LO[0])}, systemStack, "", nil
 	} else if "=" == OP {
 		var wasVar bool
+		var computedRO bool
 
-		if "$" != string(fmt.Sprintf("%v", RO[0])[0]) {
+		if 2 == len(RO) && true == RO[0] {
+			RO = []interface{}{RO[1]}
+			computedRO = true
+		}
+		if !computedRO {
 			newVariable := EachVariable(variables)
 			for v := newVariable(); "end" != v[0]; v = newVariable() {
 				if fmt.Sprintf("%v", ValueFoldInterface(RO[0])) == fmt.Sprintf("%v", v[1]) {
@@ -709,7 +714,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			}
 		}
 		if !wasVar {
-			if "$" == string(fmt.Sprintf("%v", RO[0])[0]) {
+			if computedRO {
 				// справа разультат вычислений, находящийся по адресу RO[0]
 				varName := "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
 				lenVarName := "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
@@ -1090,18 +1095,21 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 	}*/
 
 	if "=" == OP {
+		var computedLO bool
+		var computedRO bool
+
 		if 2 == len(LO) && true == LO[0] {
-			LO = []interface{}{LO[1]}
+			computedLO = true
 		}
 		if 2 == len(RO) && true == RO[0] {
-			RO = []interface{}{RO[1]}
+			computedRO = true
 		}
 		newVariable := EachVariable(variables)
 		for v := newVariable(); "end" != v[0]; v = newVariable() {
-			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
+			if !computedLO && fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
 				newRightVar := EachVariable(variables)
 				for rightVar := newRightVar(); "end" != rightVar[0]; rightVar = newRightVar() {
-					if fmt.Sprintf("%v", RO[0]) == fmt.Sprintf("%v", rightVar[1]) {
+					if !computedRO && fmt.Sprintf("%v", RO[0]) == fmt.Sprintf("%v", rightVar[1]) {
 						if "[]interface {}" == fmt.Sprintf("%T", rightVar[2]) &&
 							"string" == fmt.Sprintf("%T", rightVar[2].([]interface{})[0]) &&
 							"end" == fmt.Sprintf("%v", rightVar[2].([]interface{})[0]) {

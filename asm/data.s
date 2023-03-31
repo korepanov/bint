@@ -478,3 +478,10 @@ data1:
 .ascii "-10"
 .space 1, 0
 lenData1 = . - data1
+varName3:
+.ascii "s"
+lenVarName3 = . - varName3
+data2:
+.ascii "\n"
+.space 1, 0
+lenData2 = . - data2
