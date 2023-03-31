@@ -441,9 +441,21 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			DataNumber++
 		}
 		if 2 == len(LO) && true == LO[0] {
+			_, err := progFile.Write([]byte("\nmov $lenBuf3, %rsi \n mov $buf3, %rdx \n mov " + lenLO + ", %rax \n mov $" +
+				fmt.Sprintf("%v", LO[1]) + ", %rdi\n call __set"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			LO = []interface{}{LO[1]}
 		}
 		if 2 == len(RO) && true == RO[0] {
+			_, err := progFile.Write([]byte("\nmov $lenBuf4, %rsi \n mov $buf4, %rdx \n mov " + lenRO + ", %rax \n mov $" +
+				fmt.Sprintf("%v", RO[1]) + ", %rdi\n call __set"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			RO = []interface{}{RO[1]}
 		}
 		if ("int" == typeLO || "float" == typeLO) && isVarLO {
@@ -466,6 +478,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				os.Exit(1)
 			}
 		}
+
 		if ("int" == typeLO) && ("int" == typeRO) {
 			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
 				"\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenBuf4, %rax \n mov $buf4, %rdi\n call __set \n xor %rax, %rax \n" +
