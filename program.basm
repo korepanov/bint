@@ -1,15 +1,4 @@
-int a;
-int b;
-int c;
+float a;
+float b;
 a = 5;
-b = -10;
-c = ((((a + b) + (a + ((a+(a+b))+b))) + ((a + b) + (a + b))) + a);
-int d;
-d = (c + ((c + c) + c));
-string s; 
-s = str(c); 
-print(s);
-print("\n"); 
-s = str(d);
-print(s);
-print("\n"); 
+b = 10.3;

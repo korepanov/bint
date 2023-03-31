@@ -467,28 +467,3 @@ lenVarName0 = . - varName0
 varName1:
 .ascii "b"
 lenVarName1 = . - varName1
-varName2:
-.ascii "c"
-lenVarName2 = . - varName2
-data0:
-.ascii "5"
-.space 1, 0
-lenData0 = . - data0
-data1:
-.ascii "-10"
-.space 1, 0
-lenData1 = . - data1
-varName3:
-.ascii "d"
-lenVarName3 = . - varName3
-varName4:
-.ascii "s"
-lenVarName4 = . - varName4
-data2:
-.ascii "\n"
-.space 1, 0
-lenData2 = . - data2
-data3:
-.ascii "\n"
-.space 1, 0
-lenData3 = . - data3

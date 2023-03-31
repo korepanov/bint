@@ -495,13 +495,16 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 		if "float" == typeLO && "float" == typeRO {
 			//
+			panic("unrealized case")
 		}
 
 		if "int" == typeLO && "float" == typeRO {
 			//
+			panic("unrealized case")
 		}
 		if "float" == typeLO && "int" == typeRO {
 			//
+			panic("unrealized case")
 		}
 		if len(fmt.Sprintf("%v", LO[0])) >= 2 && "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
