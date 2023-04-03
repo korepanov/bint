@@ -1,12 +1,11 @@
-float a; 
-float b; 
-float c;
+int a; 
+int b;
 
-a = 7;
-b = 5.5; 
-c = ((a + b) + (a + b)); 
+a = 10;
+b = -10;
+a = (a + b);
 
 string s;
-s = str(c);
+s = str(a);
 print(s);
 print("\n");
