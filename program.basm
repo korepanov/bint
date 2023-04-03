@@ -1,6 +1,9 @@
 float a;
-
-a = (5.5 + 9); 
+int b;
+float c;
+b = 6;
+c = 9.5;
+a = ((b + (c + c)) + b); 
 
 string s; 
 s = str(a);
