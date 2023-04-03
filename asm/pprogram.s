@@ -129,19 +129,28 @@ __set: #set strings
  dec %rdx 
  movb $0, (%rdx)
 
- mov %r8, %rdx   
+ mov %r8, %rdx  
+ mov %r9, %rsi  
  
  __setLocal:
  cmp $0, %rax 
  jz __setLocalEnd
- mov (%rdi), %r11b
+ cmp $2, %rsi
+ jz __setLocalEnd
+ mov (%rdi), %r11b 
  movb %r11b, (%rdx)
  inc %rdx
  inc %rdi
  dec %rax  
+ dec %rsi 
  jmp __setLocal
  __setLocalEnd:
- #dec %rdx 
+ dec %rdx 
+ mov (%rdx), %rax 
+ cmp $'*', %rax 
+ jz __star
+ inc %rdx
+ __star: 
  movb $0, (%rdx)
  ret 
 

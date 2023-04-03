@@ -260,19 +260,28 @@ __set: #set strings
  dec %rdx 
  movb $0, (%rdx)
 
- mov %r8, %rdx   
+ mov %r8, %rdx  
+ mov %r9, %rsi  
  
  __setLocal:
  cmp $0, %rax 
  jz __setLocalEnd
- mov (%rdi), %r11b
+ cmp $2, %rsi
+ jz __setLocalEnd
+ mov (%rdi), %r11b 
  movb %r11b, (%rdx)
  inc %rdx
  inc %rdi
  dec %rax  
+ dec %rsi 
  jmp __setLocal
  __setLocalEnd:
- #dec %rdx 
+ dec %rdx 
+ mov (%rdx), %rax 
+ cmp $'*', %rax 
+ jz __star
+ inc %rdx
+ __star: 
  movb $0, (%rdx)
  ret 
 
@@ -1347,11 +1356,11 @@ _start:
  mov $varName6, %rdi
  call __set
  call __getVar
- #mov (userData), %rsi 
- #call __print
+ mov (userData), %rsi 
+ call __print
 
- #mov $enter, %rsi 
- #call __print 
+ mov $enter, %rsi 
+ call __print 
 
  # get sVar
  mov $lenVarName, %rsi 
@@ -1360,9 +1369,9 @@ _start:
  mov $varName1, %rdi
  call __set
  call __getVar
- #mov (userData), %rsi 
- #call __print
- #call __printHeap
+ mov (userData), %rsi 
+ call __print
+ call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
