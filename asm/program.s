@@ -130,15 +130,16 @@ __set: #set strings
  mov %r8, %rdx   
  
  __setLocal:
- mov (%rdi), %r11b
- movb %r11b, (%rdx)
  cmp $0, %rax 
  jz __setLocalEnd
+ mov (%rdi), %r11b
+ movb %r11b, (%rdx)
  inc %rdx
  inc %rdi
  dec %rax  
  jmp __setLocal
  __setLocalEnd:
+ inc %rdx 
  movb $0, (%rdx)
  ret 
 
@@ -1095,7 +1096,8 @@ ret
 _start:
  call __firstMem
  call __firstStrMem
- 
+
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx
  mov $lenVarName0, %rax 
@@ -1151,7 +1153,7 @@ mov $lenBuf, %rsi
  mov $lenBuf4, %rax 
  mov $buf4, %rdi
  call __set 
- xor %rax, %rax  
+ xor %rax, %rax 
 
  call __add 
  mov $lenT0, %rsi 
@@ -1164,16 +1166,11 @@ mov $lenBuf4, %rsi
  mov $lenData3, %rax 
  mov $data3, %rdi
  call __set
-  
-# Проблема!
 mov $lenBuf3, %rsi 
  mov $buf3, %rdx 
  mov $lenT0, %rax 
  mov $t0, %rdi
  call __set
-
- mov $buf4, %rsi 
- call __print
 mov $lenBuf, %rsi 
  mov $buf, %rdx 
  mov $lenBuf3, %rax 
@@ -1187,14 +1184,11 @@ mov $lenBuf, %rsi
  xor %rax, %rax 
 
  call __add 
- 
-
  mov $lenT1, %rsi 
  mov $t1, %rdx 
  mov $lenUserData, %rax 
  mov $userData, %rdi
  call __set
-
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName0, %rax 
@@ -1208,7 +1202,6 @@ mov $lenVarName, %rsi
  mov $t1, %rax 
  mov %rax, (userData)
  call __setVar
- 
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName2, %rax 
@@ -1242,7 +1235,6 @@ mov $lenVarName, %rsi
  call __print
 mov $data4, %rsi
 call __print
-call __printHeap
 mov $60,  %rax
 xor %rdi, %rdi
 syscall

@@ -245,6 +245,7 @@ __set: #set strings
  # rdx - адрес буфера назначения
  # rax - длина буфера источника 
  # rdi - адрес буфера источника 
+
  mov %rdx, %r8 
  mov %rsi, %r9
   
@@ -260,17 +261,18 @@ __set: #set strings
  mov %r8, %rdx   
  
  __setLocal:
- mov (%rdi), %r11b
- movb %r11b, (%rdx)
  cmp $0, %rax 
  jz __setLocalEnd
+ mov (%rdi), %r11b
+ movb %r11b, (%rdx)
  inc %rdx
  inc %rdi
  dec %rax  
  jmp __setLocal
  __setLocalEnd:
+ inc %rdx 
  movb $0, (%rdx)
- ret 
+ ret  
 
 __concatinate:
  # входные параметры 
