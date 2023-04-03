@@ -1165,7 +1165,8 @@ mov %rbx, %rax
 
 __pointLocal:             
 inc %rax
-cmp $0, (%rax) 
+mov (%rax), %dl 
+cmp $0, %dl 
 jz __parseNow
 mov (%rax), %dl 
 mov %dl, (%rcx) 

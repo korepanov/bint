@@ -462,34 +462,26 @@ fatalError:
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
  lenT127 = . - t127
 varName0:
-.ascii "c"
+.ascii "a"
 lenVarName0 = . - varName0
 varName1:
-.ascii "a"
+.ascii "b"
 lenVarName1 = . - varName1
+varName2:
+.ascii "c"
+lenVarName2 = . - varName2
 data0:
-.ascii "-10"
+.ascii "7.0"
 .space 1, 0
 lenData0 = . - data0
-varName2:
-.ascii "b"
-lenVarName2 = . - varName2
 data1:
-.ascii "5"
+.ascii "5.5"
 .space 1, 0
 lenData1 = . - data1
-data2:
-.ascii "3"
-.space 1, 0
-lenData2 = . - data2
-data3:
-.ascii "3"
-.space 1, 0
-lenData3 = . - data3
 varName3:
 .ascii "s"
 lenVarName3 = . - varName3
-data4:
+data2:
 .ascii "\n"
 .space 1, 0
-lenData4 = . - data4
+lenData2 = . - data2
