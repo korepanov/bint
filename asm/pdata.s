@@ -70,7 +70,12 @@ ten:
 one:
 .float 1.0 
 zero:
-.float 0.0 
+.float 0.0
+ 
+floatTail:
+.ascii ".0"
+.space 1, 0
+lenFloatTail =  . - floatTail
 
 fatalError:
 .ascii "fatal error: internal error\n"

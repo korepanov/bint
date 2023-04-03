@@ -1,11 +1,8 @@
-int a; 
-int b;
+float a;
 
-a = 10;
-b = -10;
-a = (a + b);
+a = (1 + (10 + 5.5));
 
-string s;
+string s; 
 s = str(a);
 print(s);
 print("\n");

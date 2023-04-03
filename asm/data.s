@@ -70,7 +70,12 @@ ten:
 one:
 .float 1.0 
 zero:
-.float 0.0 
+.float 0.0
+ 
+floatTail:
+.ascii ".0"
+.space 1, 0
+lenFloatTail =  . - floatTail
 
 fatalError:
 .ascii "fatal error: internal error\n"
@@ -464,21 +469,22 @@ fatalError:
 varName0:
 .ascii "a"
 lenVarName0 = . - varName0
-varName1:
-.ascii "b"
-lenVarName1 = . - varName1
 data0:
 .ascii "10"
 .space 1, 0
 lenData0 = . - data0
 data1:
-.ascii "-10"
+.ascii "5.5"
 .space 1, 0
 lenData1 = . - data1
-varName2:
-.ascii "s"
-lenVarName2 = . - varName2
 data2:
-.ascii "\n"
+.ascii "1"
 .space 1, 0
 lenData2 = . - data2
+varName1:
+.ascii "s"
+lenVarName1 = . - varName1
+data3:
+.ascii "\n"
+.space 1, 0
+lenData3 = . - data3
