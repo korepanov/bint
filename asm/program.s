@@ -874,7 +874,7 @@ __add:
 
  ret 
 
- __sub:
+  __sub:
  # вход: buf и buf2
  # %rax - тип операции 
  # 0 - целочисленное сложение 
@@ -923,14 +923,15 @@ __add:
  mov $buf4, %rdi 
  call __set
  call __parseFloat
- movss %xmm0, (buf)
- fld (buf)
  movss %xmm1, (buf)
+ fld (buf)
+ movss %xmm0, (buf)
  fsub (buf)
  fstp (buf)
  call __floatToStr
 
  ret 
+
 
 __floatToStr:
 # вход: buf
@@ -1197,6 +1198,32 @@ mov $lenVarName, %rsi
  mov $varName, %rcx 
  mov $varType, %rdx  
  call __defineVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenIntType, %rax 
+ mov $intType, %rdi 
+ call __set 
+ mov $varName, %rcx 
+ mov $varType, %rdx  
+ call __defineVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi 
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenFloatType, %rax 
+ mov $floatType, %rdi 
+ call __set 
+ mov $varName, %rcx 
+ mov $varType, %rdx  
+ call __defineVar
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName0, %rax 
@@ -1206,15 +1233,33 @@ call __set
  mov $data0, %rax  
  mov %rax, (userData)
  call __setVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
+call __set
+
+ mov $data1, %rax  
+ mov %rax, (userData)
+ call __setVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi 
+call __set
+
+ mov $data2, %rax  
+ mov %rax, (userData)
+ call __setVar
 mov $lenBuf3, %rsi 
  mov $buf3, %rdx 
- mov $lenData1, %rax 
- mov $data1, %rdi
+ mov $lenData3, %rax 
+ mov $data3, %rdi
  call __set
 mov $lenBuf4, %rsi 
  mov $buf4, %rdx 
- mov $lenData2, %rax 
- mov $data2, %rdi
+ mov $lenData4, %rax 
+ mov $data4, %rdi
  call __set
 mov $lenBuf, %rsi 
  mov $buf, %rdx 
@@ -1226,7 +1271,7 @@ mov $lenBuf, %rsi
  mov $lenBuf4, %rax 
  mov $buf4, %rdi
  call __set 
- xor %rax, %rax 
+ mov $1, %rax 
 
  call __sub 
  mov $lenT0, %rsi 
@@ -1249,8 +1294,8 @@ mov $lenVarName, %rsi
  call __setVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi
+ mov $lenVarName3, %rax 
+ mov $varName3, %rdi
  call __set 
  mov $lenVarType, %rsi 
  mov $varType, %rdx 
@@ -1266,19 +1311,19 @@ mov $lenVarName, %rsi
  call __getVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx
- mov $lenVarName1, %rax 
- mov $varName1, %rdi
+ mov $lenVarName3, %rax 
+ mov $varName3, %rdi
  call __set 
  call __setVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx
- mov $lenVarName1, %rax 
- mov $varName1, %rdi
+ mov $lenVarName3, %rax 
+ mov $varName3, %rdi
  call __set
  call __getVar
  mov (userData), %rsi 
  call __print
-mov $data3, %rsi
+mov $data5, %rsi
 call __print
 mov $60,  %rax
 xor %rdi, %rdi

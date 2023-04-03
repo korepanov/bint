@@ -469,22 +469,36 @@ fatalError:
 varName0:
 .ascii "a"
 lenVarName0 = . - varName0
+varName1:
+.ascii "b"
+lenVarName1 = . - varName1
+varName2:
+.ascii "c"
+lenVarName2 = . - varName2
 data0:
 .ascii "3"
 .space 1, 0
 lenData0 = . - data0
 data1:
-.ascii "10"
+.ascii "7"
 .space 1, 0
 lenData1 = . - data1
 data2:
-.ascii "10"
+.ascii "10.5"
 .space 1, 0
 lenData2 = . - data2
-varName1:
-.ascii "s"
-lenVarName1 = . - varName1
 data3:
-.ascii "\n"
+.ascii "10.5"
 .space 1, 0
 lenData3 = . - data3
+data4:
+.ascii "1.5"
+.space 1, 0
+lenData4 = . - data4
+varName3:
+.ascii "s"
+lenVarName3 = . - varName3
+data5:
+.ascii "\n"
+.space 1, 0
+lenData5 = . - data5

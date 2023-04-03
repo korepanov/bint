@@ -1,6 +1,11 @@
 int a;
+int b;
+float c;
 a = 3;
-a = (10 - 10);
+b = 7;
+c = 10.5;
+
+a = (10.5 - 1.5);
 
 string s; 
 s = str(a);

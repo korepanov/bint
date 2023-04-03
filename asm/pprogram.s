@@ -874,7 +874,7 @@ __add:
 
  ret 
 
- __sub:
+  __sub:
  # вход: buf и buf2
  # %rax - тип операции 
  # 0 - целочисленное сложение 
@@ -923,14 +923,15 @@ __add:
  mov $buf4, %rdi 
  call __set
  call __parseFloat
- movss %xmm0, (buf)
- fld (buf)
  movss %xmm1, (buf)
+ fld (buf)
+ movss %xmm0, (buf)
  fsub (buf)
  fstp (buf)
  call __floatToStr
 
  ret 
+
 
 __floatToStr:
 # вход: buf

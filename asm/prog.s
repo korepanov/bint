@@ -1059,9 +1059,9 @@ __add:
  mov $buf4, %rdi 
  call __set
  call __parseFloat
- movss %xmm0, (buf)
- fld (buf)
  movss %xmm1, (buf)
+ fld (buf)
+ movss %xmm0, (buf)
  fsub (buf)
  fstp (buf)
  call __floatToStr
