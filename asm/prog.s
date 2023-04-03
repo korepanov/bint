@@ -1010,6 +1010,65 @@ __add:
  ret 
 
 
+ __sub:
+ # вход: buf и buf2
+ # %rax - тип операции 
+ # 0 - целочисленное сложение 
+ # 1 - сложение вещественных чисел   
+ # выход: userData 
+ call __clearUserData
+ cmp $0, %rax 
+ jz __subInt 
+ cmp $1, %rax 
+ jz __subFloat
+
+ call __throughError
+
+ __subInt:
+ call __toNumber
+ mov %rax, %rbx 
+ call __clearBuf
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi 
+ call __set 
+ call __toNumber
+ sub %rax, %rbx
+ mov %rbx, %rax 
+ call __toStr 
+ mov $lenUserData, %rsi 
+ mov $userData, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi 
+ call __set 
+ ret 
+ __subFloat:
+ call __clearBuf4
+ mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi 
+ call __set
+ call __parseFloat
+ movss %xmm0, %xmm1 
+ call __clearBuf
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi 
+ call __set
+ call __parseFloat
+ movss %xmm0, (buf)
+ fld (buf)
+ movss %xmm1, (buf)
+ fsub (buf)
+ fstp (buf)
+ call __floatToStr
+
+ ret 
+
+
 __floatToStr:
 # вход: buf
 # выход userData
@@ -1379,10 +1438,18 @@ _start:
  mov $varName0, %rdi
  call __set
  call __getVar
+
  mov (userData), %rsi 
- call __print
- mov $enter, %rsi 
- call __print 
+ call __len 
+ mov $lenBuf3, %rsi 
+ mov $buf3, %rdx 
+ mov (userData), %rdi 
+ call __set 
+
+ #mov (userData), %rsi 
+ #call __print
+ #mov $enter, %rsi 
+ #call __print 
  # get iVar2  
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -1390,9 +1457,35 @@ _start:
  mov $varName4, %rdi
  call __set
  call __getVar
+ #mov (userData), %rsi 
+ #call __print
  mov (userData), %rsi 
- call __print
- 
+ call __len 
+ mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov (userData), %rdi 
+ call __set 
+
+ mov $lenBuf, %rsi
+ mov $buf, %rdx 
+ mov $lenBuf3, %rax 
+ mov $buf3, %rdi 
+ call __set 
+ mov $lenBuf2, %rsi
+ mov $buf2, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi 
+ call __set 
+
+ xor %rax, %rax 
+ call __sub 
+ mov $userData, %rsi 
+ call __print  
+  # rsi - длина буфера назначения 
+ # rdx - адрес буфера назначения
+ # rax - длина буфера источника 
+ # rdi - адрес буфера источника 
+  
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)

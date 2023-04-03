@@ -1,6 +1,6 @@
 int a;
-
-a = (9 - 5); 
+a = 3;
+a = (10 - 10);
 
 string s; 
 s = str(a);

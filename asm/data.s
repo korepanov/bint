@@ -469,3 +469,22 @@ fatalError:
 varName0:
 .ascii "a"
 lenVarName0 = . - varName0
+data0:
+.ascii "3"
+.space 1, 0
+lenData0 = . - data0
+data1:
+.ascii "10"
+.space 1, 0
+lenData1 = . - data1
+data2:
+.ascii "10"
+.space 1, 0
+lenData2 = . - data2
+varName1:
+.ascii "s"
+lenVarName1 = . - varName1
+data3:
+.ascii "\n"
+.space 1, 0
+lenData3 = . - data3
