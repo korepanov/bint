@@ -481,7 +481,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 		if "int" == typeLO && "int" == typeRO {
 			if tNumber > TempVarsNum {
-				fmt.Println("arith")
+				fmt.Println("the arithmetic expression is too long")
 			}
 			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
 				"\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenBuf4, %rax \n mov $buf4, %rdi\n call __set \n xor %rax, %rax \n" +
