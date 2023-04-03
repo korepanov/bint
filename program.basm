@@ -1,6 +1,6 @@
 float a;
 
-a = (1 + (10 + 5.5));
+a = (5.5 + 9); 
 
 string s; 
 s = str(a);

@@ -1160,12 +1160,12 @@ mov $lenBuf, %rsi
  mov $lenBuf4, %rax 
  mov $buf4, %rdi
  call __set
- mov $lenBuf, %r8 
- mov $buf, %r9 
+ mov $lenBuf2, %r8 
+ mov $buf2, %r9 
  mov $floatTail, %r11 
  call __concatinate
- mov $lenBuf, %rsi 
- mov $buf, %rdx 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
  mov $lenUserData, %rax 
  mov $userData, %rdi 
  call __set
@@ -1174,43 +1174,6 @@ mov $lenBuf, %rsi
  call __add 
  mov $lenT0, %rsi 
  mov $t0, %rdx 
- mov $lenUserData, %rax 
- mov $userData, %rdi
- call __set
-mov $lenBuf3, %rsi 
- mov $buf3, %rdx 
- mov $lenData2, %rax 
- mov $data2, %rdi
- call __set
-mov $lenBuf4, %rsi 
- mov $buf4, %rdx 
- mov $lenT0, %rax 
- mov $t0, %rdi
- call __set
-mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenBuf3, %rax 
- mov $buf3, %rdi
- call __set
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenBuf4, %rax 
- mov $buf4, %rdi
- call __set
- mov $lenBuf, %r8 
- mov $buf, %r9 
- mov $floatTail, %r11 
- call __concatinate
- mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenUserData, %rax 
- mov $userData, %rdi 
- call __set
- mov $1, %rax 
-
- call __add 
- mov $lenT1, %rsi 
- mov $t1, %rdx 
  mov $lenUserData, %rax 
  mov $userData, %rdi
  call __set
@@ -1224,7 +1187,7 @@ mov $lenVarName, %rsi
  mov $lenVarName0, %rax 
  mov $varName0, %rdi
  call __set 
- mov $t1, %rax 
+ mov $t0, %rax 
  mov %rax, (userData)
  call __setVar
 mov $lenVarName, %rsi 
@@ -1258,7 +1221,7 @@ mov $lenVarName, %rsi
  call __getVar
  mov (userData), %rsi 
  call __print
-mov $data3, %rsi
+mov $data2, %rsi
 call __print
 mov $60,  %rax
 xor %rdi, %rdi
