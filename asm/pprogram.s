@@ -106,6 +106,23 @@ __toStrexc:
   dec %rdx        # а в старом в обратном порядке
   jnz __toStrexc         # проверка конца алгоритма 
   movb $0, (%rbx)
+  mov $buf2, %rbx 
+  mov (%rbx), %dl 
+  cmp $'-', %dl
+  jnz __toStrEnd 
+  inc %rbx 
+  mov (%rbx), %dl 
+  cmp $'0', %dl
+  jnz __toStrEnd 
+  inc %rbx 
+  mov (%rbx), %dl 
+  cmp $0, %dl 
+  jnz __toStrEnd
+  mov $buf2, %rbx 
+  movb $'0', (%rbx) 
+  inc %rbx 
+  movb $0, (%rbx) 
+__toStrEnd:
   ret
 
 __set: #set strings

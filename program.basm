@@ -4,7 +4,7 @@ float c;
 
 a = 7;
 b = 5.5; 
-c = (a + b); 
+c = ((a + b) + (a + b)); 
 
 string s;
 s = str(c);

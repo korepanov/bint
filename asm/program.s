@@ -106,6 +106,23 @@ __toStrexc:
   dec %rdx        # а в старом в обратном порядке
   jnz __toStrexc         # проверка конца алгоритма 
   movb $0, (%rbx)
+  mov $buf2, %rbx 
+  mov (%rbx), %dl 
+  cmp $'-', %dl
+  jnz __toStrEnd 
+  inc %rbx 
+  mov (%rbx), %dl 
+  cmp $'0', %dl
+  jnz __toStrEnd 
+  inc %rbx 
+  mov (%rbx), %dl 
+  cmp $0, %dl 
+  jnz __toStrEnd
+  mov $buf2, %rbx 
+  movb $'0', (%rbx) 
+  inc %rbx 
+  movb $0, (%rbx) 
+__toStrEnd:
   ret
 
 __set: #set strings
@@ -1211,6 +1228,76 @@ mov $lenBuf, %rsi
  call __set
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi
+ call __set 
+ call __getVar 
+ mov (userData), %rsi 
+ call __len 
+ mov $lenBuf3, %rsi 
+ mov $buf3, %rdx 
+ mov (userData), %rdi
+ call __set 
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
+ call __set 
+ call __getVar 
+ mov (userData), %rsi 
+ call __len 
+ mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov (userData), %rdi
+ call __set 
+mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf3, %rax 
+ mov $buf3, %rdi
+ call __set
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi
+ call __set 
+ mov $1, %rax 
+
+ call __add 
+ mov $lenT1, %rsi 
+ mov $t1, %rdx 
+ mov $lenUserData, %rax 
+ mov $userData, %rdi
+ call __set
+mov $lenBuf3, %rsi 
+ mov $buf3, %rdx 
+ mov $lenT0, %rax 
+ mov $t0, %rdi
+ call __set
+mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenT1, %rax 
+ mov $t1, %rdi
+ call __set
+mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf3, %rax 
+ mov $buf3, %rdi
+ call __set
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi
+ call __set 
+ mov $1, %rax 
+
+ call __add 
+ mov $lenT2, %rsi 
+ mov $t2, %rdx 
+ mov $lenUserData, %rax 
+ mov $userData, %rdi
+ call __set
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
  mov $lenVarName2, %rax 
  mov $varName2, %rdi 
  call __set
@@ -1219,7 +1306,7 @@ mov $lenVarName, %rsi
  mov $lenVarName2, %rax 
  mov $varName2, %rdi
  call __set 
- mov $t0, %rax 
+ mov $t2, %rax 
  mov %rax, (userData)
  call __setVar
 mov $lenVarName, %rsi 
