@@ -488,17 +488,25 @@ data2:
 .space 1, 0
 lenData2 = . - data2
 data3:
-.ascii "10.5"
+.ascii "0.005"
 .space 1, 0
 lenData3 = . - data3
 data4:
-.ascii "1.5"
+.ascii "9"
 .space 1, 0
 lenData4 = . - data4
+data5:
+.ascii "1"
+.space 1, 0
+lenData5 = . - data5
+data6:
+.ascii "1.5"
+.space 1, 0
+lenData6 = . - data6
 varName3:
 .ascii "s"
 lenVarName3 = . - varName3
-data5:
+data7:
 .ascii "\n"
 .space 1, 0
-lenData5 = . - data5
+lenData7 = . - data7

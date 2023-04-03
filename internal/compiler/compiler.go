@@ -55,7 +55,7 @@ func InitData() (*os.File, error) {
 		return f, err
 	}
 	// множество временных переменных для расчета арифметических выражений
-	for i := 0; i < 128; i++ {
+	for i := 0; i < TempVarsNum; i++ {
 		_, err = f.Write([]byte("\n t" + fmt.Sprintf("%v", i) + ": \n .quad 0, 0, 0, 0, 0, 0, 0, 0 \n lenT" + fmt.Sprintf("%v", i) +
 			" = . - t" + fmt.Sprintf("%v", i)))
 		if nil != err {
@@ -480,6 +480,9 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		if "int" == typeLO && "int" == typeRO {
+			if tNumber > TempVarsNum {
+				fmt.Println("arith")
+			}
 			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
 				"\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenBuf4, %rax \n mov $buf4, %rdi\n call __set \n xor %rax, %rax \n" +
 				"\n call __add \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
