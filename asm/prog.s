@@ -250,12 +250,14 @@ __set: #set strings
  mov %rsi, %r9
   
  __setClear:
+ cmp $0, %rsi
+ jz __setClearEnd
  movb $'*', (%rdx)
  dec %rsi
- inc %rdx
- cmp $0, %rsi  
- jnz __setClear
- dec %rdx  
+ inc %rdx  
+ jmp __setClear
+ __setClearEnd:
+ dec %rdx 
  movb $0, (%rdx)
 
  mov %r8, %rdx   
@@ -270,9 +272,9 @@ __set: #set strings
  dec %rax  
  jmp __setLocal
  __setLocalEnd:
- inc %rdx 
+ #dec %rdx 
  movb $0, (%rdx)
- ret  
+ ret 
 
 __concatinate:
  # входные параметры 

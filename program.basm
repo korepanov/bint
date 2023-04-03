@@ -1,9 +1,11 @@
 int c;
 int a;
 
-a = 10;
+a = -10;
+int b; 
+b = 5;
 
-c = ((10 + 5) + 7);
+c = (a + (b + ((a+b)+b)));
 
 string s;
 s = str(c);
