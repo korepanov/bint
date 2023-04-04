@@ -181,10 +181,3 @@ data14:
 .ascii "12"
 .space 1, 0
 lenData14 = . - data14
-varName3:
-.ascii "s"
-lenVarName3 = . - varName3
-data15:
-.ascii "\n"
-.space 1, 0
-lenData15 = . - data15

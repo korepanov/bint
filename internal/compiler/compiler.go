@@ -480,8 +480,8 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		if "int" == typeLO && "int" == typeRO {
-			if tNumber > TempVarsNum {
-				fmt.Println("the arithmetic expression is too long")
+			if tNumber >= TempVarsNum {
+				fmt.Println("ERROR: the arithmetic expression is too long")
 				os.Exit(1)
 			}
 			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
@@ -498,8 +498,8 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		if "float" == typeLO && "float" == typeRO {
-			if tNumber > TempVarsNum {
-				fmt.Println("the arithmetic expression is too long")
+			if tNumber >= TempVarsNum {
+				fmt.Println("ERROR: the arithmetic expression is too long")
 				os.Exit(1)
 			}
 			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
@@ -516,8 +516,8 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		if "int" == typeLO && "float" == typeRO {
-			if tNumber > TempVarsNum {
-				fmt.Println("the arithmetic expression is too long")
+			if tNumber >= TempVarsNum {
+				fmt.Println("ERROR: the arithmetic expression is too long")
 				os.Exit(1)
 			}
 			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
@@ -536,8 +536,8 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "float", nil
 		}
 		if "float" == typeLO && "int" == typeRO {
-			if tNumber > TempVarsNum {
-				fmt.Println("the arithmetic expression is too long")
+			if tNumber >= TempVarsNum {
+				fmt.Println("ERROR: the arithmetic expression is too long")
 				os.Exit(1)
 			}
 			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
@@ -690,8 +690,8 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		if "int" == typeLO && "int" == typeRO {
-			if tNumber > TempVarsNum {
-				fmt.Println("the arithmetic expression is too long")
+			if tNumber >= TempVarsNum {
+				fmt.Println("ERROR: the arithmetic expression is too long")
 				os.Exit(1)
 			}
 			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
@@ -708,8 +708,8 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		if "float" == typeLO && "float" == typeRO {
-			if tNumber > TempVarsNum {
-				fmt.Println("the arithmetic expression is too long")
+			if tNumber >= TempVarsNum {
+				fmt.Println("ERROR: the arithmetic expression is too long")
 				os.Exit(1)
 			}
 			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
@@ -726,8 +726,8 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		if "int" == typeLO && "float" == typeRO {
-			if tNumber > TempVarsNum {
-				fmt.Println("the arithmetic expression is too long")
+			if tNumber >= TempVarsNum {
+				fmt.Println("ERROR: the arithmetic expression is too long")
 				os.Exit(1)
 			}
 			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
@@ -746,8 +746,8 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "float", nil
 		}
 		if "float" == typeLO && "int" == typeRO {
-			if tNumber > TempVarsNum {
-				fmt.Println("the arithmetic expression is too long")
+			if tNumber >= TempVarsNum {
+				fmt.Println("ERROR: the arithmetic expression is too long")
 				os.Exit(1)
 			}
 			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
