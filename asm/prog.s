@@ -107,7 +107,7 @@ data4:
 .space 1, 0
 lenData4 = . - data4 
 data5:
-.ascii "2.71828182"
+.ascii "0.0"
 .space 1, 0 
 lenData5 = . - data5 
 data6:
@@ -132,11 +132,21 @@ lenFloatTail =  . - floatTail
 fatalError:
 .ascii "fatal error: internal error\n"
 .space 1, 0 
+divZeroError:
+.ascii "fatal error: dividing by zero\n"
+.space 1, 0
 
 .text	
 
 __throughError:
  mov $fatalError, %rsi
+ call __print 
+ mov $60, %rax
+ mov $1, %rdi
+ syscall
+
+ __throughUserError:
+ # %rsi - адрес, по которому лежит сообщение об ошибке 
  call __print 
  mov $60, %rax
  mov $1, %rdi
@@ -1125,6 +1135,42 @@ __mul:
 
  ret 
 
+__div:
+ # вход: buf и buf2
+ # только для вещественных чисел!   
+ # выход: userData 
+ call __clearUserData
+ call __clearBuf4
+ mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi 
+ call __set
+ call __parseFloat
+ movss %xmm0, %xmm1 
+ call __clearBuf
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi 
+ call __set
+ call __parseFloat
+ # проверка деления на нуль
+ movss (zero), %xmm2 
+ cmpss $0, %xmm0, %xmm2
+ pextrb $3, %xmm2, %rax
+ cmp $1, %rax 
+ jz __divIsZero 
+ movss %xmm1, (buf)
+ fld (buf)
+ movss %xmm0, (buf)
+ fdiv (buf)
+ fstp (buf)
+ call __floatToStr
+ ret 
+ __divIsZero:
+ mov $divZeroError, %rsi 
+ call __throughUserError
 
 __floatToStr:
 # вход: buf
@@ -1559,7 +1605,7 @@ _start:
  #mov $buf2, %rsi 
  #call __print 
  mov $1, %rax 
- call __mul
+ call __div 
  mov $userData, %rsi 
  call __print  
  #call __printHeap
