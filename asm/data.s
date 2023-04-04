@@ -487,58 +487,10 @@ data2:
 .ascii "10.5"
 .space 1, 0
 lenData2 = . - data2
-data3:
-.ascii "1"
-.space 1, 0
-lenData3 = . - data3
-data4:
-.ascii "2"
-.space 1, 0
-lenData4 = . - data4
-data5:
-.ascii "3"
-.space 1, 0
-lenData5 = . - data5
-data6:
-.ascii "4"
-.space 1, 0
-lenData6 = . - data6
-data7:
-.ascii "5"
-.space 1, 0
-lenData7 = . - data7
-data8:
-.ascii "6"
-.space 1, 0
-lenData8 = . - data8
-data9:
-.ascii "7"
-.space 1, 0
-lenData9 = . - data9
-data10:
-.ascii "8"
-.space 1, 0
-lenData10 = . - data10
-data11:
-.ascii "9"
-.space 1, 0
-lenData11 = . - data11
-data12:
-.ascii "10"
-.space 1, 0
-lenData12 = . - data12
-data13:
-.ascii "11"
-.space 1, 0
-lenData13 = . - data13
-data14:
-.ascii "12"
-.space 1, 0
-lenData14 = . - data14
 varName3:
 .ascii "s"
 lenVarName3 = . - varName3
-data15:
+data3:
 .ascii "\n"
 .space 1, 0
-lenData15 = . - data15
+lenData3 = . - data3

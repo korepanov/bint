@@ -932,6 +932,63 @@ __add:
 
  ret 
 
+__mul:
+ # вход: buf и buf2
+ # %rax - тип операции 
+ # 0 - целочисленное сложение 
+ # 1 - сложение вещественных чисел   
+ # выход: userData 
+ call __clearUserData
+ cmp $0, %rax 
+ jz __mulInt 
+ cmp $1, %rax 
+ jz __mulFloat
+
+ call __throughError
+
+ __mulInt:
+ call __toNumber
+ mov %rax, %rbx 
+ call __clearBuf
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi 
+ call __set 
+ call __toNumber
+ imul %rbx, %rax
+ call __toStr 
+ mov $lenUserData, %rsi 
+ mov $userData, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi 
+ call __set 
+ ret 
+ __mulFloat:
+ call __clearBuf4
+ mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi 
+ call __set
+ call __parseFloat
+ movss %xmm0, %xmm1 
+ call __clearBuf
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi 
+ call __set
+ call __parseFloat
+ movss %xmm0, (buf)
+ fld (buf)
+ movss %xmm1, (buf)
+ fmul (buf)
+ fstp (buf)
+ call __floatToStr
+
+ ret 
+
 
 __floatToStr:
 # вход: buf
