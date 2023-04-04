@@ -1119,7 +1119,7 @@ __mul:
  movss %xmm0, (buf)
  fld (buf)
  movss %xmm1, (buf)
- fadd (buf)
+ fmul (buf)
  fstp (buf)
  call __floatToStr
 
@@ -1556,12 +1556,12 @@ _start:
  mov $buf4, %rdi 
  call __set 
 
- mov $buf2, %rsi 
- call __print 
- #xor %rax, %rax 
- #call __mul
- #mov $userData, %rsi 
- #call __print  
+ #mov $buf2, %rsi 
+ #call __print 
+ mov $1, %rax 
+ call __mul
+ mov $userData, %rsi 
+ call __print  
  #call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
