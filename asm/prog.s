@@ -1092,7 +1092,7 @@ __mul:
  mov $buf2, %rdi 
  call __set 
  call __toNumber
- mul %rbx, %rax
+ imul %rbx, %rax
  call __toStr 
  mov $lenUserData, %rsi 
  mov $userData, %rdx 
