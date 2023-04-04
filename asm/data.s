@@ -471,30 +471,29 @@ fatalError:
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
  lenT127 = . - t127
 varName0:
-.ascii "a"
+.ascii "$ret"
 lenVarName0 = . - varName0
 varName1:
-.ascii "b"
+.ascii "a"
 lenVarName1 = . - varName1
-varName2:
-.ascii "c"
-lenVarName2 = . - varName2
 data0:
-.ascii "3"
+.ascii "5.5"
 .space 1, 0
 lenData0 = . - data0
 data1:
-.ascii "-7"
+.ascii "6"
 .space 1, 0
 lenData1 = . - data1
-data2:
-.ascii "10.5"
-.space 1, 0
-lenData2 = . - data2
-varName3:
+varName2:
 .ascii "s"
+lenVarName2 = . - varName2
+varName3:
+.ascii "$s0"
 lenVarName3 = . - varName3
-data3:
+varName4:
+.ascii "$print_arg0"
+lenVarName4 = . - varName4
+data2:
 .ascii "\n"
 .space 1, 0
-lenData3 = . - data3
+lenData2 = . - data2

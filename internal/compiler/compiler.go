@@ -1117,7 +1117,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			}
 			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
 				"\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenBuf4, %rax \n mov $buf4, %rdi\n call __set \n mov $1, %rax \n" +
-				"\n call __mul \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+				"\n call __div \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
 				", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
 			if nil != err {
 				fmt.Println(err)
@@ -1138,7 +1138,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				"\n mov $lenBuf, %r8 \n mov $buf, %r9 \n mov $floatTail, %r11 \n call __concatinate" +
 				"\n mov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi \n call __set" +
 				"\n mov $1, %rax \n" +
-				"\n call __mul \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+				"\n call __div \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
 				", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
 			if nil != err {
 				fmt.Println(err)
@@ -1158,7 +1158,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				"\n mov $lenBuf2, %r8 \n mov $buf2, %r9 \n mov $floatTail, %r11 \n call __concatinate" +
 				"\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi \n call __set" +
 				"\n mov $1, %rax \n" +
-				"\n call __mul \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+				"\n call __div \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
 				", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
 			if nil != err {
 				fmt.Println(err)
@@ -1269,6 +1269,12 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 						RO[0] = fmt.Sprintf("%v", RO[0]) + ".0"
 					}
 				}
+
+				if `"` == string(fmt.Sprintf("%v", RO[0])[0]) &&
+					`"` == string(fmt.Sprintf("%v", RO[0])[len(fmt.Sprintf("%v", RO[0]))-1]) {
+					RO[0] = fmt.Sprintf("%v", RO[0])[1 : len(fmt.Sprintf("%v", RO[0]))-1]
+				}
+
 				_, err = dataFile.Write([]byte(".ascii \"" + fmt.Sprintf("%v", RO[0]) + "\"\n.space 1, 0"))
 				if nil != err {
 					fmt.Println(err)
