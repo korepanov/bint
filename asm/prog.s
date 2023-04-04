@@ -1444,6 +1444,28 @@ _start:
  mov $data4, %rax 
  mov %rax, (userData)
  call __setVar
+
+  # fVar2
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName5, %rax 
+ mov $varName5, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenFloatType, %rax 
+ mov $floatType, %rdi
+ call __set 
+ call __defineVar
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName5, %rax 
+ mov $varName5, %rdi
+ call __set 
+ mov $data5, %rax 
+ mov %rax, (userData)
+ call __setVar
  
  # sVar 
  mov $lenVarName, %rsi 
@@ -1488,11 +1510,11 @@ _start:
  mov $data7, %rax 
  mov %rax, (userData)
  call __setVar
- # get iVar  
+ # get fVar  
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName0, %rax 
- mov $varName0, %rdi
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi
  call __set
  call __getVar
 
@@ -1507,11 +1529,11 @@ _start:
  #call __print
  #mov $enter, %rsi 
  #call __print 
- # get iVar2  
+ # get fVar2  
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName4, %rax 
- mov $varName4, %rdi
+ mov $lenVarName5, %rax 
+ mov $varName5, %rdi
  call __set
  call __getVar
  #mov (userData), %rsi 
@@ -1534,11 +1556,13 @@ _start:
  mov $buf4, %rdi 
  call __set 
 
- xor %rax, %rax 
- call __mul
- mov $userData, %rsi 
- call __print  
-  
+ mov $buf2, %rsi 
+ call __print 
+ #xor %rax, %rax 
+ #call __mul
+ #mov $userData, %rsi 
+ #call __print  
+ #call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
