@@ -107,7 +107,7 @@ data4:
 .space 1, 0
 lenData4 = . - data4 
 data5:
-.ascii "0.0"
+.ascii "2.71828182"
 .space 1, 0 
 lenData5 = . - data5 
 data6:
@@ -1159,8 +1159,8 @@ __div:
  movss (zero), %xmm2 
  cmpss $0, %xmm0, %xmm2
  pextrb $3, %xmm2, %rax
- cmp $1, %rax 
- jz __divIsZero 
+ cmp $0, %rax 
+ jnz __divIsZero 
  movss %xmm1, (buf)
  fld (buf)
  movss %xmm0, (buf)
