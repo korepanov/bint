@@ -2,10 +2,10 @@ int a;
 int b;
 float c;
 a = 3;
-b = 7;
+b = -7;
 c = 10.5;
 
-a = (a + (c * (b - a)));
+a = (a / b); 
 
 string s; 
 s = str(a);

@@ -7,6 +7,13 @@ __throughError:
  mov $1, %rdi
  syscall
 
+ __throughUserError:
+ # %rsi - адрес, по которому лежит сообщение об ошибке 
+ call __print 
+ mov $60, %rax
+ mov $1, %rdi
+ syscall
+
 __print:
  mov (%rsi), %al	
  cmp $0, %al	
@@ -989,6 +996,42 @@ __mul:
 
  ret 
 
+__div:
+ # вход: buf и buf2
+ # только для вещественных чисел!   
+ # выход: userData 
+ call __clearUserData
+ call __clearBuf4
+ mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi 
+ call __set
+ call __parseFloat
+ movss %xmm0, %xmm1 
+ call __clearBuf
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi 
+ call __set
+ call __parseFloat
+ # проверка деления на нуль
+ movss (zero), %xmm2 
+ cmpss $0, %xmm0, %xmm2
+ pextrb $3, %xmm2, %rax
+ cmp $0, %rax 
+ jnz __divIsZero 
+ movss %xmm1, (buf)
+ fld (buf)
+ movss %xmm0, (buf)
+ fdiv (buf)
+ fstp (buf)
+ call __floatToStr
+ ret 
+ __divIsZero:
+ mov $divZeroError, %rsi 
+ call __throughUserError
 
 __floatToStr:
 # вход: buf

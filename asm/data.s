@@ -77,6 +77,10 @@ floatTail:
 .space 1, 0
 lenFloatTail =  . - floatTail
 
+divZeroError:
+.ascii "fatal error: dividing by zero\n"
+.space 1, 0
+
 fatalError:
 .ascii "fatal error: internal error\n"
 .space 1, 0 
@@ -480,7 +484,7 @@ data0:
 .space 1, 0
 lenData0 = . - data0
 data1:
-.ascii "7"
+.ascii "-7"
 .space 1, 0
 lenData1 = . - data1
 data2:

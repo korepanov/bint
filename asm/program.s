@@ -7,6 +7,13 @@ __throughError:
  mov $1, %rdi
  syscall
 
+ __throughUserError:
+ # %rsi - адрес, по которому лежит сообщение об ошибке 
+ call __print 
+ mov $60, %rax
+ mov $1, %rdi
+ syscall
+
 __print:
  mov (%rsi), %al	
  cmp $0, %al	
@@ -989,6 +996,42 @@ __mul:
 
  ret 
 
+__div:
+ # вход: buf и buf2
+ # только для вещественных чисел!   
+ # выход: userData 
+ call __clearUserData
+ call __clearBuf4
+ mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi 
+ call __set
+ call __parseFloat
+ movss %xmm0, %xmm1 
+ call __clearBuf
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi 
+ call __set
+ call __parseFloat
+ # проверка деления на нуль
+ movss (zero), %xmm2 
+ cmpss $0, %xmm0, %xmm2
+ pextrb $3, %xmm2, %rax
+ cmp $0, %rax 
+ jnz __divIsZero 
+ movss %xmm1, (buf)
+ fld (buf)
+ movss %xmm0, (buf)
+ fdiv (buf)
+ fstp (buf)
+ call __floatToStr
+ ret 
+ __divIsZero:
+ mov $divZeroError, %rsi 
+ call __throughUserError
 
 __floatToStr:
 # вход: buf
@@ -1310,8 +1353,8 @@ call __set
  call __setVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi
  call __set 
  call __getVar 
  mov (userData), %rsi 
@@ -1322,8 +1365,8 @@ mov $lenVarName, %rsi
  call __set 
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName0, %rax 
- mov $varName0, %rdi
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
  call __set 
  call __getVar 
  mov (userData), %rsi 
@@ -1337,40 +1380,14 @@ mov $lenBuf, %rsi
  mov $lenBuf3, %rax 
  mov $buf3, %rdi
  call __set
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenBuf4, %rax 
- mov $buf4, %rdi
- call __set 
- xor %rax, %rax 
-
- call __sub 
- mov $lenT0, %rsi 
- mov $t0, %rdx 
- mov $lenUserData, %rax 
- mov $userData, %rdi
- call __set
-mov $lenBuf4, %rsi 
- mov $buf4, %rdx 
- mov $lenT0, %rax 
- mov $t0, %rdi
- call __set
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName2, %rax 
- mov $varName2, %rdi
- call __set 
- call __getVar 
- mov (userData), %rsi 
- call __len 
- mov $lenBuf3, %rsi 
- mov $buf3, %rdx 
- mov (userData), %rdi
- call __set 
-mov $lenBuf, %rsi 
+ mov $lenBuf, %r8 
+ mov $buf, %r9 
+ mov $floatTail, %r11 
+ call __concatinate
+ mov $lenBuf, %rsi 
  mov $buf, %rdx 
- mov $lenBuf3, %rax 
- mov $buf3, %rdi
+ mov $lenUserData, %rax 
+ mov $userData, %rdi 
  call __set
  mov $lenBuf2, %rsi 
  mov $buf2, %rdx 
@@ -1388,53 +1405,9 @@ mov $lenBuf, %rsi
  call __set
  mov $1, %rax 
 
- call __mul 
- mov $lenT1, %rsi 
- mov $t1, %rdx 
- mov $lenUserData, %rax 
- mov $userData, %rdi
- call __set
-mov $lenBuf4, %rsi 
- mov $buf4, %rdx 
- mov $lenT1, %rax 
- mov $t1, %rdi
- call __set
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName0, %rax 
- mov $varName0, %rdi
- call __set 
- call __getVar 
- mov (userData), %rsi 
- call __len 
- mov $lenBuf3, %rsi 
- mov $buf3, %rdx 
- mov (userData), %rdi
- call __set 
-mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenBuf3, %rax 
- mov $buf3, %rdi
- call __set
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenBuf4, %rax 
- mov $buf4, %rdi
- call __set
- mov $lenBuf, %r8 
- mov $buf, %r9 
- mov $floatTail, %r11 
- call __concatinate
- mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenUserData, %rax 
- mov $userData, %rdi 
- call __set
- mov $1, %rax 
-
- call __add 
- mov $lenT2, %rsi 
- mov $t2, %rdx 
+ call __div 
+ mov $lenT0, %rsi 
+ mov $t0, %rdx 
  mov $lenUserData, %rax 
  mov $userData, %rdi
  call __set
@@ -1448,7 +1421,7 @@ mov $lenVarName, %rsi
  mov $lenVarName0, %rax 
  mov $varName0, %rdi
  call __set 
- mov $t2, %rax 
+ mov $t0, %rax 
  mov %rax, (userData)
  call __setVar
 mov $lenVarName, %rsi 
