@@ -493,6 +493,9 @@ lenVarName3 = . - varName3
 varName4:
 .ascii "$print_arg0"
 lenVarName4 = . - varName4
+varName5:
+.ascii "$print_arg0"
+lenVarName5 = . - varName5
 data2:
 .ascii "\n"
 .space 1, 0

@@ -1846,6 +1846,7 @@ func CompileTree(infoList []interface{}, variables [][]interface{},
 				if nil != err {
 					panic(err)
 				}
+				break
 			}
 		}
 		if !wasVar {
