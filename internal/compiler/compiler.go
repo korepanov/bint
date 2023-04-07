@@ -160,9 +160,101 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 		return []interface{}{strings.Index(fmt.Sprintf("%v", LO[0]), fmt.Sprintf("%v", RO[0]))}, systemStack, "", nil
 	} else if "=" == OP {
-		return []interface{}{0}, systemStack, "", nil
+		var wasVar bool
+		var computedRO bool
+
+		if 2 == len(RO) && true == RO[0] {
+			RO = []interface{}{RO[1]}
+			computedRO = true
+		}
+		if !computedRO {
+			newVariable := EachVariable(variables)
+			for v := newVariable(); "end" != v[0]; v = newVariable() {
+				if fmt.Sprintf("%v", ValueFoldInterface(RO[0])) == fmt.Sprintf("%v", v[1]) {
+					wasVar = true
+					// getVar, результат в userData
+					numberS := fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", ValueFoldInterface(v[1]))])
+					_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx" +
+						"\n mov $lenVarName" + numberS +
+						", %rax \n mov $varName" + numberS + ", %rdi\n call __set\n call __getVar"))
+					if nil != err {
+						fmt.Println(err)
+						os.Exit(1)
+					}
+					numberS = fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", ValueFoldInterface(LO[0]))])
+					_, err = progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx" +
+						"\n mov $lenVarName" + numberS + ", %rax \n mov $varName" + numberS + ", %rdi\n call __set \n call __setVar"))
+					if nil != err {
+						fmt.Println(err)
+						os.Exit(1)
+					}
+				}
+			}
+		}
+		if !wasVar {
+			if computedRO {
+				// справа разультат вычислений, находящийся по адресу RO[0]
+				varName := "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+				lenVarName := "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+
+				// присвоить в varName имя текущей переменной
+				_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenVarName +
+					", %rax \n mov " + varName + ", %rdi \n call __set"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+
+				_, err = progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenVarName +
+					", %rax \n mov " + varName + ", %rdi\n call __set \n mov $" + fmt.Sprintf("%v", RO[0]) + ", %rax" +
+					" \n mov %rax, (userData)\n call __setVar"))
+
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+			} else {
+				// справа данные
+				_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":\n"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				if "float" == typeLO {
+					if -1 == strings.Index(fmt.Sprintf("%v", RO[0]), ".") {
+						RO[0] = fmt.Sprintf("%v", RO[0]) + ".0"
+					}
+				}
+
+				if `"` == string(fmt.Sprintf("%v", RO[0])[0]) &&
+					`"` == string(fmt.Sprintf("%v", RO[0])[len(fmt.Sprintf("%v", RO[0]))-1]) {
+					RO[0] = fmt.Sprintf("%v", RO[0])[1 : len(fmt.Sprintf("%v", RO[0]))-1]
+				}
+
+				_, err = dataFile.Write([]byte(".ascii \"" + fmt.Sprintf("%v", RO[0]) + "\"\n.space 1, 0"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				_, err = dataFile.Write([]byte("\nlenData" + fmt.Sprintf("%v", DataNumber) + " = . - data" + fmt.Sprintf("%v", DataNumber)))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				_, err = progFile.Write([]byte("\n mov $lenVarName, %rsi \n mov $varName, %rdx " +
+					"\n mov $lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])]) +
+					", %rax \n mov $varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])]) + ", %rdi \n" +
+					"call __set\n\n mov $data" + fmt.Sprintf("%v", DataNumber) + ", %rax  \n mov %rax, (userData)\n call __setVar"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				DataNumber++
+			}
+		}
+		return []interface{}{0}, systemStack, "", nil // успех
 	} else if "str" == OP {
-		return []interface{}{0}, systemStack, "", nil
+		return []interface{}{fmt.Sprintf("%v", LO[0])}, systemStack, "", nil
 	} else if "len" == OP {
 		if 0 == len(fmt.Sprintf("%v", LO[0])) {
 			return []interface{}{0}, systemStack, "", nil

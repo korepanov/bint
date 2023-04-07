@@ -1390,6 +1390,19 @@ mov $lenBuf, %rsi
  call __set
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi 
+ call __set
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi
+ call __set 
+ mov $t0, %rax 
+ mov %rax, (userData)
+ call __setVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
  call __set 
@@ -1401,6 +1414,18 @@ mov $lenVarName, %rsi
  call __defineVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi
+ call __set
+ call __getVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
+ call __set 
+ call __setVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
  call __set
@@ -1409,7 +1434,6 @@ mov $lenVarName, %rsi
  call __print
 mov $data2, %rsi
 call __print
-call __printHeap
 mov $60,  %rax
 xor %rdi, %rdi
 syscall
