@@ -1172,6 +1172,43 @@ __div:
  mov $divZeroError, %rsi 
  call __throughUserError
 
+__divI:
+ # вход: buf и buf2
+ # только для целых чисел!   
+ # выход: userData 
+ call __clearUserData
+ call __clearBuf4
+ mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi 
+ call __set
+ call __toNumber
+ mov %rax, %rbx # первый операнд сохранен в %rbx 
+ call __clearBuf
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi 
+ call __set
+ call __toNumber # второй операнд в %rax 
+ # проверка деления на нуль
+ cmp $0, %rax 
+ jz __divIsZeroI 
+ mov %rax, %rcx # запоминаем второй операнд в %rcx 
+ mov %rbx, %rax # первый операнд в %rax 
+ idiv %rcx
+ call __toStr 
+ mov $lenUserData, %rsi 
+ mov $userData, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi 
+ call __set
+ ret 
+ __divIsZeroI:
+ mov $divZeroError, %rsi 
+ call __throughUserError
+
 __floatToStr:
 # вход: buf
 # выход userData
@@ -1556,11 +1593,11 @@ _start:
  mov $data7, %rax 
  mov %rax, (userData)
  call __setVar
- # get fVar  
+ # get iVar  
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName2, %rax 
- mov $varName2, %rdi
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi
  call __set
  call __getVar
 
@@ -1575,11 +1612,11 @@ _start:
  #call __print
  #mov $enter, %rsi 
  #call __print 
- # get fVar2  
+ # get iVar2  
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName5, %rax 
- mov $varName5, %rdi
+ mov $lenVarName4, %rax 
+ mov $varName4, %rdi
  call __set
  call __getVar
  #mov (userData), %rsi 
@@ -1604,8 +1641,8 @@ _start:
 
  #mov $buf2, %rsi 
  #call __print 
- mov $1, %rax 
- call __div 
+ #mov $1, %rax 
+ call __divI 
  mov $userData, %rsi 
  call __print  
  #call __printHeap
