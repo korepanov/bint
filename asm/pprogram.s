@@ -1033,6 +1033,50 @@ __div:
  mov $divZeroError, %rsi 
  call __throughUserError
 
+__divI:
+ # вход: buf и buf2
+ # только для неотрицательных целых чисел!   
+ # выход: userData 
+ call __clearUserData
+ call __clearBuf4
+ mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi 
+ call __set 
+ call __toNumber 
+ cmp $0, %rax 
+ jl __divINeg
+ mov %rax, %r10 # первый операнд сохранен в %r10
+ call __clearBuf
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi 
+ call __set
+ call __toNumber # второй операнд в %rax 
+ # проверка деления на нуль  
+ cmp $0, %rax 
+ jz __divIsZeroI 
+ jl __divINeg
+ mov %rax, %rcx # запоминаем второй операнд в %rcx 
+ mov %r10, %rax # первый операнд в %rax
+ xor %rdx, %rdx  
+ div %rcx 
+ call __toStr 
+ mov $lenUserData, %rsi 
+ mov $userData, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi 
+ call __set
+ ret 
+ __divIsZeroI:
+ mov $divZeroError, %rsi 
+ call __throughUserError
+__divINeg:
+ mov $divINegError, %rsi 
+ call __throughUserError
+
 __floatToStr:
 # вход: buf
 # выход userData

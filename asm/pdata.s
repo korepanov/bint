@@ -85,3 +85,7 @@ fatalError:
 .ascii "fatal error: internal error\n"
 .space 1, 0 
 
+divINegError:
+.ascii "@ is not defined for negative numbers\n"
+.space 1, 0
+

@@ -85,6 +85,10 @@ fatalError:
 .ascii "fatal error: internal error\n"
 .space 1, 0 
 
+divINegError:
+.ascii "@ is not defined for negative numbers\n"
+.space 1, 0
+
 
  t0: 
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
@@ -471,5 +475,23 @@ fatalError:
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
  lenT127 = . - t127
 varName0:
-.ascii "a"
+.ascii "$ret"
 lenVarName0 = . - varName0
+varName1:
+.ascii "a"
+lenVarName1 = . - varName1
+data0:
+.ascii "-5"
+.space 1, 0
+lenData0 = . - data0
+data1:
+.ascii "0"
+.space 1, 0
+lenData1 = . - data1
+varName2:
+.ascii "s"
+lenVarName2 = . - varName2
+data2:
+.ascii "\n"
+.space 1, 0
+lenData2 = . - data2
