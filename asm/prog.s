@@ -99,7 +99,7 @@ data2:
 .space 1, 0
 lenData2 = . - data2 
 data3:
-.ascii "37"
+.ascii "3777"
 .space 1, 0
 lenData3 = . - data3 
 data4:
@@ -1182,9 +1182,9 @@ __divI:
  mov $buf4, %rdx 
  mov $lenBuf2, %rax 
  mov $buf2, %rdi 
- call __set
- call __toNumber
- mov %rax, %rbx # первый операнд сохранен в %rbx 
+ call __set 
+ call __toNumber 
+ mov %rax, %r10 # первый операнд сохранен в %r10
  call __clearBuf
  mov $lenBuf, %rsi 
  mov $buf, %rdx 
@@ -1192,12 +1192,13 @@ __divI:
  mov $buf4, %rdi 
  call __set
  call __toNumber # второй операнд в %rax 
- # проверка деления на нуль
+ # проверка деления на нуль  
  cmp $0, %rax 
  jz __divIsZeroI 
  mov %rax, %rcx # запоминаем второй операнд в %rcx 
- mov %rbx, %rax # первый операнд в %rax 
- idiv %rcx
+ mov %r10, %rax # первый операнд в %rax
+ xor %rdx, %rdx  
+ idiv %rcx 
  call __toStr 
  mov $lenUserData, %rsi 
  mov $userData, %rdx 
