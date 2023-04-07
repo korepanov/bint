@@ -159,6 +159,10 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		return []interface{}{strings.Index(fmt.Sprintf("%v", LO[0]), fmt.Sprintf("%v", RO[0]))}, systemStack, "", nil
+	} else if "=" == OP {
+		return []interface{}{0}, systemStack, "", nil
+	} else if "str" == OP {
+		return []interface{}{0}, systemStack, "", nil
 	} else if "len" == OP {
 		if 0 == len(fmt.Sprintf("%v", LO[0])) {
 			return []interface{}{0}, systemStack, "", nil
@@ -1271,24 +1275,12 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			RO = []interface{}{RO[1]}
 		}
 		if ("int" == typeLO || "float" == typeLO) && isVarLO {
-			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
-				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
-				"\n call __getVar \n mov (userData), %rsi \n call __len \n mov $lenBuf3, %rsi \n mov $buf3, %rdx \n " +
-				"mov (userData), %rdi\n call __set "))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
+			fmt.Println("@: data type mismatch: int and float")
+			os.Exit(1)
 		}
 		if ("int" == typeRO || "float" == typeRO) && isVarRO {
-			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenRO +
-				", %rax \n mov " + fmt.Sprintf("%v", RO[0]) + ", %rdi\n call __set " +
-				"\n call __getVar \n mov (userData), %rsi \n call __len \n mov $lenBuf4, %rsi \n mov $buf4, %rdx \n " +
-				"mov (userData), %rdi\n call __set "))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
+			fmt.Println("@: data type mismatch: int and float")
+			os.Exit(1)
 		}
 
 		if "int" == typeLO && "int" == typeRO {
@@ -1297,13 +1289,8 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				os.Exit(1)
 			}
 			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
-				"\n mov $lenBuf, %r8 \n mov $buf, %r9 \n mov $floatTail, %r11 \n call __concatinate" +
-				"\n mov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi \n call __set" +
 				"\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenBuf4, %rax \n mov $buf4, %rdi\n call __set" +
-				"\n mov $lenBuf2, %r8 \n mov $buf2, %r9 \n mov $floatTail, %r11 \n call __concatinate" +
-				"\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi \n call __set" +
-				"\n mov $1, %rax \n" +
-				"\n call __div \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+				"\n call __divI \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
 				", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
 			if nil != err {
 				fmt.Println(err)
@@ -1315,62 +1302,17 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		if "float" == typeLO && "float" == typeRO {
-			if tNumber >= TempVarsNum {
-				fmt.Println("ERROR: the arithmetic expression is too long")
-				os.Exit(1)
-			}
-			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
-				"\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenBuf4, %rax \n mov $buf4, %rdi\n call __set \n mov $1, %rax \n" +
-				"\n call __div \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
-				", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-
-			// true - признак того, что результат в вычисляемой переменной asm
-			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "float", nil
+			fmt.Println("@: data type mismatch: int and float")
+			os.Exit(1)
 		}
 
 		if "int" == typeLO && "float" == typeRO {
-			if tNumber >= TempVarsNum {
-				fmt.Println("ERROR: the arithmetic expression is too long")
-				os.Exit(1)
-			}
-			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
-				"\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenBuf4, %rax \n mov $buf4, %rdi\n call __set" +
-				"\n mov $lenBuf, %r8 \n mov $buf, %r9 \n mov $floatTail, %r11 \n call __concatinate" +
-				"\n mov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi \n call __set" +
-				"\n mov $1, %rax \n" +
-				"\n call __div \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
-				", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-
-			// true - признак того, что результат в вычисляемой переменной asm
-			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "float", nil
+			fmt.Println("@: data type mismatch: int and float")
+			os.Exit(1)
 		}
 		if "float" == typeLO && "int" == typeRO {
-			if tNumber >= TempVarsNum {
-				fmt.Println("ERROR: the arithmetic expression is too long")
-				os.Exit(1)
-			}
-			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
-				"\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenBuf4, %rax \n mov $buf4, %rdi\n call __set" +
-				"\n mov $lenBuf2, %r8 \n mov $buf2, %r9 \n mov $floatTail, %r11 \n call __concatinate" +
-				"\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi \n call __set" +
-				"\n mov $1, %rax \n" +
-				"\n call __div \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
-				", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-
-			// true - признак того, что результат в вычисляемой переменной asm
-			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "float", nil
+			fmt.Println("@: data type mismatch: int and float")
+			os.Exit(1)
 		}
 	} else if "." == OP {
 		return []interface{}{0}, systemStack, "", nil

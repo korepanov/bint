@@ -475,22 +475,19 @@ divINegError:
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
  lenT127 = . - t127
 varName0:
-.ascii "$ret"
-lenVarName0 = . - varName0
-varName1:
 .ascii "a"
-lenVarName1 = . - varName1
+lenVarName0 = . - varName0
 data0:
 .ascii "-5"
 .space 1, 0
 lenData0 = . - data0
 data1:
-.ascii "0"
+.ascii "4"
 .space 1, 0
 lenData1 = . - data1
-varName2:
+varName1:
 .ascii "s"
-lenVarName2 = . - varName2
+lenVarName1 = . - varName1
 data2:
 .ascii "\n"
 .space 1, 0
