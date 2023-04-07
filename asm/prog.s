@@ -135,6 +135,9 @@ fatalError:
 divZeroError:
 .ascii "fatal error: dividing by zero\n"
 .space 1, 0
+divINegError:
+.ascii "@ is not defined for negative numbers\n"
+.space 1, 0
 
 .text	
 
@@ -1174,7 +1177,7 @@ __div:
 
 __divI:
  # вход: buf и buf2
- # только для целых чисел!   
+ # только для неотрицательных целых чисел!   
  # выход: userData 
  call __clearUserData
  call __clearBuf4
@@ -1184,6 +1187,8 @@ __divI:
  mov $buf2, %rdi 
  call __set 
  call __toNumber 
+ cmp $0, %rax 
+ jl __divINeg
  mov %rax, %r10 # первый операнд сохранен в %r10
  call __clearBuf
  mov $lenBuf, %rsi 
@@ -1195,10 +1200,11 @@ __divI:
  # проверка деления на нуль  
  cmp $0, %rax 
  jz __divIsZeroI 
+ jl __divINeg
  mov %rax, %rcx # запоминаем второй операнд в %rcx 
  mov %r10, %rax # первый операнд в %rax
  xor %rdx, %rdx  
- idiv %rcx 
+ div %rcx 
  call __toStr 
  mov $lenUserData, %rsi 
  mov $userData, %rdx 
@@ -1209,6 +1215,10 @@ __divI:
  __divIsZeroI:
  mov $divZeroError, %rsi 
  call __throughUserError
+__divINeg:
+ mov $divINegError, %rsi 
+ call __throughUserError
+
 
 __floatToStr:
 # вход: buf
