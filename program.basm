@@ -1,5 +1,7 @@
 int a;
-a = ((-5) / 4);
+int b;
+b = 25;
+a = (b @ 4);
 string s;
 s = str(a);
 print(s);

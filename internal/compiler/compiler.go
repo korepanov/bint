@@ -1366,11 +1366,11 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			}
 			RO = []interface{}{RO[1]}
 		}
-		if ("int" == typeLO || "float" == typeLO) && isVarLO {
+		if "float" == typeLO {
 			fmt.Println("@: data type mismatch: int and float")
 			os.Exit(1)
 		}
-		if ("int" == typeRO || "float" == typeRO) && isVarRO {
+		if "float" == typeRO {
 			fmt.Println("@: data type mismatch: int and float")
 			os.Exit(1)
 		}

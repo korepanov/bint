@@ -477,18 +477,25 @@ divINegError:
 varName0:
 .ascii "a"
 lenVarName0 = . - varName0
+varName1:
+.ascii "b"
+lenVarName1 = . - varName1
 data0:
-.ascii "-5"
+.ascii "25"
 .space 1, 0
 lenData0 = . - data0
 data1:
-.ascii "4"
+.ascii "25"
 .space 1, 0
 lenData1 = . - data1
-varName1:
-.ascii "s"
-lenVarName1 = . - varName1
 data2:
-.ascii "\n"
+.ascii "4"
 .space 1, 0
 lenData2 = . - data2
+varName2:
+.ascii "s"
+lenVarName2 = . - varName2
+data3:
+.ascii "\n"
+.space 1, 0
+lenData3 = . - data3
