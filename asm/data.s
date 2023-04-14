@@ -485,17 +485,25 @@ data0:
 .space 1, 0
 lenData0 = . - data0
 data1:
-.ascii "25"
+.ascii "4"
 .space 1, 0
 lenData1 = . - data1
 data2:
 .ascii "4"
 .space 1, 0
 lenData2 = . - data2
+data3:
+.ascii "3"
+.space 1, 0
+lenData3 = . - data3
+data4:
+.ascii "30"
+.space 1, 0
+lenData4 = . - data4
 varName2:
 .ascii "s"
 lenVarName2 = . - varName2
-data3:
+data5:
 .ascii "\n"
 .space 1, 0
-lenData3 = . - data3
+lenData5 = . - data5
