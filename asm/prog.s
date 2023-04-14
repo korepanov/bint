@@ -103,12 +103,12 @@ data3:
 .space 1, 0
 lenData3 = . - data3 
 data4:
-.ascii "3.14159265358"
+.ascii "-3.14159265358"
 .space 1, 0
 lenData4 = . - data4 
 data5:
 #.ascii "2.71828182"
-.ascii "7.0"
+.ascii "8.0"
 .space 1, 0 
 lenData5 = . - data5 
 data6:
@@ -134,12 +134,14 @@ fatalError:
 .ascii "fatal error: internal error\n"
 .space 1, 0 
 divZeroError:
-.ascii "fatal error: dividing by zero\n"
+.ascii "runtime error: dividing by zero\n"
 .space 1, 0
 divINegError:
-.ascii "@ is not defined for negative numbers\n"
+.ascii "runtime error: @ is not defined for negative numbers\n"
 .space 1, 0
-
+powNegError:
+.ascii "runtime error: ^ is not defined for negative base and fractional exponent\n"
+.space 1, 0
 .text	
 
 __throughError:
@@ -1224,6 +1226,7 @@ __pow:
  # вход: buf и buf2
  # только для вещественных чисел!   
  # выход: userData 
+ mov $0, %r12 # признак некотрицательного результата
  call __clearUserData
  call __clearBuf4
  mov $lenBuf4, %rsi 
@@ -1249,8 +1252,6 @@ __pow:
  pextrb $3, %xmm3, %rax
  cmp $0, %rax 
  jz __powIsPos
- mov $data1, %rsi 
- call __print 
  movss (buf4), %xmm2 
  roundps $3, %xmm2, %xmm2
  movss %xmm2, (buf3)
@@ -1270,16 +1271,21 @@ __pow:
  div %rbx 
  cmp $0, %dl # число четное?
  jnz __powNotOdd
- mov $0, %r12 # признак положительного результата
+ mov $0, %r12 # признак неотрицательного результата
  jmp __powNotOddEnd
  __powNotOdd:
  mov $1, %r12 # признак отрицательного результата
  __powNotOddEnd:
+ jmp __powInt 
  __powNotInt:
+ mov $powNegError, %rsi 
+ call __throughUserError
+ __powInt:
  __powIsPos: 
 
  fldln2
  fld (buf)
+ fabs 
  movss %xmm0, (buf)
  fyl2x
  fmul (buf)
@@ -1303,6 +1309,14 @@ __pow:
  fscale 
  fmul (buf)
  fstp (buf)
+
+ cmp $0, %r12 
+ jz __powEnd 
+ # результат отрицательный 
+ fld (zero)
+ fsub (buf)
+ fstp (buf)
+ __powEnd:
  call __floatToStr
  ret 
 
