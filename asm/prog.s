@@ -1247,7 +1247,17 @@ __pow:
  movss %xmm2, (buf3)
  fld (buf4)
  fsub (buf3)
- fstp (buf)
+ fstp (buf3)
+
+ movss (zero), %xmm0 
+ movss (buf3), %xmm1 
+ cmpss $0, %xmm0, %xmm1
+ pextrb $3, %xmm1, %rax
+ cmp $0, %rax 
+ jz __powNotInt
+ mov $data1, %rsi 
+ call __print 
+ __powNotInt: 
 /*
  fldln2
  fld (buf)
