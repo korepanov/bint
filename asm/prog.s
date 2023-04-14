@@ -104,7 +104,6 @@ data3:
 lenData3 = . - data3 
 data4:
 .ascii "3.14159265358"
-.ascii "16.0"
 .space 1, 0
 lenData4 = . - data4 
 data5:
@@ -1241,6 +1240,15 @@ __pow:
  call __set
  call __parseFloat
  movss %xmm1, (buf)
+ movss %xmm0, (buf4)
+ 
+ movss (buf4), %xmm2 
+ roundps $3, %xmm2, %xmm2
+ movss %xmm2, (buf3)
+ fld (buf4)
+ fsub (buf3)
+ fstp (buf)
+/*
  fldln2
  fld (buf)
  movss %xmm0, (buf)
@@ -1264,8 +1272,8 @@ __pow:
  fld (buf2)
  fld1 
  fscale 
- fmul (buf)
- fstp (buf)
+ fmul (buf)*/
+ #fstp (buf)
  call __floatToStr
  ret 
 
