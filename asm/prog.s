@@ -104,6 +104,7 @@ data3:
 lenData3 = . - data3 
 data4:
 .ascii "3.14159265358"
+.ascii "16.0"
 .space 1, 0
 lenData4 = . - data4 
 data5:
@@ -1255,17 +1256,16 @@ __pow:
  fstp (buf2) # целое число
  fld (buf)
  fsub (buf2)
+ f2xm1
  fstp (buf)
-
- #fxch    st1
- #f2xm1
- # fld1
- #faddp   st1, st
- #fscale
- #fstp    st1
- #fstp    [x]
- #fstp (buf)
-
+ fld1 
+ fadd (buf)
+ fstp (buf)
+ fld (buf2)
+ fld1 
+ fscale 
+ fmul (buf)
+ fstp (buf)
  call __floatToStr
  ret 
 
