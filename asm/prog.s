@@ -1243,6 +1243,14 @@ __pow:
  movss %xmm1, (buf)
  movss %xmm0, (buf4)
  
+ movss (zero), %xmm2 
+ movss (buf), %xmm3 
+ cmpss $1, %xmm2, %xmm3
+ pextrb $3, %xmm3, %rax
+ cmp $0, %rax 
+ jz __powIsPos
+ mov $data1, %rsi 
+ call __print 
  movss (buf4), %xmm2 
  roundps $3, %xmm2, %xmm2
  movss %xmm2, (buf3)
@@ -1250,10 +1258,10 @@ __pow:
  fsub (buf3)
  fstp (buf3)
 
- movss (zero), %xmm0 
- movss (buf3), %xmm1 
- cmpss $0, %xmm0, %xmm1
- pextrb $3, %xmm1, %rax
+ movss (zero), %xmm2 
+ movss (buf3), %xmm3 
+ cmpss $0, %xmm2, %xmm3
+ pextrb $3, %xmm3, %rax
  cmp $0, %rax 
  jz __powNotInt
  cvtss2si (buf4), %rax 
@@ -1267,8 +1275,9 @@ __pow:
  __powNotOdd:
  mov $1, %r12 # признак отрицательного результата
  __powNotOddEnd:
- __powNotInt: 
-/*
+ __powNotInt:
+ __powIsPos: 
+
  fldln2
  fld (buf)
  movss %xmm0, (buf)
@@ -1292,8 +1301,8 @@ __pow:
  fld (buf2)
  fld1 
  fscale 
- fmul (buf)*/
- #fstp (buf)
+ fmul (buf)
+ fstp (buf)
  call __floatToStr
  ret 
 
