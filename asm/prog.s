@@ -107,7 +107,8 @@ data4:
 .space 1, 0
 lenData4 = . - data4 
 data5:
-.ascii "2.71828182"
+#.ascii "2.71828182"
+.ascii "7.0"
 .space 1, 0 
 lenData5 = . - data5 
 data6:
@@ -1255,8 +1256,17 @@ __pow:
  pextrb $3, %xmm1, %rax
  cmp $0, %rax 
  jz __powNotInt
- mov $data1, %rsi 
- call __print 
+ cvtss2si (buf4), %rax 
+ mov $2, %rbx 
+ xor %rdx, %rdx 
+ div %rbx 
+ cmp $0, %dl # число четное?
+ jnz __powNotOdd
+ mov $0, %r12 # признак положительного результата
+ jmp __powNotOddEnd
+ __powNotOdd:
+ mov $1, %r12 # признак отрицательного результата
+ __powNotOddEnd:
  __powNotInt: 
 /*
  fldln2
