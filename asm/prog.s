@@ -103,7 +103,7 @@ data3:
 .space 1, 0
 lenData3 = . - data3 
 data4:
-.ascii "-3.14159265358"
+.ascii "3.14159265358"
 .space 1, 0
 lenData4 = . - data4 
 data5:
@@ -1219,6 +1219,56 @@ __divINeg:
  mov $divINegError, %rsi 
  call __throughUserError
 
+__pow:
+ # вход: buf и buf2
+ # только для вещественных чисел!   
+ # выход: userData 
+ call __clearUserData
+ call __clearBuf4
+ mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi 
+ call __set
+ call __parseFloat
+ movss %xmm0, %xmm1 
+ call __clearBuf
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi 
+ call __set
+ call __parseFloat
+ movss %xmm1, (buf)
+ fldln2
+ fld (buf)
+ movss %xmm0, (buf)
+ fyl2x
+ fmul (buf)
+ fstp (buf)
+ # возводим e^buf 
+ fldl2e
+ fmul (buf)
+ fstp (buf)
+ fld (buf) # смешанное число 
+ frndint
+ fstp (buf2) # целое число
+ fld (buf)
+ fsub (buf2)
+ fstp (buf)
+
+ #fxch    st1
+ #f2xm1
+ # fld1
+ #faddp   st1, st
+ #fscale
+ #fstp    st1
+ #fstp    [x]
+ #fstp (buf)
+
+ call __floatToStr
+ ret 
+
 
 __floatToStr:
 # вход: buf
@@ -1604,11 +1654,11 @@ _start:
  mov $data7, %rax 
  mov %rax, (userData)
  call __setVar
- # get iVar  
+ # get аVar  
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName0, %rax 
- mov $varName0, %rdi
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi
  call __set
  call __getVar
 
@@ -1623,11 +1673,11 @@ _start:
  #call __print
  #mov $enter, %rsi 
  #call __print 
- # get iVar2  
+ # get fVar2  
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName4, %rax 
- mov $varName4, %rdi
+ mov $lenVarName5, %rax 
+ mov $varName5, %rdi
  call __set
  call __getVar
  #mov (userData), %rsi 
@@ -1653,7 +1703,8 @@ _start:
  #mov $buf2, %rsi 
  #call __print 
  #mov $1, %rax 
- call __divI 
+ #call __divI
+ call __pow  
  mov $userData, %rsi 
  call __print  
  #call __printHeap
