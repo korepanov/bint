@@ -24,6 +24,9 @@ lenBuf4 = . - buf4
 strBegin:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrBegin = . - strBegin
+oldHeapMax:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenOldHeapMax = . - oldHeapMax
 strPointer:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrPointer = . - strPointer
@@ -423,7 +426,6 @@ __defineVar:
  #mov %r15, %r8
  mov (strPointer), %r8 
  call __newMem 
- call __shiftStr
  ret 
  mov $varName, %rcx 
  mov $varType, %rdx
@@ -636,6 +638,7 @@ __firstMem:
  mov %r8, %r9 
  add (pageSize), %r9 
  #mov %r9, %r15
+ mov %r15, (oldHeapMax)
  mov (strPointer), %r15 
 # выделить динамическую память
  mov (pageSize), %rdi
@@ -657,6 +660,7 @@ __firstMem:
  jz  __newMemEx
  jmp __newMemlo
  __newMemEx:
+ call __shiftStr
  ret  
 
  __newStrMem:
@@ -716,6 +720,19 @@ __readClear:
  __readOk:
  ret 
  
+ __renewStr:
+ # адрес начала кучи 
+ mov %r13, %r12
+ # старый адрес конца кучи 
+ mov (oldHeapMax), %r11 
+ add (varNameSize), %r12  
+ call __read
+ mov $buf, %rsi 
+ call __print 
+ call __throughError
+
+ ret 
+
  __shiftStr:
  # формируем в %r10 адрес нового конца 
  mov (strPointer), %r10 
@@ -736,6 +753,7 @@ __readClear:
  mov (strPointer), %r10 
  add (pageSize), %r10 
  mov %r10, (strPointer)
+ call __renewStr
  ret 
 
 __compare:
