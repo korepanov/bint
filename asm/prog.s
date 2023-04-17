@@ -104,7 +104,7 @@ data3:
 lenData3 = . - data3 
 data4:
 #.ascii "-3.14159265358"
-.ascii "-2.0"
+.ascii "0.0"
 .space 1, 0
 lenData4 = . - data4 
 data5:
@@ -1237,6 +1237,15 @@ __pow:
  call __set
  call __parseFloat
  movss %xmm0, %xmm1 
+ 
+ # основание - нуль? 
+ movss (zero), %xmm2 
+ movss %xmm0, %xmm3 
+ cmpss $0, %xmm2, %xmm3
+ pextrb $3, %xmm3, %rax
+ cmp $0, %rax 
+ jnz __powEnd
+
  call __clearBuf
  mov $lenBuf, %rsi 
  mov $buf, %rdx 
@@ -1246,7 +1255,7 @@ __pow:
  call __parseFloat
  movss %xmm1, (buf)
  movss %xmm0, (buf4)
- 
+
  movss (zero), %xmm2 
  movss (buf), %xmm3 
  cmpss $1, %xmm2, %xmm3
