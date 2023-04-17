@@ -103,12 +103,13 @@ data3:
 .space 1, 0
 lenData3 = . - data3 
 data4:
-.ascii "-3.14159265358"
+#.ascii "-3.14159265358"
+.ascii "-2.0"
 .space 1, 0
 lenData4 = . - data4 
 data5:
 #.ascii "2.71828182"
-.ascii "8.0"
+.ascii "3.0"
 .space 1, 0 
 lenData5 = . - data5 
 data6:
@@ -1226,7 +1227,7 @@ __pow:
  # вход: buf и buf2
  # только для вещественных чисел!   
  # выход: userData 
- mov $0, %r12 # признак некотрицательного результата
+ xor %rbp, %rbp # признак неотрицательного результата
  call __clearUserData
  call __clearBuf4
  mov $lenBuf4, %rsi 
@@ -1271,10 +1272,11 @@ __pow:
  div %rbx 
  cmp $0, %dl # число четное?
  jnz __powNotOdd
- mov $0, %r12 # признак неотрицательного результата
+ xor %rbp, %rbp # признак неотрицательного результата
  jmp __powNotOddEnd
- __powNotOdd:
- mov $1, %r12 # признак отрицательного результата
+ __powNotOdd: 
+ xor %rbp, %rbp  
+ mov $1, %rbp # признак отрицательного результата
  __powNotOddEnd:
  jmp __powInt 
  __powNotInt:
@@ -1309,8 +1311,8 @@ __pow:
  fscale 
  fmul (buf)
  fstp (buf)
-
- cmp $0, %r12 
+ 
+ cmp $0, %rbp   
  jz __powEnd 
  # результат отрицательный 
  fld (zero)
