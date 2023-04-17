@@ -66,6 +66,9 @@ lenVarName5 = . - varName5
 varName6:
 .ascii "sVar2"
 lenVarName6 = . - varName6
+varName7:
+.ascii "sVar3"
+lenVarName7 = . - varName7
 intType:
 .ascii "int"
 .space 1, 0
@@ -122,6 +125,9 @@ data8:
 .ascii "some cool message"
 .space 1, 0
 lenData8 = . - data8 
+data9:
+.ascii "Slava's message"
+.space 1, 0
 ten:
 .float 10.0 
 one:
@@ -653,7 +659,6 @@ __firstMem:
  # адрес начала выделяемой памяти в  %r8 
 # запомнить адрес начала выделяемой памяти
  #mov %r8, %r14
-
  mov %r8, %r9 
  add (pageSize), %r9 
  mov %r9, (strMax)
@@ -1739,13 +1744,6 @@ _start:
  mov $stringType, %rdi
  call __set 
  call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
-
- 
- 
-
 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -1755,6 +1753,48 @@ _start:
  mov $data7, %rax 
  mov %rax, (userData)
  call __setVar
+
+# sVar2
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName6, %rax 
+ mov $varName6, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
+
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+  call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+ 
+
  # get fVar  
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -1809,6 +1849,18 @@ _start:
  #call __pow 
  #mov $userData, %rsi 
  #call __print  
+ 
+ # get sVar  
+ /*mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName6, %rax 
+ mov $varName6, %rdi
+ call __set
+ call __getVar
+ mov (userData), %rsi 
+ call __print 
+ mov $enter, %rsi 
+ call __print*/ 
  call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
