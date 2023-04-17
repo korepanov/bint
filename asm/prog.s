@@ -420,9 +420,11 @@ __defineVar:
 
  cmp %rax, %r15
  jg __defOk 
- mov %r15, %r8
- call __newMem
+ #mov %r15, %r8
+ mov (strPointer), %r8 
+ call __newMem 
  call __shiftStr
+ ret 
  mov $varName, %rcx 
  mov $varType, %rdx
  __defOk:
@@ -633,10 +635,12 @@ __firstMem:
  #mov %r8, %r14
  mov %r8, %r9 
  add (pageSize), %r9 
- mov %r9, %r15
+ #mov %r9, %r15
+ mov (strPointer), %r15 
 # выделить динамическую память
  mov (pageSize), %rdi
- add %rax, %rdi
+ #add %rax, %rdi
+ add %r8, %rdi 
  mov $12, %rax
  syscall
 # обработка ошибки
@@ -659,6 +663,7 @@ __firstMem:
  # адрес начала выделяемой памяти в  %r8 
 # запомнить адрес начала выделяемой памяти
  #mov %r8, %r14
+ call __print 
  mov %r8, %r9 
  add (pageSize), %r9 
  mov %r9, (strMax)
@@ -712,6 +717,14 @@ __readClear:
  ret 
  
  __shiftStr:
+ # формируем в %r10 адрес нового конца 
+ mov (strPointer), %r10 
+ add (pageSize), %r10
+ # адрес старого конца 
+ mov (strPointer), %r11 
+ movb (%r11), %r12b 
+ movb %r12b, (%r10)
+ 
  mov $data1, %rsi 
  call __print 
  ret 
