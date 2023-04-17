@@ -103,13 +103,11 @@ data3:
 .space 1, 0
 lenData3 = . - data3 
 data4:
-#.ascii "-3.14159265358"
-.ascii "0.0"
+.ascii "3.14159265358"
 .space 1, 0
 lenData4 = . - data4 
 data5:
-#.ascii "2.71828182"
-.ascii "3.0"
+.ascii "2.71828182"
 .space 1, 0 
 lenData5 = . - data5 
 data6:
