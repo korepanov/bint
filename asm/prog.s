@@ -118,6 +118,10 @@ data7:
 .ascii "Slava"
 .space 1, 0 
 lenData7 = . - data7
+data8:
+.ascii "some cool message"
+.space 1, 0
+lenData8 = . - data8 
 ten:
 .float 10.0 
 one:
@@ -412,6 +416,7 @@ __defineVar:
  jg __defOk 
  mov %r15, %r8
  call __newMem
+ call __shiftStr
  mov $varName, %rcx 
  mov $varType, %rdx
  __defOk:
@@ -701,6 +706,10 @@ __readClear:
  __readOk:
  ret 
  
+ __shiftStr:
+ mov $data1, %rsi 
+ call __print 
+ ret 
 
 __compare:
  # сравнить строки по адресу $buf и $buf2
@@ -1714,7 +1723,7 @@ _start:
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
  call __set 
- mov $data1, %rax 
+ mov $data8, %rax 
  mov %rax, (userData)
  call __setVar
  
@@ -1730,6 +1739,13 @@ _start:
  mov $stringType, %rdi
  call __set 
  call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+
+ 
+ 
+
 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -1739,7 +1755,7 @@ _start:
  mov $data7, %rax 
  mov %rax, (userData)
  call __setVar
- # get аVar  
+ # get fVar  
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName2, %rax 
@@ -1790,10 +1806,10 @@ _start:
  #mov $1, %rax 
  #call __divI
  #mov $1, %rax 
- call __pow 
- mov $userData, %rsi 
- call __print  
- #call __printHeap
+ #call __pow 
+ #mov $userData, %rsi 
+ #call __print  
+ call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
