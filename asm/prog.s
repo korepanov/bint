@@ -754,7 +754,23 @@ __readClear:
  __renewValEnd: 
  movb $'*', (%rax)
  __renewAddr:
+ call __read 
+ mov $buf, %rsi
+ call __toNumber 
+ mov (pageSize), %rax 
+ call __toStr
  
+ mov %r12, %rsi 
+ __renewAddrLocal:
+ mov (%rsi), %r10b 
+ cmp $'*', %r10b 
+ jz __renewAddrEnd
+ movb $'*', (%rsi)
+ inc %rsi 
+ jmp __renewAddrLocal
+ __renewAddrEnd:
+ mov %r12, %rsi 
+ // запись нового адреса 
  ret 
 
  __shiftStr:
