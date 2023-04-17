@@ -103,13 +103,11 @@ data3:
 .space 1, 0
 lenData3 = . - data3 
 data4:
-#.ascii "3.14159265358"
-.ascii "2.0"
+.ascii "3.14159265358"
 .space 1, 0
 lenData4 = . - data4 
 data5:
-#.ascii "2.71828182"
-.ascii "0.0"
+.ascii "2.71828182"
 .space 1, 0 
 lenData5 = . - data5 
 data6:
@@ -143,6 +141,13 @@ divINegError:
 powNegError:
 .ascii "runtime error: ^ is not defined for negative base and fractional exponent\n"
 .space 1, 0
+powZeroNegError:
+.ascii "runtime error: ^ is not defined for zero base and negative exponent\n"
+.space 1, 0
+powZeroZeroError:
+.ascii "runtime error: ^ is not defined for zero base and zero exponent\n"
+.space 1, 0
+
 .text	
 
 __throughError:
@@ -1237,15 +1242,6 @@ __pow:
  call __set
  call __parseFloat
  movss %xmm0, %xmm1 
- 
- # основание - нуль? 
- movss (zero), %xmm2 
- movss %xmm0, %xmm3 
- cmpss $0, %xmm2, %xmm3
- pextrb $3, %xmm3, %rax
- cmp $0, %rax 
- jnz __powEnd
-
  call __clearBuf
  mov $lenBuf, %rsi 
  mov $buf, %rdx 
@@ -1255,6 +1251,13 @@ __pow:
  call __parseFloat
  movss %xmm1, (buf)
  movss %xmm0, (buf4)
+ # основание - нуль? 
+ movss (zero), %xmm2 
+ movss %xmm1, %xmm3 
+ cmpss $0, %xmm2, %xmm3
+ pextrb $3, %xmm3, %rax
+ cmp $0, %rax 
+ jnz __powZeroBase 
 
  movss (zero), %xmm2 
  movss (buf), %xmm3 
@@ -1330,7 +1333,27 @@ __pow:
  __powEnd:
  call __floatToStr
  ret 
-
+ __powZeroBase:
+ movss (zero), %xmm2 
+ movss %xmm0, %xmm3 
+ cmpss $0, %xmm2, %xmm3
+ pextrb $3, %xmm3, %rax
+ cmp $0, %rax 
+ jz __powZeroExpEnd  
+ mov $powZeroZeroError, %rsi 
+ call __throughUserError
+ __powZeroExpEnd: 
+ movss (zero), %xmm2 
+ movss %xmm0, %xmm3 
+ cmpss $1, %xmm2, %xmm3
+ pextrb $3, %xmm3, %rax
+ cmp $0, %rax
+ jz __powNegExpEnd
+ mov $powZeroNegError, %rsi 
+ call __throughUserError
+ __powNegExpEnd:
+ call __floatToStr
+ ret 
 
 __floatToStr:
 # вход: buf
@@ -1766,8 +1789,8 @@ _start:
  #call __print 
  #mov $1, %rax 
  #call __divI
- mov $1, %rax 
- call __add 
+ #mov $1, %rax 
+ call __pow 
  mov $userData, %rsi 
  call __print  
  #call __printHeap
