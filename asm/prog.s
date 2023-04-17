@@ -720,13 +720,22 @@ __readClear:
  # формируем в %r10 адрес нового конца 
  mov (strPointer), %r10 
  add (pageSize), %r10
+ mov %r10, (strMax)
  # адрес старого конца 
- mov (strPointer), %r11 
+ mov (strPointer), %r11
+ __shiftMake: 
+ mov (strBegin), %r12 
+ cmp %r11, %r12  
+ jg __shiftMakeEnd
  movb (%r11), %r12b 
  movb %r12b, (%r10)
- 
- mov $data1, %rsi 
- call __print 
+ dec %r10
+ dec %r11 
+ jmp __shiftMake
+ __shiftMakeEnd:
+ mov (strPointer), %r10 
+ add (pageSize), %r10 
+ mov %r10, (strPointer)
  ret 
 
 __compare:
