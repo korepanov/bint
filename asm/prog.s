@@ -726,11 +726,35 @@ __readClear:
  # старый адрес конца кучи 
  mov (oldHeapMax), %r11 
  add (varNameSize), %r12  
+ 
+ __renewFindStr:
  call __read
- mov $buf, %rsi 
- call __print 
- call __throughError
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi 
+ call __set
+ call __compare 
+ cmp $1, %rax 
+ jz __renewVal
+ add (varSize), %r12 
+ jmp __renewFindStr
 
+ __renewVal:
+ add (typeSize), %r12 
+ call __read 
+ call __toNumber
+ __renewValLocal:
+ mov (%rax), %r10b 
+ cmp $0, %r10b 
+ jz __renewValEnd
+ movb $'*', (%rax)
+ inc %rax 
+ jmp __renewValLocal 
+ __renewValEnd: 
+ movb $'*', (%rax)
+ __renewAddr:
+ 
  ret 
 
  __shiftStr:
