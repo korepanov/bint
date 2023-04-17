@@ -93,3 +93,10 @@ powNegError:
 .ascii "runtime error: ^ is not defined for negative base and fractional exponent\n"
 .space 1, 0
 
+powZeroNegError:
+.ascii "runtime error: ^ is not defined for zero base and negative exponent\n"
+.space 1, 0
+powZeroZeroError:
+.ascii "runtime error: ^ is not defined for zero base and zero exponent\n"
+.space 1, 0
+

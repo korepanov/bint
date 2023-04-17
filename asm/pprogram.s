@@ -1091,15 +1091,6 @@ __pow:
  call __set
  call __parseFloat
  movss %xmm0, %xmm1 
- 
- # основание - нуль? 
- movss (zero), %xmm2 
- movss %xmm0, %xmm3 
- cmpss $0, %xmm2, %xmm3
- pextrb $3, %xmm3, %rax
- cmp $0, %rax 
- jnz __powEnd
-
  call __clearBuf
  mov $lenBuf, %rsi 
  mov $buf, %rdx 
@@ -1109,6 +1100,13 @@ __pow:
  call __parseFloat
  movss %xmm1, (buf)
  movss %xmm0, (buf4)
+ # основание - нуль? 
+ movss (zero), %xmm2 
+ movss %xmm1, %xmm3 
+ cmpss $0, %xmm2, %xmm3
+ pextrb $3, %xmm3, %rax
+ cmp $0, %rax 
+ jnz __powZeroBase 
 
  movss (zero), %xmm2 
  movss (buf), %xmm3 
@@ -1182,6 +1180,27 @@ __pow:
  fsub (buf)
  fstp (buf)
  __powEnd:
+ call __floatToStr
+ ret 
+ __powZeroBase:
+ movss (zero), %xmm2 
+ movss %xmm0, %xmm3 
+ cmpss $0, %xmm2, %xmm3
+ pextrb $3, %xmm3, %rax
+ cmp $0, %rax 
+ jz __powZeroExpEnd  
+ mov $powZeroZeroError, %rsi 
+ call __throughUserError
+ __powZeroExpEnd: 
+ movss (zero), %xmm2 
+ movss %xmm0, %xmm3 
+ cmpss $1, %xmm2, %xmm3
+ pextrb $3, %xmm3, %rax
+ cmp $0, %rax
+ jz __powNegExpEnd
+ mov $powZeroNegError, %rsi 
+ call __throughUserError
+ __powNegExpEnd:
  call __floatToStr
  ret 
 

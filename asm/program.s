@@ -1091,15 +1091,6 @@ __pow:
  call __set
  call __parseFloat
  movss %xmm0, %xmm1 
- 
- # основание - нуль? 
- movss (zero), %xmm2 
- movss %xmm0, %xmm3 
- cmpss $0, %xmm2, %xmm3
- pextrb $3, %xmm3, %rax
- cmp $0, %rax 
- jnz __powEnd
-
  call __clearBuf
  mov $lenBuf, %rsi 
  mov $buf, %rdx 
@@ -1109,6 +1100,13 @@ __pow:
  call __parseFloat
  movss %xmm1, (buf)
  movss %xmm0, (buf4)
+ # основание - нуль? 
+ movss (zero), %xmm2 
+ movss %xmm1, %xmm3 
+ cmpss $0, %xmm2, %xmm3
+ pextrb $3, %xmm3, %rax
+ cmp $0, %rax 
+ jnz __powZeroBase 
 
  movss (zero), %xmm2 
  movss (buf), %xmm3 
@@ -1182,6 +1180,27 @@ __pow:
  fsub (buf)
  fstp (buf)
  __powEnd:
+ call __floatToStr
+ ret 
+ __powZeroBase:
+ movss (zero), %xmm2 
+ movss %xmm0, %xmm3 
+ cmpss $0, %xmm2, %xmm3
+ pextrb $3, %xmm3, %rax
+ cmp $0, %rax 
+ jz __powZeroExpEnd  
+ mov $powZeroZeroError, %rsi 
+ call __throughUserError
+ __powZeroExpEnd: 
+ movss (zero), %xmm2 
+ movss %xmm0, %xmm3 
+ cmpss $1, %xmm2, %xmm3
+ pextrb $3, %xmm3, %rax
+ cmp $0, %rax
+ jz __powNegExpEnd
+ mov $powZeroNegError, %rsi 
+ call __throughUserError
+ __powNegExpEnd:
  call __floatToStr
  ret 
 
@@ -1620,6 +1639,65 @@ mov $lenVarName, %rsi
  mov $t3, %rax 
  mov %rax, (userData)
  call __setVar
+mov $lenBuf3, %rsi 
+ mov $buf3, %rdx 
+ mov $lenData5, %rax 
+ mov $data5, %rdi
+ call __set
+mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenData6, %rax 
+ mov $data6, %rdi
+ call __set
+mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf3, %rax 
+ mov $buf3, %rdi
+ call __set
+ mov $lenBuf, %r8 
+ mov $buf, %r9 
+ mov $floatTail, %r11 
+ call __concatinate
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenUserData, %rax 
+ mov $userData, %rdi 
+ call __set
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi
+ call __set
+ mov $lenBuf2, %r8 
+ mov $buf2, %r9 
+ mov $floatTail, %r11 
+ call __concatinate
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenUserData, %rax 
+ mov $userData, %rdi 
+ call __set
+ mov $1, %rax 
+
+ call __pow 
+ mov $lenT0, %rsi 
+ mov $t0, %rdx 
+ mov $lenUserData, %rax 
+ mov $userData, %rdi
+ call __set
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi 
+ call __set
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi
+ call __set 
+ mov $t0, %rax 
+ mov %rax, (userData)
+ call __setVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
@@ -1651,7 +1729,7 @@ mov $lenVarName, %rsi
  call __getVar
  mov (userData), %rsi 
  call __print
-mov $data5, %rsi
+mov $data7, %rsi
 call __print
 mov $60,  %rax
 xor %rdi, %rdi

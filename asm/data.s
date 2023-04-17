@@ -93,6 +93,13 @@ powNegError:
 .ascii "runtime error: ^ is not defined for negative base and fractional exponent\n"
 .space 1, 0
 
+powZeroNegError:
+.ascii "runtime error: ^ is not defined for zero base and negative exponent\n"
+.space 1, 0
+powZeroZeroError:
+.ascii "runtime error: ^ is not defined for zero base and zero exponent\n"
+.space 1, 0
+
 
  t0: 
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
@@ -501,10 +508,18 @@ data4:
 .ascii "2"
 .space 1, 0
 lenData4 = . - data4
+data5:
+.ascii "0"
+.space 1, 0
+lenData5 = . - data5
+data6:
+.ascii "0"
+.space 1, 0
+lenData6 = . - data6
 varName1:
 .ascii "s"
 lenVarName1 = . - varName1
-data5:
+data7:
 .ascii "\n"
 .space 1, 0
-lenData5 = . - data5
+lenData7 = . - data7
