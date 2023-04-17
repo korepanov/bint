@@ -103,11 +103,13 @@ data3:
 .space 1, 0
 lenData3 = . - data3 
 data4:
-.ascii "3.14159265358"
+#.ascii "3.14159265358"
+.ascii "2.0"
 .space 1, 0
 lenData4 = . - data4 
 data5:
-.ascii "2.71828182"
+#.ascii "2.71828182"
+.ascii "0.0"
 .space 1, 0 
 lenData5 = . - data5 
 data6:
@@ -1764,7 +1766,8 @@ _start:
  #call __print 
  #mov $1, %rax 
  #call __divI
- call __pow  
+ mov $1, %rax 
+ call __add 
  mov $userData, %rsi 
  call __print  
  #call __printHeap

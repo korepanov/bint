@@ -1077,6 +1077,114 @@ __divINeg:
  mov $divINegError, %rsi 
  call __throughUserError
 
+__pow:
+ # вход: buf и buf2
+ # только для вещественных чисел!   
+ # выход: userData 
+ xor %rbp, %rbp # признак неотрицательного результата
+ call __clearUserData
+ call __clearBuf4
+ mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi 
+ call __set
+ call __parseFloat
+ movss %xmm0, %xmm1 
+ 
+ # основание - нуль? 
+ movss (zero), %xmm2 
+ movss %xmm0, %xmm3 
+ cmpss $0, %xmm2, %xmm3
+ pextrb $3, %xmm3, %rax
+ cmp $0, %rax 
+ jnz __powEnd
+
+ call __clearBuf
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi 
+ call __set
+ call __parseFloat
+ movss %xmm1, (buf)
+ movss %xmm0, (buf4)
+
+ movss (zero), %xmm2 
+ movss (buf), %xmm3 
+ cmpss $1, %xmm2, %xmm3
+ pextrb $3, %xmm3, %rax
+ cmp $0, %rax 
+ jz __powIsPos
+ movss (buf4), %xmm2 
+ roundps $3, %xmm2, %xmm2
+ movss %xmm2, (buf3)
+ fld (buf4)
+ fsub (buf3)
+ fstp (buf3)
+
+ movss (zero), %xmm2 
+ movss (buf3), %xmm3 
+ cmpss $0, %xmm2, %xmm3
+ pextrb $3, %xmm3, %rax
+ cmp $0, %rax 
+ jz __powNotInt
+ cvtss2si (buf4), %rax 
+ mov $2, %rbx 
+ xor %rdx, %rdx 
+ div %rbx 
+ cmp $0, %dl # число четное?
+ jnz __powNotOdd
+ xor %rbp, %rbp # признак неотрицательного результата
+ jmp __powNotOddEnd
+ __powNotOdd: 
+ xor %rbp, %rbp  
+ mov $1, %rbp # признак отрицательного результата
+ __powNotOddEnd:
+ jmp __powInt 
+ __powNotInt:
+ mov $powNegError, %rsi 
+ call __throughUserError
+ __powInt:
+ __powIsPos: 
+
+ fldln2
+ fld (buf)
+ fabs 
+ movss %xmm0, (buf)
+ fyl2x
+ fmul (buf)
+ fstp (buf)
+ # возводим e^buf 
+ fldl2e
+ fmul (buf)
+ fstp (buf)
+ fld (buf) # смешанное число 
+ frndint
+ fstp (buf2) # целое число
+ fld (buf)
+ fsub (buf2)
+ f2xm1
+ fstp (buf)
+ fld1 
+ fadd (buf)
+ fstp (buf)
+ fld (buf2)
+ fld1 
+ fscale 
+ fmul (buf)
+ fstp (buf)
+ 
+ cmp $0, %rbp   
+ jz __powEnd 
+ # результат отрицательный 
+ fld (zero)
+ fsub (buf)
+ fstp (buf)
+ __powEnd:
+ call __floatToStr
+ ret 
+
 __floatToStr:
 # вход: buf
 # выход userData

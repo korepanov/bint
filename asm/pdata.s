@@ -89,3 +89,7 @@ divINegError:
 .ascii "@ is not defined for negative numbers\n"
 .space 1, 0
 
+powNegError:
+.ascii "runtime error: ^ is not defined for negative base and fractional exponent\n"
+.space 1, 0
+

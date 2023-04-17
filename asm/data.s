@@ -89,6 +89,10 @@ divINegError:
 .ascii "@ is not defined for negative numbers\n"
 .space 1, 0
 
+powNegError:
+.ascii "runtime error: ^ is not defined for negative base and fractional exponent\n"
+.space 1, 0
+
 
  t0: 
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
@@ -477,32 +481,29 @@ divINegError:
 varName0:
 .ascii "a"
 lenVarName0 = . - varName0
-varName1:
-.ascii "b"
-lenVarName1 = . - varName1
 data0:
-.ascii "25"
+.ascii "2"
 .space 1, 0
 lenData0 = . - data0
 data1:
-.ascii "4"
+.ascii "3"
 .space 1, 0
 lenData1 = . - data1
 data2:
-.ascii "4"
+.ascii "0"
 .space 1, 0
 lenData2 = . - data2
 data3:
-.ascii "3"
+.ascii "8"
 .space 1, 0
 lenData3 = . - data3
 data4:
-.ascii "30"
+.ascii "2"
 .space 1, 0
 lenData4 = . - data4
-varName2:
+varName1:
 .ascii "s"
-lenVarName2 = . - varName2
+lenVarName1 = . - varName1
 data5:
 .ascii "\n"
 .space 1, 0
