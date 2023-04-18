@@ -429,7 +429,7 @@ __defineVar:
  #mov %r15, %r8
  mov (strPointer), %r8 
  call __newMem 
- ret // (!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
+ ret # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  mov $varName, %rcx 
  mov $varType, %rdx
  __defOk:
@@ -730,7 +730,9 @@ __readClear:
  # старый адрес конца кучи 
  mov (oldHeapMax), %r11 
  add (varNameSize), %r12  
- 
+ __renewStrBegin:
+ cmp %r11, %r12 
+ jg __renewStrEnd 
  __renewFindStr:
  call __read
  mov $lenBuf2, %rsi 
@@ -787,6 +789,10 @@ __readClear:
  inc %rdx 
  jmp __renewStrAddr
  __renewStrAddrEnd:
+ sub (typeSize), %r12 
+ add (varSize), %r12 
+ jmp __renewStrBegin
+ __renewStrEnd:
  ret 
 
  __shiftStr:
