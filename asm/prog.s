@@ -429,7 +429,6 @@ __defineVar:
  #mov %r15, %r8
  mov (strPointer), %r8 
  call __newMem 
- ret # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  mov $varName, %rcx 
  mov $varType, %rdx
  __defOk:
