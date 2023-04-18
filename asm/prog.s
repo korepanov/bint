@@ -760,20 +760,16 @@ __readClear:
 
  __renewVal:
  add (typeSize), %r12 
- call __read 
- mov $buf, %rsi 
- call __print 
- mov $enter, %rsi 
- call __print
+ call __read
  call __toNumber
- __renewValLocal:
- mov (%rax), %r10b 
+ __renewValLocal: 
+ mov (%rax), %r10b  
  cmp $0, %r10b 
  jz __renewValEnd
  movb $'*', (%rax)
  inc %rax 
  jmp __renewValLocal 
- __renewValEnd: 
+ __renewValEnd:  
  movb $'*', (%rax)
  __renewAddr:
  call __read 
@@ -838,7 +834,6 @@ __readClear:
  mov (strMax), %r10 
  add (pageSize), %r10 
  mov %r10, (strMax)
- 
  call __renewStr
  ret 
 
