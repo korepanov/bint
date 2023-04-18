@@ -429,7 +429,7 @@ __defineVar:
  #mov %r15, %r8
  mov (strPointer), %r8 
  call __newMem 
- ret 
+ ret // (!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!)
  mov $varName, %rcx 
  mov $varType, %rdx
  __defOk:
@@ -1966,7 +1966,7 @@ _start:
  #call __print  
  
  # get sVar  
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
@@ -1975,7 +1975,7 @@ _start:
  mov (userData), %rsi 
  call __print 
  mov $enter, %rsi 
- call __print
+ call __print*/
  call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
