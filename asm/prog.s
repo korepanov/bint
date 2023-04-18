@@ -36,6 +36,9 @@ lenStrMax = . - strMax
 isNeg:
 .byte 0 
 lenIsNeg = . - isNeg
+isExpNeg:
+.byte 0
+lenIsExpNeg = . - isExpNeg
 varType:
 .quad 0, 0, 0, 0
 lenVarType = . - varType 
@@ -1326,7 +1329,7 @@ __pow:
  # вход: buf и buf2
  # только для вещественных чисел!   
  # выход: userData 
- xor %rbp, %rbp # признак неотрицательного результата
+ movb $0, (isExpNeg) # признак неотрицательного результата
  call __clearUserData
  call __clearBuf4
  mov $lenBuf4, %rsi 
@@ -1378,11 +1381,10 @@ __pow:
  div %rbx 
  cmp $0, %dl # число четное?
  jnz __powNotOdd
- xor %rbp, %rbp # признак неотрицательного результата
+ movb $0, (isExpNeg) # признак неотрицательного результата
  jmp __powNotOddEnd
- __powNotOdd: 
- xor %rbp, %rbp  
- mov $1, %rbp # признак отрицательного результата
+ __powNotOdd:   
+ movb $1, (isExpNeg) # признак отрицательного результата
  __powNotOddEnd:
  jmp __powInt 
  __powNotInt:
@@ -1418,7 +1420,8 @@ __pow:
  fmul (buf)
  fstp (buf)
  
- cmp $0, %rbp   
+ movb (isExpNeg), %al  
+ cmp $0, %al    
  jz __powEnd 
  # результат отрицательный 
  fld (zero)
@@ -1921,14 +1924,14 @@ _start:
  mov $buf4, %rdi 
  call __set 
 
- #mov $buf2, %rsi 
+ #mov $buf, %rsi 
  #call __print 
  #mov $1, %rax 
  #call __divI
  #mov $1, %rax 
- #call __pow 
- #mov $userData, %rsi 
- #call __print  
+ call __pow 
+ mov $userData, %rsi 
+ call __print  
  
  # get sVar  
  /*mov $lenVarName, %rsi 
@@ -1941,7 +1944,7 @@ _start:
  call __print 
  mov $enter, %rsi 
  call __print*/ 
- call __printHeap
+ #call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
