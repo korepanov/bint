@@ -642,7 +642,8 @@ __firstMem:
  add (pageSize), %r9 
  #mov %r9, %r15
  mov %r15, (oldHeapMax)
- mov (strPointer), %r15 
+ #mov (strPointer), %r15 
+ add (pageSize), %r15 
 # выделить динамическую память
  mov (pageSize), %rdi
  #add %rax, %rdi
@@ -760,9 +761,11 @@ __readClear:
  call __read 
  mov $buf, %rsi
  call __toNumber 
- mov (pageSize), %rax 
- call __toStr
- 
+ #mov (pageSize), %rax 
+ #call __toStr
+ add (pageSize), %rax 
+ call __toStr # в buf2 новый адрес строки 
+
  mov %r12, %rsi 
  __renewAddrLocal:
  mov (%rsi), %r10b 
@@ -773,29 +776,50 @@ __readClear:
  jmp __renewAddrLocal
  __renewAddrEnd:
  mov %r12, %rsi 
- // запись нового адреса 
+ mov $buf2, %rdx 
+ // запись нового адреса
+ __renewStrAddr: 
+ mov (%rdx), %r10b 
+ cmp $0, %r10b 
+ jz __renewStrAddrEnd
+ movb %r10b, (%rsi)
+ inc %rsi 
+ inc %rdx 
+ jmp __renewStrAddr
+ __renewStrAddrEnd:
  ret 
 
  __shiftStr:
- # формируем в %r10 адрес нового конца 
- mov (strPointer), %r10 
+ # формируем в %r10 адрес нового начала
+ mov (strBegin), %r10 
  add (pageSize), %r10
- mov %r10, (strMax)
- # адрес старого конца 
- mov (strPointer), %r11
+ #mov %r10, %r12 
+ #add (pageSize), %r12 
+ #mov %r12, (strMax)
+ # адрес старого начала
+ mov (strBegin), %r11
  __shiftMake: 
- mov (strBegin), %r12 
- cmp %r11, %r12  
- jg __shiftMakeEnd
+ mov (strMax), %r9
+ cmp %r9, %r11   
+ jz __shiftMakeEnd
  movb (%r11), %r12b 
  movb %r12b, (%r10)
- dec %r10
- dec %r11 
+ inc %r10
+ inc %r11 
  jmp __shiftMake
  __shiftMakeEnd:
  mov (strPointer), %r10 
  add (pageSize), %r10 
  mov %r10, (strPointer)
+
+ mov (strBegin), %r10 
+ add (pageSize), %r10 
+ mov %r10, (strBegin)
+
+ mov (strMax), %r10 
+ add (pageSize), %r10 
+ mov %r10, (strMax)
+ 
  call __renewStr
  ret 
 
@@ -1849,7 +1873,6 @@ _start:
  mov $stringType, %rdi
  call __set 
  call __defineVar
-
  call __defineVar
  call __defineVar
  call __defineVar
@@ -1934,7 +1957,7 @@ _start:
  #call __print  
  
  # get sVar  
- /*mov $lenVarName, %rsi 
+ mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName6, %rax 
  mov $varName6, %rdi
@@ -1943,7 +1966,7 @@ _start:
  mov (userData), %rsi 
  call __print 
  mov $enter, %rsi 
- call __print*/ 
+ call __print
  call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
