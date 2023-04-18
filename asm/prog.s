@@ -825,6 +825,15 @@ __readClear:
 
 __compare:
  # сравнить строки по адресу $buf и $buf2
+ # если длины строк не равны, то строки не равны 
+ mov $buf, %rsi 
+ call __len 
+ mov %rax, %rbx 
+ mov $buf2, %rsi 
+ call __len 
+ cmp %rax, %rbx 
+ jnz __notEqual
+
  mov $buf, %rax 
  mov $buf2, %rbx 
  __compareLocal:
@@ -1003,7 +1012,7 @@ __setVar:
  ret 
  __getVarGetStr:
  mov %rbx, %r12 
- call __read 
+ call __read
  call __toNumber
  mov %rax, (userData) 
  ret 
@@ -1902,7 +1911,7 @@ _start:
  
 
  # get fVar  
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName2, %rax 
  mov $varName2, %rdi
@@ -1914,14 +1923,14 @@ _start:
  mov $lenBuf3, %rsi 
  mov $buf3, %rdx 
  mov (userData), %rdi 
- call __set 
+ call __set */
 
  #mov (userData), %rsi 
  #call __print
  #mov $enter, %rsi 
  #call __print 
  # get fVar2  
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName5, %rax 
  mov $varName5, %rdi
@@ -1945,7 +1954,7 @@ _start:
  mov $buf2, %rdx 
  mov $lenBuf4, %rax 
  mov $buf4, %rdi 
- call __set 
+ call __set */
 
  #mov $buf, %rsi 
  #call __print 
@@ -1959,8 +1968,8 @@ _start:
  # get sVar  
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName6, %rax 
- mov $varName6, %rdi
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
  call __set
  call __getVar
  mov (userData), %rsi 
