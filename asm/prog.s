@@ -27,6 +27,9 @@ lenStrBegin = . - strBegin
 oldHeapMax:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenOldHeapMax = . - oldHeapMax
+oldStrBegin:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenOldHeapMax = . - oldHeapMax
 strPointer:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrPointer = . - strPointer
@@ -427,7 +430,8 @@ __defineVar:
  cmp %rax, %r15
  jg __defOk 
  #mov %r15, %r8
- mov (strPointer), %r8 
+ #mov (strPointer), %r8
+ mov (strMax), %r8  
  call __newMem 
  mov $varName, %rcx 
  mov $varType, %rdx
@@ -554,8 +558,9 @@ __defineVar:
  mov %rax, (strPointer)
  jmp __defEnd 
  __defStrNewMem:
+ mov (strPointer), %r8
  mov %rax, (strPointer)
- call __newStrMem
+ call __newStrMem 
  __defEnd:
 
  mov %r14, %rax 
@@ -637,9 +642,17 @@ __firstMem:
  # адрес начала выделяемой памяти в  %r8 
 # запомнить адрес начала выделяемой памяти
  #mov %r8, %r14
+ #mov (strBegin), %r12 
+ #add (pageSize), %r12
+ mov (strBegin), %r12 
+ mov %r12, (oldStrBegin)
+ mov (strMax), %r12  
+ mov %r12, (strBegin)
  mov %r8, %r9 
  add (pageSize), %r9 
  #mov %r9, %r15
+ mov %r15, %r12 
+ sub (pageSize), %r12 
  mov %r15, (oldHeapMax)
  #mov (strPointer), %r15 
  add (pageSize), %r15 
@@ -663,6 +676,7 @@ __firstMem:
  jz  __newMemEx
  jmp __newMemlo
  __newMemEx:
+ 
  call __shiftStr
  ret  
 
@@ -670,7 +684,6 @@ __firstMem:
  # адрес начала выделяемой памяти в  %r8 
 # запомнить адрес начала выделяемой памяти
  #mov %r8, %r14
- call __print 
  mov %r8, %r9 
  add (pageSize), %r9 
  mov %r9, (strMax)
@@ -748,6 +761,10 @@ __readClear:
  __renewVal:
  add (typeSize), %r12 
  call __read 
+ mov $buf, %rsi 
+ call __print 
+ mov $enter, %rsi 
+ call __print
  call __toNumber
  __renewValLocal:
  mov (%rax), %r10b 
@@ -760,7 +777,6 @@ __readClear:
  movb $'*', (%rax)
  __renewAddr:
  call __read 
- mov $buf, %rsi
  call __toNumber 
  #mov (pageSize), %rax 
  #call __toStr
@@ -777,7 +793,8 @@ __readClear:
  jmp __renewAddrLocal
  __renewAddrEnd:
  mov %r12, %rsi 
- mov $buf2, %rdx 
+ mov $buf2, %rdx  
+
  // запись нового адреса
  __renewStrAddr: 
  mov (%rdx), %r10b 
@@ -797,12 +814,9 @@ __readClear:
  __shiftStr:
  # формируем в %r10 адрес нового начала
  mov (strBegin), %r10 
- add (pageSize), %r10
- #mov %r10, %r12 
- #add (pageSize), %r12 
- #mov %r12, (strMax)
+ #add (pageSize), %r10
  # адрес старого начала
- mov (strBegin), %r11
+ mov (oldStrBegin), %r11
  __shiftMake: 
  mov (strMax), %r9
  cmp %r9, %r11   
@@ -813,13 +827,13 @@ __readClear:
  inc %r11 
  jmp __shiftMake
  __shiftMakeEnd:
- mov (strPointer), %r10 
- add (pageSize), %r10 
- mov %r10, (strPointer)
+ #mov (strPointer), %r10 
+ #add (pageSize), %r10 
+ #mov %r10, (strPointer)
 
- mov (strBegin), %r10 
- add (pageSize), %r10 
- mov %r10, (strBegin)
+ #mov (strBegin), %r10 
+ #add (pageSize), %r10 
+ #mov %r10, (strBegin)
 
  mov (strMax), %r10 
  add (pageSize), %r10 
@@ -1913,7 +1927,43 @@ _start:
   call __defineVar
   call __defineVar
   call __defineVar
- 
+
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
 
  # get fVar  
  /*mov $lenVarName, %rsi 

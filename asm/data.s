@@ -24,6 +24,9 @@ lenBuf4 = . - buf4
 strBegin:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrBegin = . - strBegin
+oldHeapMax:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenOldHeapMax = . - oldHeapMax
 strPointer:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrPointer = . - strPointer
@@ -33,6 +36,9 @@ lenStrMax = . - strMax
 isNeg:
 .byte 0 
 lenIsNeg = . - isNeg
+isExpNeg:
+.byte 0
+lenIsExpNeg = . - isExpNeg
 varType:
 .quad 0, 0, 0, 0
 lenVarType = . - varType 
@@ -486,35 +492,249 @@ powZeroZeroError:
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
  lenT127 = . - t127
 varName0:
-.ascii "a"
+.ascii "s"
 lenVarName0 = . - varName0
-varName1:
-.ascii "b"
-lenVarName1 = . - varName1
 data0:
-.ascii "10.575"
+.ascii "some cool string\n"
 .space 1, 0
 lenData0 = . - data0
-data1:
-.ascii "4.0"
-.space 1, 0
-lenData1 = . - data1
-data2:
-.ascii "2"
-.space 1, 0
-lenData2 = . - data2
-data3:
-.ascii "8"
-.space 1, 0
-lenData3 = . - data3
-data4:
-.ascii "6.2"
-.space 1, 0
-lenData4 = . - data4
+varName1:
+.ascii "s2"
+lenVarName1 = . - varName1
 varName2:
-.ascii "s"
+.ascii "s2"
 lenVarName2 = . - varName2
-data5:
-.ascii "\n"
-.space 1, 0
-lenData5 = . - data5
+varName3:
+.ascii "s2"
+lenVarName3 = . - varName3
+varName4:
+.ascii "s2"
+lenVarName4 = . - varName4
+varName5:
+.ascii "s2"
+lenVarName5 = . - varName5
+varName6:
+.ascii "s2"
+lenVarName6 = . - varName6
+varName7:
+.ascii "s2"
+lenVarName7 = . - varName7
+varName8:
+.ascii "s2"
+lenVarName8 = . - varName8
+varName9:
+.ascii "s2"
+lenVarName9 = . - varName9
+varName10:
+.ascii "s2"
+lenVarName10 = . - varName10
+varName11:
+.ascii "s2"
+lenVarName11 = . - varName11
+varName12:
+.ascii "s2"
+lenVarName12 = . - varName12
+varName13:
+.ascii "s2"
+lenVarName13 = . - varName13
+varName14:
+.ascii "s2"
+lenVarName14 = . - varName14
+varName15:
+.ascii "s2"
+lenVarName15 = . - varName15
+varName16:
+.ascii "s2"
+lenVarName16 = . - varName16
+varName17:
+.ascii "s2"
+lenVarName17 = . - varName17
+varName18:
+.ascii "s2"
+lenVarName18 = . - varName18
+varName19:
+.ascii "s2"
+lenVarName19 = . - varName19
+varName20:
+.ascii "s2"
+lenVarName20 = . - varName20
+varName21:
+.ascii "s2"
+lenVarName21 = . - varName21
+varName22:
+.ascii "s2"
+lenVarName22 = . - varName22
+varName23:
+.ascii "s2"
+lenVarName23 = . - varName23
+varName24:
+.ascii "s2"
+lenVarName24 = . - varName24
+varName25:
+.ascii "s2"
+lenVarName25 = . - varName25
+varName26:
+.ascii "s2"
+lenVarName26 = . - varName26
+varName27:
+.ascii "s2"
+lenVarName27 = . - varName27
+varName28:
+.ascii "s2"
+lenVarName28 = . - varName28
+varName29:
+.ascii "s2"
+lenVarName29 = . - varName29
+varName30:
+.ascii "s2"
+lenVarName30 = . - varName30
+varName31:
+.ascii "s2"
+lenVarName31 = . - varName31
+varName32:
+.ascii "s2"
+lenVarName32 = . - varName32
+varName33:
+.ascii "s2"
+lenVarName33 = . - varName33
+varName34:
+.ascii "s2"
+lenVarName34 = . - varName34
+varName35:
+.ascii "s2"
+lenVarName35 = . - varName35
+varName36:
+.ascii "s2"
+lenVarName36 = . - varName36
+varName37:
+.ascii "s2"
+lenVarName37 = . - varName37
+varName38:
+.ascii "s2"
+lenVarName38 = . - varName38
+varName39:
+.ascii "s2"
+lenVarName39 = . - varName39
+varName40:
+.ascii "s2"
+lenVarName40 = . - varName40
+varName41:
+.ascii "s2"
+lenVarName41 = . - varName41
+varName42:
+.ascii "s2"
+lenVarName42 = . - varName42
+varName43:
+.ascii "s2"
+lenVarName43 = . - varName43
+varName44:
+.ascii "s2"
+lenVarName44 = . - varName44
+varName45:
+.ascii "s2"
+lenVarName45 = . - varName45
+varName46:
+.ascii "s2"
+lenVarName46 = . - varName46
+varName47:
+.ascii "s2"
+lenVarName47 = . - varName47
+varName48:
+.ascii "s2"
+lenVarName48 = . - varName48
+varName49:
+.ascii "s2"
+lenVarName49 = . - varName49
+varName50:
+.ascii "s2"
+lenVarName50 = . - varName50
+varName51:
+.ascii "s2"
+lenVarName51 = . - varName51
+varName52:
+.ascii "s2"
+lenVarName52 = . - varName52
+varName53:
+.ascii "s2"
+lenVarName53 = . - varName53
+varName54:
+.ascii "s2"
+lenVarName54 = . - varName54
+varName55:
+.ascii "s2"
+lenVarName55 = . - varName55
+varName56:
+.ascii "s2"
+lenVarName56 = . - varName56
+varName57:
+.ascii "s2"
+lenVarName57 = . - varName57
+varName58:
+.ascii "s2"
+lenVarName58 = . - varName58
+varName59:
+.ascii "s2"
+lenVarName59 = . - varName59
+varName60:
+.ascii "s2"
+lenVarName60 = . - varName60
+varName61:
+.ascii "s2"
+lenVarName61 = . - varName61
+varName62:
+.ascii "s2"
+lenVarName62 = . - varName62
+varName63:
+.ascii "s2"
+lenVarName63 = . - varName63
+varName64:
+.ascii "s2"
+lenVarName64 = . - varName64
+varName65:
+.ascii "s2"
+lenVarName65 = . - varName65
+varName66:
+.ascii "s2"
+lenVarName66 = . - varName66
+varName67:
+.ascii "s2"
+lenVarName67 = . - varName67
+varName68:
+.ascii "s2"
+lenVarName68 = . - varName68
+varName69:
+.ascii "s2"
+lenVarName69 = . - varName69
+varName70:
+.ascii "s2"
+lenVarName70 = . - varName70
+varName71:
+.ascii "s2"
+lenVarName71 = . - varName71
+varName72:
+.ascii "s2"
+lenVarName72 = . - varName72
+varName73:
+.ascii "s2"
+lenVarName73 = . - varName73
+varName74:
+.ascii "s2"
+lenVarName74 = . - varName74
+varName75:
+.ascii "s2"
+lenVarName75 = . - varName75
+varName76:
+.ascii "s2"
+lenVarName76 = . - varName76
+varName77:
+.ascii "s2"
+lenVarName77 = . - varName77
+varName78:
+.ascii "s2"
+lenVarName78 = . - varName78
+varName79:
+.ascii "s2"
+lenVarName79 = . - varName79
+varName80:
+.ascii "s2"
+lenVarName80 = . - varName80
