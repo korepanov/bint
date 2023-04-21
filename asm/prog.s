@@ -739,11 +739,10 @@ __readClear:
  __renewStr:
  # адрес начала кучи 
  mov %r13, %r12
- # старый адрес конца кучи 
- mov (oldHeapMax), %r11 
+ # старый адрес конца кучи  
  add (varNameSize), %r12  
  __renewStrBegin:
- cmp %r11, %r12 
+ cmp (oldHeapMax), %r12 
  jg __renewStrEnd 
  __renewFindStr:
  call __read
@@ -762,7 +761,7 @@ __readClear:
  add (typeSize), %r12 
  call __read
  call __toNumber
- __renewValLocal: 
+ __renewValLocal:
  mov (%rax), %r10b  
  cmp $0, %r10b 
  jz __renewValEnd
@@ -778,6 +777,10 @@ __readClear:
  #call __toStr
  add (pageSize), %rax 
  call __toStr # в buf2 новый адрес строки 
+ mov $buf2, %rsi 
+ call __print 
+ mov $enter, %rsi 
+ call __print 
 
  mov %r12, %rsi 
  __renewAddrLocal:
