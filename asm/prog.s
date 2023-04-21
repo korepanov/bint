@@ -571,7 +571,6 @@ __defineVar:
  mov %rax, %r14
  ret 
 
-# r12 - pointer (общего назначения)
 # r13 - heapBegin 
 # r14 - heapPointer 
 # r15 - heapMax 
