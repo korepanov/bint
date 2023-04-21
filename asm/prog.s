@@ -9,6 +9,9 @@ typeSize:
 .quad 32 
 valSize:
 .quad 64 
+v:
+.quad 0
+lenV = . - v 
 buf:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenBuf = . - buf 
@@ -544,7 +547,7 @@ __defineVar:
  mov $buf2, %rax
  __defAddr:
  mov (%rax), %dl 
- cmp $0, %dl  
+ cmp $'*', %dl  
  jz __defStrEnd 
  mov %dl, (%r8)
  inc %rax 
@@ -683,7 +686,7 @@ __firstMem:
  __newStrMem:
  # адрес начала выделяемой памяти в  %r8 
 # запомнить адрес начала выделяемой памяти
- #mov %r8, %r14
+ #mov %r8, %r14 
  mov %r8, %r9 
  add (pageSize), %r9 
  mov %r9, (strMax)
@@ -719,6 +722,7 @@ __readClear:
  inc %r10
  cmp $0, %rsi  
  jnz __readClear
+
  mov $buf, %r10
  __readLocal: 
  movb (%r8), %r9b
@@ -793,11 +797,14 @@ __readClear:
  __renewAddrEnd:
  mov %r12, %rsi 
  mov $buf2, %rdx  
-
+ 
+ mov (v), %rax 
+ cmp $1, %rax 
+ jz p 
  // запись нового адреса
  __renewStrAddr: 
  mov (%rdx), %r10b 
- cmp $0, %r10b 
+ cmp $'*', %r10b 
  jz __renewStrAddrEnd
  movb %r10b, (%rsi)
  inc %rsi 
@@ -808,6 +815,11 @@ __readClear:
  add (varSize), %r12 
  jmp __renewStrBegin
  __renewStrEnd:
+ movb $1, (v)
+ ret 
+ p:
+ call __printHeap
+ call __throughError
  ret 
 
  __shiftStr:
