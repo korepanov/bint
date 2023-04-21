@@ -434,7 +434,7 @@ __defineVar:
  jg __defOk 
  #mov %r15, %r8
  #mov (strPointer), %r8
- mov (strMax), %r8  
+ mov (strMax), %r8 
  call __newMem 
  mov $varName, %rcx 
  mov $varType, %rdx
@@ -442,7 +442,7 @@ __defineVar:
  mov %r14, %r8 
  __defOkLocal:
  movb (%rcx), %r11b 
- cmp $'*', %r11b
+ cmp $0, %r11b
  jz __defOkLocalEx
  movb %r11b, (%r8)
  inc %rcx 
@@ -453,7 +453,7 @@ __defineVar:
  add (varNameSize), %r8 
  __defOkTypeLocal:
  movb (%rdx), %r11b
- cmp $'*', %r11b 
+ cmp $0, %r11b 
  jz __defOkTypeLocalEx
  movb %r11b, (%r8)
  inc %rdx
@@ -654,8 +654,8 @@ __firstMem:
  mov %r8, %r9 
  add (pageSize), %r9 
  #mov %r9, %r15
- mov %r15, %r12 
- sub (pageSize), %r12 
+ #mov %r15, %r12 
+ #sub (pageSize), %r12 
  mov %r15, (oldHeapMax)
  #mov (strPointer), %r15 
  add (pageSize), %r15 
@@ -790,6 +790,8 @@ __readClear:
  __renewAddrLocal:
  mov (%rsi), %r10b 
  cmp $'*', %r10b 
+ jz __renewAddrEnd
+ cmp $0, %r10b 
  jz __renewAddrEnd
  movb $'*', (%rsi)
  inc %rsi 
@@ -1974,6 +1976,7 @@ _start:
   call __defineVar
   call __defineVar
   call __defineVar
+
 
  # get fVar  
  /*mov $lenVarName, %rsi 
