@@ -9,9 +9,6 @@ typeSize:
 .quad 32 
 valSize:
 .quad 64 
-v:
-.quad 0
-lenV = . - v 
 buf:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenBuf = . - buf 
@@ -576,6 +573,7 @@ __defineVar:
 # r15 - heapMax 
 
 __firstMem:
+# выделяет pageSize памяти 
  # получить адрес начала области для выделения памяти
  mov $12, %rax
  xor %rdi, %rdi
@@ -609,6 +607,7 @@ __firstMem:
  ret 
 
  __firstStrMem:
+ # выделяет pageSize памяти 
  # адрес начала области для выделения памяти
  mov %r15, %rax
 # запомнить адрес начала выделяемой памяти
@@ -641,6 +640,7 @@ __firstMem:
 
 
  __newMem:
+ # выделяет 2 * pageSize памяти 
  # адрес начала выделяемой памяти в  %r8 
 # запомнить адрес начала выделяемой памяти
  #mov %r8, %r14
@@ -660,6 +660,7 @@ __firstMem:
  add (pageSize), %r15 
 # выделить динамическую память
  mov (pageSize), %rdi
+ add (pageSize), %rdi 
  #add %rax, %rdi
  add %r8, %rdi 
  mov $12, %rax
@@ -682,7 +683,7 @@ __firstMem:
  call __shiftStr
  ret  
 
- __newStrMem:
+ /*__newStrMem:
  # адрес начала выделяемой памяти в  %r8 
 # запомнить адрес начала выделяемой памяти
  #mov %r8, %r14 
@@ -708,7 +709,7 @@ __firstMem:
  jz  __newStrMemEx
  jmp __newStrMemlo
  __newStrMemEx:
- ret 
+ ret */
 
 __read: 
  # считать в buf по указателю в %r12 
@@ -780,10 +781,6 @@ __readClear:
  #call __toStr
  add (pageSize), %rax 
  call __toStr # в buf2 новый адрес строки 
- mov $buf2, %rsi 
- call __print 
- mov $enter, %rsi 
- call __print 
 
  mov %r12, %rsi 
  __renewAddrLocal:
@@ -796,10 +793,7 @@ __readClear:
  __renewAddrEnd:
  mov %r12, %rsi 
  mov $buf2, %rdx  
- 
- mov (v), %rax 
- cmp $1, %rax 
- jz p 
+  
  // запись нового адреса
  __renewStrAddr: 
  mov (%rdx), %r10b 
@@ -815,11 +809,6 @@ __readClear:
  add (varSize), %r12 
  jmp __renewStrBegin
  __renewStrEnd:
- movb $1, (v)
- ret 
- p:
- call __printHeap
- call __throughError
  ret 
 
  __shiftStr:
@@ -1974,6 +1963,31 @@ _start:
   call __defineVar
   call __defineVar
   call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  
 
 
  # get fVar  
