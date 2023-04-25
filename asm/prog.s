@@ -558,14 +558,14 @@ __defineVar:
  movb $0, (%r8)
  mov (strPointer), %rax 
  add (valSize), %rax 
- cmp (strMax), %rax 
- jg __defStrNewMem
+ //cmp (strMax), %rax 
+ //jg __defStrNewMem
  mov %rax, (strPointer)
- jmp __defEnd 
+ /*jmp __defEnd 
  __defStrNewMem:
  mov (strPointer), %r8
  mov %rax, (strPointer)
- call __newStrMem 
+ call __newStrMem*/ 
  __defEnd:
  add (varSize), %r14 
 
@@ -741,10 +741,10 @@ __readClear:
  
  __renewStr:
  # адрес начала кучи 
- mov %r13, %r12
- # старый адрес конца кучи  
+ mov %r13, %r12 
  add (varNameSize), %r12  
  __renewStrBegin:
+ # старый адрес конца кучи 
  cmp (oldHeapMax), %r12 
  jg __renewStrEnd 
  __renewFindStr:
@@ -838,9 +838,9 @@ __readClear:
  inc %r11 
  jmp __shiftMake
  __shiftMakeEnd:
- #mov (strPointer), %r10 
- #add (pageSize), %r10 
- #mov %r10, (strPointer)
+ mov (strPointer), %r10 
+ add (pageSize), %r10 
+ mov %r10, (strPointer)
 
  #mov (strBegin), %r10 
  #add (pageSize), %r10 
