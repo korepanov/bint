@@ -9,6 +9,9 @@ typeSize:
 .quad 32 
 valSize:
 .quad 64 
+memBorder:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMemBorder = . - memBorder
 buf:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenBuf = . - buf 
@@ -431,7 +434,7 @@ __defineVar:
  jg __defOk 
  #mov %r15, %r8
  #mov (strPointer), %r8
- mov (strMax), %r8 
+ #mov (strMax), %r8 
  call __newMem 
  mov $varName, %rcx 
  mov $varType, %rdx
@@ -636,6 +639,8 @@ __firstMem:
  jz  __firstStrMemEx
  jmp __firstStrMemLo
  __firstStrMemEx:
+ mov (strMax), %rax 
+ mov %rax, (memBorder)
  ret 
 
 
@@ -646,6 +651,11 @@ __firstMem:
  #mov %r8, %r14
  #mov (strBegin), %r12 
  #add (pageSize), %r12
+ mov (memBorder), %r8 
+ mov (memBorder), %r12 
+ add (pageSize), %r12 
+ add (pageSize), %r12 
+ mov %r12, (memBorder)
  mov (strBegin), %r12 
  mov %r12, (oldStrBegin)
  mov (strMax), %r12  
@@ -671,11 +681,13 @@ __firstMem:
 # заполним выделенную память
  mov $'*', %dl
  mov $0, %rbx
+ mov (pageSize), %rdi 
+ add (pageSize), %rdi
  __newMemlo:
  movb %dl, (%r8)
  inc %rbx
  inc %r8 
- cmp (pageSize), %rbx
+ cmp %rdi, %rbx
  jz  __newMemEx
  jmp __newMemlo
  __newMemEx:
@@ -818,8 +830,7 @@ __readClear:
  # адрес старого начала
  mov (oldStrBegin), %r11
  __shiftMake: 
- mov (strMax), %r9
- cmp %r9, %r11   
+ cmp (strMax), %r11   
  jz __shiftMakeEnd
  movb (%r11), %r12b 
  movb %r12b, (%r10)
@@ -1987,6 +1998,11 @@ _start:
   call __defineVar
   call __defineVar
   call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  call __defineVar
+  
   
 
 
