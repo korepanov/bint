@@ -757,10 +757,11 @@ __readClear:
  mov %r13, %r12 
  add (varNameSize), %r12  
  __renewStrBegin:
- # старый адрес конца кучи 
+ # старый адрес конца кучи
+ __renewFindStr: 
  cmp (oldHeapMax), %r12 
  jg __renewStrEnd 
- __renewFindStr:
+ 
  call __read
  mov $lenBuf2, %rsi 
  mov $buf2, %rdx 
@@ -781,7 +782,7 @@ __readClear:
  mov (%rax), %r10b  
  cmp $0, %r10b 
  jz __renewValEnd
- movb $'*', (%rax)
+ #movb $'*', (%rax) #(!!!!!!!!!!!!!!!!!!!!)
  inc %rax 
  jmp __renewValLocal 
  __renewValEnd:  
@@ -810,6 +811,8 @@ __readClear:
  __renewStrAddr: 
  mov (%rdx), %r10b 
  cmp $0, %r10b 
+ jz __renewStrAddrEnd
+ cmp $'*', %r10b 
  jz __renewStrAddrEnd
  movb %r10b, (%rsi)
  inc %rsi 
