@@ -545,15 +545,17 @@ __defineVar:
  call __toStr 
  mov %r12, %r8 
  mov $buf2, %rax
+ 
  __defAddr:
  mov (%rax), %dl 
- cmp $'*', %dl  
+ cmp $0, %dl  
  jz __defStrEnd 
  mov %dl, (%r8)
  inc %rax 
  inc %r8 
  jmp __defAddr
  __defStrEnd:
+ movb $0, (%r8)
  mov (strPointer), %rax 
  add (valSize), %rax 
  cmp (strMax), %rax 
@@ -565,10 +567,8 @@ __defineVar:
  mov %rax, (strPointer)
  call __newStrMem 
  __defEnd:
+ add (varSize), %r14 
 
- mov %r14, %rax 
- add (varSize), %rax 
- mov %rax, %r14
  ret 
 
 # r13 - heapBegin 
@@ -788,8 +788,6 @@ __readClear:
  mov %r12, %rsi 
  __renewAddrLocal:
  mov (%rsi), %r10b 
- cmp $'*', %r10b 
- jz __renewAddrEnd
  cmp $0, %r10b 
  jz __renewAddrEnd
  movb $'*', (%rsi)
@@ -805,13 +803,14 @@ __readClear:
  // запись нового адреса
  __renewStrAddr: 
  mov (%rdx), %r10b 
- cmp $'*', %r10b 
+ cmp $0, %r10b 
  jz __renewStrAddrEnd
  movb %r10b, (%rsi)
  inc %rsi 
  inc %rdx 
  jmp __renewStrAddr
  __renewStrAddrEnd:
+ movb $0, (%rsi)
  sub (typeSize), %r12 
  add (varSize), %r12 
  jmp __renewStrBegin
