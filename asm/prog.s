@@ -1,6 +1,6 @@
 .data
 pageSize:
-.quad 4096 
+.quad 4096
 varNameSize:
 .quad 32
 varSize:
@@ -225,7 +225,7 @@ __lenEx:
 __printHeap:  
  mov %r13, %r8  
  __printHeapLoop:
- cmp (strMax), %r8 
+ cmp (memBorder), %r8 
  jz __printHeapEx
  mov %r8, %rsi 
  mov $1, %rdi	
@@ -2002,7 +2002,16 @@ _start:
   call __defineVar
   call __defineVar
   call __defineVar
+
   
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName6, %rax 
+ mov $varName6, %rdi
+ call __set 
+ mov $data1, %rax 
+ mov %rax, (userData)
+ call __setVar
   
 
 
