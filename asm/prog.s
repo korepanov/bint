@@ -789,6 +789,10 @@ __readClear:
  movb $'*', (%rax)
  __renewAddr:
  call __read 
+ mov $buf, %rsi 
+ call __print 
+ mov $enter, %rsi 
+ call __print 
  call __toNumber 
  #mov (pageSize), %rax 
  #call __toStr
