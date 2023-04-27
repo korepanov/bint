@@ -782,17 +782,13 @@ __readClear:
  mov (%rax), %r10b  
  cmp $0, %r10b 
  jz __renewValEnd
- #movb $'*', (%rax) #(!!!!!!!!!!!!!!!!!!!!)
+ movb $'*', (%rax) #(!!!!!!!!!!!!!!!!!!!!)
  inc %rax 
  jmp __renewValLocal 
  __renewValEnd:  
  movb $'*', (%rax)
  __renewAddr:
  call __read 
- mov $buf, %rsi 
- call __print 
- mov $enter, %rsi 
- call __print 
  call __toNumber 
  #mov (pageSize), %rax 
  #call __toStr
