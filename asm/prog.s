@@ -434,7 +434,7 @@ __defineVar:
  mov $varType, %rdx
  __defOk:
  mov %r14, %r8 
- __defOkLocal:
+ __defOkLocal: 
  movb (%rcx), %r11b 
  cmp $'*', %r11b
  jz __defOkLocalEx
@@ -548,6 +548,7 @@ __defineVar:
  inc %r8 
  jmp __defAddr
  __defStrEnd:
+ movb $0, (%r8)
  mov (strPointer), %rax 
  add (valSize), %rax 
  cmp (strMax), %rax 
@@ -559,9 +560,7 @@ __defineVar:
  call __newStrMem
  __defEnd:
 
- mov %r14, %rax 
- add (varSize), %rax 
- mov %rax, %r14
+ add (varSize), %r14
  ret 
 
 # r12 - pointer (общего назначения)
@@ -1871,7 +1870,7 @@ _start:
  call __setVar
 
 # sVar2
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName6, %rax 
  mov $varName6, %rdi
@@ -1882,6 +1881,16 @@ _start:
  mov $stringType, %rdi
  call __set 
  call __defineVar
+ call __defineVar*/
+ /*call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
  call __defineVar
  call __defineVar
  call __defineVar
@@ -1893,21 +1902,11 @@ _start:
  call __defineVar
  call __defineVar
   call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
   call __defineVar
   call __defineVar
   call __defineVar
   call __defineVar
-  call __defineVar
-  call __defineVar
+  call __defineVar*/
  
 
  # get fVar  
@@ -1966,7 +1965,7 @@ _start:
  #call __print  
  
  # get sVar  
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
@@ -1975,7 +1974,7 @@ _start:
  mov (userData), %rsi 
  call __print 
  mov $enter, %rsi 
- call __print
+ call __print*/
  call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
