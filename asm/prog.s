@@ -1870,7 +1870,7 @@ _start:
  call __setVar
 
 # sVar2
- /*mov $lenVarName, %rsi 
+ mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName6, %rax 
  mov $varName6, %rdi
@@ -1881,8 +1881,6 @@ _start:
  mov $stringType, %rdi
  call __set 
  call __defineVar
- call __defineVar*/
- /*call __defineVar
  call __defineVar
  call __defineVar
  call __defineVar
@@ -1901,12 +1899,14 @@ _start:
  call __defineVar
  call __defineVar
  call __defineVar
-  call __defineVar
-  call __defineVar
-  call __defineVar
-  call __defineVar
-  call __defineVar
-  call __defineVar*/
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ #call __defineVar
  
 
  # get fVar  
