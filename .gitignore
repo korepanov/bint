@@ -3,3 +3,5 @@
 /program
 /asm/data.s
 /asm/program.s
+asm/prog
+asm/prog.o
