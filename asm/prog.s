@@ -636,7 +636,7 @@ __firstMem:
  __newMem:
  # адрес начала выделяемой памяти в  %r8 
 # запомнить адрес начала выделяемой памяти
- #mov %r8, %r14
+ #mov %r8, %r14 
  mov %r8, %r9 
  add (pageSize), %r9 
  #mov %r9, %r15
@@ -663,14 +663,15 @@ __firstMem:
  jz  __newMemEx
  jmp __newMemlo
  __newMemEx:
- call __shiftStr
+ mov %r15, %r8 
+ call __newStrMem
+ #call __shiftStr
  ret  
 
  __newStrMem:
  # адрес начала выделяемой памяти в  %r8 
 # запомнить адрес начала выделяемой памяти
  #mov %r8, %r14
- call __print 
  mov %r8, %r9 
  add (pageSize), %r9 
  mov %r9, (strMax)
@@ -1906,7 +1907,7 @@ _start:
  call __defineVar
  call __defineVar
  call __defineVar
- #call __defineVar
+ call __defineVar
  
 
  # get fVar  
