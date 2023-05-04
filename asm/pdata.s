@@ -24,6 +24,9 @@ lenBuf4 = . - buf4
 strBegin:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrBegin = . - strBegin
+oldHeapMax:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenOldHeapMax = . - oldHeapMax
 strPointer:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrPointer = . - strPointer
@@ -33,6 +36,9 @@ lenStrMax = . - strMax
 isNeg:
 .byte 0 
 lenIsNeg = . - isNeg
+isExpNeg:
+.byte 0
+lenIsExpNeg = . - isExpNeg
 varType:
 .quad 0, 0, 0, 0
 lenVarType = . - varType 

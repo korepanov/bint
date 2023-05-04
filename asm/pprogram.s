@@ -131,7 +131,7 @@ __toStrexc:
   movb $0, (%rbx) 
 __toStrEnd:
   ret
-
+  
 __set: #set strings
  # входные параметры 
  # rsi - длина буфера назначения 
@@ -260,8 +260,9 @@ __defineVar:
 
  cmp %rax, %r15
  jg __defOk 
- mov %r15, %r8
- call __newMem
+ #mov %r15, %r8
+ mov (strPointer), %r8 
+ call __newMem 
  mov $varName, %rcx 
  mov $varType, %rdx
  __defOk:
@@ -472,10 +473,14 @@ __firstMem:
  #mov %r8, %r14
  mov %r8, %r9 
  add (pageSize), %r9 
- mov %r9, %r15
+ #mov %r9, %r15
+ mov %r15, (oldHeapMax)
+ #mov (strPointer), %r15 
+ add (pageSize), %r15 
 # выделить динамическую память
  mov (pageSize), %rdi
- add %rax, %rdi
+ #add %rax, %rdi
+ add %r8, %rdi 
  mov $12, %rax
  syscall
 # обработка ошибки
@@ -492,13 +497,14 @@ __firstMem:
  jz  __newMemEx
  jmp __newMemlo
  __newMemEx:
+ call __shiftStr
  ret  
 
  __newStrMem:
  # адрес начала выделяемой памяти в  %r8 
 # запомнить адрес начала выделяемой памяти
  #mov %r8, %r14
-
+ call __print 
  mov %r8, %r9 
  add (pageSize), %r9 
  mov %r9, (strMax)
@@ -551,9 +557,122 @@ __readClear:
  __readOk:
  ret 
  
+ __renewStr:
+ # адрес начала кучи 
+ mov %r13, %r12
+ # старый адрес конца кучи 
+ mov (oldHeapMax), %r11 
+ add (varNameSize), %r12  
+ __renewStrBegin:
+ cmp %r11, %r12 
+ jg __renewStrEnd 
+ __renewFindStr:
+ call __read
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi 
+ call __set
+ call __compare 
+ cmp $1, %rax 
+ jz __renewVal
+ add (varSize), %r12 
+ jmp __renewFindStr
+
+ __renewVal:
+ add (typeSize), %r12 
+ call __read 
+ call __toNumber
+ __renewValLocal:
+ mov (%rax), %r10b 
+ cmp $0, %r10b 
+ jz __renewValEnd
+ movb $'*', (%rax)
+ inc %rax 
+ jmp __renewValLocal 
+ __renewValEnd: 
+ movb $'*', (%rax)
+ __renewAddr:
+ call __read 
+ mov $buf, %rsi
+ call __toNumber 
+ #mov (pageSize), %rax 
+ #call __toStr
+ add (pageSize), %rax 
+ call __toStr # в buf2 новый адрес строки 
+
+ mov %r12, %rsi 
+ __renewAddrLocal:
+ mov (%rsi), %r10b 
+ cmp $'*', %r10b 
+ jz __renewAddrEnd
+ movb $'*', (%rsi)
+ inc %rsi 
+ jmp __renewAddrLocal
+ __renewAddrEnd:
+ mov %r12, %rsi 
+ mov $buf2, %rdx 
+ // запись нового адреса
+ __renewStrAddr: 
+ mov (%rdx), %r10b 
+ cmp $0, %r10b 
+ jz __renewStrAddrEnd
+ movb %r10b, (%rsi)
+ inc %rsi 
+ inc %rdx 
+ jmp __renewStrAddr
+ __renewStrAddrEnd:
+ sub (typeSize), %r12 
+ add (varSize), %r12 
+ jmp __renewStrBegin
+ __renewStrEnd:
+ ret 
+
+ __shiftStr:
+ # формируем в %r10 адрес нового начала
+ mov (strBegin), %r10 
+ add (pageSize), %r10
+ #mov %r10, %r12 
+ #add (pageSize), %r12 
+ #mov %r12, (strMax)
+ # адрес старого начала
+ mov (strBegin), %r11
+ __shiftMake: 
+ mov (strMax), %r9
+ cmp %r9, %r11   
+ jz __shiftMakeEnd
+ movb (%r11), %r12b 
+ movb %r12b, (%r10)
+ inc %r10
+ inc %r11 
+ jmp __shiftMake
+ __shiftMakeEnd:
+ mov (strPointer), %r10 
+ add (pageSize), %r10 
+ mov %r10, (strPointer)
+
+ mov (strBegin), %r10 
+ add (pageSize), %r10 
+ mov %r10, (strBegin)
+
+ mov (strMax), %r10 
+ add (pageSize), %r10 
+ mov %r10, (strMax)
+ 
+ call __renewStr
+ ret 
 
 __compare:
  # сравнить строки по адресу $buf и $buf2
+ # если длины строк не равны, то строки не равны 
+ mov $buf, %rsi 
+ call __len 
+ mov %rax, %rbx 
+ mov $buf2, %rsi 
+ call __len 
+ cmp %rax, %rbx 
+ jnz __notEqual
+
  mov $buf, %rax 
  mov $buf2, %rbx 
  __compareLocal:
@@ -732,7 +851,7 @@ __setVar:
  ret 
  __getVarGetStr:
  mov %rbx, %r12 
- call __read 
+ call __read
  call __toNumber
  mov %rax, (userData) 
  ret 
@@ -881,7 +1000,8 @@ __add:
 
  ret 
 
-  __sub:
+
+ __sub:
  # вход: buf и buf2
  # %rax - тип операции 
  # 0 - целочисленное сложение 
@@ -1081,7 +1201,7 @@ __pow:
  # вход: buf и buf2
  # только для вещественных чисел!   
  # выход: userData 
- xor %rbp, %rbp # признак неотрицательного результата
+ movb $0, (isExpNeg) # признак неотрицательного результата
  call __clearUserData
  call __clearBuf4
  mov $lenBuf4, %rsi 
@@ -1133,11 +1253,10 @@ __pow:
  div %rbx 
  cmp $0, %dl # число четное?
  jnz __powNotOdd
- xor %rbp, %rbp # признак неотрицательного результата
+ movb $0, (isExpNeg) # признак неотрицательного результата
  jmp __powNotOddEnd
- __powNotOdd: 
- xor %rbp, %rbp  
- mov $1, %rbp # признак отрицательного результата
+ __powNotOdd:   
+ movb $1, (isExpNeg) # признак отрицательного результата
  __powNotOddEnd:
  jmp __powInt 
  __powNotInt:
@@ -1173,7 +1292,8 @@ __pow:
  fmul (buf)
  fstp (buf)
  
- cmp $0, %rbp   
+ movb (isExpNeg), %al  
+ cmp $0, %al    
  jz __powEnd 
  # результат отрицательный 
  fld (zero)
@@ -1380,7 +1500,7 @@ mov %rbx, %rax
 
 __pointLocal:             
 inc %rax
-mov (%rax), %dl
+mov (%rax), %dl 
 cmp $0, %dl 
 jz __parseNow
 mov (%rax), %dl 
@@ -1454,4 +1574,3 @@ ret
 _start:
  call __firstMem
  call __firstStrMem
-
