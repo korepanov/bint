@@ -662,7 +662,7 @@ __firstMem:
  __newMemEx:
  mov %r15, %r8 
  call __newStrMem
- #call __shiftStr
+ call __shiftStr
  ret  
 
  __newStrMem:
