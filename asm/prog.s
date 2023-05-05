@@ -422,14 +422,11 @@ __defineVar:
  
  mov $varName, %rcx 
  mov $varType, %rdx 
- mov %r14, %rax
-
- cmp %rax, %r15
+ mov %r14, %r15
  jg __defOk 
  #mov %r15, %r8
- mov (strPointer), %r8 
- call __newMem 
- ret 
+ mov (strMax), %r8 
+ call __newMem  
  mov $varName, %rcx 
  mov $varType, %rdx
  __defOk:
@@ -551,13 +548,13 @@ __defineVar:
  movb $0, (%r8)
  mov (strPointer), %rax 
  add (valSize), %rax 
- cmp (strMax), %rax 
- jg __defStrNewMem
+ #cmp (strMax), %rax 
+ #jg __defStrNewMem
  mov %rax, (strPointer)
- jmp __defEnd 
- __defStrNewMem:
- mov %rax, (strPointer)
- call __newStrMem
+ #jmp __defEnd 
+ #__defStrNewMem:
+ #mov %rax, (strPointer)
+ #call __newStrMem
  __defEnd:
 
  add (varSize), %r14
@@ -1908,7 +1905,6 @@ _start:
  call __defineVar
  call __defineVar
  call __defineVar
- 
 
  # get fVar  
  /*mov $lenVarName, %rsi 
