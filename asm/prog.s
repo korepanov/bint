@@ -422,7 +422,7 @@ __defineVar:
  
  mov $varName, %rcx 
  mov $varType, %rdx 
- mov %r14, %r15
+ cmp %r14, %r15
  jg __defOk 
  #mov %r15, %r8
  mov (strMax), %r8 
