@@ -51,6 +51,9 @@ lenUserData = . - userData
 lastUserData:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenLastUserData = . - lastUserData
+strPageNumber:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenStrNumber = . - strPageNumber
 varName0:
 .ascii "iVar"
 lenVarName0 = . - varName0
@@ -671,10 +674,12 @@ __firstMem:
  #mov %r8, %r14
  mov %r8, %r9 
  add (pageSize), %r9 
+ 
  #mov %r9, (strMax)
 # выделить динамическую память
  mov (pageSize), %rdi
- add %rax, %rdi
+ #add %rax, %rdi
+ add %r8, %rdi 
  mov $12, %rax
  syscall
 # обработка ошибки
@@ -1906,39 +1911,7 @@ _start:
  call __defineVar
  call __defineVar
  call __defineVar
- 
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
+
 
  call __defineVar
  call __defineVar
@@ -1972,46 +1945,13 @@ _start:
  call __defineVar
  call __defineVar
  call __defineVar
-
  call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
-
+ 
  
  call __defineVar
  call __defineVar
- call __defineVar
- call __defineVar
- 
+ #call __defineVar
+ #call __defineVar
  
 
  # get fVar  
