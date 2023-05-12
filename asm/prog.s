@@ -1906,6 +1906,113 @@ _start:
  call __defineVar
  call __defineVar
  call __defineVar
+ 
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+
+ 
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ 
+ 
 
  # get fVar  
  /*mov $lenVarName, %rsi 
