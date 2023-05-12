@@ -784,6 +784,7 @@ __readClear:
  inc %rdx 
  jmp __renewStrAddr
  __renewStrAddrEnd:
+ movb $0, (%rsi)
  ret 
 
  __shiftStr:
