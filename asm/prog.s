@@ -54,6 +54,9 @@ lenLastUserData = . - lastUserData
 strPageNumber:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrNumber = . - strPageNumber
+memorySize:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMemorySize = . - memorySize
 varName0:
 .ascii "iVar"
 lenVarName0 = . - varName0
@@ -673,11 +676,25 @@ __firstMem:
 # запомнить адрес начала выделяемой памяти
  #mov %r8, %r14
  mov %r8, %r9 
- add (pageSize), %r9 
+ #add (pageSize), %r9
  
+ mov (strPageNumber), %rax
+ mov (pageSize), %rdi
+ __newStrMemOkBegin: 
+ cmp $0, %rax 
+ jz __newStrMemOk
+ dec %rax 
+ add (pageSize), %rdi  
+ jmp __newStrMemOkBegin
+ __newStrMemOk:
+ mov %rdi, (memorySize)
+ add (memorySize), %r9 
+ mov (strPageNumber), %rax 
+ inc %rax 
+ mov %rax, (strPageNumber)
  #mov %r9, (strMax)
 # выделить динамическую память
- mov (pageSize), %rdi
+ mov (memorySize), %rdi
  #add %rax, %rdi
  add %r8, %rdi 
  mov $12, %rax
@@ -692,7 +709,7 @@ __firstMem:
  movb %dl, (%r8)
  inc %rbx
  inc %r8 
- cmp (pageSize), %rbx
+ cmp (memorySize), %rbx
  jz  __newStrMemEx
  jmp __newStrMemlo
  __newStrMemEx:
@@ -1911,48 +1928,25 @@ _start:
  call __defineVar
  call __defineVar
  call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ 
+ 
+ 
 
+ 
 
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- 
- 
- call __defineVar
- call __defineVar
- #call __defineVar
- #call __defineVar
- 
 
  # get fVar  
  /*mov $lenVarName, %rsi 
