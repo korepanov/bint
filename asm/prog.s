@@ -671,7 +671,7 @@ __firstMem:
  #mov %r8, %r14
  mov %r8, %r9 
  add (pageSize), %r9 
- mov %r9, (strMax)
+ #mov %r9, (strMax)
 # выделить динамическую память
  mov (pageSize), %rdi
  add %rax, %rdi
