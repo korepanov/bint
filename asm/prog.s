@@ -569,20 +569,20 @@ __defineVar:
 __undefineVar:
  # вход: имя переменной по адресу $varName 
  mov %r13, %rbx
- __getVarLocal:
+ __undefVarLocal:
  cmp %r15, %rbx
- jg __defVarEnd
+ jg __undefVarEnd
 
  mov %rbx, %r12 
  call __read 
  cmp $'*', (buf)
- jz __defVarEnd 
+ jz __undefVarEnd 
  
  add (varSize), %rbx 
- jmp __getVarLocal  
+ jmp __undefVarLocal  
   
- __defVarEnd:
- __defVarSearch:
+ __undefVarEnd:
+ __undefVarSearch:
  sub (varSize), %rbx 
  mov %rbx, %r12 
  call __read 
@@ -598,38 +598,46 @@ __undefineVar:
  call __compare
  mov %r12, %rbx 
  cmp $0, %rax 
- jz __getVarSearch
+ jz __undefVarSearch
  
- add (varNameSize), %rbx 
  mov %rbx, %r12 
- call __read 
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenStringType, %rax 
- mov $stringType, %rdi 
- call __set
- call __compare 
- cmp $1, %rax 
- jnz __getVarNotStr
- mov $1, %r11
- jmp __getVarNotStrEnd
- __getVarNotStr:
- mov $0, %r11 
- __getVarNotStrEnd:
- mov %r12, %rbx 
- add (typeSize), %rbx  
- 
- __getNow:
- #call __toNumber
- cmp $1, %r11
- jz __getVarGetStr
- mov %rbx, (userData)
- ret 
- __getVarGetStr:
+ add (varNameSize), %r12
+ __undefName: 
+ cmp %rbx, %r12 
+ jz __undefNameEx
+ movb $'!', (%rbx)
+ inc %rbx 
+ jmp __undefName 
+ __undefNameEx:
+ dec %rbx 
+ movb $0, (%rbx)
+ inc %rbx 
  mov %rbx, %r12 
- call __read
- call __toNumber
- mov %rax, (userData) 
+ add (typeSize), %r12 
+ __undefType: 
+ cmp %rbx, %r12 
+ jz __undefTypeEx
+ movb $'!', (%rbx)
+ inc %rbx 
+ jmp __undefType 
+ __undefTypeEx:
+ dec %rbx
+ dec %rbx  
+ movb $0, (%rbx)
+ inc %rbx 
+ movb $0, (%rbx)
+ inc %rbx 
+ mov %rbx, %r12 
+ add (valSize), %r12 
+ __undefVal: 
+ cmp %rbx, %r12 
+ jz __undefValEx
+ movb $'!', (%rbx)
+ inc %rbx 
+ jmp __undefVal  
+ __undefValEx:
+ dec %rbx 
+ movb $0, (%rbx)
  ret 
 
 # r12 - pointer (общего назначения)
@@ -1968,51 +1976,6 @@ _start:
  mov $stringType, %rdi
  call __set 
  call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- 
- 
- 
-
- 
-
 
  # get fVar  
  /*mov $lenVarName, %rsi 
@@ -2068,18 +2031,23 @@ _start:
  #call __pow 
  #mov $userData, %rsi 
  #call __print  
- 
- # get sVar  
- /*mov $lenVarName, %rsi 
+ mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi
+ mov $lenVarName6, %rax 
+ mov $varName6, %rdi
+ call __set
+ call __undefineVar
+ # get sVar2 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName6, %rax 
+ mov $varName6, %rdi
  call __set
  call __getVar
  mov (userData), %rsi 
  call __print 
  mov $enter, %rsi 
- call __print*/
+ call __print
  call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
