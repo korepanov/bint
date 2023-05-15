@@ -2037,6 +2037,20 @@ _start:
  mov $varName6, %rdi
  call __set
  call __undefineVar
+
+ # sVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
+
  # get sVar2 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
