@@ -566,6 +566,72 @@ __defineVar:
  add (varSize), %r14
  ret 
 
+__undefineVar:
+ # вход: имя переменной по адресу $varName 
+ mov %r13, %rbx
+ __getVarLocal:
+ cmp %r15, %rbx
+ jg __defVarEnd
+
+ mov %rbx, %r12 
+ call __read 
+ cmp $'*', (buf)
+ jz __defVarEnd 
+ 
+ add (varSize), %rbx 
+ jmp __getVarLocal  
+  
+ __defVarEnd:
+ __defVarSearch:
+ sub (varSize), %rbx 
+ mov %rbx, %r12 
+ call __read 
+ cmp $'*', (buf)
+ jz __throughError
+ mov $buf, %rsi 
+ mov %rbx, %r12 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
+ call __compare
+ mov %r12, %rbx 
+ cmp $0, %rax 
+ jz __getVarSearch
+ 
+ add (varNameSize), %rbx 
+ mov %rbx, %r12 
+ call __read 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi 
+ call __set
+ call __compare 
+ cmp $1, %rax 
+ jnz __getVarNotStr
+ mov $1, %r11
+ jmp __getVarNotStrEnd
+ __getVarNotStr:
+ mov $0, %r11 
+ __getVarNotStrEnd:
+ mov %r12, %rbx 
+ add (typeSize), %rbx  
+ 
+ __getNow:
+ #call __toNumber
+ cmp $1, %r11
+ jz __getVarGetStr
+ mov %rbx, (userData)
+ ret 
+ __getVarGetStr:
+ mov %rbx, %r12 
+ call __read
+ call __toNumber
+ mov %rax, (userData) 
+ ret 
+
 # r12 - pointer (общего назначения)
 # r13 - heapBegin 
 # r14 - heapPointer 
