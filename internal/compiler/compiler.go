@@ -1691,6 +1691,11 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			return LO, systemStack, "", err
 		}
 
+		_, err := progFile.Write([]byte("\njmp " + fmt.Sprintf("%v", LO[0])[1:]))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 		return []interface{}{"goto", LO[0]}, systemStack, "", nil
 	} else if "exit" == OP {
 		if "int" != WhatsType(fmt.Sprintf("%v", LO[0])) {

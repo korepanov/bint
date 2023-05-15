@@ -128,7 +128,13 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 				mark += string(expr[i])
 				i += 1
 			}
-
+			if ":" == string(expr[i]) && toCompile {
+				_, err := progFile.Write([]byte("\n" + mark[1:] + ":\n"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+			}
 			if ")" == string(expr[i]) {
 				res = append(res, []interface{}{"VAR", mark})
 				res = append(res, []interface{}{"BR", ")"})
