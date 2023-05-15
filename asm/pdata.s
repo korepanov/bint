@@ -51,6 +51,12 @@ lenUserData = . - userData
 lastUserData:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenLastUserData = . - lastUserData
+strPageNumber:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenStrNumber = . - strPageNumber
+memorySize:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMemorySize = . - memorySize
 intType:
 .ascii "int"
 .space 1, 0
@@ -76,29 +82,24 @@ ten:
 one:
 .float 1.0 
 zero:
-.float 0.0
- 
+.float 0.0 
 floatTail:
 .ascii ".0"
-.space 1, 0
+.space 1, 0 
 lenFloatTail =  . - floatTail
-
-divZeroError:
-.ascii "fatal error: dividing by zero\n"
-.space 1, 0
 
 fatalError:
 .ascii "fatal error: internal error\n"
 .space 1, 0 
-
-divINegError:
-.ascii "@ is not defined for negative numbers\n"
+divZeroError:
+.ascii "runtime error: dividing by zero\n"
 .space 1, 0
-
+divINegError:
+.ascii "runtime error: @ is not defined for negative numbers\n"
+.space 1, 0
 powNegError:
 .ascii "runtime error: ^ is not defined for negative base and fractional exponent\n"
 .space 1, 0
-
 powZeroNegError:
 .ascii "runtime error: ^ is not defined for zero base and negative exponent\n"
 .space 1, 0

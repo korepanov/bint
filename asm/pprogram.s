@@ -256,18 +256,16 @@ __defineVar:
  
  mov $varName, %rcx 
  mov $varType, %rdx 
- mov %r14, %rax
-
- cmp %rax, %r15
+ cmp %r14, %r15
  jg __defOk 
  #mov %r15, %r8
- mov (strPointer), %r8 
- call __newMem 
+ mov (strMax), %r8 
+ call __newMem  
  mov $varName, %rcx 
  mov $varType, %rdx
  __defOk:
  mov %r14, %r8 
- __defOkLocal:
+ __defOkLocal: 
  movb (%rcx), %r11b 
  cmp $'*', %r11b
  jz __defOkLocalEx
@@ -381,20 +379,19 @@ __defineVar:
  inc %r8 
  jmp __defAddr
  __defStrEnd:
+ movb $0, (%r8)
  mov (strPointer), %rax 
  add (valSize), %rax 
- cmp (strMax), %rax 
- jg __defStrNewMem
+ #cmp (strMax), %rax 
+ #jg __defStrNewMem
  mov %rax, (strPointer)
- jmp __defEnd 
- __defStrNewMem:
- mov %rax, (strPointer)
- call __newStrMem
+ #jmp __defEnd 
+ #__defStrNewMem:
+ #mov %rax, (strPointer)
+ #call __newStrMem
  __defEnd:
 
- mov %r14, %rax 
- add (varSize), %rax 
- mov %rax, %r14
+ add (varSize), %r14
  ret 
 
 # r12 - pointer (общего назначения)
@@ -470,7 +467,7 @@ __firstMem:
  __newMem:
  # адрес начала выделяемой памяти в  %r8 
 # запомнить адрес начала выделяемой памяти
- #mov %r8, %r14
+ #mov %r8, %r14 
  mov %r8, %r9 
  add (pageSize), %r9 
  #mov %r9, %r15
@@ -497,6 +494,8 @@ __firstMem:
  jz  __newMemEx
  jmp __newMemlo
  __newMemEx:
+ mov %r15, %r8 
+ call __newStrMem
  call __shiftStr
  ret  
 
@@ -504,13 +503,28 @@ __firstMem:
  # адрес начала выделяемой памяти в  %r8 
 # запомнить адрес начала выделяемой памяти
  #mov %r8, %r14
- call __print 
  mov %r8, %r9 
- add (pageSize), %r9 
- mov %r9, (strMax)
-# выделить динамическую память
+ #add (pageSize), %r9
+ 
+ mov (strPageNumber), %rax
  mov (pageSize), %rdi
- add %rax, %rdi
+ __newStrMemOkBegin: 
+ cmp $0, %rax 
+ jz __newStrMemOk
+ dec %rax 
+ add (pageSize), %rdi  
+ jmp __newStrMemOkBegin
+ __newStrMemOk:
+ mov %rdi, (memorySize)
+ add (memorySize), %r9 
+ mov (strPageNumber), %rax 
+ inc %rax 
+ mov %rax, (strPageNumber)
+ #mov %r9, (strMax)
+# выделить динамическую память
+ mov (memorySize), %rdi
+ #add %rax, %rdi
+ add %r8, %rdi 
  mov $12, %rax
  syscall
 # обработка ошибки
@@ -523,7 +537,7 @@ __firstMem:
  movb %dl, (%r8)
  inc %rbx
  inc %r8 
- cmp (pageSize), %rbx
+ cmp (memorySize), %rbx
  jz  __newStrMemEx
  jmp __newStrMemlo
  __newStrMemEx:
@@ -563,9 +577,7 @@ __readClear:
  # старый адрес конца кучи 
  mov (oldHeapMax), %r11 
  add (varNameSize), %r12  
- __renewStrBegin:
- cmp %r11, %r12 
- jg __renewStrEnd 
+ 
  __renewFindStr:
  call __read
  mov $lenBuf2, %rsi 
@@ -622,10 +634,7 @@ __readClear:
  inc %rdx 
  jmp __renewStrAddr
  __renewStrAddrEnd:
- sub (typeSize), %r12 
- add (varSize), %r12 
- jmp __renewStrBegin
- __renewStrEnd:
+ movb $0, (%rsi)
  ret 
 
  __shiftStr:
