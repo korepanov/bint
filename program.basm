@@ -1,3 +1,5 @@
+string s;
+s = "#main";
 #main:
 print("Hello world!\n");
-goto(#main); 
+goto(s);

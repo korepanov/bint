@@ -492,7 +492,14 @@ powZeroZeroError:
  t127: 
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
  lenT127 = . - t127
+varName0:
+.ascii "s"
+lenVarName0 = . - varName0
 data0:
-.ascii "Hello world!\n"
+.ascii "#main"
 .space 1, 0
 lenData0 = . - data0
+data1:
+.ascii "Hello world!\n"
+.space 1, 0
+lenData1 = . - data1

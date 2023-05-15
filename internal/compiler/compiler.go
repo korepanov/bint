@@ -1686,15 +1686,17 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
 		}
-		if "#" != string(fmt.Sprintf("%v", LO[0])[0]) {
-			err := errors.New("executor: goto: ERROR: mark must start with \"#\", mark: " + fmt.Sprintf("%v", LO[0]))
-			return LO, systemStack, "", err
-		}
+		if "#" == string(fmt.Sprintf("%v", LO[0])) {
+			_, err := progFile.Write([]byte("\njmp " + fmt.Sprintf("%v", LO[0])[1:]))
 
-		_, err := progFile.Write([]byte("\njmp " + fmt.Sprintf("%v", LO[0])[1:]))
-		if nil != err {
-			fmt.Println(err)
-			os.Exit(1)
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		}else{
+			numberS := fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov $lenVarName" + numberS +
+				", %rax \n mov $varName" + numberS + ", %rdi \n call __set \n call __getVar"))
 		}
 		return []interface{}{"goto", LO[0]}, systemStack, "", nil
 	} else if "exit" == OP {
@@ -2101,7 +2103,7 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 		}
 	}
 
-	if "goto" == OP {
+	/*if "goto" == OP {
 		newVariable := EachVariable(variables)
 		for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
 			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
@@ -2109,7 +2111,7 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 			}
 
 		}
-	}
+	}*/
 
 	var res []interface{}
 	if "input" != OP && "pop" != OP {

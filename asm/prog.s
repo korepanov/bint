@@ -57,6 +57,9 @@ lenStrNumber = . - strPageNumber
 memorySize:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenMemorySize = . - memorySize
+placeToJump:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenPlaceToJump = . - placeToJump
 varName0:
 .ascii "iVar"
 lenVarName0 = . - varName0
@@ -140,6 +143,9 @@ lenData8 = . - data8
 data9:
 .ascii "Slava's message"
 .space 1, 0
+data10:
+.ascii "__stop"
+.space 1, 0
 ten:
 .float 10.0 
 one:
@@ -150,6 +156,10 @@ floatTail:
 .ascii ".0"
 .space 1, 0 
 lenFloatTail =  . - floatTail
+label1:
+.int __stop 
+label2:
+.int __throughError
 
 fatalError:
 .ascii "fatal error: internal error\n"
@@ -645,6 +655,14 @@ __undefineVar:
 # r14 - heapPointer 
 # r15 - heapMax 
 
+__initLabels:
+ mov $12, %rax
+ xor %rdi, %rdi
+ syscall
+ call __newLabelMem
+ add (pageSize), 
+ call __firstMem
+
 __firstMem:
  # получить адрес начала области для выделения памяти
  mov $12, %rax
@@ -676,6 +694,34 @@ __firstMem:
  jz  __ex
  jmp __lo
  __ex:
+ ret 
+
+ __newLabelMem:
+ # в %rax адрес начала выделяемой памяти 
+# запомнить адрес начала выделяемой памяти
+ mov %rax, %r8  
+ mov %rax, %r9 
+ add (pageSize), %r9
+ mov %r9, %r15 
+# выделить динамическую память
+ mov (pageSize), %rdi
+ add %rax, %rdi
+ mov $12, %rax
+ syscall
+# обработка ошибки
+ cmp $-1, %rax
+ jz __throughError
+# заполним выделенную память
+ mov $'*', %dl
+ mov $0, %rbx
+ __newLabelMemlo:
+ movb %dl, (%r8)
+ inc %rbx
+ inc %r8 
+ cmp (pageSize), %rbx
+ jz  __newLabelex
+ jmp __newLabelMemlo
+ __newLabelex:
  ret 
 
  __firstStrMem:
@@ -1938,10 +1984,20 @@ _start:
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
  call __set 
- mov $data8, %rax 
+ mov $data10, %rax 
  mov %rax, (userData)
  call __setVar
  
+ # get sVar2 
+ /*mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
+ call __set
+ call __getVar
+ mov (userData), %rsi 
+ call __print 
+ call __throughError*/
  # sVar2
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
