@@ -393,6 +393,80 @@ __defineVar:
 
  add (varSize), %r14
  ret 
+ 
+__undefineVar:
+ # вход: имя переменной по адресу $varName 
+ mov %r13, %rbx
+ __undefVarLocal:
+ cmp %r15, %rbx
+ jg __undefVarEnd
+
+ mov %rbx, %r12 
+ call __read 
+ cmp $'*', (buf)
+ jz __undefVarEnd 
+ 
+ add (varSize), %rbx 
+ jmp __undefVarLocal  
+  
+ __undefVarEnd:
+ __undefVarSearch:
+ sub (varSize), %rbx 
+ mov %rbx, %r12 
+ call __read 
+ cmp $'*', (buf)
+ jz __throughError
+ mov $buf, %rsi 
+ mov %rbx, %r12 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
+ call __compare
+ mov %r12, %rbx 
+ cmp $0, %rax 
+ jz __undefVarSearch
+ 
+ mov %rbx, %r12 
+ add (varNameSize), %r12
+ __undefName: 
+ cmp %rbx, %r12 
+ jz __undefNameEx
+ movb $'!', (%rbx)
+ inc %rbx 
+ jmp __undefName 
+ __undefNameEx:
+ dec %rbx 
+ movb $0, (%rbx)
+ inc %rbx 
+ mov %rbx, %r12 
+ add (typeSize), %r12 
+ __undefType: 
+ cmp %rbx, %r12 
+ jz __undefTypeEx
+ movb $'!', (%rbx)
+ inc %rbx 
+ jmp __undefType 
+ __undefTypeEx:
+ dec %rbx
+ dec %rbx  
+ movb $0, (%rbx)
+ inc %rbx 
+ movb $0, (%rbx)
+ inc %rbx 
+ mov %rbx, %r12 
+ add (valSize), %r12 
+ __undefVal: 
+ cmp %rbx, %r12 
+ jz __undefValEx
+ movb $'!', (%rbx)
+ inc %rbx 
+ jmp __undefVal  
+ __undefValEx:
+ dec %rbx 
+ movb $0, (%rbx)
+ ret 
 
 # r12 - pointer (общего назначения)
 # r13 - heapBegin 

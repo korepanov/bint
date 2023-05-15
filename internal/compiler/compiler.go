@@ -1632,6 +1632,13 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 	} else if "." == OP {
 		return []interface{}{0}, systemStack, "", nil
 	} else if "UNDEFINE" == OP {
+		numberS := fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+		_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov $lenVarName" + numberS + ", %rax \n" +
+			"mov $varName" + numberS + ", %rdi \n " + "call __set \n" + "call __undefineVar"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 		return []interface{}{0}, systemStack, "", nil
 	} else if "int" == OP {
 		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
