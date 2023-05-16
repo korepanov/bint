@@ -1874,8 +1874,10 @@ __initLabels:
  call __newLabelMem
  mov (memoryBegin), %rax 
  add (pageSize), %rax 
+ mov %rax, %r12 # сохраняем rax 
  mov (memoryBegin), %rdi
- 
+ mov (memoryBegin), %r9
+
  mov $labelName1, %rbx
  __initLabelsName1: 
  mov (%rbx), %dl 
@@ -1886,7 +1888,21 @@ __initLabels:
  inc %rdi 
  jmp __initLabelsName1 
  __initLabelsNameEx1:
-
+ mov (label1), %rax 
+ call __toStr
+ add (valSize), %r9
+ mov %r9, %rdi 
+ mov $buf2, %rbx 
+__initLabelsAddr1:
+ mov (%rbx), %dl 
+ cmp $0, %dl 
+ jz __initLabelsAddrEx1
+ mov %dl, (%rdi)
+ inc %rbx 
+ inc %rdi 
+ jmp __initLabelsAddr1
+ __initLabelsAddrEx1:
+ mov %r12, %rax 
 
  ret 
 
