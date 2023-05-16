@@ -63,6 +63,9 @@ lenPlaceToJump = . - placeToJump
 memoryBegin:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenMemoryBegin = . - memoryBegin
+labelsEnd:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenLabelsEnd = . - labelsEnd
 varName0:
 .ascii "iVar"
 lenVarName0 = . - varName0
@@ -1902,6 +1905,34 @@ __initLabelsAddr1:
  inc %rdi 
  jmp __initLabelsAddr1
  __initLabelsAddrEx1:
+
+ add (valSize), %r9 
+ mov %r9, %rdi 
+ mov $labelName2, %rbx 
+ __initLabelsName2:
+ mov (%rbx), %dl 
+ cmp $0, %dl 
+ jz __initLabelsNameEx2
+ mov %dl, (%rdi)
+ inc %rbx 
+ inc %rdi 
+ jmp __initLabelsName2
+ __initLabelsNameEx2:
+ mov (label2), %rax 
+ call __toStr
+ add (valSize), %r9 
+ mov %r9, %rdi 
+ mov $buf2, %rbx 
+ __initLabelsAddr2:
+ mov (%rbx), %dl 
+ cmp $0, %dl 
+ jz __initLabelsAddrEx2
+ mov %dl, (%rdi)
+ inc %rbx 
+ inc %rdi 
+ jmp __initLabelsAddr2
+ __initLabelsAddrEx2:
+
  mov %r12, %rax 
 
  ret 
