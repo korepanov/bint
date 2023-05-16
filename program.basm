@@ -1,5 +1,3 @@
-string s;
-s = "#main";
 #main:
-print("Hello world!\n");
-goto(s);
+print("Hello\n");
+goto(#main); 

@@ -1658,27 +1658,11 @@ _start:
  call __firstMem
  call __firstStrMem
 
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName0, %rax 
- mov $varName0, %rdi
- call __set 
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenStringType, %rax
- mov $stringType, %rdi
- call __set 
- call __defineVar
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName0, %rax 
- mov $varName0, %rdi 
-call __set
+.main:
 
- mov $data0, %rax  
- mov %rax, (userData)
- call __setVar
-main:
-
-mov $data1, %rsi
+mov $data0, %rsi
 call __print
+jmp .main
+mov $60,  %rax
+xor %rdi, %rdi
+syscall

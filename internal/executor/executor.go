@@ -430,8 +430,8 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			return LO, systemStack, err
 		}
 	} else if "/" == OP {
-		if ("int" != WhatsType(fmt.Sprintf("%v", LO[0])) && "float" != WhatsType(fmt.Sprintf("%v", LO[0]))) ||
-			("int" != WhatsType(fmt.Sprintf("%v", RO[0])) && "float" != WhatsType(fmt.Sprintf("%v", RO[0]))) {
+		if ("float" != WhatsType(fmt.Sprintf("%v", LO[0]))) ||
+			("float" != WhatsType(fmt.Sprintf("%v", RO[0]))) {
 			err := errors.New("executor: / : error: data type mismatch")
 			return LO, systemStack, err
 		}
@@ -444,8 +444,11 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		if nil != err {
 			return RO, systemStack, err
 		}
-
-		return []interface{}{floatLO / floatRO}, systemStack, nil
+		res := fmt.Sprintf("%v", floatLO/floatRO)
+		if "int" == WhatsType(res) {
+			res = res + ".0"
+		}
+		return []interface{}{res}, systemStack, nil
 
 	} else if "@" == OP {
 		if !("int" == WhatsType(fmt.Sprintf("%v", LO[0])) && "int" == WhatsType(fmt.Sprintf("%v", RO[0]))) {
@@ -462,8 +465,8 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 		return []interface{}{intLO / intRO}, systemStack, nil
 	} else if "^" == OP {
-		if ("int" != WhatsType(fmt.Sprintf("%v", LO[0])) && "float" != WhatsType(fmt.Sprintf("%v", LO[0]))) ||
-			("int" != WhatsType(fmt.Sprintf("%v", RO[0])) && "float" != WhatsType(fmt.Sprintf("%v", RO[0]))) {
+		if ("float" != WhatsType(fmt.Sprintf("%v", LO[0]))) ||
+			("float" != WhatsType(fmt.Sprintf("%v", RO[0]))) {
 			err := errors.New("executor: ^ : error: data type mismatch")
 			return LO, systemStack, err
 		}
@@ -477,8 +480,13 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		if nil != err {
 			return LO, systemStack, err
 		}
+		res := fmt.Sprintf("%v", math.Pow(floatLO, floatRO))
 
-		return []interface{}{math.Pow(floatLO, floatRO)}, systemStack, nil
+		if "int" == WhatsType(res) {
+			res = res + ".0"
+		}
+
+		return []interface{}{res}, systemStack, nil
 	} else if "str" == OP {
 		return []interface{}{"\"" + fmt.Sprintf("%v", LO[0]) + "\""}, systemStack, nil
 	} else if "=" == OP {
