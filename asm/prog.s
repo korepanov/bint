@@ -661,21 +661,6 @@ __undefineVar:
 # r14 - heapPointer 
 # r15 - heapMax 
 
-__initLabels:
- # формирует в %rax адрес начала выделяемой памяти для firstMem
- mov $12, %rax
- xor %rdi, %rdi
- syscall
- mov %rax, (memoryBegin)
- call __newLabelMem
- mov (memoryBegin), %rax 
- add (pageSize), %rax 
- mov (memoryBegin), %rdi
- 
- __initLabelsFillEx:
-
- ret 
-
 __firstMem:
  # в %rax адрес начала выделяемой памяти 
 # запомнить адрес начала выделяемой памяти
@@ -1879,6 +1864,31 @@ fstp (buf)
 movss (buf), %xmm0 
 __pos:
 ret 
+
+__initLabels:
+ # формирует в %rax адрес начала выделяемой памяти для firstMem
+ mov $12, %rax
+ xor %rdi, %rdi
+ syscall
+ mov %rax, (memoryBegin)
+ call __newLabelMem
+ mov (memoryBegin), %rax 
+ add (pageSize), %rax 
+ mov (memoryBegin), %rdi
+ 
+ mov $labelName1, %rbx
+ __initLabelsName1: 
+ mov (%rbx), %dl 
+ cmp $0, %dl 
+ jz __initLabelsNameEx1
+ mov %dl, (%rdi) 
+ inc %rbx 
+ inc %rdi 
+ jmp __initLabelsName1 
+ __initLabelsNameEx1:
+
+
+ ret 
 
 .globl _start
 _start:
