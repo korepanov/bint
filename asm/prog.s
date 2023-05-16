@@ -60,6 +60,9 @@ lenMemorySize = . - memorySize
 placeToJump:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenPlaceToJump = . - placeToJump
+memoryBegin:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMemoryBegin = . - memoryBegin
 varName0:
 .ascii "iVar"
 lenVarName0 = . - varName0
@@ -143,9 +146,12 @@ lenData8 = . - data8
 data9:
 .ascii "Slava's message"
 .space 1, 0
-data10:
+labelName1:
 .ascii "__stop"
 .space 1, 0
+labelName2:
+.ascii "__throughError"
+.space 1, 0 
 ten:
 .float 10.0 
 one:
@@ -233,7 +239,7 @@ __lenEx:
  ret
 
 __printHeap:  
- mov %r13, %r8  
+ mov (memoryBegin), %r8  
  __printHeapLoop:
  cmp (strMax), %r8 
  jz __printHeapEx
@@ -656,18 +662,22 @@ __undefineVar:
 # r15 - heapMax 
 
 __initLabels:
+ # формирует в %rax адрес начала выделяемой памяти для firstMem
  mov $12, %rax
  xor %rdi, %rdi
  syscall
+ mov %rax, (memoryBegin)
  call __newLabelMem
- add (pageSize), 
- call __firstMem
+ mov (memoryBegin), %rax 
+ add (pageSize), %rax 
+ mov (memoryBegin), %rdi
+ 
+ __initLabelsFillEx:
+
+ ret 
 
 __firstMem:
- # получить адрес начала области для выделения памяти
- mov $12, %rax
- xor %rdi, %rdi
- syscall
+ # в %rax адрес начала выделяемой памяти 
 # запомнить адрес начала выделяемой памяти
  mov %rax, %r8  
  mov %rax, %r13
@@ -702,7 +712,6 @@ __firstMem:
  mov %rax, %r8  
  mov %rax, %r9 
  add (pageSize), %r9
- mov %r9, %r15 
 # выделить динамическую память
  mov (pageSize), %rdi
  add %rax, %rdi
@@ -722,7 +731,7 @@ __firstMem:
  jz  __newLabelex
  jmp __newLabelMemlo
  __newLabelex:
- ret 
+ ret
 
  __firstStrMem:
  # адрес начала области для выделения памяти
@@ -1873,6 +1882,7 @@ ret
 
 .globl _start
 _start:
+ call __initLabels
  call __firstMem
  call __firstStrMem
  
@@ -1984,7 +1994,7 @@ _start:
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
  call __set 
- mov $data10, %rax 
+ mov $data8, %rax 
  mov %rax, (userData)
  call __setVar
  
@@ -2108,7 +2118,7 @@ _start:
  call __defineVar
 
  # get sVar2 
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName6, %rax 
  mov $varName6, %rdi
@@ -2117,7 +2127,7 @@ _start:
  mov (userData), %rsi 
  call __print 
  mov $enter, %rsi 
- call __print
+ call __print*/
  call __printHeap
 __stop:
  mov $60,  %rax      # номер системного вызова exit
