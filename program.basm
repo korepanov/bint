@@ -1,3 +1,8 @@
-#main:
-print("Hello\n");
-goto(#main); 
+string$ret;
+strings;
+s="20";
+intc;
+int$I0;
+$I0=int(s);
+c=$I0;
+UNDEFINE($I0);

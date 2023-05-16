@@ -492,7 +492,19 @@ powZeroZeroError:
  t127: 
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
  lenT127 = . - t127
+varName0:
+.ascii "$ret"
+lenVarName0 = . - varName0
+varName1:
+.ascii "s"
+lenVarName1 = . - varName1
 data0:
-.ascii "Hello\n"
+.ascii "20"
 .space 1, 0
 lenData0 = . - data0
+varName2:
+.ascii "c"
+lenVarName2 = . - varName2
+varName3:
+.ascii "$I0"
+lenVarName3 = . - varName3
