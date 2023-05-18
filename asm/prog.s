@@ -11,6 +11,8 @@ valSize:
 .quad 64 
 labelSize:
 .quad 128 
+labelsMax:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
 buf:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenBuf = . - buf 
@@ -59,15 +61,15 @@ lenStrNumber = . - strPageNumber
 memorySize:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenMemorySize = . - memorySize
-placeToJump:
-.quad 0, 0, 0, 0, 0, 0, 0, 0
-lenPlaceToJump = . - placeToJump
 memoryBegin:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenMemoryBegin = . - memoryBegin
 labelsEnd:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenLabelsEnd = . - labelsEnd
+labelsPointer:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenLabelsPointer = . - labelsPointer 
 varName0:
 .ascii "iVar"
 lenVarName0 = . - varName0
@@ -155,7 +157,7 @@ labelName1:
 .ascii "__stop"
 .space 1, 0
 labelName2:
-.ascii "__throughError"
+.ascii "__throughMessage"
 .space 1, 0 
 ten:
 .float 10.0 
@@ -170,7 +172,7 @@ lenFloatTail =  . - floatTail
 label1:
 .int __stop 
 label2:
-.int __throughError
+.int __throughMessage 
 
 fatalError:
 .ascii "fatal error: internal error\n"
@@ -1904,6 +1906,8 @@ __initLabels:
  inc %rdi 
  jmp __initLabelsName1 
  __initLabelsNameEx1:
+ movb $0, (%rdi)
+
  mov (label1), %rax 
  call __toStr
  add (valSize), %r9
@@ -1918,6 +1922,7 @@ __initLabelsAddr1:
  inc %rdi 
  jmp __initLabelsAddr1
  __initLabelsAddrEx1:
+ movb $0, (%rdi)
 
  add (valSize), %r9 
  mov %r9, %rdi 
@@ -1944,6 +1949,7 @@ __initLabelsAddr1:
  inc %rdi 
  jmp __initLabelsName2
  __initLabelsNameEx2:
+ movb $0, (%rdi)
  mov (label2), %rax 
  call __toStr
  add (valSize), %r9 
@@ -1958,9 +1964,43 @@ __initLabelsAddr1:
  inc %rdi 
  jmp __initLabelsAddr2
  __initLabelsAddrEx2:
+ movb $0, (%rdi)
 
  mov %r12, %rax 
+ mov %r12, (labelsMax)
+ ret 
 
+ __goto:
+ # адрес имени метки, по которой нужно прыгнуть, в %rdi 
+ mov %rdi, %rsi 
+ call __len 
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ call __set 
+
+ mov (memoryBegin), %rax
+  __gotoSearch: 
+ mov %rax, (labelsPointer)
+ cmp %rax, (labelsMax)
+ jl __gotoEnd
+ mov %rax, %r12 
+ call __read  
+ 
+ call __compare 
+ cmp $1, %rax 
+ jz __goNow  
+ mov (labelsPointer), %rax 
+ add (labelSize), %rax 
+  
+ jmp __gotoSearch
+ __goNow:
+ mov (labelsPointer), %rsi 
+ call __print 
+ ret 
+ __gotoEnd:
+  
+ call __throughError
  ret 
 
 .globl _start
@@ -1968,7 +2008,6 @@ _start:
  call __initLabels
  call __firstMem
  call __firstStrMem
- 
  
  # iVar 
  mov $lenVarName, %rsi 
@@ -2078,20 +2117,21 @@ _start:
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
  call __set 
- mov $data8, %rax 
+ mov $labelName2, %rax 
  mov %rax, (userData)
  call __setVar
  
- # get sVar2 
- /*mov $lenVarName, %rsi 
+
+ # get sVar 
+ mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
  call __set
  call __getVar
- mov (userData), %rsi 
- call __print 
- call __throughError*/
+ mov (userData), %rdi 
+ call __goto 
+ 
  # sVar2
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -2217,3 +2257,10 @@ __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
  syscall   
+
+__throughMessage:
+ mov $data1, %rsi 
+ call __print 
+ mov $60,  %rax      # номер системного вызова exit
+ xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
+ syscall 
