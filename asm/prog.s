@@ -2135,14 +2135,14 @@ _start:
  
 
  # get sVar 
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
  call __set
  call __getVar
  mov (userData), %rdi 
- call __goto 
+ call __goto*/ 
  
  # sVar2
  mov $lenVarName, %rsi 
