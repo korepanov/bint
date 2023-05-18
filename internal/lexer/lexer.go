@@ -11,7 +11,7 @@ import (
 )
 
 func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, toCompile bool,
-	transpileDest *os.File, toPrimitive bool, primitiveDest *os.File, dataFile *os.File,
+	transpileDest *os.File, toPrimitive bool, primitiveDest *os.File, dataFile *os.File, labelsFile *os.File,
 	progFile *os.File) ([][]interface{}, [][]interface{}, error) {
 
 	var res [][]interface{}
@@ -134,6 +134,26 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 					fmt.Println(err)
 					os.Exit(1)
 				}
+				_, err = dataFile.Write([]byte("\nlabel" + fmt.Sprintf("%v", LabelCounter) + ":\n .quad ." + mark[1:] +
+					"\nlabelName" + fmt.Sprintf("%v", LabelCounter) + ":" + "\n.ascii \"." + mark[1:] + "\"" + "\n.space 1,0"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+
+				_, err = labelsFile.Write([]byte("\nmov $labelName" + fmt.Sprintf("%v", LabelCounter) + ", %rbx" +
+					"\n __initLabelsName" + fmt.Sprintf("%v", LabelCounter) + ": \n mov (%rbx), %dl \n cmp $0, %dl \n" +
+					"jz __initLabelsNameEx" + fmt.Sprintf("%v", LabelCounter) + "\n mov %dl, (%rdi) \n inc %rbx \n inc %rdi" +
+					"\n jmp __initLabelsName" + fmt.Sprintf("%v", LabelCounter) +
+					"\n __initLabelsNameEx" + fmt.Sprintf("%v", LabelCounter) + ":\n movb $0, (%rdi)\n\n mov (label" +
+					fmt.Sprintf("%v", LabelCounter) + "), %rax \n call __toStr\n add (valSize), %r9\n mov %r9, %rdi" +
+					"\n mov $buf2, %rbx \n__initLabelsAddr" + fmt.Sprintf("%v", LabelCounter) + ":\n mov (%rbx), %dl " +
+					"\n cmp $0, %dl \n jz __initLabelsAddrEx" + fmt.Sprintf("%v", LabelCounter) + "\n mov %dl, (%rdi)\n inc %rbx" +
+					"\n inc %rdi \n jmp __initLabelsAddr" + fmt.Sprintf("%v", LabelCounter) +
+					"\n __initLabelsAddrEx" + fmt.Sprintf("%v", LabelCounter) + ":\n movb $0, (%rdi)" +
+					"\n add (valSize), %r9 \n mov %r9, %rdi \n mov %rdi, %r10 \n mov %r9, %rsi \n mov %r12, %rax\n" +
+					"call __newLabelMem\n add (labelSize), %r12 \n\n mov %r10, %rdi \n mov %rsi, %r9"))
+				LabelCounter++
 			}
 			if ")" == string(expr[i]) {
 				res = append(res, []interface{}{"VAR", mark})

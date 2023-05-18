@@ -51,7 +51,7 @@ __lenEx:
  ret
 
 __printHeap:  
- mov %r13, %r8  
+ mov (memoryBegin), %r8  
  __printHeapLoop:
  cmp (strMax), %r8 
  jz __printHeapEx
@@ -393,7 +393,7 @@ __defineVar:
 
  add (varSize), %r14
  ret 
- 
+
 __undefineVar:
  # вход: имя переменной по адресу $varName 
  mov %r13, %rbx
@@ -474,10 +474,7 @@ __undefineVar:
 # r15 - heapMax 
 
 __firstMem:
- # получить адрес начала области для выделения памяти
- mov $12, %rax
- xor %rdi, %rdi
- syscall
+ # в %rax адрес начала выделяемой памяти 
 # запомнить адрес начала выделяемой памяти
  mov %rax, %r8  
  mov %rax, %r13
@@ -505,6 +502,33 @@ __firstMem:
  jmp __lo
  __ex:
  ret 
+
+ __newLabelMem:
+ # в %rax адрес начала выделяемой памяти 
+# запомнить адрес начала выделяемой памяти
+ mov %rax, %r8  
+ mov %rax, %r9 
+ add (labelSize), %r9
+# выделить динамическую память
+ mov (labelSize), %rdi
+ add %rax, %rdi
+ mov $12, %rax
+ syscall
+# обработка ошибки
+ cmp $-1, %rax
+ jz __throughError
+# заполним выделенную память
+ mov $'*', %dl
+ mov $0, %rbx
+ __newLabelMemlo:
+ movb %dl, (%r8)
+ inc %rbx
+ inc %r8 
+ cmp (labelSize), %rbx
+ jz  __newLabelex
+ jmp __newLabelMemlo
+ __newLabelex:
+ ret
 
  __firstStrMem:
  # адрес начала области для выделения памяти
@@ -1653,10 +1677,60 @@ movss (buf), %xmm0
 __pos:
 ret 
 
+ __goto:
+ # адрес имени метки, по которой нужно прыгнуть, в %rdi 
+ mov %rdi, %rsi 
+ call __len 
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ call __set 
+
+ mov (memoryBegin), %rax
+  __gotoSearch: 
+ mov %rax, (labelsPointer)
+ cmp %rax, (labelsMax)
+ jl __gotoEnd
+ mov %rax, %r12 
+ call __read  
+ 
+ call __compare 
+ cmp $1, %rax 
+ jz __goNow  
+ mov (labelsPointer), %rax 
+ add (labelSize), %rax 
+  
+ jmp __gotoSearch
+ __goNow:
+ mov (labelsPointer), %rax 
+ add (valSize), %rax 
+ mov %rax, %r8 #  cохраняем %rax 
+ mov %rax, %rsi 
+ call __len 
+ 
+  
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx  
+ mov %r8, %rdi 
+ call __set 
+ 
+ call __toNumber
+ jmp *%rax 
+
+ __gotoEnd:
+  
+ call __throughError
+ ret 
+
 .globl _start
 _start:
+ call __initLabels
  call __firstMem
  call __firstStrMem
+
+ 
+
+.main:
 
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -1669,49 +1743,28 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi
- call __set 
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenStringType, %rax
- mov $stringType, %rdi
- call __set 
- call __defineVar
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi 
 call __set
 
  mov $data0, %rax  
  mov %rax, (userData)
  call __setVar
 mov $lenVarName, %rsi 
- mov $varName, %rdx
- mov $lenVarName2, %rax 
- mov $varName2, %rdi 
+ mov $varName, %rdx 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi 
  call __set 
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenIntType, %rax 
- mov $intType, %rdi 
- call __set 
- mov $varName, %rcx 
- mov $varType, %rdx  
- call __defineVar
-mov $lenVarName, %rsi 
- mov $varName, %rdx
- mov $lenVarName3, %rax 
- mov $varName3, %rdi 
- call __set 
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenIntType, %rax 
- mov $intType, %rdi 
- call __set 
- mov $varName, %rcx 
- mov $varType, %rdx  
- call __defineVar
+ call __getVar
+mov (userData), %rdi 
+ movb $'.', (%rdi) 
+ call __goto
+.smth:
+
+mov $data1, %rsi
+call __print
+mov $60,  %rax
+xor %rdi, %rdi
+syscall

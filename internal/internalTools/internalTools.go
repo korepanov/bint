@@ -613,7 +613,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 
 				} else {
 					exprList, variables, err = LexicalAnalyze(inputedCode,
-						variables, options.Transpile == sysMod, false, transpileDest, options.Primitive == sysMod, primitiveDest, nil, nil)
+						variables, options.Transpile == sysMod, false, transpileDest, options.Primitive == sysMod, primitiveDest, nil, nil, nil)
 				}
 			} else {
 				var temp string
@@ -658,7 +658,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			} else if options.InterpPrimitive == sysMod || options.ExecEncrypt == sysMod {
 				if isBasmStyle {
 					exprList, variables, err = LexicalAnalyze(inputedCode,
-						variables, options.Transpile == sysMod, false, transpileDest, options.Primitive == sysMod, primitiveDest, nil, nil)
+						variables, options.Transpile == sysMod, false, transpileDest, options.Primitive == sysMod, primitiveDest, nil, nil, nil)
 					_, infoListList, systemStack, err = parser.Parse(exprList, variables, systemStack, options.HideTree,
 						options.Transpile == sysMod, options.Primitive == sysMod, primitiveDest, transpileDest)
 					if nil != err {
@@ -921,6 +921,12 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			os.Exit(1)
 		}
 
+		labelsFile, err := compiler.InitLabels()
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
 		f, err := os.Open(rootSource)
 		if nil != err {
 			fmt.Println("could not open file " + rootSource)
@@ -933,7 +939,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 				panic(err)
 			}
 			inputedCode := CodeInput(chunk, false)
-			exprList, variables, err = LexicalAnalyze(inputedCode, variables, false, true, nil, false, nil, dataFile, progFile)
+			exprList, variables, err = LexicalAnalyze(inputedCode, variables, false, true, nil, false, nil, dataFile, labelsFile, progFile)
 			if nil != err {
 				panic(err)
 			}
@@ -958,12 +964,23 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			fmt.Println(err)
 			os.Exit(1)
 		}
+
+		err = compiler.FinishLabels(labelsFile)
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
 		err = dataFile.Close()
 		if nil != err {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 		err = progFile.Close()
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		err = labelsFile.Close()
 		if nil != err {
 			fmt.Println(err)
 			os.Exit(1)

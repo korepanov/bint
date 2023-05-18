@@ -115,7 +115,7 @@ func sysGetExprType(command string, variables [][][]interface{}) (string, error)
 	}
 
 	exprList, allVariables, err = lexer.LexicalAnalyze(command,
-		allVariables, false, false, nil, false, nil, nil, nil)
+		allVariables, false, false, nil, false, nil, nil, nil, nil)
 
 	if nil != err {
 		return "", err
@@ -291,7 +291,7 @@ func dValidateUserStackCall(command string, variables [][][]interface{}) (string
 		}
 
 		exprList, allVariables, err = lexer.LexicalAnalyze(command,
-			allVariables, false, false, nil, false, nil, nil, nil)
+			allVariables, false, false, nil, false, nil, nil, nil, nil)
 		if nil != err {
 			return ``, status.Err, variables, err
 		}
@@ -1039,7 +1039,7 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 
 		for _, loc := range locs {
 			_, variables[len(variables)-1], err = lexer.LexicalAnalyze(tail[loc[0]:loc[1]],
-				variables[len(variables)-1], false, false, nil, false, nil, nil, nil)
+				variables[len(variables)-1], false, false, nil, false, nil, nil, nil, nil)
 			if "int" == variables[len(variables)-1][len(variables[len(variables)-1])-1][0] {
 				variables[len(variables)-1][len(variables[len(variables)-1])-1][2] = "1"
 			}
@@ -1085,7 +1085,7 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 			var err error
 			if "void" != retVal {
 				_, variables[0], err = lexer.LexicalAnalyze(funcTable[funcName]+"$"+funcName,
-					variables[0], false, false, nil, false, nil, nil, nil)
+					variables[0], false, false, nil, false, nil, nil, nil, nil)
 			} else {
 				variables[0] = append(variables[0], []interface{}{"void", funcName, []interface{}{"func"}})
 			}
@@ -1116,7 +1116,7 @@ func dValidateVarDef(command string, variables [][][]interface{}) (string, int, 
 	if status.Yes == stat && `` == tail {
 		var err error
 		_, variables[len(variables)-1], err = lexer.LexicalAnalyze(command,
-			variables[len(variables)-1], false, false, nil, false, nil, nil, nil)
+			variables[len(variables)-1], false, false, nil, false, nil, nil, nil, nil)
 		if nil != err {
 			return tail, status.Err, variables, err
 		}
@@ -1873,35 +1873,35 @@ func DynamicValidate(validatingFile string, rootSource string) {
 	var err error
 
 	_, variables[len(variables)-1], err = lexer.LexicalAnalyze("string$val",
-		variables[len(variables)-1], false, false, nil, false, nil, nil, nil)
+		variables[len(variables)-1], false, false, nil, false, nil, nil, nil, nil)
 	if nil != err {
 		panic(err)
 	}
 	variables[0][0][2] = "v"
 
 	_, variables[len(variables)-1], err = lexer.LexicalAnalyze("int$ival",
-		variables[len(variables)-1], false, false, nil, false, nil, nil, nil)
+		variables[len(variables)-1], false, false, nil, false, nil, nil, nil, nil)
 	if nil != err {
 		panic(err)
 	}
 	variables[0][1][2] = "1"
 
 	_, variables[len(variables)-1], err = lexer.LexicalAnalyze("bool$bval",
-		variables[len(variables)-1], false, false, nil, false, nil, nil, nil)
+		variables[len(variables)-1], false, false, nil, false, nil, nil, nil, nil)
 	if nil != err {
 		panic(err)
 	}
 	variables[0][2][2] = "False"
 
 	_, variables[len(variables)-1], err = lexer.LexicalAnalyze("float$fval",
-		variables[len(variables)-1], false, false, nil, false, nil, nil, nil)
+		variables[len(variables)-1], false, false, nil, false, nil, nil, nil, nil)
 	if nil != err {
 		panic(err)
 	}
 	variables[0][3][2] = "1.5"
 
 	_, variables[len(variables)-1], err = lexer.LexicalAnalyze("stack$stackVal",
-		variables[len(variables)-1], false, false, nil, false, nil, nil, nil)
+		variables[len(variables)-1], false, false, nil, false, nil, nil, nil, nil)
 	if nil != err {
 		panic(err)
 	}

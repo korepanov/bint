@@ -17,7 +17,7 @@ import (
 var typeHist []string
 
 func CompileAsm(rootDest string) error {
-	cmd := exec.Command("as", "--64", "asm/data.s", "asm/program.s", "-o", "asm/program.o")
+	cmd := exec.Command("as", "--64", "asm/data.s", "asm/labels.s", "asm/program.s", "-o", "asm/program.o")
 
 	err := cmd.Start()
 	if nil != err {
@@ -65,6 +65,21 @@ func InitData() (*os.File, error) {
 	return f, nil
 }
 
+func InitLabels() (*os.File, error) {
+	_, err := Copy("asm/plabels.s", "asm/labels.s")
+	if nil != err {
+		fmt.Println("could not init file labels.s")
+		return nil, err
+	}
+	f, err := os.OpenFile("asm/labels.s", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	if nil != err {
+		fmt.Println("could not create file data.s")
+		return f, err
+	}
+
+	return f, nil
+}
+
 func InitProg() (*os.File, error) {
 	_, err := Copy("asm/pprogram.s", "asm/program.s")
 	if nil != err {
@@ -96,6 +111,11 @@ func FinishProg(f *os.File) error {
 
 func FinishData(f *os.File) error {
 	_, err := f.Write([]byte("\n"))
+	return err
+}
+
+func FinishLabels(f *os.File) error {
+	_, err := f.Write([]byte("\n mov %r12, %rax \n mov %r12, (labelsMax)\n ret "))
 	return err
 }
 
@@ -1694,9 +1714,14 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				os.Exit(1)
 			}
 		} else {
-			/*numberS := fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+			numberS := fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
 			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov $lenVarName" + numberS +
-				", %rax \n mov $varName" + numberS + ", %rdi \n call __set \n call __getVar"))*/
+				", %rax \n mov $varName" + numberS + ", %rdi \n call __set \n call __getVar" + "\nmov (userData), %rdi " +
+				"\n movb $'.', (%rdi) \n call __goto"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		}
 		return []interface{}{"goto", LO[0]}, systemStack, "", nil
 	} else if "exit" == OP {

@@ -1,6 +1,6 @@
 .data
 pageSize:
-.quad 4096 
+.quad 4096
 varNameSize:
 .quad 32
 varSize:
@@ -9,6 +9,10 @@ typeSize:
 .quad 32 
 valSize:
 .quad 64 
+labelSize:
+.quad 128 
+labelsMax:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
 buf:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenBuf = . - buf 
@@ -57,6 +61,15 @@ lenStrNumber = . - strPageNumber
 memorySize:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenMemorySize = . - memorySize
+memoryBegin:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMemoryBegin = . - memoryBegin
+labelsEnd:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenLabelsEnd = . - labelsEnd
+labelsPointer:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenLabelsPointer = . - labelsPointer 
 intType:
 .ascii "int"
 .space 1, 0
@@ -86,7 +99,7 @@ zero:
 floatTail:
 .ascii ".0"
 .space 1, 0 
-lenFloatTail =  . - floatTail
+lenFloatTail =  . - floatTail 
 
 fatalError:
 .ascii "fatal error: internal error\n"
