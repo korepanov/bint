@@ -1,6 +1,6 @@
 .data
 pageSize:
-.quad 4096 
+.quad 4096
 varNameSize:
 .quad 32
 varSize:
@@ -9,6 +9,8 @@ typeSize:
 .quad 32 
 valSize:
 .quad 64 
+labelSize:
+.quad 128 
 buf:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenBuf = . - buf 
@@ -699,9 +701,9 @@ __firstMem:
 # запомнить адрес начала выделяемой памяти
  mov %rax, %r8  
  mov %rax, %r9 
- add (pageSize), %r9
+ add (labelSize), %r9
 # выделить динамическую память
- mov (pageSize), %rdi
+ mov (labelSize), %rdi
  add %rax, %rdi
  mov $12, %rax
  syscall
@@ -715,7 +717,7 @@ __firstMem:
  movb %dl, (%r8)
  inc %rbx
  inc %r8 
- cmp (pageSize), %rbx
+ cmp (labelSize), %rbx
  jz  __newLabelex
  jmp __newLabelMemlo
  __newLabelex:
@@ -1876,11 +1878,22 @@ __initLabels:
  mov %rax, (memoryBegin)
  call __newLabelMem
  mov (memoryBegin), %rax 
- add (pageSize), %rax 
+ add (labelSize), %rax 
  mov %rax, %r12 # сохраняем rax 
  mov (memoryBegin), %rdi
  mov (memoryBegin), %r9
+ 
+ 
+ mov %rdi, %r10 # сохраняем %rdi  
+ mov %r9, %rsi # сохраняем %rsi 
+ mov %r12, %rax 
+ 
+ call __newLabelMem
+ add (labelSize), %r12 
 
+ mov %r10, %rdi # восстанавливаем  
+ mov %rsi, %r9 
+ 
  mov $labelName1, %rbx
  __initLabelsName1: 
  mov (%rbx), %dl 
@@ -1908,10 +1921,23 @@ __initLabelsAddr1:
 
  add (valSize), %r9 
  mov %r9, %rdi 
+ 
+
+ mov %rdi, %r10 # сохраняем %rdi  
+ mov %r9, %rsi # сохраняем %rsi 
+ mov %r12, %rax
+ 
+ call __newLabelMem
+ add (labelSize), %r12 
+
+ mov %r10, %rdi # восстанавливаем  
+ mov %rsi, %r9
+  
  mov $labelName2, %rbx 
+ 
  __initLabelsName2:
  mov (%rbx), %dl 
- cmp $0, %dl 
+ cmp $0, %dl  
  jz __initLabelsNameEx2
  mov %dl, (%rdi)
  inc %rbx 
@@ -1942,6 +1968,7 @@ _start:
  call __initLabels
  call __firstMem
  call __firstStrMem
+ 
  
  # iVar 
  mov $lenVarName, %rsi 
