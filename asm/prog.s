@@ -1995,8 +1995,20 @@ __initLabelsAddr1:
   
  jmp __gotoSearch
  __goNow:
- mov (labelsPointer), %rsi 
+ mov (labelsPointer), %rax 
+ add (valSize), %rax 
+ mov %rax, %r8 #  cохраняем %rax 
+ mov %rax, %rsi 
+ call __len 
+ 
+  
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx  
+ mov %r8, %rdi 
+ call __set 
+ mov $buf, %rsi 
  call __print 
+
  ret 
  __gotoEnd:
   
