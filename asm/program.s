@@ -1730,8 +1730,6 @@ _start:
 
  
 
-.main:
-
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName0, %rax 
@@ -1754,6 +1752,26 @@ call __set
  call __setVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
+call __set
+
+ mov $data1, %rax  
+ mov %rax, (userData)
+ call __setVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
  mov $lenVarName0, %rax 
  mov $varName0, %rdi 
  call __set 
@@ -1761,9 +1779,34 @@ mov $lenVarName, %rsi
 mov (userData), %rdi 
  movb $'.', (%rdi) 
  call __goto
-.smth:
+.mark1:
 
-mov $data1, %rsi
+mov $data2, %rsi
+call __print
+.mark2:
+
+mov $data3, %rsi
+call __print
+.mark3:
+
+mov $data4, %rsi
+call __print
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
+ call __set 
+ call __getVar
+mov (userData), %rdi 
+ movb $'.', (%rdi) 
+ call __goto
+.mark4:
+
+mov $data5, %rsi
+call __print
+.end:
+
+mov $data6, %rsi
 call __print
 mov $60,  %rax
 xor %rdi, %rdi

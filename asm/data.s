@@ -505,24 +505,62 @@ powZeroZeroError:
  t127: 
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
  lenT127 = . - t127
-label0:
- .quad .main
-labelName0:
-.ascii ".main"
-.space 1,0
 varName0:
 .ascii "s"
 lenVarName0 = . - varName0
 data0:
-.ascii "#smth"
+.ascii "#mark3"
 .space 1, 0
 lenData0 = . - data0
-label1:
- .quad .smth
-labelName1:
-.ascii ".smth"
-.space 1,0
+varName1:
+.ascii "s2"
+lenVarName1 = . - varName1
 data1:
-.ascii "lala"
+.ascii "#end"
 .space 1, 0
 lenData1 = . - data1
+label0:
+ .quad .mark1
+labelName0:
+.ascii ".mark1"
+.space 1,0
+data2:
+.ascii "no mark1\n"
+.space 1, 0
+lenData2 = . - data2
+label1:
+ .quad .mark2
+labelName1:
+.ascii ".mark2"
+.space 1,0
+data3:
+.ascii "no mark2\n"
+.space 1, 0
+lenData3 = . - data3
+label2:
+ .quad .mark3
+labelName2:
+.ascii ".mark3"
+.space 1,0
+data4:
+.ascii "yes\n"
+.space 1, 0
+lenData4 = . - data4
+label3:
+ .quad .mark4
+labelName3:
+.ascii ".mark4"
+.space 1,0
+data5:
+.ascii "no mark4\n"
+.space 1, 0
+lenData5 = . - data5
+label4:
+ .quad .end
+labelName4:
+.ascii ".end"
+.space 1,0
+data6:
+.ascii ""
+.space 1, 0
+lenData6 = . - data6
