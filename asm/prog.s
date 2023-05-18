@@ -170,9 +170,9 @@ floatTail:
 .space 1, 0 
 lenFloatTail =  . - floatTail
 label1:
-.int __stop 
+.quad __stop 
 label2:
-.int __throughMessage 
+.quad __throughMessage 
 
 fatalError:
 .ascii "fatal error: internal error\n"
@@ -2006,10 +2006,10 @@ __initLabelsAddr1:
  mov $buf, %rdx  
  mov %r8, %rdi 
  call __set 
- mov $buf, %rsi 
- call __print 
+ 
+ call __toNumber
+ jmp *%rax 
 
- ret 
  __gotoEnd:
   
  call __throughError
