@@ -1,16 +1,1 @@
-string s;
-s = "#mark3";
-string s2;
-s2 = "#end";
-goto(s);
-#mark1:
-print("no mark1\n");
-#mark2:
-print("no mark2\n"); 
-#mark3:
-print("yes\n");
-goto(s2);
-#mark4:
-print("no mark4\n");
-#end:
-print("");
+[print("yes\n"), (6 < 5), print("no\n")];
