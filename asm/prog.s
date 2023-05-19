@@ -2036,6 +2036,35 @@ __initLabelsAddr1:
  call __throughUserError
  ret 
 
+ __less:
+ # вход: buf и buf2 
+ # %rax - тип операции 
+ # 0 - целочисленный
+ # 1 - вещественный 
+ # выход: userData 
+ cmp $0, %rax 
+ jnz __lessFloat
+ call __toNumber
+ mov %rax, %r12 # сохраняем %rax 
+ 
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi
+ call __set 
+ call __toNumber 
+ 
+ cmp %r12, %rax 
+ jg __isLess 
+ call __clearUserData
+ movb $0, (userData)
+ ret 
+ __isLess:
+ call __clearUserData
+ movb $1, (userData)
+ ret 
+ __lessFloat:
+ ret 
 .globl _start
 _start:
  call __initLabels
@@ -2177,14 +2206,14 @@ _start:
  call __setVar
 
   # get sVar 
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName6, %rax 
  mov $varName6, %rdi
  call __set
  call __getVar
  mov (userData), %rdi 
- call __goto 
+ call __goto*/ 
 # sVar2
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -2198,11 +2227,11 @@ _start:
  call __set 
  call __defineVar
 
- # get fVar  
- /*mov $lenVarName, %rsi 
+ # get iVar  
+ mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName2, %rax 
- mov $varName2, %rdi
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi
  call __set
  call __getVar
 
@@ -2211,8 +2240,56 @@ _start:
  mov $lenBuf3, %rsi 
  mov $buf3, %rdx 
  mov (userData), %rdi 
- call __set */
+ call __set 
 
+ # get iVar2  
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName4, %rax 
+ mov $varName4, %rdi
+ call __set
+ call __getVar
+
+ mov (userData), %rsi 
+ call __len 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov (userData), %rdi 
+ call __set 
+
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx
+ mov $lenBuf3, %rax 
+ mov $buf3, %rdi 
+ call __set
+
+ /*mov $lenBuf3, %rsi 
+ mov $buf3, %rdx
+ mov $lenBuf, %rax 
+ mov $buf, %rdi 
+ call __set   
+
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi 
+ call __set 
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx
+ mov $lenBuf3, %rax 
+ mov $buf3, %rdi 
+ call __set*/
+ 
+ mov $0, %rax 
+ call __less 
+
+ mov (userData), %al  
+ cmp $0, %al 
+ jz __greaterOrEqual
+ mov $data1, %rsi 
+ call __print 
+ __greaterOrEqual: 
  #mov (userData), %rsi 
  #call __print
  #mov $enter, %rsi 
