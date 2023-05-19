@@ -126,7 +126,7 @@ func makePrintBinary(exprListInput [][]interface{}, variables [][]interface{}, u
 
 			if len(boolExpr) > 3 { // составное логическое выражение
 				_, infoListList, _, err := Parse(boolExpr, variables, usersStack, showTree, toTranspile, toPrimitive,
-					primitiveDest, transpileDest)
+					primitiveDest, transpileDest, nil)
 				if nil != err {
 					return exprList, err
 				}
@@ -235,7 +235,7 @@ func codeTree(exprList [][]interface{}, treeStructure string, infoList []interfa
 }
 
 func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack []interface{}, showTree bool,
-	toTranspile bool, toPrimitive bool, primitiveDest *os.File, transpileDest *os.File) ([]string, [][]interface{}, []interface{}, error) {
+	toTranspile bool, toPrimitive bool, primitiveDest *os.File, transpileDest *os.File, programDest *os.File) ([]string, [][]interface{}, []interface{}, error) {
 	const imgWidth = 1600
 	const imgHeight = 800
 	var treeStructure string
@@ -663,7 +663,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 			exprList = append(exprList, []interface{}{"BR", ")"})
 		} else {
 			_, infoListList, _, err = Parse(leftExpr, variables, usersStack, showTree, toTranspile, toPrimitive,
-				primitiveDest, transpileDest)
+				primitiveDest, transpileDest, nil)
 			if nil != err {
 				return treeStructureList, infoListList, usersStack, err
 			}
@@ -676,7 +676,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 		if len(condition) > 1 {
 
 			_, infoListList, _, err = Parse(condition, variables, usersStack, showTree, toTranspile, toPrimitive,
-				primitiveDest, transpileDest)
+				primitiveDest, transpileDest, nil)
 			if nil != err {
 				return treeStructureList, infoListList, usersStack, err
 			}
@@ -718,6 +718,25 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 			}
 
 			resCon = []interface{}{ValueFoldInterface(condition[0][1])}
+
+			if nil != programDest {
+				if "True" == condition[0][1] || "true" == condition[0][1] {
+					_, err := programDest.Write([]byte("\n movb $1, (userData)"))
+					if nil != err {
+						fmt.Println(err)
+						os.Exit(1)
+					}
+				}
+				if "False" == condition[0][1] || "false" == condition[0][1] {
+					_, err := programDest.Write([]byte("\n movb $0, (userData)"))
+					if nil != err {
+						fmt.Println(err)
+						os.Exit(1)
+					}
+				}
+
+			}
+
 			if "bool" != WhatsType(fmt.Sprintf("%v", resCon[0])) && !toTranspile {
 				panic("parser: ERROR: data type mismatch")
 			}
@@ -744,7 +763,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 			exprList = append(exprList, []interface{}{"BR", ")"})
 		} else {
 			_, infoListList, _, err = Parse(rightExpr, variables, usersStack, showTree, toTranspile, toPrimitive,
-				primitiveDest, transpileDest)
+				primitiveDest, transpileDest, nil)
 			if nil != err {
 				return treeStructureList, infoListList, usersStack, err
 			}

@@ -329,7 +329,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			os.Exit(1)
 		}
 
-		_, infoList, _, _ := parser.Parse(res, variables, systemStack, false, false, false, nil, nil)
+		_, infoList, _, _ := parser.Parse(res, variables, systemStack, false, false, false, nil, nil, nil)
 
 		CompileTree(infoList[0], variables, systemStack, dataFile, progFile)
 
@@ -344,7 +344,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			os.Exit(1)
 		}
 
-		_, infoList, _, _ = parser.Parse(res, variables, systemStack, false, false, false, nil, nil)
+		_, infoList, _, _ = parser.Parse(res, variables, systemStack, false, false, false, nil, nil, nil)
 
 		CompileTree(infoList[0], variables, systemStack, dataFile, progFile)
 
@@ -369,7 +369,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			os.Exit(1)
 		}
 
-		_, infoList, _, _ := parser.Parse(res, variables, systemStack, false, false, false, nil, nil)
+		_, infoList, _, _ := parser.Parse(res, variables, systemStack, false, false, false, nil, nil, nil)
 
 		CompileTree(infoList[0], variables, systemStack, dataFile, progFile)
 
@@ -384,7 +384,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			os.Exit(1)
 		}
 
-		_, infoList, _, _ = parser.Parse(res, variables, systemStack, false, false, false, nil, nil)
+		_, infoList, _, _ = parser.Parse(res, variables, systemStack, false, false, false, nil, nil, nil)
 
 		CompileTree(infoList[0], variables, systemStack, dataFile, progFile)
 
@@ -1962,30 +1962,6 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		_, err := fmt.Scan(&s)
 		return []interface{}{s}, systemStack, "", err
 	} else if "goto" == OP {
-		if "string" != WhatsType(fmt.Sprintf("%v", LO[0])) {
-			err := errors.New("executor: goto : error: data type mismatch")
-			return LO, systemStack, "", err
-		}
-		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
-			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
-		}
-		if "#" == string(fmt.Sprintf("%v", LO[0])[0]) {
-			_, err := progFile.Write([]byte("\njmp ." + fmt.Sprintf("%v", LO[0])[1:]))
-
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-		} else {
-			numberS := fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
-			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov $lenVarName" + numberS +
-				", %rax \n mov $varName" + numberS + ", %rdi \n call __set \n call __getVar" + "\nmov (userData), %rdi " +
-				"\n movb $'.', (%rdi) \n call __goto"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-		}
 		return []interface{}{"goto", LO[0]}, systemStack, "", nil
 	} else if "exit" == OP {
 		if "int" != WhatsType(fmt.Sprintf("%v", LO[0])) {
@@ -2510,5 +2486,34 @@ func CompileTree(infoList []interface{}, variables [][]interface{},
 
 		}
 
+	}
+
+	if "goto" == res[0] {
+
+		if "string" != WhatsType(fmt.Sprintf("%v", res[1])) {
+			err := errors.New("executor: goto : error: data type mismatch")
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		if "\"" == string(fmt.Sprintf("%v", res[1])[0]) {
+			res[1] = res[1].(string)[1 : len(res[1].(string))-1]
+		}
+		if "#" == string(fmt.Sprintf("%v", res[1])[0]) {
+			_, err := progFile.Write([]byte("\njmp ." + fmt.Sprintf("%v", res[1])[1:]))
+
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		} else {
+			numberS := fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", res[1])])
+			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov $lenVarName" + numberS +
+				", %rax \n mov $varName" + numberS + ", %rdi \n call __set \n call __getVar" + "\nmov (userData), %rdi " +
+				"\n movb $'.', (%rdi) \n call __goto"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		}
 	}
 }

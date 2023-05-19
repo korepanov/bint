@@ -509,21 +509,75 @@ noSuchMarkError:
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
  lenT127 = . - t127
 varName0:
-.ascii "i"
+.ascii "$ret"
 lenVarName0 = . - varName0
 data0:
-.ascii "5"
+.ascii ""
 .space 1, 0
 lenData0 = . - data0
+varName1:
+.ascii "i"
+lenVarName1 = . - varName1
 data1:
-.ascii "6"
+.ascii "0"
 .space 1, 0
 lenData1 = . - data1
+label0:
+ .quad .for0
+labelName0:
+.ascii ".for0"
+.space 1,0
 data2:
-.ascii "yes\n"
+.ascii ""
 .space 1, 0
 lenData2 = . - data2
 data3:
-.ascii "no\n"
+.ascii "5"
 .space 1, 0
 lenData3 = . - data3
+data4:
+.ascii ""
+.space 1, 0
+lenData4 = . - data4
+varName2:
+.ascii "$print_arg0"
+lenVarName2 = . - varName2
+data5:
+.ascii "Hello world!\n"
+.space 1, 0
+lenData5 = . - data5
+data6:
+.ascii "1"
+.space 1, 0
+lenData6 = . - data6
+label1:
+ .quad ._cond1_end
+labelName1:
+.ascii "._cond1_end"
+.space 1,0
+data7:
+.ascii ""
+.space 1, 0
+lenData7 = . - data7
+label2:
+ .quad .for0_end
+labelName2:
+.ascii ".for0_end"
+.space 1,0
+data8:
+.ascii ""
+.space 1, 0
+lenData8 = . - data8
+label3:
+ .quad ._cond0_end
+labelName3:
+.ascii "._cond0_end"
+.space 1,0
+data9:
+.ascii ""
+.space 1, 0
+lenData9 = . - data9
+data10:
+.ascii ""
+.space 1, 0
+lenData10 = . - data10

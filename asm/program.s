@@ -77,7 +77,8 @@ __toStr:
   movb $'-', (buf2)
   jmp __toStrNeg 
   __toStrPos:
-  movq $0, (buf2)
+  call __clearBuf2
+  #movq $0, (buf2)
   __toStrNeg:
   mov $10, %r8    # делитель
   mov $buf, %rsi  # адрес начала буфера 
@@ -1780,9 +1781,30 @@ _start:
  
 
 mov $lenVarName, %rsi 
- mov $varName, %rdx
+ mov $varName, %rdx 
  mov $lenVarName0, %rax 
- mov $varName0, %rdi 
+ mov $varName0, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
+ movb $1, (userData)
+mov (userData), %al  
+ cmp $0, %al 
+ jz __right0
+mov $data0, %rsi
+call __print
+jmp __rightEnd0
+ __right0:
+jmp ._cond0_end
+__rightEnd0:
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
  call __set 
  mov $lenVarType, %rsi 
  mov $varType, %rdx 
@@ -1794,22 +1816,114 @@ mov $lenVarName, %rsi
  call __defineVar
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName0, %rax 
- mov $varName0, %rdi 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
 call __set
 
- mov $data0, %rax  
+ mov $data1, %rax  
  mov %rax, (userData)
  call __setVar
+.for0:
+
+mov $data2, %rsi
+call __print
 mov $lenBuf4, %rsi 
  mov $buf4, %rdx 
- mov $lenData1, %rax 
- mov $data1, %rdi
+ mov $lenData3, %rax 
+ mov $data3, %rdi
+ call __set
+
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
+ call __set 
+ call __getVar
+ 
+
+ 
+ mov $buf4, %rsi 
+ call __print 
+ mov $enter, %rsi 
+ call __print 
+ 
+ mov (userData), %rsi 
+ call __len 
+ mov $lenBuf3, %rsi 
+ mov $buf3, %rdx 
+ mov (userData), %rdi
+ call __set 
+mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf3, %rax 
+ mov $buf3, %rdi
+ call __set
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi
+ call __set 
+ 
+ xor %rax, %rax 
+
+ call __less 
+ mov $lenT0, %rsi 
+ mov $t0, %rdx 
+ mov $lenUserData, %rax 
+ mov $userData, %rdi
+ call __set
+mov (userData), %al  
+ cmp $0, %al 
+ jz __right1
+mov $data4, %rsi
+call __print
+jmp __rightEnd1
+ __right1:
+jmp ._cond1_end
+__rightEnd1:
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi 
+call __set
+
+ mov $data5, %rax  
+ mov %rax, (userData)
+ call __setVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi
+ call __set
+ call __getVar
+ mov (userData), %rsi 
+ call __print
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName2, %rax 
+mov $varName2, %rdi 
+ call __set 
+call __undefineVar
+mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenData6, %rax 
+ mov $data6, %rdi
  call __set
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName0, %rax 
- mov $varName0, %rdi
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
  call __set 
  call __getVar 
  mov (userData), %rsi 
@@ -1828,24 +1942,50 @@ mov $lenBuf, %rsi
  mov $lenBuf4, %rax 
  mov $buf4, %rdi
  call __set 
- xor %rax, %rax 
+ xor %rax, %rax
+ call __add 
 
- call __less 
+ #call __printHeap
  mov $lenT0, %rsi 
  mov $t0, %rdx 
  mov $lenUserData, %rax 
  mov $userData, %rdi
  call __set
-mov (userData), %al  
- cmp $0, %al 
- jz __right0
-mov $data2, %rsi
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
+ call __set
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
+ call __set 
+ mov $t0, %rax 
+ mov %rax, (userData)
+ call __setVar
+jmp .for0
+._cond1_end:
+
+mov $data7, %rsi
 call __print
-jmp __rightEnd0
- __right0:
-mov $data3, %rsi
+.for0_end:
+#call __printHeap
+mov $data8, %rsi
 call __print
-__rightEnd0:
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+mov $varName1, %rdi 
+ call __set 
+call __undefineVar
+._cond0_end:
+
+mov $data9, %rsi
+call __print
+mov $data10, %rsi
+call __print
+
 mov $60,  %rax
 xor %rdi, %rdi
 syscall
