@@ -117,7 +117,7 @@ func FinishData(f *os.File) error {
 }
 
 func FinishLabels(f *os.File) error {
-	_, err := f.Write([]byte("\n mov %r12, %rax \n mov %r12, (labelsMax)\n ret "))
+	_, err := f.Write([]byte("\n mov %r12, %rax \n mov %r12, (labelsMax)\n ret \n"))
 	return err
 }
 
@@ -498,7 +498,6 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			RO = []interface{}{RO[1]}
 		}
 		if ("int" == typeLO || "float" == typeLO) && isVarLO {
-			panic(errors.New("<: case is not realized"))
 			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
 				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
 				"\n call __getVar \n mov (userData), %rsi \n call __len \n mov $lenBuf3, %rsi \n mov $buf3, %rdx \n " +
@@ -509,7 +508,6 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			}
 		}
 		if ("int" == typeRO || "float" == typeRO) && isVarRO {
-			panic(errors.New("<: case is not realized"))
 			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenRO +
 				", %rax \n mov " + fmt.Sprintf("%v", RO[0]) + ", %rdi\n call __set " +
 				"\n call __getVar \n mov (userData), %rsi \n call __len \n mov $lenBuf4, %rsi \n mov $buf4, %rdx \n " +
@@ -558,6 +556,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		if "int" == typeLO && "float" == typeRO {
+			panic("<: case not realized")
 			if tNumber >= TempVarsNum {
 				fmt.Println("ERROR: the arithmetic expression is too long")
 				os.Exit(1)
@@ -578,6 +577,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "float", nil
 		}
 		if "float" == typeLO && "int" == typeRO {
+			panic("<: case not realized")
 			if tNumber >= TempVarsNum {
 				fmt.Println("ERROR: the arithmetic expression is too long")
 				os.Exit(1)
@@ -598,15 +598,8 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "float", nil
 		}
 
-		// конкатенация строк
-		if len(fmt.Sprintf("%v", LO[0])) >= 2 && "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
-			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
-		}
-		if len(fmt.Sprintf("%v", RO[0])) >= 2 && "\"" == string(fmt.Sprintf("%v", RO[0])[0]) {
-			RO[0] = RO[0].(string)[1 : len(RO[0].(string))-1]
-		}
-
-		return []interface{}{"\"" + fmt.Sprintf("%v", LO[0]) + fmt.Sprintf("%v", RO[0]) + "\""}, systemStack, "", nil
+		fmt.Println("ERROR: type error in <: " + typeLO + " and " + typeRO)
+		os.Exit(1)
 
 	} else if "<=" == OP {
 		if ("int" != WhatsType(fmt.Sprintf("%v", LO[0])) && "float" != WhatsType(fmt.Sprintf("%v", LO[0]))) ||

@@ -1779,72 +1779,45 @@ _start:
 
  
 
-mov $lenBuf3, %rsi 
- mov $buf3, %rdx 
- mov $lenData0, %rax 
- mov $data0, %rdi
- call __set
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi 
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenIntType, %rax 
+ mov $intType, %rdi 
+ call __set 
+ mov $varName, %rcx 
+ mov $varType, %rdx  
+ call __defineVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi 
+call __set
+
+ mov $data0, %rax  
+ mov %rax, (userData)
+ call __setVar
 mov $lenBuf4, %rsi 
  mov $buf4, %rdx 
  mov $lenData1, %rax 
  mov $data1, %rdi
  call __set
-mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenBuf3, %rax 
- mov $buf3, %rdi
- call __set
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenBuf4, %rax 
- mov $buf4, %rdi
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi
  call __set 
- xor %rax, %rax 
-
- call __add 
- mov $lenT0, %rsi 
- mov $t0, %rdx 
- mov $lenUserData, %rax 
- mov $userData, %rdi
- call __set
-mov $lenBuf3, %rsi 
+ call __getVar 
+ mov (userData), %rsi 
+ call __len 
+ mov $lenBuf3, %rsi 
  mov $buf3, %rdx 
- mov $lenData2, %rax 
- mov $data2, %rdi
- call __set
-mov $lenBuf4, %rsi 
- mov $buf4, %rdx 
- mov $lenData3, %rax 
- mov $data3, %rdi
- call __set
-mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenBuf3, %rax 
- mov $buf3, %rdi
- call __set
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenBuf4, %rax 
- mov $buf4, %rdi
+ mov (userData), %rdi
  call __set 
- xor %rax, %rax 
-
- call __add 
- mov $lenT1, %rsi 
- mov $t1, %rdx 
- mov $lenUserData, %rax 
- mov $userData, %rdi
- call __set
-mov $lenBuf3, %rsi 
- mov $buf3, %rdx 
- mov $lenT0, %rax 
- mov $t0, %rdi
- call __set
-mov $lenBuf4, %rsi 
- mov $buf4, %rdx 
- mov $lenT1, %rax 
- mov $t1, %rdi
- call __set
 mov $lenBuf, %rsi 
  mov $buf, %rdx 
  mov $lenBuf3, %rax 
@@ -1858,19 +1831,19 @@ mov $lenBuf, %rsi
  xor %rax, %rax 
 
  call __less 
- mov $lenT2, %rsi 
- mov $t2, %rdx 
+ mov $lenT0, %rsi 
+ mov $t0, %rdx 
  mov $lenUserData, %rax 
  mov $userData, %rdi
  call __set
 mov (userData), %al  
  cmp $0, %al 
  jz __right0
-mov $data4, %rsi
+mov $data2, %rsi
 call __print
 jmp __rightEnd0
  __right0:
-mov $data5, %rsi
+mov $data3, %rsi
 call __print
 __rightEnd0:
 mov $60,  %rax

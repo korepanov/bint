@@ -1,1 +1,3 @@
-[print("yes\n"), ((2+2) < (1+4)), print("no\n")];
+int i;
+i = 5;
+[print("yes\n"), (i < 6), print("no\n")];
