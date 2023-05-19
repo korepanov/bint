@@ -119,4 +119,7 @@ powZeroNegError:
 powZeroZeroError:
 .ascii "runtime error: ^ is not defined for zero base and zero exponent\n"
 .space 1, 0
+noSuchMarkError:
+.ascii "runtime error: no such mark: "
+.space 1, 0
 

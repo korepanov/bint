@@ -119,6 +119,9 @@ powZeroNegError:
 powZeroZeroError:
 .ascii "runtime error: ^ is not defined for zero base and zero exponent\n"
 .space 1, 0
+noSuchMarkError:
+.ascii "runtime error: no such mark: "
+.space 1, 0
 
 
  t0: 
@@ -505,7 +508,19 @@ powZeroZeroError:
  t127: 
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
  lenT127 = . - t127
+varName0:
+.ascii "s"
+lenVarName0 = . - varName0
 data0:
-.ascii "no\n"
+.ascii "#slava"
 .space 1, 0
 lenData0 = . - data0
+label0:
+ .quad .main
+labelName0:
+.ascii ".main"
+.space 1,0
+data1:
+.ascii "ok\n"
+.space 1, 0
+lenData1 = . - data1

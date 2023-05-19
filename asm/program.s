@@ -1719,7 +1719,26 @@ ret
 
  __gotoEnd:
   
- call __throughError
+ mov $noSuchMarkError, %rsi 
+ call __len 
+ mov %rax, %r8 
+ mov $noSuchMarkError, %r9 
+ mov $buf2, %r11 
+ call __concatinate
+
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenUserData, %rax 
+ mov $userData, %rdi
+ call __set 
+ 
+ mov $lenUserData, %r9 
+ mov $buf, %r9 
+ mov $enter, %r11 
+ call __concatinate
+
+ mov $userData, %rsi 
+ call __throughUserError
  ret 
 
 .globl _start
@@ -1730,7 +1749,38 @@ _start:
 
  
 
-mov $data0, %rsi
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi 
+call __set
+
+ mov $data0, %rax  
+ mov %rax, (userData)
+ call __setVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi 
+ call __set 
+ call __getVar
+mov (userData), %rdi 
+ movb $'.', (%rdi) 
+ call __goto
+.main:
+
+mov $data1, %rsi
 call __print
 mov $60,  %rax
 xor %rdi, %rdi

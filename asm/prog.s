@@ -2020,6 +2020,18 @@ __initLabelsAddr1:
  mov $noSuchMarkError, %r9 
  mov $buf2, %r11 
  call __concatinate
+
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenUserData, %rax 
+ mov $userData, %rdi
+ call __set 
+ 
+ mov $lenUserData, %r9 
+ mov $buf, %r9 
+ mov $enter, %r11 
+ call __concatinate
+
  mov $userData, %rsi 
  call __throughUserError
  ret 

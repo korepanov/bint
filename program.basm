@@ -1,1 +1,5 @@
-[print("yes\n"), (6 < 5), print("no\n")];
+string s;
+s = "#slava";
+goto(s);
+#main:
+print("ok\n"); 
