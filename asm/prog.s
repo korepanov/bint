@@ -192,6 +192,9 @@ powZeroNegError:
 powZeroZeroError:
 .ascii "runtime error: ^ is not defined for zero base and zero exponent\n"
 .space 1, 0
+noSuchMarkError:
+.ascii "runtime error: no such mark: "
+.space 1, 0
 
 .text	
 
@@ -2011,8 +2014,17 @@ __initLabelsAddr1:
  jmp *%rax 
 
  __gotoEnd:
-  
- call __throughError
+ # r8 - длина буфера первого операнда 
+ # r9 - адрес буфера первого операнда
+ # r11 - адрес буфера второго операнда 
+ mov $noSuchMarkError, %rsi 
+ call __len 
+ mov %rax, %r8 
+ mov $noSuchMarkError, %r9 
+ mov $buf2, %r11 
+ call __concatinate
+ mov $userData, %rsi 
+ call __throughUserError
  ret 
 
 .globl _start
@@ -2133,17 +2145,6 @@ _start:
  mov %rax, (userData)
  call __setVar
  
-
- # get sVar 
- /*mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi
- call __set
- call __getVar
- mov (userData), %rdi 
- call __goto*/ 
- 
  # sVar2
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -2166,6 +2167,15 @@ _start:
  mov %rax, (userData)
  call __setVar
 
+  # get sVar 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName6, %rax 
+ mov $varName6, %rdi
+ call __set
+ call __getVar
+ mov (userData), %rdi 
+ call __goto 
 # sVar2
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
