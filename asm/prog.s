@@ -2013,10 +2013,7 @@ __initLabelsAddr1:
  call __toNumber
  jmp *%rax 
 
- __gotoEnd:
- # r8 - длина буфера первого операнда 
- # r9 - адрес буфера первого операнда
- # r11 - адрес буфера второго операнда 
+ __gotoEnd: 
  mov $noSuchMarkError, %rsi 
  call __len 
  mov %rax, %r8 
