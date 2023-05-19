@@ -1,5 +1,1 @@
-string s;
-s = "#slava";
-goto(s);
-#main:
-print("ok\n"); 
+[print("yes\n"), ((2+2) < (1+4)), print("no\n")];

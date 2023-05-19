@@ -1739,7 +1739,37 @@ ret
 
  mov $userData, %rsi 
  call __throughUserError
+ ret
+
+ __less:
+ # вход: buf и buf2 
+ # %rax - тип операции 
+ # 0 - целочисленный
+ # 1 - вещественный 
+ # выход: userData 
+ cmp $0, %rax 
+ jnz __lessFloat
+ call __toNumber
+ mov %rax, %r12 # сохраняем %rax 
+ 
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi
+ call __set 
+ call __toNumber 
+ 
+ cmp %r12, %rax 
+ jg __isLess 
+ call __clearUserData
+ movb $0, (userData)
  ret 
+ __isLess:
+ call __clearUserData
+ movb $1, (userData)
+ ret 
+ __lessFloat:
+ ret  
 
 .globl _start
 _start:
@@ -1749,39 +1779,100 @@ _start:
 
  
 
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName0, %rax 
- mov $varName0, %rdi
+mov $lenBuf3, %rsi 
+ mov $buf3, %rdx 
+ mov $lenData0, %rax 
+ mov $data0, %rdi
+ call __set
+mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenData1, %rax 
+ mov $data1, %rdi
+ call __set
+mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf3, %rax 
+ mov $buf3, %rdi
+ call __set
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi
  call __set 
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenStringType, %rax
- mov $stringType, %rdi
- call __set 
- call __defineVar
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName0, %rax 
- mov $varName0, %rdi 
-call __set
+ xor %rax, %rax 
 
- mov $data0, %rax  
- mov %rax, (userData)
- call __setVar
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName0, %rax 
- mov $varName0, %rdi 
+ call __add 
+ mov $lenT0, %rsi 
+ mov $t0, %rdx 
+ mov $lenUserData, %rax 
+ mov $userData, %rdi
+ call __set
+mov $lenBuf3, %rsi 
+ mov $buf3, %rdx 
+ mov $lenData2, %rax 
+ mov $data2, %rdi
+ call __set
+mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenData3, %rax 
+ mov $data3, %rdi
+ call __set
+mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf3, %rax 
+ mov $buf3, %rdi
+ call __set
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi
  call __set 
- call __getVar
-mov (userData), %rdi 
- movb $'.', (%rdi) 
- call __goto
-.main:
+ xor %rax, %rax 
 
-mov $data1, %rsi
+ call __add 
+ mov $lenT1, %rsi 
+ mov $t1, %rdx 
+ mov $lenUserData, %rax 
+ mov $userData, %rdi
+ call __set
+mov $lenBuf3, %rsi 
+ mov $buf3, %rdx 
+ mov $lenT0, %rax 
+ mov $t0, %rdi
+ call __set
+mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenT1, %rax 
+ mov $t1, %rdi
+ call __set
+mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf3, %rax 
+ mov $buf3, %rdi
+ call __set
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi
+ call __set 
+ xor %rax, %rax 
+
+ call __less 
+ mov $lenT2, %rsi 
+ mov $t2, %rdx 
+ mov $lenUserData, %rax 
+ mov $userData, %rdi
+ call __set
+mov (userData), %al  
+ cmp $0, %al 
+ jz __right0
+mov $data4, %rsi
 call __print
+jmp __rightEnd0
+ __right0:
+mov $data5, %rsi
+call __print
+__rightEnd0:
 mov $60,  %rax
 xor %rdi, %rdi
 syscall

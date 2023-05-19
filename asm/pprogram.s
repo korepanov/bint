@@ -1739,7 +1739,37 @@ ret
 
  mov $userData, %rsi 
  call __throughUserError
+ ret
+
+ __less:
+ # вход: buf и buf2 
+ # %rax - тип операции 
+ # 0 - целочисленный
+ # 1 - вещественный 
+ # выход: userData 
+ cmp $0, %rax 
+ jnz __lessFloat
+ call __toNumber
+ mov %rax, %r12 # сохраняем %rax 
+ 
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi
+ call __set 
+ call __toNumber 
+ 
+ cmp %r12, %rax 
+ jg __isLess 
+ call __clearUserData
+ movb $0, (userData)
  ret 
+ __isLess:
+ call __clearUserData
+ movb $1, (userData)
+ ret 
+ __lessFloat:
+ ret  
 
 .globl _start
 _start:

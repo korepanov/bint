@@ -508,19 +508,27 @@ noSuchMarkError:
  t127: 
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
  lenT127 = . - t127
-varName0:
-.ascii "s"
-lenVarName0 = . - varName0
 data0:
-.ascii "#slava"
+.ascii "2"
 .space 1, 0
 lenData0 = . - data0
-label0:
- .quad .main
-labelName0:
-.ascii ".main"
-.space 1,0
 data1:
-.ascii "ok\n"
+.ascii "2"
 .space 1, 0
 lenData1 = . - data1
+data2:
+.ascii "1"
+.space 1, 0
+lenData2 = . - data2
+data3:
+.ascii "4"
+.space 1, 0
+lenData3 = . - data3
+data4:
+.ascii "yes\n"
+.space 1, 0
+lenData4 = . - data4
+data5:
+.ascii "no\n"
+.space 1, 0
+lenData5 = . - data5
