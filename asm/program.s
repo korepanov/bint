@@ -77,8 +77,7 @@ __toStr:
   movb $'-', (buf2)
   jmp __toStrNeg 
   __toStrPos:
-  call __clearBuf2
-  #movq $0, (buf2)
+  movq $0, (buf2)
   __toStrNeg:
   mov $10, %r8    # делитель
   mov $buf, %rsi  # адрес начала буфера 
@@ -657,6 +656,8 @@ __readClear:
  __readLocal: 
  movb (%r8), %r9b
  cmp $'*', %r9b  
+ jz __readEx
+ cmp $0, %r9b  
  jz __readEx
  mov %r9b, (%r10)
  inc %r10 
@@ -1832,21 +1833,12 @@ mov $lenBuf4, %rsi
  mov $lenData3, %rax 
  mov $data3, %rdi
  call __set
-
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
  call __set 
- call __getVar
- 
-
- 
- mov $buf4, %rsi 
- call __print 
- mov $enter, %rsi 
- call __print 
- 
+ call __getVar 
  mov (userData), %rsi 
  call __len 
  mov $lenBuf3, %rsi 
@@ -1863,7 +1855,6 @@ mov $lenBuf, %rsi
  mov $lenBuf4, %rax 
  mov $buf4, %rdi
  call __set 
- 
  xor %rax, %rax 
 
  call __less 
@@ -1942,10 +1933,9 @@ mov $lenBuf, %rsi
  mov $lenBuf4, %rax 
  mov $buf4, %rdi
  call __set 
- xor %rax, %rax
- call __add 
+ xor %rax, %rax 
 
- #call __printHeap
+ call __add 
  mov $lenT0, %rsi 
  mov $t0, %rdx 
  mov $lenUserData, %rax 
@@ -1970,7 +1960,7 @@ jmp .for0
 mov $data7, %rsi
 call __print
 .for0_end:
-#call __printHeap
+
 mov $data8, %rsi
 call __print
 mov $lenVarName, %rsi 
@@ -1985,7 +1975,6 @@ mov $data9, %rsi
 call __print
 mov $data10, %rsi
 call __print
-
 mov $60,  %rax
 xor %rdi, %rdi
 syscall

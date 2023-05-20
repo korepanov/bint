@@ -855,6 +855,8 @@ __readClear:
  movb (%r8), %r9b
  cmp $'*', %r9b  
  jz __readEx
+ cmp $0, %r9b  
+ jz __readEx
  mov %r9b, (%r10)
  inc %r10 
  inc %r8 
