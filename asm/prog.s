@@ -613,7 +613,7 @@ __undefineVar:
  mov %rbx, %r12 
  call __read 
  cmp $'*', (buf)
- jz __throughError
+ jz __undefEnd
  mov $buf, %rsi 
  mov %rbx, %r12 
  mov $lenBuf2, %rsi 
@@ -664,6 +664,7 @@ __undefineVar:
  __undefValEx:
  dec %rbx 
  movb $0, (%rbx)
+ __undefEnd:
  ret 
 
 # r12 - pointer (общего назначения)
