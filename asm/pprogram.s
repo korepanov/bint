@@ -1744,7 +1744,7 @@ ret
  call __throughUserError
  ret
 
- __less:
+  __less:
  # вход: buf и buf2 
  # %rax - тип операции 
  # 0 - целочисленный
@@ -1772,7 +1772,27 @@ ret
  movb $1, (userData)
  ret 
  __lessFloat:
- ret  
+ mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi
+ call __set
+ call __parseFloat
+ movss %xmm0, %xmm1 
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi
+ call __set
+ call __parseFloat
+
+ cmpss $1, %xmm1, %xmm0
+ pextrb $3, %xmm0, %rax
+ cmp $0, %rax 
+ jz __isLess 
+ call __clearUserData
+ movb $0, (userData)
+ ret
 
 .globl _start
 _start:

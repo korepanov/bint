@@ -537,14 +537,14 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		if "float" == typeLO && "float" == typeRO {
-			panic(errors.New("<: case is not realized"))
+
 			if tNumber >= TempVarsNum {
 				fmt.Println("ERROR: the arithmetic expression is too long")
 				os.Exit(1)
 			}
 			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
 				"\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenBuf4, %rax \n mov $buf4, %rdi\n call __set \n mov $1, %rax \n" +
-				"\n call __add \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+				"\n call __less \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
 				", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
 			if nil != err {
 				fmt.Println(err)
@@ -556,7 +556,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		if "int" == typeLO && "float" == typeRO {
-			panic("<: case not realized")
+
 			if tNumber >= TempVarsNum {
 				fmt.Println("ERROR: the arithmetic expression is too long")
 				os.Exit(1)
@@ -566,7 +566,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				"\n mov $lenBuf, %r8 \n mov $buf, %r9 \n mov $floatTail, %r11 \n call __concatinate" +
 				"\n mov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi \n call __set" +
 				"\n mov $1, %rax \n" +
-				"\n call __add \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+				"\n call __less \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
 				", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
 			if nil != err {
 				fmt.Println(err)
@@ -577,7 +577,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "float", nil
 		}
 		if "float" == typeLO && "int" == typeRO {
-			panic("<: case not realized")
+
 			if tNumber >= TempVarsNum {
 				fmt.Println("ERROR: the arithmetic expression is too long")
 				os.Exit(1)
@@ -587,7 +587,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				"\n mov $lenBuf2, %r8 \n mov $buf2, %r9 \n mov $floatTail, %r11 \n call __concatinate" +
 				"\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi \n call __set" +
 				"\n mov $1, %rax \n" +
-				"\n call __add \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+				"\n call __less \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
 				", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
 			if nil != err {
 				fmt.Println(err)

@@ -1346,8 +1346,12 @@ func dValidateAssignment(command string, variables [][][]interface{}) (string, i
 					return ``, status.Err, variables, err
 				}
 				if v[0] != T {
-					return ``, status.Err, variables,
-						errors.New("data type mismatch: " + fmt.Sprintf("%v", v[0]) + " and " + T)
+					if !("int" == T && "float" == v[0]) {
+						return ``, status.Err, variables,
+							errors.New("data type mismatch: " + fmt.Sprintf("%v", v[0]) + " and " + T)
+					} else {
+						return ``, status.Yes, variables, nil
+					}
 				} else {
 					return ``, status.Yes, variables, nil
 				}
