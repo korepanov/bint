@@ -512,126 +512,70 @@ varName0:
 .ascii "$ret"
 lenVarName0 = . - varName0
 varName1:
-.ascii "$main_return_var"
-lenVarName1 = . - varName1
-label0:
- .quad .main
-labelName0:
-.ascii ".main"
-.space 1,0
-data0:
-.ascii ""
-.space 1, 0
-lenData0 = . - data0
-data1:
-.ascii ""
-.space 1, 0
-lenData1 = . - data1
-varName2:
 .ascii "a"
-lenVarName2 = . - varName2
-data2:
+lenVarName1 = . - varName1
+data0:
 .ascii "1.0"
 .space 1, 0
-lenData2 = . - data2
-varName3:
+lenData0 = . - data0
+varName2:
 .ascii "b"
-lenVarName3 = . - varName3
-data3:
+lenVarName2 = . - varName2
+data1:
 .ascii "2.0"
 .space 1, 0
-lenData3 = . - data3
-varName4:
+lenData1 = . - data1
+varName3:
 .ascii "c"
-lenVarName4 = . - varName4
-data4:
+lenVarName3 = . - varName3
+data2:
 .ascii "-3.0"
 .space 1, 0
-lenData4 = . - data4
-varName5:
-.ascii "$print_arg0"
-lenVarName5 = . - varName5
-data5:
-.ascii "result:\n"
-.space 1, 0
-lenData5 = . - data5
-varName6:
+lenData2 = . - data2
+varName4:
 .ascii "d"
-lenVarName6 = . - varName6
-data6:
+lenVarName4 = . - varName4
+data3:
+.ascii ""
+.space 1, 0
+lenData3 = . - data3
+data4:
 .ascii "2.0"
 .space 1, 0
+lenData4 = . - data4
+data5:
+.ascii "2.0"
+.space 1, 0
+lenData5 = . - data5
+data6:
+.ascii "12.0"
+.space 1, 0
 lenData6 = . - data6
+varName5:
+.ascii "x1"
+lenVarName5 = . - varName5
 data7:
-.ascii "4"
+.ascii "-1"
 .space 1, 0
 lenData7 = . - data7
-varName7:
-.ascii "x1"
-lenVarName7 = . - varName7
-varName8:
-.ascii "x2"
-lenVarName8 = . - varName8
 data8:
-.ascii "-1"
+.ascii "0.5"
 .space 1, 0
 lenData8 = . - data8
 data9:
-.ascii "0.5"
-.space 1, 0
-lenData9 = . - data9
-data10:
 .ascii "2"
 .space 1, 0
-lenData10 = . - data10
-data11:
-.ascii ""
-.space 1, 0
-lenData11 = . - data11
-varName9:
+lenData9 = . - data9
+varName6:
 .ascii "$s0"
-lenVarName9 = . - varName9
-varName10:
+lenVarName6 = . - varName6
+varName7:
 .ascii "$print_arg0"
-lenVarName10 = . - varName10
-varName11:
+lenVarName7 = . - varName7
+varName8:
 .ascii "$print_arg0"
-lenVarName11 = . - varName11
-data12:
+lenVarName8 = . - varName8
+data10:
 .ascii "\n"
 .space 1, 0
-lenData12 = . - data12
-data13:
-.ascii ""
-.space 1, 0
-lenData13 = . - data13
-data14:
-.ascii ""
-.space 1, 0
-lenData14 = . - data14
-label1:
- .quad .main_end
-labelName1:
-.ascii ".main_end"
-.space 1,0
-data15:
-.ascii ""
-.space 1, 0
-lenData15 = . - data15
-data16:
-.ascii "#main_res0"
-.space 1, 0
-lenData16 = . - data16
-label2:
- .quad .main_res0
-labelName2:
-.ascii ".main_res0"
-.space 1,0
-data17:
-.ascii ""
-.space 1, 0
-lenData17 = . - data17
-data18:
-.ascii ""
-.space 1, 0
-lenData18 = . - data18
+lenData10 = . - data10

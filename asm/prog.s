@@ -131,11 +131,11 @@ data3:
 .space 1, 0
 lenData3 = . - data3 
 data4:
-.ascii "-2.000000"
+.ascii "1.0"
 .space 1, 0
 lenData4 = . - data4 
 data5:
-.ascii "4.000000"
+.ascii "2.0"
 .space 1, 0 
 lenData5 = . - data5 
 data6:
@@ -2307,7 +2307,7 @@ _start:
  
 
  mov $1, %rax 
- call __sub 
+ call __mul 
  mov $userData, %rsi 
  call __print 
  call __throughError
