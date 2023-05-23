@@ -1226,11 +1226,47 @@ __mul:
 
  ret 
 
+__floatToInt:
+#вход: buf 
+#выход: %rax
+movss (buf), %xmm0  
+movss (zero), %xmm1
+xor %rax, %rax
+ 
+cmpss $5, %xmm0, %xmm1
+pextrb $3, %xmm1, %rsi
+cmp $255, %rsi
+jnz __floatToIntOk0
+fld (zero)
+fsub (one)
+fmul (buf)
+fstp (buf)
+
+movss (buf), %xmm0
+movss (zero), %xmm1
+__floatToIntOk0:
+
+
+__floatToIntLocal:
+cmpss $5, %xmm0, %xmm1
+pextrb $3, %xmm1, %rsi
+cmp $255, %rsi
+jz __floatToIntOk
+
+fld (buf)
+fsub (one)
+fstp (buf)
+movss (buf), %xmm0
+inc %rax
+movss (zero), %xmm1
+jmp __floatToIntLocal
+__floatToIntOk:
+ret
+
 __div:
  # вход: buf и buf2
  # только для вещественных чисел!   
  # выход: userData 
-
  call __clearUserData
  call __clearBuf4
  mov $lenBuf4, %rsi 
@@ -1238,30 +1274,39 @@ __div:
  mov $lenBuf2, %rax 
  mov $buf2, %rdi 
  call __set
- call __parseFloat
- movss %xmm0, (buf)
- call __floatToStr
  
- /*movss %xmm0, %xmm1 
- call __clearBuf
- mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenBuf4, %rax 
- mov $buf4, %rdi 
- call __set
  call __parseFloat
+ movss %xmm0, %xmm1 
+ movss %xmm1, (buf)
+ call __floatToInt 
+ call __toStr
+ mov $buf2, %rsi
+ call __print
+ #call __clearBuf
+ #mov $lenBuf, %rsi 
+ #mov $buf, %rdx 
+ #mov $lenBuf4, %rax 
+ #mov $buf4, %rdi 
+ #call __set
+ #call __parseFloat
  # проверка деления на нуль
- movss (zero), %xmm2 
- cmpss $0, %xmm0, %xmm2
- pextrb $3, %xmm2, %rax
- cmp $0, %rax 
- jnz __divIsZero 
+ #movss (zero), %xmm2 
+ #cmpss $0, %xmm0, %xmm2
+ #pextrb $3, %xmm2, %rax
+ #cmp $0, %rax 
+ #jnz __divIsZero 
  movss %xmm1, (buf)
  fld (buf)
  movss %xmm0, (buf)
  fdiv (buf)
  fstp (buf)
- call __floatToStr*/
+ #call __floatToStr
+ 
+ call __toStr
+ mov $buf2, %rsi
+ call __print 
+ mov $enter, %rsi
+ call __print 
  ret 
  __divIsZero:
  mov $divZeroError, %rsi 
@@ -1572,6 +1617,7 @@ ret
 __parseFloat:
 # $buf - источник (строка)
 # %xmm0 - результат
+
 mov $buf, %rax 
 call __clearBuf2
 call __clearBuf3
@@ -1651,27 +1697,10 @@ movb $0, (%rsi)
 mov $6, %rbx 
 __parseFloatCut: 
 call __toNumber
-call __toStr 
-
-push %rbx
-push (buf)
-mov $buf2, %rsi
-call __print 
-mov $enter, %rsi
-call __print
-pop (buf) 
-pop %rbx
-
-cvtsi2ss (buf), %xmm0
- 
+mov %rax, (buf)
+cvtsi2ss (buf), %xmm0  
 movss %xmm0, (buf)
-#push %rbx
-#call __floatToStr
-#mov $userData, %rsi 
-#call __print
-#mov $enter, %rsi
-#call __print 
-#pop %rbx
+
 __floatLocal:
 fld (buf)
 cmp $0, %rbx 
@@ -2143,7 +2172,6 @@ mov $lenBuf, %rsi
  mov $1, %rax 
 
  call __mul 
- 
  mov $lenT3, %rsi 
  mov $t3, %rdx 
  mov $lenUserData, %rax 

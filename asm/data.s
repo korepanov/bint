@@ -96,6 +96,8 @@ one:
 .float 1.0 
 zero:
 .float 0.0 
+dat:
+.float 27.0 
 floatTail:
 .ascii ".0"
 .space 1, 0 
