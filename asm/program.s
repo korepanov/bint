@@ -1226,43 +1226,6 @@ __mul:
 
  ret 
 
-__floatToInt:
-#вход: buf 
-#выход: %rax
-movss (buf), %xmm0  
-movss (zero), %xmm1
-xor %rax, %rax
- 
-cmpss $5, %xmm0, %xmm1
-pextrb $3, %xmm1, %rsi
-cmp $255, %rsi
-jnz __floatToIntOk0
-fld (zero)
-fsub (one)
-fmul (buf)
-fstp (buf)
-
-movss (buf), %xmm0
-movss (zero), %xmm1
-__floatToIntOk0:
-
-
-__floatToIntLocal:
-cmpss $5, %xmm0, %xmm1
-pextrb $3, %xmm1, %rsi
-cmp $255, %rsi
-jz __floatToIntOk
-
-fld (buf)
-fsub (one)
-fstp (buf)
-movss (buf), %xmm0
-inc %rax
-movss (zero), %xmm1
-jmp __floatToIntLocal
-__floatToIntOk:
-ret
-
 __div:
  # вход: buf и buf2
  # только для вещественных чисел!   
@@ -1274,39 +1237,27 @@ __div:
  mov $lenBuf2, %rax 
  mov $buf2, %rdi 
  call __set
- 
  call __parseFloat
  movss %xmm0, %xmm1 
- movss %xmm1, (buf)
- call __floatToInt 
- call __toStr
- mov $buf2, %rsi
- call __print
- #call __clearBuf
- #mov $lenBuf, %rsi 
- #mov $buf, %rdx 
- #mov $lenBuf4, %rax 
- #mov $buf4, %rdi 
- #call __set
- #call __parseFloat
+ call __clearBuf
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi 
+ call __set
+ call __parseFloat
  # проверка деления на нуль
- #movss (zero), %xmm2 
- #cmpss $0, %xmm0, %xmm2
- #pextrb $3, %xmm2, %rax
- #cmp $0, %rax 
- #jnz __divIsZero 
+ movss (zero), %xmm2 
+ cmpss $0, %xmm0, %xmm2
+ pextrb $3, %xmm2, %rax
+ cmp $0, %rax 
+ jnz __divIsZero 
  movss %xmm1, (buf)
  fld (buf)
  movss %xmm0, (buf)
  fdiv (buf)
  fstp (buf)
- #call __floatToStr
- 
- call __toStr
- mov $buf2, %rsi
- call __print 
- mov $enter, %rsi
- call __print 
+ call __floatToStr
  ret 
  __divIsZero:
  mov $divZeroError, %rsi 
@@ -1617,7 +1568,6 @@ ret
 __parseFloat:
 # $buf - источник (строка)
 # %xmm0 - результат
-
 mov $buf, %rax 
 call __clearBuf2
 call __clearBuf3
@@ -1849,8 +1799,6 @@ _start:
  call __initLabels
  call __firstMem
  call __firstStrMem
-
- 
 
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -2197,7 +2145,8 @@ mov $lenBuf, %rsi
  mov $lenBuf4, %rax 
  mov $buf4, %rdi
  call __set 
- mov $1, %rax 
+ 
+ movq $1, %rax 
 
  call __div 
  mov $lenT4, %rsi 
@@ -2317,7 +2266,8 @@ mov $lenVarName, %rsi
  mov $lenVarName8, %rax 
 mov $varName8, %rdi 
  call __set 
-call __undefineVar
+call __undefineVar 
+
 mov $60,  %rax
 xor %rdi, %rdi
 syscall
