@@ -298,7 +298,7 @@ func validateComparison(command string, isOp bool) (tail string, stat int, err e
 	}
 
 	temp, command = checkComparison(command,
-		`(?m)(?:([[[:alnum:]|_])*(?:(>=|=<|>|<))([[[:alnum:]|_])*)`)
+		`(?m)(?:([[[:alnum:]|_])*(?:(>=|<=|>|<))([[[:alnum:]|_])*)`)
 
 	if temp {
 		isComparison = true
