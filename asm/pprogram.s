@@ -1846,6 +1846,17 @@ ret
  movb $0, (userData)
  ret 
 
+ __more:
+ call __lessOrEqual
+ xor %rax, %rax 
+ mov (userData), %al
+ cmp $0, %al 
+ jz __isMore
+ movb $0, (userData)
+ ret 
+ __isMore:
+ movb $1, (userData)
+ ret
 
 .globl _start
 _start:

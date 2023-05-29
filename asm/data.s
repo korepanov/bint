@@ -511,14 +511,8 @@ noSuchMarkError:
 varName0:
 .ascii "$ret"
 lenVarName0 = . - varName0
-varName1:
-.ascii "a"
-lenVarName1 = . - varName1
-varName2:
-.ascii "b"
-lenVarName2 = . - varName2
 data0:
-.ascii "6"
+.ascii "7.7"
 .space 1, 0
 lenData0 = . - data0
 data1:
@@ -529,11 +523,11 @@ data2:
 .ascii ""
 .space 1, 0
 lenData2 = . - data2
-varName3:
+varName1:
 .ascii "$print_arg0"
-lenVarName3 = . - varName3
+lenVarName1 = . - varName1
 data3:
-.ascii "b <= a\n"
+.ascii "a > b\n"
 .space 1, 0
 lenData3 = . - data3
 label0:
@@ -545,11 +539,11 @@ data4:
 .ascii ""
 .space 1, 0
 lenData4 = . - data4
-varName4:
+varName2:
 .ascii "$print_arg0"
-lenVarName4 = . - varName4
+lenVarName2 = . - varName2
 data5:
-.ascii "b > a\n"
+.ascii "a <= b\n"
 .space 1, 0
 lenData5 = . - data5
 data6:

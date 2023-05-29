@@ -1,13 +1,9 @@
-int a;
-int b;  
 
-a = 6;
-b = 5; 
 
-if (b <= a){
-	print("b <= a\n");
+if (7.7 > 5){
+	print("a > b\n");
 }else{
-	print("b > a\n"); 
+	print("a <= b\n"); 
 };
 	
 
