@@ -518,11 +518,11 @@ varName2:
 .ascii "b"
 lenVarName2 = . - varName2
 data0:
-.ascii "5.5"
+.ascii "6"
 .space 1, 0
 lenData0 = . - data0
 data1:
-.ascii "5.5"
+.ascii "5"
 .space 1, 0
 lenData1 = . - data1
 data2:
