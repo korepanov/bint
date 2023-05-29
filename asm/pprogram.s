@@ -1401,6 +1401,7 @@ __pow:
  fscale 
  fmul (buf)
  fstp (buf)
+ fstp (buf2)
  
  movb (isExpNeg), %al  
  cmp $0, %al    

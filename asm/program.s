@@ -1401,6 +1401,7 @@ __pow:
  fscale 
  fmul (buf)
  fstp (buf)
+ fstp (buf2)
  
  movb (isExpNeg), %al  
  cmp $0, %al    
@@ -1489,7 +1490,7 @@ __floatToStrZeros:
 mov $buf2, %rsi 
 call __len 
 cmp $6, %rax 
-jge __floatToStrEndZeros
+jz __floatToStrEndZeros
 
 mov $lenBuf, %r8 
 mov $buf, %r9 
@@ -1799,6 +1800,8 @@ _start:
  call __initLabels
  call __firstMem
  call __firstStrMem
+
+ 
 
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -2145,8 +2148,7 @@ mov $lenBuf, %rsi
  mov $lenBuf4, %rax 
  mov $buf4, %rdi
  call __set 
- 
- movq $1, %rax 
+ mov $1, %rax 
 
  call __div 
  mov $lenT4, %rsi 
@@ -2266,8 +2268,7 @@ mov $lenVarName, %rsi
  mov $lenVarName8, %rax 
 mov $varName8, %rdi 
  call __set 
-call __undefineVar 
-
+call __undefineVar
 mov $60,  %rax
 xor %rdi, %rdi
 syscall

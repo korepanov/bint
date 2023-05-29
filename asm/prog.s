@@ -1599,6 +1599,7 @@ __pow:
  fscale 
  fmul (buf)
  fstp (buf)
+ fstp (buf2)
  
  movb (isExpNeg), %al  
  cmp $0, %al    
@@ -2304,14 +2305,6 @@ _start:
  mov $lenBuf3, %rax 
  mov $buf3, %rdi 
  call __set*/
- 
-
- mov $1, %rax 
- call __div 
- mov $userData, %rsi 
- call __print
- call __printHeap 
- call __throughError
 
  mov (userData), %al  
  cmp $0, %al 
