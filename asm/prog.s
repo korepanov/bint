@@ -1762,6 +1762,7 @@ mov $buf3, %r11
 call __concatinate
 
 __floatToStrEnd:
+fstp (buf)
 ret 
 
 __parseFloat:
