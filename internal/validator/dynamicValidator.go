@@ -1194,7 +1194,7 @@ func dValidateElseIf(command string, variables [][][]interface{}) (string, int, 
 
 	}
 
-	return command, stat, variables, nil
+	return tail, stat, variables, nil
 }
 
 func dValidateElse(command string, variables [][][]interface{}) (string, int, [][][]interface{}) {
