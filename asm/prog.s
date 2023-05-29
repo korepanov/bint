@@ -127,7 +127,7 @@ data2:
 .space 1, 0
 lenData2 = . - data2 
 data3:
-.ascii "3776"
+.ascii "3777"
 .space 1, 0
 lenData3 = . - data3 
 data4:
@@ -135,7 +135,7 @@ data4:
 .space 1, 0
 lenData4 = . - data4 
 data5:
-.ascii "5.43"
+.ascii "5.44"
 .space 1, 0 
 lenData5 = . - data5 
 data6:
@@ -2153,6 +2153,18 @@ __initLabelsAddr1:
  movb $1, (userData)
  ret 
 
+ __moreOrEqual:
+ call __less
+ xor %rax, %rax 
+ mov (userData), %al
+ cmp $0, %al 
+ jz __isMoreOrEqual
+ movb $0, (userData)
+ ret 
+ __isMoreOrEqual:
+ movb $1, (userData)
+ ret
+
 .globl _start
 _start:
  call __initLabels
@@ -2315,11 +2327,11 @@ _start:
  call __set 
  call __defineVar
 
- # get fVar  
+ # get iVar  
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName2, %rax 
- mov $varName2, %rdi
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi
  call __set
  call __getVar
 
@@ -2330,11 +2342,11 @@ _start:
  mov (userData), %rdi 
  call __set 
 
- # get fVar2
+ # get iVar2
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName5, %rax 
- mov $varName5, %rdi
+ mov $lenVarName4, %rax 
+ mov $varName4, %rdi
  call __set
  call __getVar
 
@@ -2359,8 +2371,8 @@ _start:
  call __print 
  mov $enter, %rsi 
  call __print
- mov $1, %rax  
- call __more 
+ mov $0, %rax  
+ call __moreOrEqual 
 
  mov (userData), %al  
  cmp $0, %al 
