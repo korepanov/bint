@@ -1,7 +1,7 @@
 string$ret;
 inta;
 intb;
-a=5;
+a=4;
 b=5;
 [print(""),(a>b),goto(#_cond0_end)];
 string $print_arg0;

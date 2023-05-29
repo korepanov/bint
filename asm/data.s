@@ -511,8 +511,14 @@ noSuchMarkError:
 varName0:
 .ascii "$ret"
 lenVarName0 = . - varName0
+varName1:
+.ascii "a"
+lenVarName1 = . - varName1
+varName2:
+.ascii "b"
+lenVarName2 = . - varName2
 data0:
-.ascii "7.7"
+.ascii "4"
 .space 1, 0
 lenData0 = . - data0
 data1:
@@ -523,9 +529,9 @@ data2:
 .ascii ""
 .space 1, 0
 lenData2 = . - data2
-varName1:
+varName3:
 .ascii "$print_arg0"
-lenVarName1 = . - varName1
+lenVarName3 = . - varName3
 data3:
 .ascii "a > b\n"
 .space 1, 0
@@ -539,27 +545,51 @@ data4:
 .ascii ""
 .space 1, 0
 lenData4 = . - data4
-varName2:
-.ascii "$print_arg0"
-lenVarName2 = . - varName2
 data5:
-.ascii "a <= b\n"
-.space 1, 0
-lenData5 = . - data5
-data6:
 .ascii ""
 .space 1, 0
+lenData5 = . - data5
+varName4:
+.ascii "$print_arg0"
+lenVarName4 = . - varName4
+data6:
+.ascii "a < b\n"
+.space 1, 0
 lenData6 = . - data6
-label1:
- .quad ._cond_exit0
-labelName1:
-.ascii "._cond_exit0"
-.space 1,0
 data7:
 .ascii ""
 .space 1, 0
 lenData7 = . - data7
+label1:
+ .quad ._cond1_end
+labelName1:
+.ascii "._cond1_end"
+.space 1,0
 data8:
 .ascii ""
 .space 1, 0
 lenData8 = . - data8
+varName5:
+.ascii "$print_arg0"
+lenVarName5 = . - varName5
+data9:
+.ascii "a = b\n"
+.space 1, 0
+lenData9 = . - data9
+data10:
+.ascii ""
+.space 1, 0
+lenData10 = . - data10
+label2:
+ .quad ._cond_exit0
+labelName2:
+.ascii "._cond_exit0"
+.space 1,0
+data11:
+.ascii ""
+.space 1, 0
+lenData11 = . - data11
+data12:
+.ascii ""
+.space 1, 0
+lenData12 = . - data12
