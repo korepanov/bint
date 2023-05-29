@@ -1,10 +1,7 @@
-float a;
-float b;
+int a;
+int b;  
 
-a = (3.0^4.0);
-b = (2.0^5.0); 
-
-if (b <= a){
+if (5.5 <= 5.5){
 	print("b <= a\n");
 }else{
 	print("b > a\n"); 

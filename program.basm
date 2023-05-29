@@ -1,9 +1,7 @@
 string$ret;
-floata;
-floatb;
-a=(3.0^4.0);
-b=(2.0^5.0);
-[print(""),(b<=a),goto(#_cond0_end)];
+inta;
+intb;
+[print(""),(5.5<=5.5),goto(#_cond0_end)];
 string $print_arg0;
 $print_arg0="b <= a\n";
 print($print_arg0);
