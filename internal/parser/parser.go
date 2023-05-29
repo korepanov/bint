@@ -682,8 +682,12 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 			}
 			infoList := infoListList[0]
 
-			resCon, variables, usersStack = ExecuteTree(infoList, variables, usersStack, toTranspile, toPrimitive,
-				primitiveDest, transpileDest)
+			if nil == programDest {
+				resCon, variables, usersStack = ExecuteTree(infoList, variables, usersStack, toTranspile, toPrimitive,
+					primitiveDest, transpileDest)
+			} else {
+				resCon = []interface{}{"False"}
+			}
 
 			if toTranspile {
 				_, err := transpileDest.WriteString("if " + fmt.Sprintf("%v", fmt.Sprintf("%v", resCon[0])) + "{\n")
