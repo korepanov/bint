@@ -2091,6 +2091,56 @@ __initLabelsAddr1:
  movb $0, (userData)
  ret 
 
+  __lessOrEqual:
+ # вход: buf и buf2 
+ # %rax - тип операции 
+ # 0 - целочисленный
+ # 1 - вещественный 
+ # выход: userData 
+ cmp $0, %rax 
+ jnz __lessOrEqualFloat
+ call __toNumber
+ mov %rax, %r12 # сохраняем %rax 
+ 
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi
+ call __set 
+ call __toNumber 
+ 
+ cmp %r12, %rax 
+ jge __isLessOrEqual 
+ call __clearUserData
+ movb $0, (userData)
+ ret 
+ __isLessOrEqual:
+ call __clearUserData
+ movb $1, (userData)
+ ret 
+ __lessOrEqualFloat:
+ mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi
+ call __set
+ call __parseFloat
+ movss %xmm0, %xmm1 
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi
+ call __set
+ call __parseFloat
+
+ cmpss $1, %xmm1, %xmm0
+ pextrb $3, %xmm0, %rax
+ cmp $0, %rax 
+ jz __isLessOrEqual 
+ call __clearUserData
+ movb $0, (userData)
+ ret 
+
 .globl _start
 _start:
  call __initLabels
@@ -2289,69 +2339,15 @@ _start:
  mov $buf3, %rdi 
  call __set
 
- /*mov $lenBuf3, %rsi 
- mov $buf3, %rdx
- mov $lenBuf, %rax 
- mov $buf, %rdi 
- call __set   
 
- mov $lenBuf, %rsi 
- mov $buf, %rdx
- mov $lenBuf2, %rax 
- mov $buf2, %rdi 
- call __set 
-
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx
- mov $lenBuf3, %rax 
- mov $buf3, %rdi 
- call __set*/
-
- mov (userData), %al  
- cmp $0, %al 
- jz __greaterOrEqual
- mov $data1, %rsi 
- call __print 
- __greaterOrEqual: 
- #mov (userData), %rsi 
- #call __print
- #mov $enter, %rsi 
+ #mov (userData), %al  
+ #cmp $0, %al 
+ #jz __greaterOrEqual
+ #mov $data1, %rsi 
  #call __print 
- # get fVar2  
- /*mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName5, %rax 
- mov $varName5, %rdi
- call __set
- call __getVar
- #mov (userData), %rsi 
- #call __print
- mov (userData), %rsi 
- call __len 
- mov $lenBuf4, %rsi 
- mov $buf4, %rdx 
- mov (userData), %rdi 
- call __set 
+ #__greaterOrEqual:
 
- mov $lenBuf, %rsi
- mov $buf, %rdx 
- mov $lenBuf3, %rax 
- mov $buf3, %rdi 
- call __set 
- mov $lenBuf2, %rsi
- mov $buf2, %rdx 
- mov $lenBuf4, %rax 
- mov $buf4, %rdi 
- call __set */
-
- #mov $buf, %rsi 
- #call __print 
- #mov $1, %rax 
- #call __divI
- #mov $1, %rax 
- #call __pow 
- #mov $userData, %rsi 
- #call __print  
+ 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName6, %rax 
