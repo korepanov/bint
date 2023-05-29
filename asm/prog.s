@@ -115,7 +115,7 @@ enter:
 .space 1, 0
 lenEnter = . - enter 
 data0:
-.ascii "25"
+.ascii "3777"
 .space 1, 0
 lenData0 = . - data0 
 data1:
@@ -127,15 +127,15 @@ data2:
 .space 1, 0
 lenData2 = . - data2 
 data3:
-.ascii "3777"
+.ascii "3778"
 .space 1, 0
 lenData3 = . - data3 
 data4:
-.ascii "-6.0"
+.ascii "5.43"
 .space 1, 0
 lenData4 = . - data4 
 data5:
-.ascii "2.0"
+.ascii "5.43"
 .space 1, 0 
 lenData5 = . - data5 
 data6:
@@ -2083,7 +2083,7 @@ __initLabelsAddr1:
  call __set
  call __parseFloat
 
- cmpss $1, %xmm1, %xmm0
+ cmpss $2, %xmm1, %xmm0
  pextrb $3, %xmm0, %rax
  cmp $0, %rax 
  jz __isLess 
@@ -2303,11 +2303,11 @@ _start:
  call __set 
  call __defineVar
 
- # get fVar  
+ # get iVar  
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName2, %rax 
- mov $varName2, %rdi
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi
  call __set
  call __getVar
 
@@ -2318,11 +2318,11 @@ _start:
  mov (userData), %rdi 
  call __set 
 
- # get iVar5
+ # get iVar2
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName5, %rax 
- mov $varName5, %rdi
+ mov $lenVarName4, %rax 
+ mov $varName4, %rdi
  call __set
  call __getVar
 
@@ -2339,13 +2339,23 @@ _start:
  mov $buf3, %rdi 
  call __set
 
+ mov $buf, %rsi 
+ call __print 
+ mov $enter, %rsi 
+ call __print 
+ mov $buf2, %rsi 
+ call __print 
+ mov $enter, %rsi 
+ call __print
+ mov $0, %rax  
+ call __lessOrEqual 
 
- #mov (userData), %al  
- #cmp $0, %al 
- #jz __greaterOrEqual
- #mov $data1, %rsi 
- #call __print 
- #__greaterOrEqual:
+ mov (userData), %al  
+ cmp $0, %al 
+ jz __greater
+ mov $data1, %rsi 
+ call __print 
+ __greater:
 
  
  mov $lenVarName, %rsi 
