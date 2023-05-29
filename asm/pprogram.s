@@ -1858,6 +1858,18 @@ ret
  movb $1, (userData)
  ret
 
+__moreOrEqual:
+ call __less
+ xor %rax, %rax 
+ mov (userData), %al
+ cmp $0, %al 
+ jz __isMoreOrEqual
+ movb $0, (userData)
+ ret 
+ __isMoreOrEqual:
+ movb $1, (userData)
+ ret
+
 .globl _start
 _start:
  call __initLabels

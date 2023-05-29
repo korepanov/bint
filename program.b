@@ -1,15 +1,10 @@
-int a;
-int b;
+float a;
+a = 7.7; 
 
-a = 4;
-b = 5;
-
-if (a > b){
-	print("a > b\n");
-}else if (a < b){
-	print("a < b\n"); 
+if (a >= 7.7){
+	print("a >= b\n");
 }else{
-	print("a = b\n");
+	print("a < b\n");
 };
 	
 
