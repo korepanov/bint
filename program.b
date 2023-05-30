@@ -1,8 +1,8 @@
 
 if (((True)AND(False))AND(True)){
-	print("yes\n");
+	print("True\n");
 }else{
-	print("no\n");
+	print("False\n");
 };
 	
 

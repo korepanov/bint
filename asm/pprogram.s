@@ -1920,6 +1920,19 @@ __moreOrEqual:
  movb $0, (userData)
  ret
 
+ __boolToStr:
+ # вход: buf
+ # выход: userData
+ call __clearUserData
+ mov (buf), %al 
+ cmp $1, %al 
+ jnz __boolToStrEndTrue
+ movb $'1', (userData)
+ ret 
+ __boolToStrEndTrue:
+ movb $'0', (userData)
+ ret
+
   __parseBool:
  # buf - источник (строка)
  # %rax - результат
