@@ -2432,8 +2432,8 @@ _start:
  #mov $enter, %rsi 
  #call __print
  #mov $1, %rax
- movb $0, (buf)
- movb $0, (buf)  
+ movb $1, (buf)
+ movb $1, (buf2)  
  call __and 
 
  mov (userData), %al  
