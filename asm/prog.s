@@ -2215,6 +2215,15 @@ __initLabelsAddr1:
  movb $0, (userData)
  ret 
 
+ __and:
+ # вход: buf и buf2 
+ # выход: userData 
+
+ xor %rax, %rax 
+ mov (buf), %rax 
+ and (buf2), %rax  
+ mov %rax, (userData)
+ ret 
 
 .globl _start
 _start:
@@ -2414,16 +2423,18 @@ _start:
  mov $buf3, %rdi 
  call __set
 
- mov $buf, %rsi 
- call __print 
- mov $enter, %rsi 
- call __print 
- mov $buf2, %rsi 
- call __print 
- mov $enter, %rsi 
- call __print
- mov $1, %rax  
- call __eq 
+ #mov $buf, %rsi 
+ #call __print 
+ #mov $enter, %rsi 
+ #call __print 
+ #mov $buf2, %rsi 
+ #call __print 
+ #mov $enter, %rsi 
+ #call __print
+ #mov $1, %rax
+ movb $0, (buf)
+ movb $0, (buf)  
+ call __and 
 
  mov (userData), %al  
  cmp $0, %al 
