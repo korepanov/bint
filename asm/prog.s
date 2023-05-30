@@ -127,7 +127,7 @@ data2:
 .space 1, 0
 lenData2 = . - data2 
 data3:
-.ascii "3777"
+.ascii "3776"
 .space 1, 0
 lenData3 = . - data3 
 data4:
@@ -2165,6 +2165,57 @@ __initLabelsAddr1:
  movb $1, (userData)
  ret
 
+ __eq:
+ # вход: buf и buf2 
+ # %rax - тип операции 
+ # 0 - целочисленный
+ # 1 - вещественный 
+ # выход: userData 
+ cmp $0, %rax 
+ jnz __equalFloat
+ call __toNumber
+ mov %rax, %r12 # сохраняем %rax 
+ 
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi
+ call __set 
+ call __toNumber 
+ 
+ cmp %r12, %rax 
+ jz __isEqual  
+ call __clearUserData
+ movb $0, (userData)
+ ret 
+ __isEqual:
+ call __clearUserData
+ movb $1, (userData)
+ ret 
+ __equalFloat:
+ mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi
+ call __set
+ call __parseFloat
+ movss %xmm0, %xmm1 
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi
+ call __set
+ call __parseFloat
+
+ cmpss $4, %xmm1, %xmm0
+ pextrb $3, %xmm0, %rax
+ cmp $0, %rax 
+ jz __isEqual  
+ call __clearUserData
+ movb $0, (userData)
+ ret 
+
+
 .globl _start
 _start:
  call __initLabels
@@ -2327,11 +2378,11 @@ _start:
  call __set 
  call __defineVar
 
- # get iVar  
+ # get fVar  
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName0, %rax 
- mov $varName0, %rdi
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi
  call __set
  call __getVar
 
@@ -2342,11 +2393,11 @@ _start:
  mov (userData), %rdi 
  call __set 
 
- # get iVar2
+ # get fVar2
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName4, %rax 
- mov $varName4, %rdi
+ mov $lenVarName5, %rax 
+ mov $varName5, %rdi
  call __set
  call __getVar
 
@@ -2371,8 +2422,8 @@ _start:
  call __print 
  mov $enter, %rsi 
  call __print
- mov $0, %rax  
- call __moreOrEqual 
+ mov $1, %rax  
+ call __eq 
 
  mov (userData), %al  
  cmp $0, %al 

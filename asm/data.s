@@ -515,9 +515,12 @@ varName1:
 .ascii "a"
 lenVarName1 = . - varName1
 data0:
-.ascii "7.7"
+.ascii "7.5"
 .space 1, 0
 lenData0 = . - data0
+varName2:
+.ascii "b"
+lenVarName2 = . - varName2
 data1:
 .ascii "7.7"
 .space 1, 0
@@ -526,11 +529,11 @@ data2:
 .ascii ""
 .space 1, 0
 lenData2 = . - data2
-varName2:
+varName3:
 .ascii "$print_arg0"
-lenVarName2 = . - varName2
+lenVarName3 = . - varName3
 data3:
-.ascii "a >= b\n"
+.ascii "a == b\n"
 .space 1, 0
 lenData3 = . - data3
 label0:
@@ -542,11 +545,11 @@ data4:
 .ascii ""
 .space 1, 0
 lenData4 = . - data4
-varName3:
+varName4:
 .ascii "$print_arg0"
-lenVarName3 = . - varName3
+lenVarName4 = . - varName4
 data5:
-.ascii "a < b\n"
+.ascii "a != b\n"
 .space 1, 0
 lenData5 = . - data5
 data6:
