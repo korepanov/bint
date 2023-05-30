@@ -1,7 +1,7 @@
 float a;
-a = 7.5; 
+a = 9; 
 float b;
-b = 7.7;
+b = 8;
 
 if (a == b){
 	print("a == b\n");

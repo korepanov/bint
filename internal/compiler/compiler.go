@@ -808,77 +808,211 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		os.Exit(1)
 
 	} else if "==" == OP {
-		LOType := WhatsType(fmt.Sprintf("%v", LO[0]))
-		ROType := WhatsType(fmt.Sprintf("%v", RO[0]))
+		var lenLO string
+		var lenRO string
+		isVarLO := false
+		isVarRO := false
 
-		if "string" == LOType {
-			ROType = "string"
-		} else if "string" == ROType {
-			LOType = "string"
+		newVariable := EachVariable(variables)
+
+		for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
+			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
+				isVarLO = true
+				lenLO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+				LO[0] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+			}
+			if fmt.Sprintf("%v", RO[0]) == fmt.Sprintf("%v", v[1]) {
+				isVarRO = true
+				lenRO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", RO[0])])
+				RO[0] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", RO[0])])
+			}
 		}
 
-		if LOType != ROType {
-			err := errors.New("executor: == : ERROR: data type mismatch")
-			return LO, systemStack, "", err
+		if 2 == len(LO) && true == LO[0] {
+			lenLO = "$lenT" + string(fmt.Sprintf("%v", LO[1])[len(fmt.Sprintf("%v", LO[1]))-1])
 		}
-
-		if "int" == LOType {
-			intLO, err := strconv.Atoi(fmt.Sprintf("%v", LO[0]))
+		if 2 == len(RO) && true == RO[0] {
+			lenRO = "$lenT" + string(fmt.Sprintf("%v", RO[1])[len(fmt.Sprintf("%v", RO[1]))-1])
+		}
+		if !isVarLO && !(2 == len(LO) && true == LO[0]) {
+			_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
 			if nil != err {
-				return LO, systemStack, "", err
+				fmt.Println(err)
+				os.Exit(1)
 			}
-
-			intRO, err := strconv.Atoi(fmt.Sprintf("%v", RO[0]))
+			_, err = dataFile.Write([]byte("\n.ascii \"" + fmt.Sprintf("%v", ValueFoldInterface(LO[0])) + "\"\n.space 1, 0"))
 			if nil != err {
-				return LO, systemStack, "", err
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = dataFile.Write([]byte("\nlenData" + fmt.Sprintf("%v", DataNumber) + " = . - data" + fmt.Sprintf("%v", DataNumber)))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
 			}
 
-			return []interface{}{BoolToStr(intLO == intRO)}, systemStack, "", nil
+			LO[0] = "$data" + fmt.Sprintf("%v", DataNumber)
+			lenLO = "$lenData" + fmt.Sprintf("%v", DataNumber)
+
+			_, err = progFile.Write([]byte("\nmov $lenBuf3, %rsi \n mov $buf3, %rdx \n mov " + lenLO + ", %rax \n mov " +
+				fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			DataNumber++
+		}
+		if !isVarRO && !(2 == len(RO) && true == RO[0]) {
+			_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = dataFile.Write([]byte("\n.ascii \"" + fmt.Sprintf("%v", ValueFoldInterface(RO[0])) + "\"\n.space 1, 0"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = dataFile.Write([]byte("\nlenData" + fmt.Sprintf("%v", DataNumber) + " = . - data" + fmt.Sprintf("%v", DataNumber)))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			RO[0] = "$data" + fmt.Sprintf("%v", DataNumber)
+			lenRO = "$lenData" + fmt.Sprintf("%v", DataNumber)
+
+			_, err = progFile.Write([]byte("\nmov $lenBuf4, %rsi \n mov $buf4, %rdx \n mov " + lenRO + ", %rax \n mov " +
+				fmt.Sprintf("%v", RO[0]) + ", %rdi\n call __set"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			DataNumber++
+		}
+		if 2 == len(LO) && true == LO[0] {
+			_, err := progFile.Write([]byte("\nmov $lenBuf3, %rsi \n mov $buf3, %rdx \n mov " + lenLO + ", %rax \n mov $" +
+				fmt.Sprintf("%v", LO[1]) + ", %rdi\n call __set"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			LO = []interface{}{LO[1]}
+		}
+		if 2 == len(RO) && true == RO[0] {
+			_, err := progFile.Write([]byte("\nmov $lenBuf4, %rsi \n mov $buf4, %rdx \n mov " + lenRO + ", %rax \n mov $" +
+				fmt.Sprintf("%v", RO[1]) + ", %rdi\n call __set"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			RO = []interface{}{RO[1]}
+		}
+		if ("int" == typeLO || "float" == typeLO) && isVarLO {
+			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
+				"\n call __getVar \n mov (userData), %rsi \n call __len \n mov $lenBuf3, %rsi \n mov $buf3, %rdx \n " +
+				"mov (userData), %rdi\n call __set "))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		}
+		if ("int" == typeRO || "float" == typeRO) && isVarRO {
+			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenRO +
+				", %rax \n mov " + fmt.Sprintf("%v", RO[0]) + ", %rdi\n call __set " +
+				"\n call __getVar \n mov (userData), %rsi \n call __len \n mov $lenBuf4, %rsi \n mov $buf4, %rdx \n " +
+				"mov (userData), %rdi\n call __set "))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		}
 
-		if "float" == LOType {
-			floatLO, err := strconv.ParseFloat(fmt.Sprintf("%v", LO[0]), 64)
+		if "int" == typeLO && "int" == typeRO {
+			if tNumber >= TempVarsNum {
+				fmt.Println("ERROR: the arithmetic expression is too long")
+				os.Exit(1)
+			}
+			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
+				"\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenBuf4, %rax \n mov $buf4, %rdi\n call __set \n xor %rax, %rax \n" +
+				"\n call __eq \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+				", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
 			if nil != err {
-				return LO, systemStack, "", err
+				fmt.Println(err)
+				os.Exit(1)
 			}
 
-			floatRO, err := strconv.ParseFloat(fmt.Sprintf("%v", RO[0]), 64)
-			if nil != err {
-				return LO, systemStack, "", err
-			}
-
-			return []interface{}{BoolToStr(floatLO == floatRO)}, systemStack, "", nil
+			// true - признак того, что результат в вычисляемой переменной asm
+			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "int", nil
 		}
 
-		if "string" == LOType {
-			if len(fmt.Sprintf("%v", LO[0])) > 0 && "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
-				LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
+		if "float" == typeLO && "float" == typeRO {
+
+			if tNumber >= TempVarsNum {
+				fmt.Println("ERROR: the arithmetic expression is too long")
+				os.Exit(1)
 			}
-			if len(fmt.Sprintf("%v", RO[0])) > 0 && "\"" == string(fmt.Sprintf("%v", RO[0])[0]) {
-				RO[0] = RO[0].(string)[1 : len(RO[0].(string))-1]
+			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
+				"\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenBuf4, %rax \n mov $buf4, %rdi\n call __set \n mov $1, %rax \n" +
+				"\n call __eq \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+				", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
 			}
 
-			if "\\n" == fmt.Sprintf("%v", LO[0]) {
-				LO[0] = "\n"
-			}
-
-			if "\\n" == fmt.Sprintf("%v", RO[0]) {
-				RO[0] = "\n"
-			}
-
-			if "\\t" == fmt.Sprintf("%v", LO[0]) {
-				LO[0] = "\t"
-			}
-
-			if "\\t" == fmt.Sprintf("%v", RO[0]) {
-				RO[0] = "\t"
-			}
-
-			return []interface{}{BoolToStr(fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", RO[0]))}, systemStack, "", nil
+			// true - признак того, что результат в вычисляемой переменной asm
+			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "float", nil
 		}
 
-		err := errors.New("executor: == : ERROR: data type mismatch")
-		return LO, systemStack, "", err
+		if "int" == typeLO && "float" == typeRO {
+
+			if tNumber >= TempVarsNum {
+				fmt.Println("ERROR: the arithmetic expression is too long")
+				os.Exit(1)
+			}
+			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
+				"\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenBuf4, %rax \n mov $buf4, %rdi\n call __set" +
+				"\n mov $lenBuf, %r8 \n mov $buf, %r9 \n mov $floatTail, %r11 \n call __concatinate" +
+				"\n mov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi \n call __set" +
+				"\n mov $1, %rax \n" +
+				"\n call __eq \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+				", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			// true - признак того, что результат в вычисляемой переменной asm
+			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "float", nil
+		}
+		if "float" == typeLO && "int" == typeRO {
+
+			if tNumber >= TempVarsNum {
+				fmt.Println("ERROR: the arithmetic expression is too long")
+				os.Exit(1)
+			}
+			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
+				"\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenBuf4, %rax \n mov $buf4, %rdi\n call __set" +
+				"\n mov $lenBuf2, %r8 \n mov $buf2, %r9 \n mov $floatTail, %r11 \n call __concatinate" +
+				"\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi \n call __set" +
+				"\n mov $1, %rax \n" +
+				"\n call __eq \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+				", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			// true - признак того, что результат в вычисляемой переменной asm
+			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "float", nil
+		}
+
+		// string не реализован!
+		fmt.Println("ERROR: type error in <: " + typeLO + " and " + typeRO)
+		os.Exit(1)
 	} else if ">" == OP {
 		var lenLO string
 		var lenRO string

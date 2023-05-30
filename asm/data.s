@@ -515,14 +515,14 @@ varName1:
 .ascii "a"
 lenVarName1 = . - varName1
 data0:
-.ascii "7.5"
+.ascii "9.0"
 .space 1, 0
 lenData0 = . - data0
 varName2:
 .ascii "b"
 lenVarName2 = . - varName2
 data1:
-.ascii "7.7"
+.ascii "8.0"
 .space 1, 0
 lenData1 = . - data1
 data2:

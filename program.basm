@@ -1,8 +1,8 @@
 string$ret;
 floata;
-a=7.5;
+a=9;
 floatb;
-b=7.7;
+b=8;
 [print(""),(a==b),goto(#_cond0_end)];
 string $print_arg0;
 $print_arg0="a == b\n";
