@@ -511,3 +511,7 @@ noSuchMarkError:
 varName0:
 .ascii "$ret"
 lenVarName0 = . - varName0
+data0:
+.ascii "1"
+.space 1, 0
+lenData0 = . - data0

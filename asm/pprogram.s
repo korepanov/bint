@@ -1920,14 +1920,39 @@ __moreOrEqual:
  movb $0, (userData)
  ret
 
- __and:
- # вход: buf и buf2 
- # выход: userData 
+  __parseBool:
+ # buf - источник (строка)
+ # %rax - результат
 
  xor %rax, %rax 
+ mov (buf), %al  
+ cmp $'1', %al 
+ jnz __parseFalse
+ mov $1, %rax 
+ ret  
+ __parseFalse:
+ mov $0, %rax 
+ ret
+
+
+ __and:
+ # вход: buf и buf2 в виде строк 
+ # выход: userData в виде bool 
+ call __clearUserData
+ call __parseBool 
+ mov %rax, (userData)
+ mov (buf2), %rax 
+ mov %rax, (buf)
+ call __parseBool
+ mov %rax, (buf2)
+ mov (userData), %rax 
+ mov %rax, (buf)
+
+
  mov (buf), %rax 
  and (buf2), %rax  
  mov %rax, (userData)
+
  ret
 
 .globl _start
