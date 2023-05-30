@@ -1,7 +1,5 @@
-float a;
-a = 9; 
-float b;
-b = 8;
+string a;
+string b;
 
 if (a == b){
 	print("a == b\n");

@@ -804,7 +804,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "float", nil
 		}
 
-		fmt.Println("ERROR: type error in <: " + typeLO + " and " + typeRO)
+		fmt.Println("ERROR: type error in <=: " + typeLO + " and " + typeRO)
 		os.Exit(1)
 
 	} else if "==" == OP {
@@ -1011,7 +1011,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		// string не реализован!
-		fmt.Println("ERROR: type error in <: " + typeLO + " and " + typeRO)
+		fmt.Println("ERROR: type error in ==: " + typeLO + " and " + typeRO)
 		os.Exit(1)
 	} else if ">" == OP {
 		var lenLO string
@@ -1216,7 +1216,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "float", nil
 		}
 
-		fmt.Println("ERROR: type error in <: " + typeLO + " and " + typeRO)
+		fmt.Println("ERROR: type error in >: " + typeLO + " and " + typeRO)
 		os.Exit(1)
 	} else if ">=" == OP {
 		var lenLO string
@@ -1421,7 +1421,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "float", nil
 		}
 
-		fmt.Println("ERROR: type error in <: " + typeLO + " and " + typeRO)
+		fmt.Println("ERROR: type error in >=: " + typeLO + " and " + typeRO)
 		os.Exit(1)
 	} else if "+" == OP {
 		var lenLO string
