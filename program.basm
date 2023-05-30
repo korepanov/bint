@@ -1,13 +1,13 @@
 string$ret;
-[print(""),((True)AND(True)),goto(#_cond0_end)];
+[print(""),((True)AND(False)),goto(#_cond0_end)];
 string $print_arg0;
-$print_arg0="no\n";
+$print_arg0="yes\n";
 print($print_arg0);
 UNDEFINE($print_arg0);
 goto(#_cond_exit0);
 #_cond0_end:print("");
 string $print_arg0;
-$print_arg0="yes\n";
+$print_arg0="no\n";
 print($print_arg0);
 UNDEFINE($print_arg0);
 print("");
