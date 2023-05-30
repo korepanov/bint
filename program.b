@@ -1,10 +1,8 @@
-string a;
-string b;
 
-if (a == b){
-	print("a == b\n");
+if ((True)AND(True)){
+	print("no\n");
 }else{
-	print("a != b\n");
+	print("yes\n");
 };
 	
 

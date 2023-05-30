@@ -511,9 +511,3 @@ noSuchMarkError:
 varName0:
 .ascii "$ret"
 lenVarName0 = . - varName0
-varName1:
-.ascii "a"
-lenVarName1 = . - varName1
-varName2:
-.ascii "b"
-lenVarName2 = . - varName2

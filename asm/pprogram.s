@@ -1920,6 +1920,16 @@ __moreOrEqual:
  movb $0, (userData)
  ret
 
+ __and:
+ # вход: buf и buf2 
+ # выход: userData 
+
+ xor %rax, %rax 
+ mov (buf), %rax 
+ and (buf2), %rax  
+ mov %rax, (userData)
+ ret
+
 .globl _start
 _start:
  call __initLabels
