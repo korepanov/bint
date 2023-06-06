@@ -1948,9 +1948,9 @@ __parseBool:
  ret 
 
 
- __and:
+__and:
  # вход: buf и buf2 в виде строк 
- # выход: userData в виде bool 
+ # выход: userData в виде строки 
  call __clearUserData
  call __parseBool 
  mov %rax, (userData)
@@ -1964,29 +1964,15 @@ __parseBool:
 
  mov (buf), %rax 
  and (buf2), %rax  
- mov %rax, (userData)
 
- ret
-
-  __or:
- # вход: buf и buf2 в виде строк 
- # выход: userData в виде bool 
- call __clearUserData
- call __parseBool 
- mov %rax, (userData)
- mov (buf2), %rax 
- mov %rax, (buf)
- call __parseBool
- mov %rax, (buf2)
- mov (userData), %rax 
- mov %rax, (buf)
-
-
- mov (buf), %rax 
- or (buf2), %rax  
- mov %rax, (userData)
-
- ret
+ cmp $1, %rax 
+ jz __andTrue 
+ movb $'0', (userData)
+ ret 
+ __andTrue:
+ movb $'1', (userData)
+ 
+ ret 
 
 .globl _start
 _start:

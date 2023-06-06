@@ -407,7 +407,25 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 							CompilerVars[fmt.Sprintf("%v", variables[len(variables)-1][1])] = VarsCounter
 							VarsCounter++
 						} else if "bool" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
-							print("")
+							_, err := dataFile.Write([]byte("\nvarName" + fmt.Sprintf("%v", VarsCounter) + ":" +
+								"\n.ascii \"" + fmt.Sprintf("%v", variables[len(variables)-1][1]) +
+								"\"\nlenVarName" + fmt.Sprintf("%v", VarsCounter) + " = . - varName" + fmt.Sprintf("%v", VarsCounter)))
+							if nil != err {
+								fmt.Println(err)
+								os.Exit(1)
+							}
+
+							_, err = progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx" +
+								"\n mov $lenVarName" + fmt.Sprintf("%v", VarsCounter) + ", %rax \n mov $varName" +
+								fmt.Sprintf("%v", VarsCounter) + ", %rdi \n call __set \n mov $lenVarType, %rsi \n mov $varType, %rdx " +
+								"\n mov $lenBoolType, %rax \n mov $boolType, %rdi \n call __set \n mov $varName, %rcx \n mov $varType, %rdx  " +
+								"\n call __defineVar"))
+							if nil != err {
+								fmt.Println(err)
+								os.Exit(1)
+							}
+							CompilerVars[fmt.Sprintf("%v", variables[len(variables)-1][1])] = VarsCounter
+							VarsCounter++
 						}
 					}
 					if toPrimitive {

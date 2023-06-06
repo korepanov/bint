@@ -512,57 +512,53 @@ varName0:
 .ascii "$ret"
 lenVarName0 = . - varName0
 varName1:
-.ascii "a"
+.ascii "b"
 lenVarName1 = . - varName1
 data0:
-.ascii "10"
+.ascii "0"
 .space 1, 0
 lenData0 = . - data0
 data1:
-.ascii "5"
-.space 1, 0
-lenData1 = . - data1
-data2:
 .ascii ""
 .space 1, 0
-lenData2 = . - data2
+lenData1 = . - data1
 varName2:
 .ascii "$print_arg0"
 lenVarName2 = . - varName2
-data3:
+data2:
 .ascii "True\n"
 .space 1, 0
-lenData3 = . - data3
+lenData2 = . - data2
 label0:
  .quad ._cond0_end
 labelName0:
 .ascii "._cond0_end"
 .space 1,0
-data4:
+data3:
 .ascii ""
 .space 1, 0
-lenData4 = . - data4
+lenData3 = . - data3
 varName3:
 .ascii "$print_arg0"
 lenVarName3 = . - varName3
-data5:
+data4:
 .ascii "False\n"
 .space 1, 0
-lenData5 = . - data5
-data6:
+lenData4 = . - data4
+data5:
 .ascii ""
 .space 1, 0
-lenData6 = . - data6
+lenData5 = . - data5
 label1:
  .quad ._cond_exit0
 labelName1:
 .ascii "._cond_exit0"
 .space 1,0
+data6:
+.ascii ""
+.space 1, 0
+lenData6 = . - data6
 data7:
 .ascii ""
 .space 1, 0
 lenData7 = . - data7
-data8:
-.ascii ""
-.space 1, 0
-lenData8 = . - data8

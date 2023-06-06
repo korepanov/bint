@@ -2251,7 +2251,7 @@ __initLabelsAddr1:
 
  __and:
  # вход: buf и buf2 в виде строк 
- # выход: userData в виде bool 
+ # выход: userData в виде строки 
  call __clearUserData
  call __parseBool 
  mov %rax, (userData)
@@ -2265,29 +2265,16 @@ __initLabelsAddr1:
 
  mov (buf), %rax 
  and (buf2), %rax  
- mov %rax, (userData)
 
+ cmp $1, %rax 
+ jz __andTrue 
+ movb $'0', (userData)
+ ret 
+ __andTrue:
+ movb $'1', (userData)
+ 
  ret 
 
- __or:
- # вход: buf и buf2 в виде строк 
- # выход: userData в виде bool 
- call __clearUserData
- call __parseBool 
- mov %rax, (userData)
- mov (buf2), %rax 
- mov %rax, (buf)
- call __parseBool
- mov %rax, (buf2)
- mov (userData), %rax 
- mov %rax, (buf)
-
-
- mov (buf), %rax 
- or (buf2), %rax  
- mov %rax, (userData)
-
- ret
 
 .globl _start
 _start:
@@ -2475,14 +2462,14 @@ _start:
  call __defineVar
 
  # get bVar  
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName8, %rax 
  mov $varName8, %rdi
  call __set
  call __getVar
  mov (userData), %rsi 
- call __print 
+ call __print*/ 
 
  # get fVar  
  mov $lenVarName, %rsi 
@@ -2531,16 +2518,12 @@ _start:
  #mov $1, %rax
  call __clearBuf
  call __clearBuf2 
- movb $'0', (buf)
- movb $'0', (buf2)  
- call __or 
+ movb $'1', (buf)
+ movb $'1', (buf2)  
+ call __and 
 
- mov (userData), %al  
- cmp $0, %al 
- jz __greater
- mov $data1, %rsi 
+ mov $userData, %rsi 
  call __print 
- __greater:
 
  
  mov $lenVarName, %rsi 

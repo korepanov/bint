@@ -1,6 +1,7 @@
 package parser
 
 import (
+	. "bint.com/internal/compilerVars"
 	. "bint.com/internal/executor"
 	. "bint.com/pkg/serviceTools"
 	"errors"
@@ -723,7 +724,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 
 			resCon = []interface{}{ValueFoldInterface(condition[0][1])}
 
-			if nil != programDest {
+			if nil != programDest && !wasVar {
 				if "True" == condition[0][1] || "true" == condition[0][1] {
 					_, err := programDest.Write([]byte("\n movb $1, (userData)"))
 					if nil != err {
@@ -739,6 +740,19 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 					}
 				}
 
+			}
+
+			if nil != programDest && wasVar {
+				lenVar := "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", transpileVar)])
+				v := "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", transpileVar)])
+
+				_, err := programDest.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenVar +
+					", %rax \n mov " + v + ", %rdi\n call __set " +
+					"\n call __getVar \n mov (userData), %rsi \n mov (%rsi), %rdx \n mov %rdx, (userData)"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
 			}
 
 			if "bool" != WhatsType(fmt.Sprintf("%v", resCon[0])) && !toTranspile {

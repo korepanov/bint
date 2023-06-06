@@ -248,6 +248,13 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 					}
 				}
 
+				if "bool" == typeLO {
+					if "True" == fmt.Sprintf("%v", RO[0]) || "true" == fmt.Sprintf("%v", RO[0]) {
+						RO[0] = "1"
+					} else {
+						RO[0] = "0"
+					}
+				}
 				if `"` == string(fmt.Sprintf("%v", RO[0])[0]) &&
 					`"` == string(fmt.Sprintf("%v", RO[0])[len(fmt.Sprintf("%v", RO[0]))-1]) {
 					RO[0] = fmt.Sprintf("%v", RO[0])[1 : len(fmt.Sprintf("%v", RO[0]))-1]
@@ -441,9 +448,8 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			}
 			_, err := progFile.Write([]byte("\nmov (buf3), %al \n mov %al, (buf) \n" +
 				"\n mov (buf4), %al \n mov %al, (buf2) " +
-				"\n call __and \n mov (userData), %al \n mov %al, (buf) \n call __boolToStr \n mov (userData), %al\n" +
-				" mov %al, (t" + fmt.Sprintf("%v", tNumber) + ") \n mov (userData), %al \n mov %al, (buf) \n call __parseBool\n" +
-				"mov %rax, (userData)"))
+				"\n call __and \n mov (userData), %al " +
+				"\n mov %al, (t" + fmt.Sprintf("%v", tNumber) + ")"))
 
 			if nil != err {
 				fmt.Println(err)

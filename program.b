@@ -1,9 +1,9 @@
-int a;
-a = 10;
-if (a < 5){
+bool b;
+b = False; 
+if (b){
 	print("True\n");
 }else{
-	print("False\n");
+	print("False\n"); 
 };
 	
 
