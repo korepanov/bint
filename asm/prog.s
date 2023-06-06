@@ -2275,6 +2275,32 @@ __initLabelsAddr1:
  
  ret 
 
+ __or:
+ # вход: buf и buf2 в виде строк 
+ # выход: userData в виде строки 
+ call __clearUserData
+ call __parseBool 
+ mov %rax, (userData)
+ mov (buf2), %rax 
+ mov %rax, (buf)
+ call __parseBool
+ mov %rax, (buf2)
+ mov (userData), %rax 
+ mov %rax, (buf)
+
+
+ mov (buf), %rax 
+ or (buf2), %rax  
+
+ cmp $1, %rax 
+ jz __orTrue 
+ movb $'0', (userData)
+ ret 
+ __orTrue:
+ movb $'1', (userData)
+ 
+ ret 
+
 
 .globl _start
 _start:
@@ -2518,9 +2544,9 @@ _start:
  #mov $1, %rax
  call __clearBuf
  call __clearBuf2 
- movb $'1', (buf)
- movb $'1', (buf2)  
- call __and 
+ movb $'0', (buf)
+ movb $'0', (buf2)  
+ call __or 
 
  mov $userData, %rsi 
  call __print 
