@@ -2327,6 +2327,19 @@ __initLabelsAddr1:
  
  ret 
 
+__not:
+ # вход: buf в виде строки 
+ # выход: userData в виде строки 
+ call __clearUserData
+
+ mov (buf), %al 
+ cmp $'1', %al 
+ jz __notTrue
+ movb $'1', (userData)
+ ret 
+ __notTrue:
+ movb $'0', (userData)
+ ret 
 
 .globl _start
 _start:
@@ -2569,10 +2582,10 @@ _start:
  #call __print
  #mov $1, %rax
  call __clearBuf
- call __clearBuf2 
- movb $'0', (buf)
- movb $'0', (buf2)  
- call __xor 
+ #call __clearBuf2 
+ movb $'1', (buf)
+# movb $'0', (buf2)  
+ call __not  
 
  mov $userData, %rsi 
  call __print 
