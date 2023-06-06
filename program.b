@@ -1,10 +1,7 @@
-int a;
-int b;
-
-a = 1;
-b = 10;
+bool b;
+b = True;
  
-if ((False)XOR(False)){
+if (NOT(b)){
 	print("True\n");
 }else{
 	print("False\n"); 

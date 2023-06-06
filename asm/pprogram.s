@@ -2026,6 +2026,20 @@ __xor:
  
  ret
 
+ __not:
+ # вход: buf в виде строки 
+ # выход: userData в виде строки 
+ call __clearUserData
+
+ mov (buf), %al 
+ cmp $'1', %al 
+ jz __notTrue
+ movb $'1', (userData)
+ ret 
+ __notTrue:
+ movb $'0', (userData)
+ ret
+
 .globl _start
 _start:
  call __initLabels

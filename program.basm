@@ -1,9 +1,7 @@
 string$ret;
-inta;
-intb;
-a=1;
-b=10;
-[print(""),((False)XOR(False)),goto(#_cond0_end)];
+boolb;
+b=True;
+[print(""),(NOT(b)),goto(#_cond0_end)];
 string $print_arg0;
 $print_arg0="True\n";
 print($print_arg0);
