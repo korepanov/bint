@@ -473,48 +473,8 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 		err := errors.New("executor: NOT: error: data type mismatch")
 		return LO, systemStack, "", err
-	} else if "L: True" == OP || "L: true" == OP {
-		_, err := progFile.Write([]byte("\nmov (userData), %al  \n cmp $0, %al \n jz __right" + fmt.Sprintf("%v", BranchCounter)))
-		if nil != err {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		s := fmt.Sprintf("%v", ValueFoldInterface(LO[0])) + "(" + fmt.Sprintf("%v", ValueFoldInterface(LO[1])) + ")"
-
-		res, _, err := lexer.LexicalAnalyze(s, variables, false, true, nil, false, nil, nil, nil, nil)
-		if nil != err {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
-		_, infoList, _, _ := parser.Parse(res, variables, systemStack, false, false, false, nil, nil, nil)
-
-		CompileTree(infoList[0], variables, systemStack, dataFile, progFile)
-
-		_, err = progFile.Write([]byte("\njmp __rightEnd" + fmt.Sprintf("%v", BranchCounter) +
-			"\n __right" + fmt.Sprintf("%v", BranchCounter) + ":"))
-
-		s = fmt.Sprintf("%v", ValueFoldInterface(RO[0])) + "(" + fmt.Sprintf("%v", ValueFoldInterface(RO[1])) + ")"
-
-		res, _, err = lexer.LexicalAnalyze(s, variables, false, true, nil, false, nil, nil, nil, nil)
-		if nil != err {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
-		_, infoList, _, _ = parser.Parse(res, variables, systemStack, false, false, false, nil, nil, nil)
-
-		CompileTree(infoList[0], variables, systemStack, dataFile, progFile)
-
-		_, err = progFile.Write([]byte("\n__rightEnd" + fmt.Sprintf("%v", BranchCounter) + ":"))
-		if nil != err {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		BranchCounter++
-		return []interface{}{0}, systemStack, "", nil
-	} else if "L: False" == OP || "L: false" == OP {
-		_, err := progFile.Write([]byte("\nmov (userData), %al  \n cmp $0, %al \n jz __right" + fmt.Sprintf("%v", BranchCounter)))
+	} else if "L: True" == OP || "L: true" == OP || "L: False" == OP || "L: false" == OP {
+		_, err := progFile.Write([]byte("\nmov (userData), %al  \n cmp $'0', %al \n jz __right" + fmt.Sprintf("%v", BranchCounter)))
 		if nil != err {
 			fmt.Println(err)
 			os.Exit(1)

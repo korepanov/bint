@@ -1767,11 +1767,11 @@ ret
  cmp %r12, %rax 
  jg __isLess 
  call __clearUserData
- movb $0, (userData)
+ movb $'0', (userData)
  ret 
  __isLess:
  call __clearUserData
- movb $1, (userData)
+ movb $'1', (userData)
  ret 
  __lessFloat:
  mov $lenBuf4, %rsi 
@@ -1793,7 +1793,7 @@ ret
  cmp $0, %rax 
  jz __isLess 
  call __clearUserData
- movb $0, (userData)
+ movb $'0', (userData)
  ret 
 
   __lessOrEqual:
@@ -1817,11 +1817,11 @@ ret
  cmp %r12, %rax 
  jge __isLessOrEqual 
  call __clearUserData
- movb $0, (userData)
+ movb $'0', (userData)
  ret 
  __isLessOrEqual:
  call __clearUserData
- movb $1, (userData)
+ movb $'1', (userData)
  ret 
  __lessOrEqualFloat:
  mov $lenBuf4, %rsi 
@@ -1843,34 +1843,34 @@ ret
  cmp $0, %rax 
  jz __isLessOrEqual 
  call __clearUserData
- movb $0, (userData)
+ movb $'0', (userData)
  ret 
 
  __more:
  call __lessOrEqual
  xor %rax, %rax 
  mov (userData), %al
- cmp $0, %al 
+ cmp $'0', %al 
  jz __isMore
- movb $0, (userData)
+ movb $'0', (userData)
  ret 
  __isMore:
- movb $1, (userData)
- ret
+ movb $'1', (userData)
+ ret 
 
-__moreOrEqual:
+ __moreOrEqual:
  call __less
  xor %rax, %rax 
  mov (userData), %al
- cmp $0, %al 
+ cmp $'0', %al 
  jz __isMoreOrEqual
- movb $0, (userData)
+ movb $'0', (userData)
  ret 
  __isMoreOrEqual:
- movb $1, (userData)
+ movb $'1', (userData)
  ret
 
-  __eq:
+ __eq:
  # вход: buf и buf2 
  # %rax - тип операции 
  # 0 - целочисленный
@@ -1891,11 +1891,11 @@ __moreOrEqual:
  cmp %r12, %rax 
  jz __isEqual  
  call __clearUserData
- movb $0, (userData)
+ movb $'0', (userData)
  ret 
  __isEqual:
  call __clearUserData
- movb $1, (userData)
+ movb $'1', (userData)
  ret 
  __equalFloat:
  mov $lenBuf4, %rsi 
@@ -1917,8 +1917,22 @@ __moreOrEqual:
  cmp $0, %rax 
  jz __isEqual  
  call __clearUserData
- movb $0, (userData)
- ret
+ movb $'0', (userData)
+ ret 
+
+__parseBool:
+ # buf - источник (строка)
+ # %rax - результат
+
+ xor %rax, %rax 
+ mov (buf), %al  
+ cmp $'1', %al 
+ jnz __parseFalse
+ mov $1, %rax 
+ ret  
+ __parseFalse:
+ mov $0, %rax 
+ ret 
 
  __boolToStr:
  # вход: buf
@@ -1931,21 +1945,7 @@ __moreOrEqual:
  ret 
  __boolToStrEndTrue:
  movb $'0', (userData)
- ret
-
-  __parseBool:
- # buf - источник (строка)
- # %rax - результат
-
- xor %rax, %rax 
- mov (buf), %al  
- cmp $'1', %al 
- jnz __parseFalse
- mov $1, %rax 
- ret  
- __parseFalse:
- mov $0, %rax 
- ret
+ ret 
 
 
  __and:

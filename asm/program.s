@@ -1767,11 +1767,11 @@ ret
  cmp %r12, %rax 
  jg __isLess 
  call __clearUserData
- movb $0, (userData)
+ movb $'0', (userData)
  ret 
  __isLess:
  call __clearUserData
- movb $1, (userData)
+ movb $'1', (userData)
  ret 
  __lessFloat:
  mov $lenBuf4, %rsi 
@@ -1793,7 +1793,7 @@ ret
  cmp $0, %rax 
  jz __isLess 
  call __clearUserData
- movb $0, (userData)
+ movb $'0', (userData)
  ret 
 
   __lessOrEqual:
@@ -1817,11 +1817,11 @@ ret
  cmp %r12, %rax 
  jge __isLessOrEqual 
  call __clearUserData
- movb $0, (userData)
+ movb $'0', (userData)
  ret 
  __isLessOrEqual:
  call __clearUserData
- movb $1, (userData)
+ movb $'1', (userData)
  ret 
  __lessOrEqualFloat:
  mov $lenBuf4, %rsi 
@@ -1843,34 +1843,34 @@ ret
  cmp $0, %rax 
  jz __isLessOrEqual 
  call __clearUserData
- movb $0, (userData)
+ movb $'0', (userData)
  ret 
 
  __more:
  call __lessOrEqual
  xor %rax, %rax 
  mov (userData), %al
- cmp $0, %al 
+ cmp $'0', %al 
  jz __isMore
- movb $0, (userData)
+ movb $'0', (userData)
  ret 
  __isMore:
- movb $1, (userData)
- ret
+ movb $'1', (userData)
+ ret 
 
-__moreOrEqual:
+ __moreOrEqual:
  call __less
  xor %rax, %rax 
  mov (userData), %al
- cmp $0, %al 
+ cmp $'0', %al 
  jz __isMoreOrEqual
- movb $0, (userData)
+ movb $'0', (userData)
  ret 
  __isMoreOrEqual:
- movb $1, (userData)
+ movb $'1', (userData)
  ret
 
-  __eq:
+ __eq:
  # вход: buf и buf2 
  # %rax - тип операции 
  # 0 - целочисленный
@@ -1891,11 +1891,11 @@ __moreOrEqual:
  cmp %r12, %rax 
  jz __isEqual  
  call __clearUserData
- movb $0, (userData)
+ movb $'0', (userData)
  ret 
  __isEqual:
  call __clearUserData
- movb $1, (userData)
+ movb $'1', (userData)
  ret 
  __equalFloat:
  mov $lenBuf4, %rsi 
@@ -1917,8 +1917,22 @@ __moreOrEqual:
  cmp $0, %rax 
  jz __isEqual  
  call __clearUserData
- movb $0, (userData)
- ret
+ movb $'0', (userData)
+ ret 
+
+__parseBool:
+ # buf - источник (строка)
+ # %rax - результат
+
+ xor %rax, %rax 
+ mov (buf), %al  
+ cmp $'1', %al 
+ jnz __parseFalse
+ mov $1, %rax 
+ ret  
+ __parseFalse:
+ mov $0, %rax 
+ ret 
 
  __boolToStr:
  # вход: buf
@@ -1931,21 +1945,7 @@ __moreOrEqual:
  ret 
  __boolToStrEndTrue:
  movb $'0', (userData)
- ret
-
-  __parseBool:
- # buf - источник (строка)
- # %rax - результат
-
- xor %rax, %rax 
- mov (buf), %al  
- cmp $'1', %al 
- jnz __parseFalse
- mov $1, %rax 
- ret  
- __parseFalse:
- mov $0, %rax 
- ret
+ ret 
 
 
  __and:
@@ -2007,34 +2007,18 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName0, %rax 
- mov $varName0, %rdi 
-call __set
-
- mov $data0, %rax  
- mov %rax, (userData)
- call __setVar
-mov (userData), %al  
- cmp $0, %al 
- jz __right0
-mov $data1, %rsi
-call __print
-jmp __rightEnd0
- __right0:
-jmp ._cond0_end
-__rightEnd0:
 mov $lenVarName, %rsi 
- mov $varName, %rdx 
+ mov $varName, %rdx
  mov $lenVarName1, %rax 
- mov $varName1, %rdi
+ mov $varName1, %rdi 
  call __set 
  mov $lenVarType, %rsi 
  mov $varType, %rdx 
- mov $lenStringType, %rax
- mov $stringType, %rdi
+ mov $lenIntType, %rax 
+ mov $intType, %rdi 
  call __set 
+ mov $varName, %rcx 
+ mov $varType, %rdx  
  call __defineVar
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -2042,28 +2026,53 @@ mov $lenVarName, %rsi
  mov $varName1, %rdi 
 call __set
 
- mov $data2, %rax  
+ mov $data0, %rax  
  mov %rax, (userData)
  call __setVar
-mov $lenVarName, %rsi 
- mov $varName, %rdx
- mov $lenVarName1, %rax 
- mov $varName1, %rdi
+mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenData1, %rax 
+ mov $data1, %rdi
  call __set
- call __getVar
- mov (userData), %rsi 
- call __print
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
-mov $varName1, %rdi 
+ mov $varName1, %rdi
  call __set 
-call __undefineVar
-jmp ._cond_exit0
-._cond0_end:
+ call __getVar 
+ mov (userData), %rsi 
+ call __len 
+ mov $lenBuf3, %rsi 
+ mov $buf3, %rdx 
+ mov (userData), %rdi
+ call __set 
+mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf3, %rax 
+ mov $buf3, %rdi
+ call __set
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi
+ call __set 
+ xor %rax, %rax 
 
-mov $data3, %rsi
+ call __less 
+ mov $lenT0, %rsi 
+ mov $t0, %rdx 
+ mov $lenUserData, %rax 
+ mov $userData, %rdi
+ call __set
+mov (userData), %al  
+ cmp $'0', %al 
+ jz __right0
+mov $data2, %rsi
 call __print
+jmp __rightEnd0
+ __right0:
+jmp ._cond0_end
+__rightEnd0:
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName2, %rax 
@@ -2081,7 +2090,7 @@ mov $lenVarName, %rsi
  mov $varName2, %rdi 
 call __set
 
- mov $data4, %rax  
+ mov $data3, %rax  
  mov %rax, (userData)
  call __setVar
 mov $lenVarName, %rsi 
@@ -2098,13 +2107,52 @@ mov $lenVarName, %rsi
 mov $varName2, %rdi 
  call __set 
 call __undefineVar
-mov $data5, %rsi
+jmp ._cond_exit0
+._cond0_end:
+
+mov $data4, %rsi
+call __print
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName3, %rax 
+ mov $varName3, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName3, %rax 
+ mov $varName3, %rdi 
+call __set
+
+ mov $data5, %rax  
+ mov %rax, (userData)
+ call __setVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName3, %rax 
+ mov $varName3, %rdi
+ call __set
+ call __getVar
+ mov (userData), %rsi 
+ call __print
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName3, %rax 
+mov $varName3, %rdi 
+ call __set 
+call __undefineVar
+mov $data6, %rsi
 call __print
 ._cond_exit0:
 
-mov $data6, %rsi
-call __print
 mov $data7, %rsi
+call __print
+mov $data8, %rsi
 call __print
 mov $60,  %rax
 xor %rdi, %rdi

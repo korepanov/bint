@@ -94,6 +94,9 @@ lenVarName6 = . - varName6
 varName7:
 .ascii "sVar3"
 lenVarName7 = . - varName7
+varName8:
+.ascii "bVar"
+lenVarName8 = . - varName8
 intType:
 .ascii "int"
 .space 1, 0
@@ -153,6 +156,10 @@ lenData8 = . - data8
 data9:
 .ascii "Slava's message"
 .space 1, 0
+data10:
+.ascii "1"
+.space 1,0 
+
 labelName1:
 .ascii "__stop"
 .space 1, 0
@@ -2062,11 +2069,11 @@ __initLabelsAddr1:
  cmp %r12, %rax 
  jg __isLess 
  call __clearUserData
- movb $0, (userData)
+ movb $'0', (userData)
  ret 
  __isLess:
  call __clearUserData
- movb $1, (userData)
+ movb $'1', (userData)
  ret 
  __lessFloat:
  mov $lenBuf4, %rsi 
@@ -2088,7 +2095,7 @@ __initLabelsAddr1:
  cmp $0, %rax 
  jz __isLess 
  call __clearUserData
- movb $0, (userData)
+ movb $'0', (userData)
  ret 
 
   __lessOrEqual:
@@ -2112,11 +2119,11 @@ __initLabelsAddr1:
  cmp %r12, %rax 
  jge __isLessOrEqual 
  call __clearUserData
- movb $0, (userData)
+ movb $'0', (userData)
  ret 
  __isLessOrEqual:
  call __clearUserData
- movb $1, (userData)
+ movb $'1', (userData)
  ret 
  __lessOrEqualFloat:
  mov $lenBuf4, %rsi 
@@ -2138,31 +2145,31 @@ __initLabelsAddr1:
  cmp $0, %rax 
  jz __isLessOrEqual 
  call __clearUserData
- movb $0, (userData)
+ movb $'0', (userData)
  ret 
 
  __more:
  call __lessOrEqual
  xor %rax, %rax 
  mov (userData), %al
- cmp $0, %al 
+ cmp $'0', %al 
  jz __isMore
- movb $0, (userData)
+ movb $'0', (userData)
  ret 
  __isMore:
- movb $1, (userData)
+ movb $'1', (userData)
  ret 
 
  __moreOrEqual:
  call __less
  xor %rax, %rax 
  mov (userData), %al
- cmp $0, %al 
+ cmp $'0', %al 
  jz __isMoreOrEqual
- movb $0, (userData)
+ movb $'0', (userData)
  ret 
  __isMoreOrEqual:
- movb $1, (userData)
+ movb $'1', (userData)
  ret
 
  __eq:
@@ -2186,11 +2193,11 @@ __initLabelsAddr1:
  cmp %r12, %rax 
  jz __isEqual  
  call __clearUserData
- movb $0, (userData)
+ movb $'0', (userData)
  ret 
  __isEqual:
  call __clearUserData
- movb $1, (userData)
+ movb $'1', (userData)
  ret 
  __equalFloat:
  mov $lenBuf4, %rsi 
@@ -2212,7 +2219,7 @@ __initLabelsAddr1:
  cmp $0, %rax 
  jz __isEqual  
  call __clearUserData
- movb $0, (userData)
+ movb $'0', (userData)
  ret 
 
  __parseBool:
@@ -2301,6 +2308,19 @@ _start:
  call __set 
  call __defineVar
 
+  # bVar 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName8, %rax 
+ mov $varName8, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenBoolType, %rax 
+ mov $boolType, %rdi
+ call __set 
+ call __defineVar
+
 # iVar2  
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -2321,6 +2341,16 @@ _start:
  mov $varName0, %rdi
  call __set 
  mov $data3, %rax 
+ mov %rax, (userData)
+ call __setVar
+
+ #set bVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName8, %rax 
+ mov $varName8, %rdi
+ call __set 
+ mov $data10, %rax 
  mov %rax, (userData)
  call __setVar
 
@@ -2443,6 +2473,16 @@ _start:
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
+ # get bVar  
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName8, %rax 
+ mov $varName8, %rdi
+ call __set
+ call __getVar
+ mov (userData), %rsi 
+ call __print 
 
  # get fVar  
  mov $lenVarName, %rsi 
