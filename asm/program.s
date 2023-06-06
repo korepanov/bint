@@ -2000,6 +2000,32 @@ __and:
  
  ret
 
+__xor:
+ # вход: buf и buf2 в виде строк 
+ # выход: userData в виде строки 
+ call __clearUserData
+ call __parseBool 
+ mov %rax, (userData)
+ mov (buf2), %rax 
+ mov %rax, (buf)
+ call __parseBool
+ mov %rax, (buf2)
+ mov (userData), %rax 
+ mov %rax, (buf)
+
+
+ mov (buf), %rax 
+ xor (buf2), %rax  
+
+ cmp $1, %rax 
+ jz __xorTrue 
+ movb $'0', (userData)
+ ret 
+ __xorTrue:
+ movb $'1', (userData)
+ 
+ ret
+
 .globl _start
 _start:
  call __initLabels
@@ -2063,116 +2089,22 @@ call __set
  mov $data1, %rax  
  mov %rax, (userData)
  call __setVar
-mov $lenBuf3, %rsi 
- mov $buf3, %rdx 
- mov $lenData2, %rax 
- mov $data2, %rdi
- call __set
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi
- call __set 
- call __getVar 
- mov (userData), %rsi 
- call __len 
- mov $lenBuf4, %rsi 
- mov $buf4, %rdx 
- mov (userData), %rdi
- call __set 
-mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenBuf3, %rax 
- mov $buf3, %rdi
- call __set
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenBuf4, %rax 
- mov $buf4, %rdi
- call __set 
- xor %rax, %rax 
-
- call __more 
- mov $lenT0, %rsi 
- mov $t0, %rdx 
- mov $lenUserData, %rax 
- mov $userData, %rdi
- call __set
-mov $lenBuf4, %rsi 
- mov $buf4, %rdx 
- mov $lenData3, %rax 
- mov $data3, %rdi
- call __set
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName2, %rax 
- mov $varName2, %rdi
- call __set 
- call __getVar 
- mov (userData), %rsi 
- call __len 
- mov $lenBuf3, %rsi 
- mov $buf3, %rdx 
- mov (userData), %rdi
- call __set 
-mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenBuf3, %rax 
- mov $buf3, %rdi
- call __set
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenBuf4, %rax 
- mov $buf4, %rdi
- call __set 
- xor %rax, %rax 
-
- call __less 
- mov $lenT1, %rsi 
- mov $t1, %rdx 
- mov $lenUserData, %rax 
- mov $userData, %rdi
- call __set
-mov (t0), %al 
+mov (data2), %al 
  mov %al, (buf3)
-mov (t1), %al 
+mov (data3), %al 
  mov %al, (buf4)
 mov (buf3), %al 
  mov %al, (buf) 
 
  mov (buf4), %al 
  mov %al, (buf2) 
- call __and 
+ call __xor 
  mov (userData), %al 
- mov %al, (t2)
-mov (data4), %al 
- mov %al, (buf4)
-mov (t2), %al 
- mov %al, (buf3)
-mov (buf3), %al 
- mov %al, (buf) 
-
- mov (buf4), %al 
- mov %al, (buf2) 
- call __or 
- mov (userData), %al 
- mov %al, (t3)
-mov (data5), %al 
- mov %al, (buf3)
-mov (t3), %al 
- mov %al, (buf4)
-mov (buf3), %al 
- mov %al, (buf) 
-
- mov (buf4), %al 
- mov %al, (buf2) 
- call __and 
- mov (userData), %al 
- mov %al, (t4)
+ mov %al, (t0)
 mov (userData), %al  
  cmp $'0', %al 
  jz __right0
-mov $data6, %rsi
+mov $data4, %rsi
 call __print
 jmp __rightEnd0
  __right0:
@@ -2195,7 +2127,7 @@ mov $lenVarName, %rsi
  mov $varName3, %rdi 
 call __set
 
- mov $data7, %rax  
+ mov $data5, %rax  
  mov %rax, (userData)
  call __setVar
 mov $lenVarName, %rsi 
@@ -2215,7 +2147,7 @@ call __undefineVar
 jmp ._cond_exit0
 ._cond0_end:
 
-mov $data8, %rsi
+mov $data6, %rsi
 call __print
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -2234,7 +2166,7 @@ mov $lenVarName, %rsi
  mov $varName4, %rdi 
 call __set
 
- mov $data9, %rax  
+ mov $data7, %rax  
  mov %rax, (userData)
  call __setVar
 mov $lenVarName, %rsi 
@@ -2251,13 +2183,13 @@ mov $lenVarName, %rsi
 mov $varName4, %rdi 
  call __set 
 call __undefineVar
-mov $data10, %rsi
+mov $data8, %rsi
 call __print
 ._cond_exit0:
 
-mov $data11, %rsi
+mov $data9, %rsi
 call __print
-mov $data12, %rsi
+mov $data10, %rsi
 call __print
 mov $60,  %rax
 xor %rdi, %rdi

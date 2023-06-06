@@ -3,7 +3,7 @@ inta;
 intb;
 a=1;
 b=10;
-[print(""),((True)AND(((2>a)AND(b<5))OR(True))),goto(#_cond0_end)];
+[print(""),((False)XOR(False)),goto(#_cond0_end)];
 string $print_arg0;
 $print_arg0="True\n";
 print($print_arg0);
