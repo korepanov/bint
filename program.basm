@@ -1,7 +1,7 @@
 string$ret;
 boolb;
-b=True;
-[print(""),(NOT((NOT((1>2)AND(2>1)))XOR(False))),goto(#_cond0_end)];
+b=(1>2);
+[print(""),(b),goto(#_cond0_end)];
 string $print_arg0;
 $print_arg0="True\n";
 print($print_arg0);
