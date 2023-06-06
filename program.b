@@ -1,5 +1,7 @@
+bool a;
+a = True;
 
-if (((True)AND(False))AND(True)){
+if (a){
 	print("True\n");
 }else{
 	print("False\n");

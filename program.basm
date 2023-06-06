@@ -1,5 +1,7 @@
 string$ret;
-[print(""),(((True)AND(False))AND(True)),goto(#_cond0_end)];
+boola;
+a=True;
+[print(""),(a),goto(#_cond0_end)];
 string $print_arg0;
 $print_arg0="True\n";
 print($print_arg0);

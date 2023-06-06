@@ -1968,6 +1968,26 @@ __moreOrEqual:
 
  ret
 
+  __or:
+ # вход: buf и buf2 в виде строк 
+ # выход: userData в виде bool 
+ call __clearUserData
+ call __parseBool 
+ mov %rax, (userData)
+ mov (buf2), %rax 
+ mov %rax, (buf)
+ call __parseBool
+ mov %rax, (buf2)
+ mov (userData), %rax 
+ mov %rax, (buf)
+
+
+ mov (buf), %rax 
+ or (buf2), %rax  
+ mov %rax, (userData)
+
+ ret
+
 .globl _start
 _start:
  call __initLabels

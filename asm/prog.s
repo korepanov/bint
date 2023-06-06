@@ -2218,8 +2218,7 @@ __initLabelsAddr1:
  __parseBool:
  # buf - источник (строка)
  # %rax - результат
- #mov $buf, %rsi 
- #call __print 
+
  xor %rax, %rax 
  mov (buf), %al  
  cmp $'1', %al 
@@ -2262,6 +2261,26 @@ __initLabelsAddr1:
  mov %rax, (userData)
 
  ret 
+
+ __or:
+ # вход: buf и buf2 в виде строк 
+ # выход: userData в виде bool 
+ call __clearUserData
+ call __parseBool 
+ mov %rax, (userData)
+ mov (buf2), %rax 
+ mov %rax, (buf)
+ call __parseBool
+ mov %rax, (buf2)
+ mov (userData), %rax 
+ mov %rax, (buf)
+
+
+ mov (buf), %rax 
+ or (buf2), %rax  
+ mov %rax, (userData)
+
+ ret
 
 .globl _start
 _start:
@@ -2472,9 +2491,9 @@ _start:
  #mov $1, %rax
  call __clearBuf
  call __clearBuf2 
- movb $'1', (buf)
- movb $'1', (buf2)  
- call __and 
+ movb $'0', (buf)
+ movb $'0', (buf2)  
+ call __or 
 
  mov (userData), %al  
  cmp $0, %al 
