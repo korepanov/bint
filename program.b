@@ -1,17 +1,14 @@
-bool b;
-int c;
-int d;
-
-c = 5;
-d = 5;
-
-b = (((2 > 1)XOR(c == d))AND((False)OR(10 >= 10)));
-
-if (b){
-	print("True\n");
-}else{
-	print("False\n");
+int sum(int a, int b){
+	return (a + b);
 };
+
+void main(){
+	print(str(sum(8, 10)));
+	print("\n");
+
+};
+
+main();
 	
 
 

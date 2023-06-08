@@ -3331,12 +3331,27 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		if isVarLO {
 			panic("push with vars not realized")
 		} else {
+			// вычисляемая временная переменная
+			if 2 == len(LO) && true == LO[0] {
+				_, err := progFile.Write([]byte("\npush $" + fmt.Sprintf("%v", LO[1])))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+
+				return []interface{}{0}, systemStack, "", nil
+			}
 			_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			_, err = dataFile.Write([]byte("\n.ascii \"" + fmt.Sprintf("%v", ValueFoldInterface(LO[0])) + "\"\n.space 1, 0"))
+			data := fmt.Sprintf("%v", ValueFoldInterface(LO[0]))
+			if "\"" == string(data[0]) && "\"" == string(data[len(data)-1]) {
+				data = data[1 : len(data)-1]
+			}
+
+			_, err = dataFile.Write([]byte("\n.ascii \"" + data + "\"\n.space 1, 0"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
@@ -3721,6 +3736,7 @@ func CompileTree(infoList []interface{}, variables [][]interface{},
 				fmt.Println(err)
 				os.Exit(1)
 			}
+
 			_, err = dataFile.Write([]byte("\n.ascii " + fmt.Sprintf("%v", ValueFoldInterface(res[1])) + "\n.space 1, 0"))
 			if nil != err {
 				fmt.Println(err)
@@ -3765,7 +3781,7 @@ func CompileTree(infoList []interface{}, variables [][]interface{},
 			numberS := fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", res[1])])
 			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov $lenVarName" + numberS +
 				", %rax \n mov $varName" + numberS + ", %rdi \n call __set \n call __getVar" + "\nmov (userData), %rdi " +
-				"\n movb $'.', (%rdi) \n call __goto"))
+				"\n movb $'.', (%rdi) \n jmp __goto"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
