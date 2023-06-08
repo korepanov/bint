@@ -3350,6 +3350,12 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			if "\"" == string(data[0]) && "\"" == string(data[len(data)-1]) {
 				data = data[1 : len(data)-1]
 			}
+			if "False" == data || "false" == data {
+				data = "0"
+			}
+			if "True" == data || "true" == data {
+				data = "1"
+			}
 
 			_, err = dataFile.Write([]byte("\n.ascii \"" + data + "\"\n.space 1, 0"))
 			if nil != err {

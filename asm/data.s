@@ -512,26 +512,20 @@ varName0:
 .ascii "$ret"
 lenVarName0 = . - varName0
 varName1:
-.ascii "$sum_return_var"
+.ascii "$func1_return_var"
 lenVarName1 = . - varName1
-varName2:
-.ascii "$sum_res"
-lenVarName2 = . - varName2
 label0:
- .quad .sum
+ .quad .func1
 labelName0:
-.ascii ".sum"
+.ascii ".func1"
 .space 1,0
 data0:
 .ascii ""
 .space 1, 0
 lenData0 = . - data0
-varName3:
+varName2:
 .ascii "b"
-lenVarName3 = . - varName3
-varName4:
-.ascii "a"
-lenVarName4 = . - varName4
+lenVarName2 = . - varName2
 data1:
 .ascii ""
 .space 1, 0
@@ -540,87 +534,119 @@ data2:
 .ascii ""
 .space 1, 0
 lenData2 = . - data2
-label1:
- .quad .sum_end
-labelName1:
-.ascii ".sum_end"
-.space 1,0
 data3:
 .ascii ""
 .space 1, 0
 lenData3 = . - data3
-varName5:
-.ascii "$main_return_var"
-lenVarName5 = . - varName5
-label2:
- .quad .main
-labelName2:
-.ascii ".main"
-.space 1,0
+varName3:
+.ascii "$print_arg0"
+lenVarName3 = . - varName3
 data4:
-.ascii ""
+.ascii "True\n"
 .space 1, 0
 lenData4 = . - data4
+label1:
+ .quad ._cond0_end
+labelName1:
+.ascii "._cond0_end"
+.space 1,0
 data5:
 .ascii ""
 .space 1, 0
 lenData5 = . - data5
-varName6:
-.ascii "$sum_res0"
-lenVarName6 = . - varName6
+varName4:
+.ascii "$print_arg0"
+lenVarName4 = . - varName4
 data6:
-.ascii "8"
+.ascii "False\n"
 .space 1, 0
 lenData6 = . - data6
 data7:
-.ascii "10"
+.ascii ""
 .space 1, 0
 lenData7 = . - data7
+label2:
+ .quad ._cond_exit0
+labelName2:
+.ascii "._cond_exit0"
+.space 1,0
 data8:
-.ascii "#sum_res0"
+.ascii ""
 .space 1, 0
 lenData8 = . - data8
-label3:
- .quad .sum_res0
-labelName3:
-.ascii ".sum_res0"
-.space 1,0
-varName7:
-.ascii "$s0"
-lenVarName7 = . - varName7
-varName8:
-.ascii "$print_arg0"
-lenVarName8 = . - varName8
-varName9:
-.ascii "$print_arg0"
-lenVarName9 = . - varName9
 data9:
-.ascii "\n"
+.ascii ""
 .space 1, 0
 lenData9 = . - data9
-label4:
- .quad .main_end
-labelName4:
-.ascii ".main_end"
+label3:
+ .quad .func1_end
+labelName3:
+.ascii ".func1_end"
 .space 1,0
 data10:
 .ascii ""
 .space 1, 0
 lenData10 = . - data10
+varName5:
+.ascii "$main_return_var"
+lenVarName5 = . - varName5
+label4:
+ .quad .main
+labelName4:
+.ascii ".main"
+.space 1,0
 data11:
-.ascii "#main_res0"
+.ascii ""
 .space 1, 0
 lenData11 = . - data11
-label5:
- .quad .main_res0
-labelName5:
-.ascii ".main_res0"
-.space 1,0
 data12:
 .ascii ""
 .space 1, 0
 lenData12 = . - data12
 data13:
-.ascii ""
+.ascii "1"
 .space 1, 0
 lenData13 = . - data13
+data14:
+.ascii "#func1_res0"
+.space 1, 0
+lenData14 = . - data14
+label5:
+ .quad .func1_res0
+labelName5:
+.ascii ".func1_res0"
+.space 1,0
+data15:
+.ascii ""
+.space 1, 0
+lenData15 = . - data15
+data16:
+.ascii ""
+.space 1, 0
+lenData16 = . - data16
+label6:
+ .quad .main_end
+labelName6:
+.ascii ".main_end"
+.space 1,0
+data17:
+.ascii ""
+.space 1, 0
+lenData17 = . - data17
+data18:
+.ascii "#main_res0"
+.space 1, 0
+lenData18 = . - data18
+label7:
+ .quad .main_res0
+labelName7:
+.ascii ".main_res0"
+.space 1,0
+data19:
+.ascii ""
+.space 1, 0
+lenData19 = . - data19
+data20:
+.ascii ""
+.space 1, 0
+lenData20 = . - data20
