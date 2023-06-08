@@ -1,6 +1,10 @@
 string$ret;
 boolb;
-b=(1>2);
+intc;
+intd;
+c=5;
+d=5;
+b=(((2>1)XOR(c==d))AND((False)OR(10>=10)));
 [print(""),(b),goto(#_cond0_end)];
 string $print_arg0;
 $print_arg0="True\n";
