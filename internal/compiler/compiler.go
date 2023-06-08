@@ -3315,17 +3315,83 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		return []interface{}{"send_command", LO}, systemStack, "", nil
 	} else if "push" == OP {
 		systemStack = append(systemStack, LO)
+		var isVarLO bool
+		//var lenLO string
+
+		newVariable := EachVariable(variables)
+
+		for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
+			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
+				isVarLO = true
+				//lenLO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+				LO[0] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+			}
+		}
+
+		if isVarLO {
+			panic("push with vars not realized")
+		} else {
+			_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = dataFile.Write([]byte("\n.ascii \"" + fmt.Sprintf("%v", ValueFoldInterface(LO[0])) + "\"\n.space 1, 0"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = dataFile.Write([]byte("\nlenData" + fmt.Sprintf("%v", DataNumber) + " = . - data" + fmt.Sprintf("%v", DataNumber)))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			LO[0] = "$data" + fmt.Sprintf("%v", DataNumber)
+			//lenLO = "$lenData" + fmt.Sprintf("%v", DataNumber)
+
+			_, err = progFile.Write([]byte("\npush " + fmt.Sprintf("%v", LO[0])))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			DataNumber++
+		}
+
 		return []interface{}{0}, systemStack, "", nil
 	} else if "pop" == OP {
 		res := systemStack[len(systemStack)-1]
 		if "end" != res {
 			systemStack = systemStack[:len(systemStack)-1]
 		}
-		if "string" == fmt.Sprintf("%T", ValueFoldInterface(res)) {
-			return []interface{}{ValueFoldInterface(res)}, systemStack, "", nil
-		} else {
-			return ValueFoldInterface(res).([]interface{}), systemStack, "", nil
+
+		var isVarLO bool
+		var lenLO string
+
+		newVariable := EachVariable(variables)
+
+		for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
+			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
+				isVarLO = true
+				lenLO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+				LO[0] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+			}
 		}
+
+		if isVarLO {
+			_, err := progFile.Write([]byte("\npop (userData)\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set \n call __setVar"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+		} else {
+			fmt.Println("no variable in pop")
+			os.Exit(1)
+		}
+		return []interface{}{0}, systemStack, "", nil
 	}
 	err := errors.New("execute: ERROR: wrong syntax: OP=\"" + OP + "\", " +
 		"LO=\"" + fmt.Sprintf("%v", LO) + "\", " + "RO=\"" + fmt.Sprintf("%v", RO) + "\"")
@@ -3419,36 +3485,14 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 		}
 	}
 
-	/*if "pop" == OP {
-		newVariable := EachVariable(variables)
-		for v := newVariable(); "end" != v[0]; v = newVariable() {
-			if fmt.Sprintf("%v", v[1]) == fmt.Sprintf("%v", LO[0]) {
-
-				var err error
-
-				v[2], systemStack, err = compile(systemStack, OP, LO, RO, dataFile, progFile, variables)
-
-				if nil != err {
-					panic(err)
-				}
-
-				tempV2 := fmt.Sprintf("%v", ValueFoldInterface(v[2]))
-				if "\"" == string(tempV2[0]) && "\"" == string(tempV2[len(tempV2)-1]) {
-					tempV2 = tempV2[1 : len(tempV2)-1]
-				}
-
-				if fmt.Sprintf("%v", v[0]) != WhatsType(tempV2) && "string" != fmt.Sprintf("%v", v[0]) &&
-					(fmt.Sprintf("%v", v[0]) != "float" && WhatsType(tempV2) != "int") &&
-					!("stack" == fmt.Sprintf("%v", v[0]) && "[]interface {}" == fmt.Sprintf("%T", v[2]) &&
-						"end" == ValueFoldInterface(v[2].([]interface{})[0])) {
-					panic("pop: data type mismatch: " + fmt.Sprintf("%v", v[0]) + " and " +
-						WhatsType(tempV2))
-				}
-
-				break
-			}
+	if "pop" == OP {
+		var err error
+		_, systemStack, _, err = compile(systemStack, OP, LO, RO, "", "", dataFile, progFile, variables, tNumber)
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
 		}
-	}*/
+	}
 
 	if "=" == OP {
 		var computedLO bool

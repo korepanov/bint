@@ -508,87 +508,17 @@ noSuchMarkError:
  t127: 
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
  lenT127 = . - t127
-varName0:
-.ascii "$ret"
-lenVarName0 = . - varName0
-varName1:
-.ascii "b"
-lenVarName1 = . - varName1
-varName2:
-.ascii "c"
-lenVarName2 = . - varName2
-varName3:
-.ascii "d"
-lenVarName3 = . - varName3
 data0:
-.ascii "5"
-.space 1, 0
-lenData0 = . - data0
-data1:
-.ascii "5"
-.space 1, 0
-lenData1 = . - data1
-data2:
 .ascii "2"
 .space 1, 0
-lenData2 = . - data2
-data3:
-.ascii "1"
+lenData0 = . - data0
+varName0:
+.ascii "a"
+lenVarName0 = . - varName0
+varName1:
+.ascii "s"
+lenVarName1 = . - varName1
+data1:
+.ascii "\n"
 .space 1, 0
-lenData3 = . - data3
-data4:
-.ascii "10"
-.space 1, 0
-lenData4 = . - data4
-data5:
-.ascii "10"
-.space 1, 0
-lenData5 = . - data5
-data6:
-.ascii "0"
-.space 1, 0
-lenData6 = . - data6
-data7:
-.ascii ""
-.space 1, 0
-lenData7 = . - data7
-varName4:
-.ascii "$print_arg0"
-lenVarName4 = . - varName4
-data8:
-.ascii "True\n"
-.space 1, 0
-lenData8 = . - data8
-label0:
- .quad ._cond0_end
-labelName0:
-.ascii "._cond0_end"
-.space 1,0
-data9:
-.ascii ""
-.space 1, 0
-lenData9 = . - data9
-varName5:
-.ascii "$print_arg0"
-lenVarName5 = . - varName5
-data10:
-.ascii "False\n"
-.space 1, 0
-lenData10 = . - data10
-data11:
-.ascii ""
-.space 1, 0
-lenData11 = . - data11
-label1:
- .quad ._cond_exit0
-labelName1:
-.ascii "._cond_exit0"
-.space 1,0
-data12:
-.ascii ""
-.space 1, 0
-lenData12 = . - data12
-data13:
-.ascii ""
-.space 1, 0
-lenData13 = . - data13
+lenData1 = . - data1

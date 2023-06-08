@@ -118,7 +118,7 @@ enter:
 .space 1, 0
 lenEnter = . - enter 
 data0:
-.ascii "3777"
+.ascii "0"
 .space 1, 0
 lenData0 = . - data0 
 data1:
@@ -2587,8 +2587,8 @@ _start:
 # movb $'0', (buf2)  
  call __not  
 
- mov $userData, %rsi 
- call __print 
+ #mov $userData, %rsi 
+ #call __print 
 
  
  mov $lenVarName, %rsi 
@@ -2622,7 +2622,41 @@ _start:
  call __print 
  mov $enter, %rsi 
  call __print*/
+ #call __printHeap
+
+  # get fVar  
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi
+ call __set
+ call __getVar
+
+ push (userData)
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi
+ call __set
+ call __getVar
+
+ push (userData)
+
+ pop (userData)
+ 
+  #set iVar2
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName4, %rax 
+ mov $varName4, %rdi
+ call __set 
+ #mov $data0, %rax 
+ #mov %rax, (userData)
+ call __setVar
+
  call __printHeap
+
 __stop:
  mov $60,  %rax      # номер системного вызова exit
  xor %rdi, %rdi      # код возврата (0 - выход без ошибок)
