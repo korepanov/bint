@@ -3316,20 +3316,25 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 	} else if "push" == OP {
 		systemStack = append(systemStack, LO)
 		var isVarLO bool
-		//var lenLO string
+		var lenLO string
 
 		newVariable := EachVariable(variables)
 
 		for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
 			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
 				isVarLO = true
-				//lenLO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+				lenLO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
 				LO[0] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
 			}
 		}
 
 		if isVarLO {
-			panic("push with vars not realized")
+			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO + ", %rax \n mov " +
+				fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set\n call __getVar\n\n push (userData)"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		} else {
 			// вычисляемая временная переменная
 			if 2 == len(LO) && true == LO[0] {

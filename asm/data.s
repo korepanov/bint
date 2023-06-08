@@ -515,3 +515,13 @@ data0:
 .ascii "5"
 .space 1, 0
 lenData0 = . - data0
+varName1:
+.ascii "b"
+lenVarName1 = . - varName1
+varName2:
+.ascii "s"
+lenVarName2 = . - varName2
+data1:
+.ascii "\n"
+.space 1, 0
+lenData1 = . - data1
