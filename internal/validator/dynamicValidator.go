@@ -1274,6 +1274,23 @@ func dValidateFuncCall(command string, variables [][][]interface{}, knownUsage b
 			if nil != err {
 				return tail, status.Err, variables, err
 			}
+			f := tail[loc[0]:loc[1]]
+			argsStr := f[strings.Index(f, "(")+1 : strings.Index(f, ")")]
+			args := strings.Split(argsStr, ",")
+
+			for _, arg := range args {
+				_, st, _, err := dValidateFuncCall(arg, variables, false)
+				if nil != err {
+					return tail, status.Err, variables, err
+				}
+				if status.No == st {
+					T, err := getExprType(arg, variables)
+					if nil != err {
+						return tail, status.Err, variables, err
+					}
+					fmt.Println(T)
+				}
+			}
 
 			replacerArgs = append(replacerArgs, tail[loc[0]:loc[1]])
 			replacerArgs = append(replacerArgs, "$"+funcName)

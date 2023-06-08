@@ -509,19 +509,143 @@ noSuchMarkError:
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
  lenT127 = . - t127
 varName0:
-.ascii "a"
+.ascii "$ret"
 lenVarName0 = . - varName0
-data0:
-.ascii "5"
-.space 1, 0
-lenData0 = . - data0
 varName1:
-.ascii "b"
+.ascii "$find_descr_return_var"
 lenVarName1 = . - varName1
 varName2:
-.ascii "s"
+.ascii "$find_descr_res"
 lenVarName2 = . - varName2
+label0:
+ .quad .find_descr
+labelName0:
+.ascii ".find_descr"
+.space 1,0
+data0:
+.ascii ""
+.space 1, 0
+lenData0 = . - data0
+varName3:
+.ascii "c"
+lenVarName3 = . - varName3
+varName4:
+.ascii "b"
+lenVarName4 = . - varName4
+varName5:
+.ascii "a"
+lenVarName5 = . - varName5
 data1:
-.ascii "\n"
+.ascii ""
 .space 1, 0
 lenData1 = . - data1
+data2:
+.ascii ""
+.space 1, 0
+lenData2 = . - data2
+data3:
+.ascii "2.0"
+.space 1, 0
+lenData3 = . - data3
+data4:
+.ascii "4.0"
+.space 1, 0
+lenData4 = . - data4
+label1:
+ .quad .find_descr_end
+labelName1:
+.ascii ".find_descr_end"
+.space 1,0
+data5:
+.ascii ""
+.space 1, 0
+lenData5 = . - data5
+varName6:
+.ascii "$main_return_var"
+lenVarName6 = . - varName6
+label2:
+ .quad .main
+labelName2:
+.ascii ".main"
+.space 1,0
+data6:
+.ascii ""
+.space 1, 0
+lenData6 = . - data6
+data7:
+.ascii ""
+.space 1, 0
+lenData7 = . - data7
+varName7:
+.ascii "$print_arg0"
+lenVarName7 = . - varName7
+data8:
+.ascii "Решение квадратного уравнения x^2 + 2x - 3\n"
+.space 1, 0
+lenData8 = . - data8
+varName8:
+.ascii "descr"
+lenVarName8 = . - varName8
+varName9:
+.ascii "$find_descr_res0"
+lenVarName9 = . - varName9
+data9:
+.ascii "1.0"
+.space 1, 0
+lenData9 = . - data9
+data10:
+.ascii "2.0"
+.space 1, 0
+lenData10 = . - data10
+data11:
+.ascii "-3.0"
+.space 1, 0
+lenData11 = . - data11
+data12:
+.ascii "#find_descr_res0"
+.space 1, 0
+lenData12 = . - data12
+label3:
+ .quad .find_descr_res0
+labelName3:
+.ascii ".find_descr_res0"
+.space 1,0
+varName10:
+.ascii "$s0"
+lenVarName10 = . - varName10
+varName11:
+.ascii "$print_arg0"
+lenVarName11 = . - varName11
+varName12:
+.ascii "$print_arg0"
+lenVarName12 = . - varName12
+data13:
+.ascii "\n"
+.space 1, 0
+lenData13 = . - data13
+label4:
+ .quad .main_end
+labelName4:
+.ascii ".main_end"
+.space 1,0
+data14:
+.ascii ""
+.space 1, 0
+lenData14 = . - data14
+data15:
+.ascii "#main_res0"
+.space 1, 0
+lenData15 = . - data15
+label5:
+ .quad .main_res0
+labelName5:
+.ascii ".main_res0"
+.space 1,0
+data16:
+.ascii ""
+.space 1, 0
+lenData16 = . - data16
+data17:
+.ascii ""
+.space 1, 0
+lenData17 = . - data17

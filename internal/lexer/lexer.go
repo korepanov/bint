@@ -59,7 +59,7 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 			res = append(res, []interface{}{"OP", "."})
 		} else if len(expr) > i && "+" == string(expr[i]) {
 			res = append(res, []interface{}{"OP", "+"})
-		} else if len(expr) > i+1 && "-" == string(expr[i]) && (unicode.IsDigit(rune(expr[i-1])) ||
+		} else if i > 0 && len(expr) > i+1 && "-" == string(expr[i]) && (unicode.IsDigit(rune(expr[i-1])) ||
 			unicode.IsLetter(rune(expr[i-1])) ||
 			")" == string(expr[i-1])) && (unicode.IsDigit(rune(expr[i+1])) || unicode.IsLetter(rune(expr[i+1])) ||
 			"(" == string(expr[i+1]) || "$" == string(expr[i+1])) {
