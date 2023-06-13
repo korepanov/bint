@@ -1019,7 +1019,7 @@ __compare:
  ret 
 
 __internalShiftStr:
-# %rbx - адрес ячейки памяти, для которой нужен больший размер
+
 mov (valSize), %rsi 
 add %rsi, (strPointer)
 
@@ -2519,15 +2519,6 @@ _start:
  call __set 
  call __defineVar
 
- #set sVar
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi
- call __set 
- mov $data11, %rax 
- mov %rax, (userData)
- call __setVar
  /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
@@ -2549,6 +2540,16 @@ _start:
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
+ #set sVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
+ call __set 
+ mov $data11, %rax 
+ mov %rax, (userData)
+ call __setVar
 
   #set sVar2
  mov $lenVarName, %rsi 
@@ -2719,7 +2720,7 @@ _start:
  call __print*/  
 
   # get sVar2  
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName6, %rax 
  mov $varName6, %rdi
@@ -2727,7 +2728,7 @@ _start:
  call __getVar
 
  mov (userData), %rsi 
- call __print 
+ call __print*/ 
 
  call __printHeap
 
