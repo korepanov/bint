@@ -1023,8 +1023,10 @@ __internalShiftStr:
 mov (valSize), %rsi 
 add %rsi, (strPointer)
 
-//mov %rbx, %rsi 
-//add (valSize), %rsi  
+mov %r12, %rsi 
+sub (typeSize), %rsi 
+call __print 
+call __throughError 
 
 ret 
 
