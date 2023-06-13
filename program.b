@@ -12,7 +12,7 @@ float find_descr(float a, float b, float c){
 
 
 void main(){
-	print("Решение квадратного уравнения x^2 + 2x - 3\n");
+	print("Решение x^2 + 2x - 3\n");
 	float x1;
 	x1 = find_x1(find_descr(1.0, 2.0, -3.0), 1.0, 2.0, -3.0); 
 	float x2;

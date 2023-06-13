@@ -895,6 +895,8 @@ __readClear:
  cmp $1, %rax 
  jz __renewVal
  add (varSize), %r12 
+ cmp %r11, %r12  
+ jge __renewStrEnd
  jmp __renewFindStr
 
  __renewVal:
@@ -941,6 +943,11 @@ __readClear:
  jmp __renewStrAddr
  __renewStrAddrEnd:
  movb $0, (%rsi)
+ sub (typeSize), %r12 
+ add (varSize), %r12 
+ jmp __renewFindStr
+ __renewStrEnd:
+  
  ret 
 
  __shiftStr:
@@ -2347,6 +2354,23 @@ _start:
  call __firstMem
  call __firstStrMem
  
+
+ # sVar 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
+ call __defineVar
+
+ call __printHeap
+
  # iVar 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -2359,6 +2383,108 @@ _start:
  mov $intType, %rdi
  call __set 
  call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+  call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+  call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+  call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+  call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+  call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+  call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+  call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+  call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+  call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+ call __defineVar
+
+
+ 
 
   # bVar 
  mov $lenVarName, %rsi 
@@ -2651,8 +2777,6 @@ _start:
  mov $lenVarName4, %rax 
  mov $varName4, %rdi
  call __set 
- #mov $data0, %rax 
- #mov %rax, (userData)
  call __setVar
 
  call __printHeap

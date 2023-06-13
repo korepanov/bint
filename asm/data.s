@@ -692,7 +692,7 @@ varName19:
 .ascii "$print_arg0"
 lenVarName19 = . - varName19
 data22:
-.ascii "Решение квадратного уравнения x^2 + 2x - 3\n"
+.ascii "Решение x^2 + 2x - 3\n"
 .space 1, 0
 lenData22 = . - data22
 varName20:

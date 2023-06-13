@@ -690,6 +690,8 @@ __readClear:
  cmp $1, %rax 
  jz __renewVal
  add (varSize), %r12 
+ cmp %r11, %r12  
+ jge __renewStrEnd
  jmp __renewFindStr
 
  __renewVal:
@@ -736,7 +738,12 @@ __readClear:
  jmp __renewStrAddr
  __renewStrAddrEnd:
  movb $0, (%rsi)
- ret 
+ sub (typeSize), %r12 
+ add (varSize), %r12 
+ jmp __renewFindStr
+ __renewStrEnd:
+  
+ ret
 
  __shiftStr:
  # формируем в %r10 адрес нового начала
