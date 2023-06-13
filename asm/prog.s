@@ -1018,6 +1018,17 @@ __compare:
  mov $1, %rax  
  ret 
 
+__internalShiftStr:
+# %rbx - адрес ячейки памяти, для которой нужен больший размер
+mov (valSize), %rsi 
+add %rsi, (strPointer)
+
+//mov %rbx, %rsi 
+//add (valSize), %rsi  
+
+ret 
+
+
 __setVar:
  # вход: 
  # имя переменной по адресу $varName 
@@ -1091,12 +1102,21 @@ __setVar:
  __setVarStr:
  mov %rbx, %r12 
  call __read 
- call __toNumber
+ call __toNumber 
  mov %rax, %rbx  
+ mov (userData), %rsi 
+ call __len 
+ mov (valSize), %rdi 
+ __setVarMoreMem:
+ cmp %rdi, %rax 
+ jl __setVarMoreMemEnd 
+ call __internalShiftStr
+ add (valSize), %rdi 
+ jmp __setVarMoreMem 
+ __setVarMoreMemEnd:
 
  __setVarIsNotStr:
  
- #call __throughError
  mov %rbx, %r10 # сохраняем значение %rbx  
  mov (userData), %rax 
  xor %rdi, %rdi # счетчик количества реально записанных байт 
@@ -2499,6 +2519,15 @@ _start:
  call __set 
  call __defineVar
 
+ #set sVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
+ call __set 
+ mov $data11, %rax 
+ mov %rax, (userData)
+ call __setVar
  /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
@@ -2520,6 +2549,16 @@ _start:
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
+  #set sVar2
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName6, %rax 
+ mov $varName6, %rdi
+ call __set 
+ mov $data9, %rax 
+ mov %rax, (userData)
+ call __setVar
 
  /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -2549,26 +2588,6 @@ _start:
  call __getVar
  mov (userData), %rsi 
  call __print*/ 
-
- #set sVar
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi
- call __set 
- mov $data11, %rax 
- mov %rax, (userData)
- call __setVar
-
-  #set sVar2
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName6, %rax 
- mov $varName6, %rdi
- call __set 
- mov $data9, %rax 
- mov %rax, (userData)
- call __setVar
 
  # get fVar  
  mov $lenVarName, %rsi 
@@ -2686,6 +2705,29 @@ _start:
  mov $varName4, %rdi
  call __set 
  call __setVar
+
+
+  # get sVar  
+ /*mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
+ call __set
+ call __getVar
+
+ mov (userData), %rsi 
+ call __print*/  
+
+  # get sVar2  
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName6, %rax 
+ mov $varName6, %rdi
+ call __set
+ call __getVar
+
+ mov (userData), %rsi 
+ call __print 
 
  call __printHeap
 
