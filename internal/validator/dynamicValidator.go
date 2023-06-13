@@ -1278,17 +1278,19 @@ func dValidateFuncCall(command string, variables [][][]interface{}, knownUsage b
 			argsStr := f[strings.Index(f, "(")+1 : strings.Index(f, ")")]
 			args := strings.Split(argsStr, ",")
 
-			for _, arg := range args {
-				_, st, _, err := dValidateFuncCall(arg, variables, false)
-				if nil != err {
-					return tail, status.Err, variables, err
-				}
-				if status.No == st {
-					T, err := getExprType(arg, variables)
+			if "" != args[0] { // для функции, не принимающей параметров
+				for _, arg := range args {
+					_, st, _, err := dValidateFuncCall(arg, variables, false)
 					if nil != err {
 						return tail, status.Err, variables, err
 					}
-					fmt.Println(T)
+					if status.No == st {
+						T, err := getExprType(arg, variables)
+						if nil != err {
+							return tail, status.Err, variables, err
+						}
+						fmt.Println(T)
+					}
 				}
 			}
 
