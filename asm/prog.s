@@ -1025,8 +1025,82 @@ add %rsi, (strPointer)
 
 mov %r12, %rsi 
 sub (typeSize), %rsi 
+add (varSize), %rsi
+__internalShiftStrLocal: 
+cmp %r14, %rsi   
+jge __internalShiftStrEnd 
+mov %rsi, %r10
+mov %rax, %r11
+
+mov %rsi, %rdi 
+call __len 
+mov $lenBuf2, %rsi 
+mov $buf2, %rdx 
+mov $lenVarType, %rax 
+call __set 
+
+mov $lenBuf, %rsi 
+mov $buf, %rdx 
+mov $lenStringType, %rax 
+mov $stringType, %rdi 
+call __set 
+
+call __compare 
+cmp $1, %rax 
+
+jnz __internalShiftStrChangeNext
+mov %r10, %rsi 
+mov %r11, %rax
+
+mov %r10, %rdi 
+add (typeSize), %rsi 
+add (typeSize), %rdi 
+add (valSize), %rdi 
+mov %rsi, %r12 
+call __read 
+call __toNumber
+add (valSize), %rax 
+
+
+call __toStr 
+ 
+__internalShiftStrClear:
+cmp %rdi, %rsi 
+jg __internalShiftStrClearEnd
+movb $'*', (%rsi)
+inc %rsi 
+jmp __internalShiftStrClear
+
+__internalShiftStrClearEnd:
+movb $0, (%rsi)
+
+mov %r10, %rsi  
+mov $buf2, %rdi 
+
+__internalShiftStrSet:
+cmp $0, (%rdi)
+jz __internalShiftStrChangeEnd
+mov (%rdi), %al 
+mov %al, (%rsi)
+inc %rdi 
+inc %rsi 
+jmp __internalShiftStrSet
+
+__internalShiftStrChangeEnd:
+movb $0, (%rsi)
+
+__internalShiftStrChangeNext:
+mov %r10, %rsi 
+mov %r11, %rax
+add (varSize), %rsi 
+
+mov $buf2, %rsi 
 call __print 
-call __throughError 
+call __throughError
+jmp  __internalShiftStrLocal
+
+__internalShiftStrEnd:
+
 
 ret 
 
@@ -1116,6 +1190,8 @@ __setVar:
  add (valSize), %rdi 
  jmp __setVarMoreMem 
  __setVarMoreMemEnd:
+
+ 
 
  __setVarIsNotStr:
  
