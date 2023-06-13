@@ -512,15 +512,15 @@ varName0:
 .ascii "$ret"
 lenVarName0 = . - varName0
 varName1:
-.ascii "$find_descr_return_var"
+.ascii "$find_x1_return_var"
 lenVarName1 = . - varName1
 varName2:
-.ascii "$find_descr_res"
+.ascii "$find_x1_res"
 lenVarName2 = . - varName2
 label0:
- .quad .find_descr
+ .quad .find_x1
 labelName0:
-.ascii ".find_descr"
+.ascii ".find_x1"
 .space 1,0
 data0:
 .ascii ""
@@ -535,6 +535,9 @@ lenVarName4 = . - varName4
 varName5:
 .ascii "a"
 lenVarName5 = . - varName5
+varName6:
+.ascii "descr"
+lenVarName6 = . - varName6
 data1:
 .ascii ""
 .space 1, 0
@@ -544,53 +547,56 @@ data2:
 .space 1, 0
 lenData2 = . - data2
 data3:
-.ascii "2.0"
+.ascii "-1"
 .space 1, 0
 lenData3 = . - data3
 data4:
-.ascii "4.0"
+.ascii "0.5"
 .space 1, 0
 lenData4 = . - data4
-label1:
- .quad .find_descr_end
-labelName1:
-.ascii ".find_descr_end"
-.space 1,0
 data5:
-.ascii ""
+.ascii "2"
 .space 1, 0
 lenData5 = . - data5
-varName6:
-.ascii "$main_return_var"
-lenVarName6 = . - varName6
-label2:
- .quad .main
-labelName2:
-.ascii ".main"
+label1:
+ .quad .find_x1_end
+labelName1:
+.ascii ".find_x1_end"
 .space 1,0
 data6:
 .ascii ""
 .space 1, 0
 lenData6 = . - data6
+varName7:
+.ascii "$find_descr_return_var"
+lenVarName7 = . - varName7
+varName8:
+.ascii "$find_descr_res"
+lenVarName8 = . - varName8
+label2:
+ .quad .find_descr
+labelName2:
+.ascii ".find_descr"
+.space 1,0
 data7:
 .ascii ""
 .space 1, 0
 lenData7 = . - data7
-varName7:
-.ascii "$print_arg0"
-lenVarName7 = . - varName7
+varName9:
+.ascii "c"
+lenVarName9 = . - varName9
+varName10:
+.ascii "b"
+lenVarName10 = . - varName10
+varName11:
+.ascii "a"
+lenVarName11 = . - varName11
 data8:
-.ascii "Решение квадратного уравнения x^2 + 2x - 3\n"
+.ascii ""
 .space 1, 0
 lenData8 = . - data8
-varName8:
-.ascii "descr"
-lenVarName8 = . - varName8
-varName9:
-.ascii "$find_descr_res0"
-lenVarName9 = . - varName9
 data9:
-.ascii "1.0"
+.ascii ""
 .space 1, 0
 lenData9 = . - data9
 data10:
@@ -598,54 +604,128 @@ data10:
 .space 1, 0
 lenData10 = . - data10
 data11:
-.ascii "-3.0"
+.ascii "4.0"
 .space 1, 0
 lenData11 = . - data11
+label3:
+ .quad .find_descr_end
+labelName3:
+.ascii ".find_descr_end"
+.space 1,0
 data12:
-.ascii "#find_descr_res0"
+.ascii ""
 .space 1, 0
 lenData12 = . - data12
-label3:
- .quad .find_descr_res0
-labelName3:
-.ascii ".find_descr_res0"
-.space 1,0
-varName10:
-.ascii "$s0"
-lenVarName10 = . - varName10
-varName11:
-.ascii "$print_arg0"
-lenVarName11 = . - varName11
 varName12:
-.ascii "$print_arg0"
+.ascii "$main_return_var"
 lenVarName12 = . - varName12
+label4:
+ .quad .main
+labelName4:
+.ascii ".main"
+.space 1,0
 data13:
-.ascii "\n"
+.ascii ""
 .space 1, 0
 lenData13 = . - data13
-label4:
- .quad .main_end
-labelName4:
-.ascii ".main_end"
-.space 1,0
 data14:
 .ascii ""
 .space 1, 0
 lenData14 = . - data14
+varName13:
+.ascii "$print_arg0"
+lenVarName13 = . - varName13
 data15:
-.ascii "#main_res0"
+.ascii "Решение квадратного уравнения x^2 + 2x - 3\n"
 .space 1, 0
 lenData15 = . - data15
-label5:
- .quad .main_res0
-labelName5:
-.ascii ".main_res0"
-.space 1,0
+varName14:
+.ascii "x1"
+lenVarName14 = . - varName14
+varName15:
+.ascii "$find_descr_res0"
+lenVarName15 = . - varName15
 data16:
-.ascii ""
+.ascii "1.0"
 .space 1, 0
 lenData16 = . - data16
 data17:
-.ascii ""
+.ascii "2.0"
 .space 1, 0
 lenData17 = . - data17
+data18:
+.ascii "-3.0"
+.space 1, 0
+lenData18 = . - data18
+data19:
+.ascii "#find_descr_res0"
+.space 1, 0
+lenData19 = . - data19
+label5:
+ .quad .find_descr_res0
+labelName5:
+.ascii ".find_descr_res0"
+.space 1,0
+varName16:
+.ascii "$find_x1_res0"
+lenVarName16 = . - varName16
+data20:
+.ascii "1.0"
+.space 1, 0
+lenData20 = . - data20
+data21:
+.ascii "2.0"
+.space 1, 0
+lenData21 = . - data21
+data22:
+.ascii "-3.0"
+.space 1, 0
+lenData22 = . - data22
+data23:
+.ascii "#find_x1_res0"
+.space 1, 0
+lenData23 = . - data23
+label6:
+ .quad .find_x1_res0
+labelName6:
+.ascii ".find_x1_res0"
+.space 1,0
+varName17:
+.ascii "$s0"
+lenVarName17 = . - varName17
+varName18:
+.ascii "$print_arg0"
+lenVarName18 = . - varName18
+varName19:
+.ascii "$print_arg0"
+lenVarName19 = . - varName19
+data24:
+.ascii "\n"
+.space 1, 0
+lenData24 = . - data24
+label7:
+ .quad .main_end
+labelName7:
+.ascii ".main_end"
+.space 1,0
+data25:
+.ascii ""
+.space 1, 0
+lenData25 = . - data25
+data26:
+.ascii "#main_res0"
+.space 1, 0
+lenData26 = . - data26
+label8:
+ .quad .main_res0
+labelName8:
+.ascii ".main_res0"
+.space 1,0
+data27:
+.ascii ""
+.space 1, 0
+lenData27 = . - data27
+data28:
+.ascii ""
+.space 1, 0
+lenData28 = . - data28

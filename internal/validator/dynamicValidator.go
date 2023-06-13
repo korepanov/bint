@@ -28,7 +28,7 @@ var isFunc bool
 var wasRet bool
 var toBlock bool
 
-var funcTable map[string]string
+var funcTable map[string][]string
 var forCounter int
 
 func checkVars(exprList interface{}, allVariables [][]interface{}) error {
@@ -1008,6 +1008,7 @@ func dValidateRegFind(command string, variables [][][]interface{}) (string, [][]
 
 func dValidateFuncDefinition(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
 	var wasDef bool
+	var args []string
 
 	tail, stat := check(`(?m)(?:(int|float|bool|string|stack|void)[[:alnum:]|_]*?\`+
 		`((?:((int|float|bool|string|stack))[[:alnum:]|_]+\,){0,})(int|float|bool|string|stack)[[:alnum:]|_]+\){`, command)
@@ -1046,6 +1047,8 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 			if "float" == variables[len(variables)-1][len(variables[len(variables)-1])-1][0] {
 				variables[len(variables)-1][len(variables[len(variables)-1])-1][2] = "0.1"
 			}
+
+			args = append(args, fmt.Sprintf("%v", variables[len(variables)-1][len(variables[len(variables)-1])-1][0]))
 		}
 
 		tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void)[[:alnum:]|_]*?\`+
@@ -1078,13 +1081,17 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 
 		funcName = funcName[0:strings.Index(funcName, "(")]
 
-		if "" != funcTable[funcName] {
+		if 0 != len(funcTable[funcName]) {
 			return tail, status.Err, variables, errors.New("function polymorphism is not allowed")
 		} else {
-			funcTable[funcName] = retVal
+			funcTable[funcName] = append(funcTable[funcName], retVal)
+
+			for _, arg := range args {
+				funcTable[funcName] = append(funcTable[funcName], arg)
+			}
 			var err error
 			if "void" != retVal {
-				_, variables[0], err = lexer.LexicalAnalyze(funcTable[funcName]+"$"+funcName,
+				_, variables[0], err = lexer.LexicalAnalyze(funcTable[funcName][0]+"$"+funcName,
 					variables[0], false, false, nil, false, nil, nil, nil, nil)
 			} else {
 				variables[0] = append(variables[0], []interface{}{"void", funcName, []interface{}{"func"}})
@@ -1094,10 +1101,10 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 				return tail, status.Err, variables, err
 			}
 
-			if "float" == funcTable[funcName] {
+			if "float" == funcTable[funcName][0] {
 				variables[0][len(variables[0])-1][2] = "0.1"
 			}
-			if "int" == funcTable[funcName] {
+			if "int" == funcTable[funcName][0] {
 				variables[0][len(variables[0])-1][2] = "1"
 			}
 		}
@@ -1255,16 +1262,17 @@ func dValidateFuncCall(command string, variables [][][]interface{}, knownUsage b
 	tail := command
 
 	for thisFuncName = range funcTable {
-		if tail[1:] == thisFuncName && "void" == funcTable[thisFuncName] {
+		if tail[1:] == thisFuncName && "void" == funcTable[thisFuncName][0] {
 			return ``, status.Yes, variables, nil
 		}
 		if !knownUsage {
-			if tail[1:] == thisFuncName && "void" != funcTable[thisFuncName] {
+			if "$" != string(tail[0]) && tail[1:] == thisFuncName && "void" != funcTable[thisFuncName][0] {
 				return tail, status.Err, variables, errors.New("unused value of func " + thisFuncName)
 			}
 		}
 	}
 
+FUNCNAMES:
 	for funcName := range funcTable {
 		locArr := GetFuncNameEntry(funcName, tail)
 
@@ -1279,7 +1287,18 @@ func dValidateFuncCall(command string, variables [][][]interface{}, knownUsage b
 			args := strings.Split(argsStr, ",")
 
 			if "" != args[0] { // для функции, не принимающей параметров
-				for _, arg := range args {
+
+				if len(funcTable[thisFuncName])-1 != len(args) {
+					for _, arg := range args {
+						if -1 != strings.Index(arg, "(") {
+							continue FUNCNAMES
+						}
+					}
+					return tail, status.Err, variables, errors.New("the number of arguments the function accepts is not equal " +
+						"to the number of arguments passed")
+				}
+
+				for key, arg := range args {
 					_, st, _, err := dValidateFuncCall(arg, variables, false)
 					if nil != err {
 						return tail, status.Err, variables, err
@@ -1289,7 +1308,11 @@ func dValidateFuncCall(command string, variables [][][]interface{}, knownUsage b
 						if nil != err {
 							return tail, status.Err, variables, err
 						}
-						fmt.Println(T)
+
+						if funcTable[thisFuncName][key+1] != T {
+							return tail, status.Err, variables, errors.New("data type mismatch: " +
+								funcTable[thisFuncName][key+1] + " and " + T)
+						}
 					}
 				}
 			}
@@ -1306,11 +1329,11 @@ func dValidateFuncCall(command string, variables [][][]interface{}, knownUsage b
 
 		for thisFuncName = range funcTable {
 
-			if tail[1:] == thisFuncName && "void" == funcTable[thisFuncName] {
+			if tail[1:] == thisFuncName && "void" == funcTable[thisFuncName][0] {
 				return ``, status.Yes, variables, nil
 			}
 			if !knownUsage {
-				if tail[1:] == thisFuncName && "void" != funcTable[thisFuncName] {
+				if tail[1:] == thisFuncName && "void" != funcTable[thisFuncName][0] {
 					return tail, status.Err, variables, errors.New("unused value of func " + thisFuncName)
 				}
 			}
@@ -1812,6 +1835,9 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 
 	_, stat, variables, err = dValidateAssignment(command, variables)
 
+	if nil != err && again {
+		return dynamicValidateCommand(command, variables)
+	}
 	if nil != err {
 		return variables, err
 	}
@@ -1889,7 +1915,7 @@ func DynamicValidate(validatingFile string, rootSource string) {
 	lastFile = getLastFile()
 
 	fileName = validatingFile
-	funcTable = make(map[string]string)
+	funcTable = make(map[string][]string)
 
 	var variables [][][]interface{}
 	variables = append(variables, [][]interface{}{})
