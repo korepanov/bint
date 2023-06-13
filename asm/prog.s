@@ -2367,9 +2367,6 @@ _start:
  mov $stringType, %rdi
  call __set 
  call __defineVar
- call __defineVar
-
- call __printHeap
 
  # iVar 
  mov $lenVarName, %rsi 
@@ -2383,106 +2380,6 @@ _start:
  mov $intType, %rdi
  call __set 
  call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
-  call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
-  call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
-  call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
-  call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
-  call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
-  call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
-  call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
-  call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
-  call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
- call __defineVar
-
 
  
 

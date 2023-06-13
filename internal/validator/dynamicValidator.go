@@ -1320,7 +1320,9 @@ FUNCNAMES:
 			replacerArgs = append(replacerArgs, tail[loc[0]:loc[1]])
 			replacerArgs = append(replacerArgs, "$"+funcName)
 		}
-
+		if nil != replacerArgs {
+			break
+		}
 	}
 
 	if nil != replacerArgs {

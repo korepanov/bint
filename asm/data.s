@@ -512,32 +512,23 @@ varName0:
 .ascii "$ret"
 lenVarName0 = . - varName0
 varName1:
-.ascii "$find_x1_return_var"
+.ascii "$print1_return_var"
 lenVarName1 = . - varName1
 varName2:
-.ascii "$find_x1_res"
+.ascii "$print1_res"
 lenVarName2 = . - varName2
 label0:
- .quad .find_x1
+ .quad .print1
 labelName0:
-.ascii ".find_x1"
+.ascii ".print1"
 .space 1,0
 data0:
 .ascii ""
 .space 1, 0
 lenData0 = . - data0
 varName3:
-.ascii "c"
+.ascii "s"
 lenVarName3 = . - varName3
-varName4:
-.ascii "b"
-lenVarName4 = . - varName4
-varName5:
-.ascii "a"
-lenVarName5 = . - varName5
-varName6:
-.ascii "descr"
-lenVarName6 = . - varName6
 data1:
 .ascii ""
 .space 1, 0
@@ -546,306 +537,176 @@ data2:
 .ascii ""
 .space 1, 0
 lenData2 = . - data2
+label1:
+ .quad .print1_end
+labelName1:
+.ascii ".print1_end"
+.space 1,0
 data3:
-.ascii "-1"
+.ascii ""
 .space 1, 0
 lenData3 = . - data3
+varName4:
+.ascii "$print2_return_var"
+lenVarName4 = . - varName4
+varName5:
+.ascii "$print2_res"
+lenVarName5 = . - varName5
+label2:
+ .quad .print2
+labelName2:
+.ascii ".print2"
+.space 1,0
 data4:
-.ascii "0.5"
+.ascii ""
 .space 1, 0
 lenData4 = . - data4
+varName6:
+.ascii "s"
+lenVarName6 = . - varName6
 data5:
-.ascii "2"
+.ascii ""
 .space 1, 0
 lenData5 = . - data5
-label1:
- .quad .find_x1_end
-labelName1:
-.ascii ".find_x1_end"
-.space 1,0
 data6:
 .ascii ""
 .space 1, 0
 lenData6 = . - data6
-varName7:
-.ascii "$find_x2_return_var"
-lenVarName7 = . - varName7
-varName8:
-.ascii "$find_x2_res"
-lenVarName8 = . - varName8
-label2:
- .quad .find_x2
-labelName2:
-.ascii ".find_x2"
+label3:
+ .quad .print2_end
+labelName3:
+.ascii ".print2_end"
 .space 1,0
 data7:
 .ascii ""
 .space 1, 0
 lenData7 = . - data7
-varName9:
-.ascii "c"
-lenVarName9 = . - varName9
-varName10:
-.ascii "b"
-lenVarName10 = . - varName10
-varName11:
-.ascii "a"
-lenVarName11 = . - varName11
-varName12:
-.ascii "descr"
-lenVarName12 = . - varName12
+varName7:
+.ascii "$println_return_var"
+lenVarName7 = . - varName7
+label4:
+ .quad .println
+labelName4:
+.ascii ".println"
+.space 1,0
 data8:
 .ascii ""
 .space 1, 0
 lenData8 = . - data8
+varName8:
+.ascii "s"
+lenVarName8 = . - varName8
 data9:
 .ascii ""
 .space 1, 0
 lenData9 = . - data9
 data10:
-.ascii "-1"
+.ascii ""
 .space 1, 0
 lenData10 = . - data10
+varName9:
+.ascii "$print_arg0"
+lenVarName9 = . - varName9
+varName10:
+.ascii "$print_arg0"
+lenVarName10 = . - varName10
 data11:
-.ascii "0.5"
+.ascii "\n"
 .space 1, 0
 lenData11 = . - data11
+label5:
+ .quad .println_end
+labelName5:
+.ascii ".println_end"
+.space 1,0
 data12:
-.ascii "2"
+.ascii ""
 .space 1, 0
 lenData12 = . - data12
-label3:
- .quad .find_x2_end
-labelName3:
-.ascii ".find_x2_end"
-.space 1,0
-data13:
-.ascii ""
-.space 1, 0
-lenData13 = . - data13
-varName13:
-.ascii "$find_descr_return_var"
-lenVarName13 = . - varName13
-varName14:
-.ascii "$find_descr_res"
-lenVarName14 = . - varName14
-label4:
- .quad .find_descr
-labelName4:
-.ascii ".find_descr"
-.space 1,0
-data14:
-.ascii ""
-.space 1, 0
-lenData14 = . - data14
-varName15:
-.ascii "c"
-lenVarName15 = . - varName15
-varName16:
-.ascii "b"
-lenVarName16 = . - varName16
-varName17:
-.ascii "a"
-lenVarName17 = . - varName17
-data15:
-.ascii ""
-.space 1, 0
-lenData15 = . - data15
-data16:
-.ascii ""
-.space 1, 0
-lenData16 = . - data16
-data17:
-.ascii "2.0"
-.space 1, 0
-lenData17 = . - data17
-data18:
-.ascii "4.0"
-.space 1, 0
-lenData18 = . - data18
-label5:
- .quad .find_descr_end
-labelName5:
-.ascii ".find_descr_end"
-.space 1,0
-data19:
-.ascii ""
-.space 1, 0
-lenData19 = . - data19
-varName18:
+varName11:
 .ascii "$main_return_var"
-lenVarName18 = . - varName18
+lenVarName11 = . - varName11
 label6:
  .quad .main
 labelName6:
 .ascii ".main"
 .space 1,0
+data13:
+.ascii ""
+.space 1, 0
+lenData13 = . - data13
+data14:
+.ascii ""
+.space 1, 0
+lenData14 = . - data14
+varName12:
+.ascii "$print2_res0"
+lenVarName12 = . - varName12
+varName13:
+.ascii "$print1_res0"
+lenVarName13 = . - varName13
+data15:
+.ascii "Привет мир!"
+.space 1, 0
+lenData15 = . - data15
+data16:
+.ascii "#print1_res0"
+.space 1, 0
+lenData16 = . - data16
+label7:
+ .quad .print1_res0
+labelName7:
+.ascii ".print1_res0"
+.space 1,0
+data17:
+.ascii "#print2_res0"
+.space 1, 0
+lenData17 = . - data17
+label8:
+ .quad .print2_res0
+labelName8:
+.ascii ".print2_res0"
+.space 1,0
+data18:
+.ascii "#println_res0"
+.space 1, 0
+lenData18 = . - data18
+label9:
+ .quad .println_res0
+labelName9:
+.ascii ".println_res0"
+.space 1,0
+data19:
+.ascii ""
+.space 1, 0
+lenData19 = . - data19
 data20:
 .ascii ""
 .space 1, 0
 lenData20 = . - data20
+label10:
+ .quad .main_end
+labelName10:
+.ascii ".main_end"
+.space 1,0
 data21:
 .ascii ""
 .space 1, 0
 lenData21 = . - data21
-varName19:
-.ascii "$print_arg0"
-lenVarName19 = . - varName19
 data22:
-.ascii "Решение x^2 + 2x - 3\n"
+.ascii "#main_res0"
 .space 1, 0
 lenData22 = . - data22
-varName20:
-.ascii "x1"
-lenVarName20 = . - varName20
-varName21:
-.ascii "$find_descr_res0"
-lenVarName21 = . - varName21
+label11:
+ .quad .main_res0
+labelName11:
+.ascii ".main_res0"
+.space 1,0
 data23:
-.ascii "1.0"
+.ascii ""
 .space 1, 0
 lenData23 = . - data23
 data24:
-.ascii "2.0"
+.ascii ""
 .space 1, 0
 lenData24 = . - data24
-data25:
-.ascii "-3.0"
-.space 1, 0
-lenData25 = . - data25
-data26:
-.ascii "#find_descr_res0"
-.space 1, 0
-lenData26 = . - data26
-label7:
- .quad .find_descr_res0
-labelName7:
-.ascii ".find_descr_res0"
-.space 1,0
-varName22:
-.ascii "$find_x1_res0"
-lenVarName22 = . - varName22
-data27:
-.ascii "1.0"
-.space 1, 0
-lenData27 = . - data27
-data28:
-.ascii "2.0"
-.space 1, 0
-lenData28 = . - data28
-data29:
-.ascii "-3.0"
-.space 1, 0
-lenData29 = . - data29
-data30:
-.ascii "#find_x1_res0"
-.space 1, 0
-lenData30 = . - data30
-label8:
- .quad .find_x1_res0
-labelName8:
-.ascii ".find_x1_res0"
-.space 1,0
-varName23:
-.ascii "x2"
-lenVarName23 = . - varName23
-varName24:
-.ascii "$find_descr_res1"
-lenVarName24 = . - varName24
-data31:
-.ascii "1.0"
-.space 1, 0
-lenData31 = . - data31
-data32:
-.ascii "2.0"
-.space 1, 0
-lenData32 = . - data32
-data33:
-.ascii "-3.0"
-.space 1, 0
-lenData33 = . - data33
-data34:
-.ascii "#find_descr_res1"
-.space 1, 0
-lenData34 = . - data34
-label9:
- .quad .find_descr_res1
-labelName9:
-.ascii ".find_descr_res1"
-.space 1,0
-varName25:
-.ascii "$find_x2_res0"
-lenVarName25 = . - varName25
-data35:
-.ascii "1.0"
-.space 1, 0
-lenData35 = . - data35
-data36:
-.ascii "2.0"
-.space 1, 0
-lenData36 = . - data36
-data37:
-.ascii "-3.0"
-.space 1, 0
-lenData37 = . - data37
-data38:
-.ascii "#find_x2_res0"
-.space 1, 0
-lenData38 = . - data38
-label10:
- .quad .find_x2_res0
-labelName10:
-.ascii ".find_x2_res0"
-.space 1,0
-varName26:
-.ascii "$s0"
-lenVarName26 = . - varName26
-varName27:
-.ascii "$print_arg0"
-lenVarName27 = . - varName27
-varName28:
-.ascii "$print_arg0"
-lenVarName28 = . - varName28
-data39:
-.ascii "\n"
-.space 1, 0
-lenData39 = . - data39
-varName29:
-.ascii "$s0"
-lenVarName29 = . - varName29
-varName30:
-.ascii "$print_arg0"
-lenVarName30 = . - varName30
-varName31:
-.ascii "$print_arg0"
-lenVarName31 = . - varName31
-data40:
-.ascii "\n"
-.space 1, 0
-lenData40 = . - data40
-label11:
- .quad .main_end
-labelName11:
-.ascii ".main_end"
-.space 1,0
-data41:
-.ascii ""
-.space 1, 0
-lenData41 = . - data41
-data42:
-.ascii "#main_res0"
-.space 1, 0
-lenData42 = . - data42
-label12:
- .quad .main_res0
-labelName12:
-.ascii ".main_res0"
-.space 1,0
-data43:
-.ascii ""
-.space 1, 0
-lenData43 = . - data43
-data44:
-.ascii ""
-.space 1, 0
-lenData44 = . - data44
