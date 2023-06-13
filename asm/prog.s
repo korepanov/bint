@@ -159,6 +159,9 @@ data9:
 data10:
 .ascii "1"
 .space 1,0 
+data11:
+.ascii "AAAAAA"
+.space 1,0 
 
 labelName1:
 .ascii "__stop"
@@ -2356,7 +2359,7 @@ _start:
  
 
  # sVar 
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
@@ -2366,7 +2369,7 @@ _start:
  mov $lenStringType, %rax 
  mov $stringType, %rdi
  call __set 
- call __defineVar
+ call __defineVar*/
 
  # iVar 
  mov $lenVarName, %rsi 
@@ -2496,14 +2499,14 @@ _start:
  call __set 
  call __defineVar
 
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
  call __set 
  mov $labelName2, %rax 
  mov %rax, (userData)
- call __setVar
+ call __setVar*/ 
  
  # sVar2
  mov $lenVarName, %rsi 
@@ -2518,14 +2521,14 @@ _start:
  call __set 
  call __defineVar
 
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName6, %rax 
  mov $varName6, %rdi
  call __set 
  mov $data7, %rax 
  mov %rax, (userData)
- call __setVar
+ call __setVar*/
 
   # get sVar 
  /*mov $lenVarName, %rsi 
@@ -2536,18 +2539,6 @@ _start:
  call __getVar
  mov (userData), %rdi 
  call __goto*/ 
-# sVar2
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName6, %rax 
- mov $varName6, %rdi
- call __set 
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenStringType, %rax 
- mov $stringType, %rdi
- call __set 
- call __defineVar
 
  # get bVar  
  /*mov $lenVarName, %rsi 
@@ -2558,6 +2549,26 @@ _start:
  call __getVar
  mov (userData), %rsi 
  call __print*/ 
+
+ #set sVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
+ call __set 
+ mov $data11, %rax 
+ mov %rax, (userData)
+ call __setVar
+
+  #set sVar2
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName6, %rax 
+ mov $varName6, %rdi
+ call __set 
+ mov $data9, %rax 
+ mov %rax, (userData)
+ call __setVar
 
  # get fVar  
  mov $lenVarName, %rsi 
@@ -2614,15 +2625,15 @@ _start:
  #call __print 
 
  
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName6, %rax 
  mov $varName6, %rdi
  call __set
- call __undefineVar
+ call __undefineVar*/
 
  # sVar
- mov $lenVarName, %rsi 
+/* mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
@@ -2632,7 +2643,7 @@ _start:
  mov $lenStringType, %rax 
  mov $stringType, %rdi
  call __set 
- call __defineVar
+ call __defineVar*/
 
  # get sVar2 
  /*mov $lenVarName, %rsi 
