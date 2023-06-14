@@ -178,7 +178,7 @@ data8:
 .space 1, 0
 lenData8 = . - data8 
 data9:
-.ascii "Slava's message"
+.ascii "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
 .space 1, 0
 data10:
 .ascii "1"
@@ -449,6 +449,16 @@ __concatinate:
  #movb $0, (%r8)
  
  ret 
+
+ __userConcatinate:
+ # входные параметры 
+ # r8 - адрес начала первой строки 
+ # r9 - адрес начала второй строки 
+ # r11 - адрес в памяти строк, куда положить результат  
+ mov %r8, %rsi 
+ 
+
+ ret
 
 __toNumber:
  # вход: buf 
@@ -2846,26 +2856,26 @@ _start:
 
 
   # get sVar  
- /*mov $lenVarName, %rsi 
+ mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
  call __set
  call __getVar
-
- mov (userData), %rsi 
- call __print*/  
+ mov (userData), %r8 
 
   # get sVar2  
- /*mov $lenVarName, %rsi 
+ mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName6, %rax 
  mov $varName6, %rdi
  call __set
  call __getVar
 
- mov (userData), %rsi 
- call __print*/ 
+ mov (userData), %r9 
+
+ mov %r8, %r11 
+ call __userConcatinate 
 
  call __printHeap
 
