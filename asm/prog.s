@@ -25,6 +25,15 @@ lenBuf3 = . - buf3
 buf4:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenBuf4 = . - buf4
+mem:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem = . - mem 
+mem2:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem2 = . - mem2 
+mem3:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem3 = . - mem3 
 strBegin:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrBegin = . - strBegin
@@ -1029,10 +1038,10 @@ add (varSize), %rsi
 __internalShiftStrLocal: 
 cmp %r14, %rsi   
 jge __internalShiftStrEnd 
-mov %rsi, %r10
-mov %rax, %r11
+mov %rsi, (mem)
+mov %rax, (mem2)
 
-mov %rsi, %rdi 
+mov %rsi, %rdi  
 call __len 
 mov $lenBuf2, %rsi 
 mov $buf2, %rdx 
@@ -1049,10 +1058,10 @@ call __compare
 cmp $1, %rax 
 
 jnz __internalShiftStrChangeNext
-mov %r10, %rsi 
-mov %r11, %rax
+mov (mem), %rsi 
+mov (mem2), %rax
 
-mov %r10, %rdi 
+mov (mem), %rdi 
 add (typeSize), %rsi 
 add (typeSize), %rdi 
 add (valSize), %rdi 
@@ -1074,7 +1083,8 @@ jmp __internalShiftStrClear
 __internalShiftStrClearEnd:
 movb $0, (%rsi)
 
-mov %r10, %rsi  
+mov (mem), %rsi 
+add (typeSize), %rsi  
 mov $buf2, %rdi 
 
 __internalShiftStrSet:
@@ -1090,13 +1100,32 @@ __internalShiftStrChangeEnd:
 movb $0, (%rsi)
 
 __internalShiftStrChangeNext:
-mov %r10, %rsi 
-mov %r11, %rax
+mov (mem), %rsi 
+mov (mem2), %rax
 add (varSize), %rsi 
 
-mov $buf2, %rsi 
-call __print 
+mov %rsi, (mem)
+mov %rax, (mem2)
+
+mov $lenBuf, %rsi 
+mov $buf, %rdx 
+mov $lenBuf2, %rax 
+mov $buf2, %rdi 
+call __set 
+
+call __toNumber
+cmp (strMax), %rax 
+mov (mem), %rsi 
+mov (mem2), %rax 
+jl __internalShiftStrOk 
+mov (strMax), %r8 
+call __newStrMem
+mov (mem), %rsi 
+mov (mem2), %rax 
+ 
 call __throughError
+__internalShiftStrOk:
+
 jmp  __internalShiftStrLocal
 
 __internalShiftStrEnd:
@@ -1185,8 +1214,10 @@ __setVar:
  mov (valSize), %rdi 
  __setVarMoreMem:
  cmp %rdi, %rax 
- jl __setVarMoreMemEnd 
+ jl __setVarMoreMemEnd
+ mov %rdi, (mem3) 
  call __internalShiftStr
+ mov (mem3), %rdi 
  add (valSize), %rdi 
  jmp __setVarMoreMem 
  __setVarMoreMemEnd:
@@ -2629,6 +2660,8 @@ _start:
  mov %rax, (userData)
  call __setVar
 
+ call __printHeap
+ call __throughError
   #set sVar2
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
