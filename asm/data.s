@@ -536,7 +536,7 @@ varName0:
 .ascii "s"
 lenVarName0 = . - varName0
 data0:
-.ascii "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+.ascii "Анна Хоперская родилась 29 июня 1893 года в Волчанске в семье портного Петра Васильевича Хоперского и прачки."
 .space 1, 0
 lenData0 = . - data0
 varName1:

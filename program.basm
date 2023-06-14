@@ -1,5 +1,6 @@
 string s;
-s = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+s = "Анна Хоперская родилась 29 июня 1893 года в Волчанске в семье портного Петра Васильевича Хоперского и прачки.";
+ 
 string s2;
 s2 = "Привет мир!";
 
