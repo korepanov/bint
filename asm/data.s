@@ -539,10 +539,3 @@ data0:
 .ascii "Анна Хоперская родилась 29 июня 1893 года в Волчанске в семье портного Петра Васильевича Хоперского и прачки."
 .space 1, 0
 lenData0 = . - data0
-varName1:
-.ascii "s2"
-lenVarName1 = . - varName1
-data1:
-.ascii "Привет мир!"
-.space 1, 0
-lenData1 = . - data1
