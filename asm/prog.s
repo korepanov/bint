@@ -40,6 +40,12 @@ lenMem4 = . - mem4
 mem5:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenMem5 = . - mem5
+mem6:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem6 = . - mem6
+mem7:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem7 = . - mem7
 strBegin:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrBegin = . - strBegin
@@ -1034,7 +1040,7 @@ __compare:
  ret 
 
 __internalShiftStr:
-
+# %r12 - место, после которого нужно сделать сдвиг 
 mov (valSize), %rsi 
 add %rsi, (strPointer)
 
@@ -1071,6 +1077,8 @@ mov (mem), %rdi
 add (typeSize), %rsi 
 add (typeSize), %rdi 
 add (valSize), %rdi 
+mov %rdi, (mem6)
+mov %rsi, (mem7)
 mov %rsi, %r12 
 call __read 
 call __toNumber
@@ -1078,7 +1086,8 @@ add (valSize), %rax
 
 
 call __toStr 
- 
+mov (mem6), %rdi
+mov (mem7), %rsi   
 __internalShiftStrClear:
 cmp %rdi, %rsi 
 jg __internalShiftStrClearEnd
@@ -1090,7 +1099,8 @@ __internalShiftStrClearEnd:
 movb $0, (%rsi)
 
 mov (mem), %rsi 
-add (typeSize), %rsi  
+add (typeSize), %rsi 
+ 
 mov $buf2, %rdi 
 
 __internalShiftStrSet:
@@ -1129,7 +1139,6 @@ call __newStrMem
 mov (mem), %rsi 
 mov (mem2), %rax 
  
-call __throughError
 __internalShiftStrOk:
 
 jmp  __internalShiftStrLocal
@@ -1223,7 +1232,7 @@ __setVar:
  jl __setVarMoreMemEnd
  mov %rdi, (mem3) 
  mov %rax, (mem4)
- mov %rbx, (mem5)
+ mov %rbx, (mem5) 
  call __internalShiftStr
  mov (mem3), %rdi
  mov (mem4), %rax
