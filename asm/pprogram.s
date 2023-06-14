@@ -810,6 +810,120 @@ __compare:
  mov $1, %rax  
  ret 
 
+__internalShiftStr:
+# %r12 - место, после которого нужно сделать сдвиг 
+mov (valSize), %rsi 
+add %rsi, (strPointer)
+
+mov %r12, %rsi 
+sub (typeSize), %rsi 
+add (varSize), %rsi
+
+__internalShiftStrLocal: 
+cmp %r14, %rsi  
+ 
+jge __internalShiftStrEnd
+
+mov %rsi, (mem)
+mov %rax, (mem2)
+
+mov %rsi, %rdi  
+call __len 
+mov $lenBuf2, %rsi 
+mov $buf2, %rdx 
+mov $lenVarType, %rax 
+call __set 
+
+mov $lenBuf, %rsi 
+mov $buf, %rdx 
+mov $lenStringType, %rax 
+mov $stringType, %rdi 
+call __set 
+
+call __compare 
+cmp $1, %rax 
+
+jnz __internalShiftStrChangeNext
+
+mov (mem), %rsi 
+mov (mem2), %rax
+
+mov (mem), %rdi 
+add (typeSize), %rsi 
+add (typeSize), %rdi 
+add (valSize), %rdi 
+mov %rdi, (mem6)
+mov %rsi, (mem7)
+mov %rsi, %r12 
+call __read 
+call __toNumber
+add (valSize), %rax 
+
+
+call __toStr 
+mov (mem6), %rdi
+mov (mem7), %rsi   
+__internalShiftStrClear:
+cmp %rdi, %rsi 
+jg __internalShiftStrClearEnd
+movb $'*', (%rsi)
+inc %rsi 
+jmp __internalShiftStrClear
+
+__internalShiftStrClearEnd:
+movb $0, (%rsi) 
+
+mov (mem), %rsi 
+add (typeSize), %rsi 
+ 
+mov $buf2, %rdi 
+
+__internalShiftStrSet:
+cmp $0, (%rdi)
+jz __internalShiftStrChangeEnd
+mov (%rdi), %al 
+mov %al, (%rsi)
+inc %rdi 
+inc %rsi 
+jmp __internalShiftStrSet
+
+__internalShiftStrChangeEnd:
+movb $0, (%rsi)
+
+__internalShiftStrChangeNext:
+mov (mem), %rsi 
+mov (mem2), %rax
+add (varSize), %rsi 
+
+mov %rsi, (mem)
+mov %rax, (mem2)
+
+mov $lenBuf, %rsi 
+mov $buf, %rdx 
+mov $lenBuf2, %rax 
+mov $buf2, %rdi 
+call __set 
+
+call __toNumber
+cmp (strMax), %rax 
+mov (mem), %rsi 
+mov (mem2), %rax 
+jl __internalShiftStrOk 
+mov (strMax), %r8 
+call __newStrMem
+mov (mem), %rsi 
+mov (mem2), %rax 
+ 
+__internalShiftStrOk:
+
+jmp  __internalShiftStrLocal
+
+__internalShiftStrEnd:
+
+
+ret 
+
+
 __setVar:
  # вход: 
  # имя переменной по адресу $varName 
@@ -883,12 +997,29 @@ __setVar:
  __setVarStr:
  mov %rbx, %r12 
  call __read 
- call __toNumber
+ call __toNumber 
  mov %rax, %rbx  
+ mov (userData), %rsi 
+ call __len 
+ mov (valSize), %rdi 
+ __setVarMoreMem:
+ cmp %rdi, %rax 
+ jl __setVarMoreMemEnd
+ mov %rdi, (mem3) 
+ mov %rax, (mem4)
+ mov %rbx, (mem5) 
+ mov %r12, (mem8)
+ call __internalShiftStr
+ mov (mem8), %r12 
+ mov (mem3), %rdi
+ mov (mem4), %rax
+ mov (mem5), %rbx   
+ add (valSize), %rdi 
+ jmp __setVarMoreMem 
+ __setVarMoreMemEnd:
 
  __setVarIsNotStr:
  
- #call __throughError
  mov %rbx, %r10 # сохраняем значение %rbx  
  mov (userData), %rax 
  xor %rdi, %rdi # счетчик количества реально записанных байт 
@@ -904,6 +1035,7 @@ __setVar:
 
  __setVarRet:
  movb $0, (%rbx) 
+
  ret
 
  __getVar:

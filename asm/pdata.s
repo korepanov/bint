@@ -25,6 +25,30 @@ lenBuf3 = . - buf3
 buf4:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenBuf4 = . - buf4
+mem:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem = . - mem 
+mem2:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem2 = . - mem2 
+mem3:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem3 = . - mem3 
+mem4:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem4 = . - mem4 
+mem5:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem5 = . - mem5
+mem6:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem6 = . - mem6
+mem7:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem7 = . - mem7
+mem8:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem8 = . - mem8
 strBegin:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrBegin = . - strBegin
