@@ -533,9 +533,77 @@ noSuchMarkError:
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
  lenT127 = . - t127
 varName0:
-.ascii "s"
+.ascii "$ret"
 lenVarName0 = . - varName0
+varName1:
+.ascii "$main_return_var"
+lenVarName1 = . - varName1
+label0:
+ .quad .main
+labelName0:
+.ascii ".main"
+.space 1,0
 data0:
-.ascii "Анна Хоперская родилась 29 июня 1893 года в Волчанске в семье портного Петра Васильевича Хоперского и прачки."
+.ascii ""
 .space 1, 0
 lenData0 = . - data0
+data1:
+.ascii ""
+.space 1, 0
+lenData1 = . - data1
+varName2:
+.ascii "s"
+lenVarName2 = . - varName2
+varName3:
+.ascii "s2"
+lenVarName3 = . - varName3
+varName4:
+.ascii "s3"
+lenVarName4 = . - varName4
+data2:
+.ascii "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n"
+.space 1, 0
+lenData2 = . - data2
+data3:
+.ascii "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\n"
+.space 1, 0
+lenData3 = . - data3
+data4:
+.ascii "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\n"
+.space 1, 0
+lenData4 = . - data4
+varName5:
+.ascii "$print_arg0"
+lenVarName5 = . - varName5
+varName6:
+.ascii "$print_arg0"
+lenVarName6 = . - varName6
+varName7:
+.ascii "$print_arg0"
+lenVarName7 = . - varName7
+label1:
+ .quad .main_end
+labelName1:
+.ascii ".main_end"
+.space 1,0
+data5:
+.ascii ""
+.space 1, 0
+lenData5 = . - data5
+data6:
+.ascii "#main_res0"
+.space 1, 0
+lenData6 = . - data6
+label2:
+ .quad .main_res0
+labelName2:
+.ascii ".main_res0"
+.space 1,0
+data7:
+.ascii ""
+.space 1, 0
+lenData7 = . - data7
+data8:
+.ascii ""
+.space 1, 0
+lenData8 = . - data8

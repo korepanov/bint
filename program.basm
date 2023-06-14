@@ -1,6 +1,32 @@
-string s;
-s = "Анна Хоперская родилась 29 июня 1893 года в Волчанске в семье портного Петра Васильевича Хоперского и прачки.";
- 
-s = s; 
-
-print(s);
+string$ret;
+string$main_return_var;
+goto(#main_end);
+#main:print("");
+print("");
+strings;
+strings2;
+strings3;
+s="AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n";
+s2="BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\n";
+s3="CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC\n";
+string $print_arg0;
+$print_arg0=s;
+print($print_arg0);
+UNDEFINE($print_arg0);
+string $print_arg0;
+$print_arg0=s2;
+print($print_arg0);
+UNDEFINE($print_arg0);
+string $print_arg0;
+$print_arg0=s3;
+print($print_arg0);
+UNDEFINE($print_arg0);
+UNDEFINE(s3);
+UNDEFINE(s2);
+UNDEFINE(s);
+goto($main_return_var);
+#main_end:print("");
+$main_return_var="#main_res0";
+goto(#main);
+#main_res0:print("");
+print("");
