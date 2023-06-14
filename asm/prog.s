@@ -1097,12 +1097,13 @@ mov (mem6), %rdi
 mov (mem7), %rsi   
 __internalShiftStrClear:
 cmp %rdi, %rsi 
-jg __internalShiftStrClearEnd
+jge __internalShiftStrClearEnd
 movb $'*', (%rsi)
 inc %rsi 
 jmp __internalShiftStrClear
 
 __internalShiftStrClearEnd:
+dec %rsi 
 movb $0, (%rsi) 
 
 mov (mem), %rsi 
