@@ -34,6 +34,12 @@ lenMem2 = . - mem2
 mem3:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenMem3 = . - mem3 
+mem4:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem4 = . - mem4 
+mem5:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem5 = . - mem5
 strBegin:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrBegin = . - strBegin
@@ -1216,13 +1222,15 @@ __setVar:
  cmp %rdi, %rax 
  jl __setVarMoreMemEnd
  mov %rdi, (mem3) 
+ mov %rax, (mem4)
+ mov %rbx, (mem5)
  call __internalShiftStr
- mov (mem3), %rdi 
+ mov (mem3), %rdi
+ mov (mem4), %rax
+ mov (mem5), %rbx   
  add (valSize), %rdi 
  jmp __setVarMoreMem 
  __setVarMoreMemEnd:
-
- 
 
  __setVarIsNotStr:
  
@@ -2660,8 +2668,6 @@ _start:
  mov %rax, (userData)
  call __setVar
 
- call __printHeap
- call __throughError
   #set sVar2
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
