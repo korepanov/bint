@@ -554,140 +554,43 @@ lenData1 = . - data1
 varName2:
 .ascii "s"
 lenVarName2 = . - varName2
+data2:
+.ascii "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+.space 1, 0
+lenData2 = . - data2
 varName3:
 .ascii "s2"
 lenVarName3 = . - varName3
-varName4:
-.ascii "s3"
-lenVarName4 = . - varName4
-data2:
-.ascii "АААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААА\n"
-.space 1, 0
-lenData2 = . - data2
 data3:
-.ascii "БББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББ\n"
+.ascii "ББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББ"
 .space 1, 0
 lenData3 = . - data3
-data4:
-.ascii "ВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВ\n"
-.space 1, 0
-lenData4 = . - data4
-varName5:
-.ascii "s4"
-lenVarName5 = . - varName5
-data5:
-.ascii "ГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГ\n"
-.space 1, 0
-lenData5 = . - data5
-varName6:
-.ascii "r"
-lenVarName6 = . - varName6
-data6:
-.ascii "10"
-.space 1, 0
-lenData6 = . - data6
-varName7:
-.ascii "b"
-lenVarName7 = . - varName7
-data7:
-.ascii "1"
-.space 1, 0
-lenData7 = . - data7
-varName8:
-.ascii "s5"
-lenVarName8 = . - varName8
-data8:
-.ascii "ДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДД\n"
-.space 1, 0
-lenData8 = . - data8
-varName9:
-.ascii "s6"
-lenVarName9 = . - varName9
-data9:
-.ascii "ЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕ\n"
-.space 1, 0
-lenData9 = . - data9
-varName10:
-.ascii "s7"
-lenVarName10 = . - varName10
-data10:
-.ascii "ЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁЁ\n"
-.space 1, 0
-lenData10 = . - data10
-varName11:
-.ascii "s8"
-lenVarName11 = . - varName11
-varName12:
-.ascii "s9"
-lenVarName12 = . - varName12
-varName13:
-.ascii "s10"
-lenVarName13 = . - varName13
-data11:
-.ascii "ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ\n"
-.space 1, 0
-lenData11 = . - data11
-data12:
-.ascii "ЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗ\n"
-.space 1, 0
-lenData12 = . - data12
-data13:
-.ascii "Слава\n"
-.space 1, 0
-lenData13 = . - data13
-varName14:
+varName4:
 .ascii "$print_arg0"
-lenVarName14 = . - varName14
-varName15:
-.ascii "$print_arg0"
-lenVarName15 = . - varName15
-varName16:
-.ascii "$print_arg0"
-lenVarName16 = . - varName16
-varName17:
-.ascii "$print_arg0"
-lenVarName17 = . - varName17
-varName18:
-.ascii "$print_arg0"
-lenVarName18 = . - varName18
-varName19:
-.ascii "$print_arg0"
-lenVarName19 = . - varName19
-varName20:
-.ascii "$print_arg0"
-lenVarName20 = . - varName20
-varName21:
-.ascii "$print_arg0"
-lenVarName21 = . - varName21
-varName22:
-.ascii "$print_arg0"
-lenVarName22 = . - varName22
-varName23:
-.ascii "$print_arg0"
-lenVarName23 = . - varName23
+lenVarName4 = . - varName4
 label1:
  .quad .main_end
 labelName1:
 .ascii ".main_end"
 .space 1,0
-data14:
+data4:
 .ascii ""
 .space 1, 0
-lenData14 = . - data14
-data15:
+lenData4 = . - data4
+data5:
 .ascii "#main_res0"
 .space 1, 0
-lenData15 = . - data15
+lenData5 = . - data5
 label2:
  .quad .main_res0
 labelName2:
 .ascii ".main_res0"
 .space 1,0
-data16:
+data6:
 .ascii ""
 .space 1, 0
-lenData16 = . - data16
-data17:
+lenData6 = . - data6
+data7:
 .ascii ""
 .space 1, 0
-lenData17 = . - data17
+lenData7 = . - data7
