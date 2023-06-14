@@ -46,6 +46,9 @@ lenMem6 = . - mem6
 mem7:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenMem7 = . - mem7
+mem8:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem8 = . - mem8
 strBegin:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrBegin = . - strBegin
@@ -1047,9 +1050,12 @@ add %rsi, (strPointer)
 mov %r12, %rsi 
 sub (typeSize), %rsi 
 add (varSize), %rsi
+
 __internalShiftStrLocal: 
-cmp %r14, %rsi   
-jge __internalShiftStrEnd 
+cmp %r14, %rsi  
+ 
+jge __internalShiftStrEnd
+
 mov %rsi, (mem)
 mov %rax, (mem2)
 
@@ -1070,6 +1076,7 @@ call __compare
 cmp $1, %rax 
 
 jnz __internalShiftStrChangeNext
+
 mov (mem), %rsi 
 mov (mem2), %rax
 
@@ -1096,7 +1103,7 @@ inc %rsi
 jmp __internalShiftStrClear
 
 __internalShiftStrClearEnd:
-movb $0, (%rsi)
+movb $0, (%rsi) 
 
 mov (mem), %rsi 
 add (typeSize), %rsi 
@@ -1233,7 +1240,9 @@ __setVar:
  mov %rdi, (mem3) 
  mov %rax, (mem4)
  mov %rbx, (mem5) 
+ mov %r12, (mem8)
  call __internalShiftStr
+ mov (mem8), %r12 
  mov (mem3), %rdi
  mov (mem4), %rax
  mov (mem5), %rbx   
@@ -1258,6 +1267,7 @@ __setVar:
 
  __setVarRet:
  movb $0, (%rbx) 
+
  ret
 
  __getVar:
