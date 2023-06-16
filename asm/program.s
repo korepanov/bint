@@ -2258,6 +2258,18 @@ call __set
  mov %rax, (userData)
  call __setVar
 mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi
+ call __set
+ call __getVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName3, %rax 
+ mov $varName3, %rdi
+ call __set 
+ call __setVar
+mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName4, %rax 
  mov $varName4, %rdi

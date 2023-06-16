@@ -238,6 +238,7 @@ func getLastFile() string {
 
 	for chunk, err := newChunk(); "end" != chunk; chunk, err = newChunk() {
 		if nil != err {
+			fileName = fileToValidate
 			handleError(err)
 		}
 		inputedCode := CodeInput(chunk, false)
@@ -466,7 +467,11 @@ func handleError(newError error) {
 	if nil != err {
 		panic(err)
 	}
-	COMMAND_COUNTER--
+
+	if COMMAND_COUNTER > 0 {
+		COMMAND_COUNTER--
+	}
+
 	newChunk, err := SetCommandCounter(f, COMMAND_COUNTER)
 
 	if nil != err {
@@ -481,7 +486,9 @@ func handleError(newError error) {
 		inputedCode = CodeInput(chunk, false)
 
 		if filter(inputedCode) {
-			COMMAND_COUNTER--
+			if COMMAND_COUNTER > 0 {
+				COMMAND_COUNTER--
+			}
 			newChunk, err = SetCommandCounter(f, COMMAND_COUNTER)
 			if nil != err {
 				panic(err)
@@ -499,7 +506,9 @@ func handleError(newError error) {
 		errorFile = CodeInput(chunk, false)
 
 		if filter(errorFile) {
-			COMMAND_COUNTER--
+			if COMMAND_COUNTER > 0 {
+				COMMAND_COUNTER--
+			}
 			newChunk, err = SetCommandCounter(f, COMMAND_COUNTER)
 			if nil != err {
 				panic(err)

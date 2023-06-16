@@ -1296,7 +1296,7 @@ func checkImportPos(rootSource string) error {
 	for chunk, err := newChunk(); "end" != chunk; chunk, err = newChunk() {
 		command_counter++
 		if nil != err {
-			handleError(err)
+			return err
 		}
 		inputedCode := CodeInput(chunk, true)
 		if len(inputedCode) > 7 && "#import" == inputedCode[0:7] && command_counter > 1 {
