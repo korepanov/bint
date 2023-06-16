@@ -1255,38 +1255,63 @@ __setVar:
  call __read 
  call __toNumber 
  mov %rax, %rbx  
- mov (userData), %rsi 
- call __len 
- mov (valSize), %rdi 
- __setVarMoreMem:
- cmp %rdi, %rax 
- jl __setVarMoreMemEnd
- mov %rdi, (mem3) 
+ mov %rbx, %r10 
+
+ __setVarClearStr:
+ mov (%rbx), %dil 
+ cmp $1, %dil 
+ jz __setVarClearStrEnd
+ movb $1, (%rbx)
+ inc %rbx 
+ jmp __setVarClearStr
+ __setVarClearStrEnd:
+ #dec %rbx 
+ movb $0, (%rbx)
+ mov %r10, %rbx 
+
+ #mov (userData), %rsi 
+ #call __len 
+ #mov (valSize), %rdi 
+ #__setVarMoreMem:
+ #cmp %rdi, %rax 
+ #jl __setVarMoreMemEnd
+ #mov %rdi, (mem3) 
+ #mov %rax, (mem4)
+ #mov %rbx, (mem5) 
+ #mov %r12, (mem8)
+#call __internalShiftStr
+# mov (mem8), %r12 
+# mov (mem3), %rdi
+# mov (mem4), %rax
+# mov (mem5), %rbx   
+# add (valSize), %rdi 
+# jmp __setVarMoreMem 
+ #__setVarMoreMemEnd:
+
+ __setVarIsNotStr:
+
+ #mov %rbx, %r10 # сохраняем значение %rbx  
+ mov (userData), %rax 
+ __setNow:
+ mov (%rbx), %dil 
+ cmp $1, %dil 
+ jz __setVarMoreMemEnd
+
  mov %rax, (mem4)
  mov %rbx, (mem5) 
  mov %r12, (mem8)
  call __internalShiftStr
  mov (mem8), %r12 
- mov (mem3), %rdi
  mov (mem4), %rax
- mov (mem5), %rbx   
- add (valSize), %rdi 
- jmp __setVarMoreMem 
- __setVarMoreMemEnd:
+ mov (mem5), %rbx
 
- __setVarIsNotStr:
- 
- mov %rbx, %r10 # сохраняем значение %rbx  
- mov (userData), %rax 
- xor %rdi, %rdi # счетчик количества реально записанных байт 
- __setNow:
+ __setVarMoreMemEnd:
  mov (%rax), %dl
  cmp $0, %dl 
  jz __setVarRet 
  mov %dl, (%rbx)
  inc %rbx 
  inc %rax 
- inc %rdi 
  jmp __setNow 
 
  __setVarRet:
@@ -2709,7 +2734,7 @@ _start:
  call __set 
  mov $data11, %rax 
  mov %rax, (userData)
- call __setVar
+ call __setVar   
 
   #set sVar2
  mov $lenVarName, %rsi 
