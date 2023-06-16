@@ -555,42 +555,125 @@ varName2:
 .ascii "s"
 lenVarName2 = . - varName2
 data2:
-.ascii "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+.ascii "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n"
 .space 1, 0
 lenData2 = . - data2
 varName3:
 .ascii "s2"
 lenVarName3 = . - varName3
 data3:
-.ascii "ББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББ"
+.ascii "ББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББ\n"
 .space 1, 0
 lenData3 = . - data3
 varName4:
-.ascii "$print_arg0"
+.ascii "s3"
 lenVarName4 = . - varName4
+varName5:
+.ascii "s4"
+lenVarName5 = . - varName5
+varName6:
+.ascii "s5"
+lenVarName6 = . - varName6
+varName7:
+.ascii "s6"
+lenVarName7 = . - varName7
+varName8:
+.ascii "s7"
+lenVarName8 = . - varName8
+varName9:
+.ascii "s8"
+lenVarName9 = . - varName9
+varName10:
+.ascii "s9"
+lenVarName10 = . - varName10
+varName11:
+.ascii "s10"
+lenVarName11 = . - varName11
+data4:
+.ascii "ВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВ\n"
+.space 1, 0
+lenData4 = . - data4
+data5:
+.ascii "ГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГ\n"
+.space 1, 0
+lenData5 = . - data5
+data6:
+.ascii "ДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДД\n"
+.space 1, 0
+lenData6 = . - data6
+data7:
+.ascii "ЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕ\n"
+.space 1, 0
+lenData7 = . - data7
+data8:
+.ascii "ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ\n"
+.space 1, 0
+lenData8 = . - data8
+data9:
+.ascii "ЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗ\n"
+.space 1, 0
+lenData9 = . - data9
+data10:
+.ascii "ИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИ\n"
+.space 1, 0
+lenData10 = . - data10
+data11:
+.ascii "КККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККК\n"
+.space 1, 0
+lenData11 = . - data11
+varName12:
+.ascii "$print_arg0"
+lenVarName12 = . - varName12
+varName13:
+.ascii "$print_arg0"
+lenVarName13 = . - varName13
+varName14:
+.ascii "$print_arg0"
+lenVarName14 = . - varName14
+varName15:
+.ascii "$print_arg0"
+lenVarName15 = . - varName15
+varName16:
+.ascii "$print_arg0"
+lenVarName16 = . - varName16
+varName17:
+.ascii "$print_arg0"
+lenVarName17 = . - varName17
+varName18:
+.ascii "$print_arg0"
+lenVarName18 = . - varName18
+varName19:
+.ascii "$print_arg0"
+lenVarName19 = . - varName19
+varName20:
+.ascii "$print_arg0"
+lenVarName20 = . - varName20
+varName21:
+.ascii "$print_arg0"
+lenVarName21 = . - varName21
 label1:
  .quad .main_end
 labelName1:
 .ascii ".main_end"
 .space 1,0
-data4:
+data12:
 .ascii ""
 .space 1, 0
-lenData4 = . - data4
-data5:
+lenData12 = . - data12
+data13:
 .ascii "#main_res0"
 .space 1, 0
-lenData5 = . - data5
+lenData13 = . - data13
 label2:
  .quad .main_res0
 labelName2:
 .ascii ".main_res0"
 .space 1,0
-data6:
+data14:
 .ascii ""
 .space 1, 0
-lenData6 = . - data6
-data7:
+lenData14 = . - data14
+data15:
 .ascii ""
 .space 1, 0
-lenData7 = . - data7
+lenData15 = . - data15
