@@ -1,4 +1,6 @@
 .data
+starSymbol:
+.ascii "*"
 pageSize:
 .quad 4096
 varNameSize:
@@ -287,6 +289,17 @@ __printHeap:
  __printHeapLoop:
  cmp (strMax), %r8 
  jz __printHeapEx
+ mov (%r8), %dl 
+ cmp $1, %dl 
+ jnz printHeapNopEnd
+ mov $starSymbol, %rsi 
+ mov $1, %rdi	
+ mov $1, %rdx
+ mov $1, %rax	
+ syscall
+ inc %r8 
+ jmp __printHeapLoop
+ printHeapNopEnd:
  mov %r8, %rsi 
  mov $1, %rdi	
  mov $1, %rdx
@@ -377,7 +390,7 @@ __set: #set strings
  __setClear:
  cmp $0, %rsi
  jz __setClearEnd
- movb $'*', (%rdx)
+ movb $1, (%rdx)
  dec %rsi
  inc %rdx  
  jmp __setClear
@@ -403,7 +416,7 @@ __set: #set strings
  __setLocalEnd:
  dec %rdx 
  mov (%rdx), %rax 
- cmp $'*', %rax 
+ cmp $1, %rax 
  jz __star
  inc %rdx
  __star: 
@@ -509,7 +522,7 @@ __defineVar:
  mov %r14, %r8 
  __defOkLocal: 
  movb (%rcx), %r11b 
- cmp $'*', %r11b
+ cmp $1, %r11b
  jz __defOkLocalEx
  movb %r11b, (%r8)
  inc %rcx 
@@ -520,7 +533,7 @@ __defineVar:
  add (varNameSize), %r8 
  __defOkTypeLocal:
  movb (%rdx), %r11b
- cmp $'*', %r11b 
+ cmp $1, %r11b 
  jz __defOkTypeLocalEx
  movb %r11b, (%r8)
  inc %rdx
@@ -645,7 +658,7 @@ __undefineVar:
 
  mov %rbx, %r12 
  call __read 
- cmp $'*', (buf)
+ cmp $1, (buf)
  jz __undefVarEnd 
  
  add (varSize), %rbx 
@@ -656,7 +669,7 @@ __undefineVar:
  sub (varSize), %rbx 
  mov %rbx, %r12 
  call __read 
- cmp $'*', (buf)
+ cmp $1, (buf)
  jz __undefEnd
  mov $buf, %rsi 
  mov %rbx, %r12 
@@ -734,7 +747,7 @@ __firstMem:
  cmp $-1, %rax
  jz __throughError
 # заполним выделенную память
- mov $'*', %dl
+ mov $1, %dl
  mov $0, %rbx
  __lo:
  movb %dl, (%r8)
@@ -761,7 +774,7 @@ __firstMem:
  cmp $-1, %rax
  jz __throughError
 # заполним выделенную память
- mov $'*', %dl
+ mov $1, %dl
  mov $0, %rbx
  __newLabelMemlo:
  movb %dl, (%r8)
@@ -792,7 +805,7 @@ __firstMem:
  cmp $-1, %rax
  jz __throughError
 # заполним выделенную память
- mov $'*', %dl
+ mov $1, %dl
  mov $0, %rbx
  __firstStrMemLo:
  movb %dl, (%r8)
@@ -825,7 +838,7 @@ __firstMem:
  cmp $-1, %rax
  jz __throughError
 # заполним выделенную память
- mov $'*', %dl
+ mov $1, %dl
  mov $0, %rbx
  __newMemlo:
  movb %dl, (%r8)
@@ -872,7 +885,7 @@ __firstMem:
  cmp $-1, %rax
  jz __throughError
 # заполним выделенную память
- mov $'*', %dl
+ mov $1, %dl
  mov $0, %rbx
  __newStrMemlo:
  movb %dl, (%r8)
@@ -898,7 +911,7 @@ __readClear:
  mov $buf, %r10
  __readLocal: 
  movb (%r8), %r9b
- cmp $'*', %r9b  
+ cmp $1, %r9b  
  jz __readEx
  cmp $0, %r9b  
  jz __readEx
@@ -910,7 +923,7 @@ __readClear:
  mov $buf, %r10 
  cmp $0, (%r10)
  jnz __readOk
- movb $'*', (%r10)
+ movb $1, (%r10)
  __readOk:
  ret 
  
@@ -944,11 +957,11 @@ __readClear:
  mov (%rax), %r10b 
  cmp $0, %r10b 
  jz __renewValEnd
- movb $'*', (%rax)
+ movb $1, (%rax)
  inc %rax 
  jmp __renewValLocal 
  __renewValEnd: 
- movb $'*', (%rax)
+ movb $1, (%rax)
  __renewAddr:
  call __read 
  mov $buf, %rsi
@@ -961,9 +974,9 @@ __readClear:
  mov %r12, %rsi 
  __renewAddrLocal:
  mov (%rsi), %r10b 
- cmp $'*', %r10b 
+ cmp $1, %r10b 
  jz __renewAddrEnd
- movb $'*', (%rsi)
+ movb $1, (%rsi)
  inc %rsi 
  jmp __renewAddrLocal
  __renewAddrEnd:
@@ -1108,7 +1121,7 @@ mov (mem7), %rsi
 __internalShiftStrClear:
 cmp %rdi, %rsi 
 jge __internalShiftStrClearEnd
-movb $'*', (%rsi)
+movb $1, (%rsi)
 inc %rsi 
 jmp __internalShiftStrClear
 
@@ -1178,7 +1191,7 @@ __setVar:
 
  mov %rbx, %r12 
  call __read 
- cmp $'*', (buf)
+ cmp $1, (buf)
  jz __setVarEnd 
  
  add (varSize), %rbx 
@@ -1189,7 +1202,7 @@ __setVar:
  sub (varSize), %rbx 
  mov %rbx, %r12 
  call __read 
- cmp $'*', (buf)
+ cmp $1, (buf)
  jz __throughError
  mov $buf, %rsi 
  mov %rbx, %r12 
@@ -1230,7 +1243,7 @@ __setVar:
  __setVarClearLocal: 
  cmp %rax, %rbx 
  jz __setVarClearEnd
- movb $'*', (%rbx) 
+ movb $1, (%rbx) 
  inc %rbx 
  jmp __setVarClearLocal
  __setVarClearEnd:
@@ -1291,7 +1304,7 @@ __setVar:
 
  mov %rbx, %r12 
  call __read 
- cmp $'*', (buf)
+ cmp $1, (buf)
  jz __getVarEnd 
  
  add (varSize), %rbx 
@@ -1302,7 +1315,7 @@ __setVar:
  sub (varSize), %rbx 
  mov %rbx, %r12 
  call __read 
- cmp $'*', (buf)
+ cmp $1, (buf)
  jz __throughError
  mov $buf, %rsi 
  mov %rbx, %r12 
@@ -1366,7 +1379,7 @@ mov $lenBuf, %rdi
 __clearBufLocal: 
 cmp $1, %rdi 
 jz __clearBufEnd
-movb $'*', (%rsi)
+movb $1, (%rsi)
 inc %rsi 
 dec %rdi 
 jmp __clearBufLocal
@@ -1381,7 +1394,7 @@ mov $lenBuf2, %rdi
 __clearBufLocal2: 
 cmp $1, %rdi 
 jz __clearBufEnd2
-movb $'*', (%rsi)
+movb $1, (%rsi)
 inc %rsi 
 dec %rdi 
 jmp __clearBufLocal2
@@ -1396,7 +1409,7 @@ mov $lenUserData, %rdi
 __clearUserDataLocal: 
 cmp $1, %rdi 
 jz __clearUserDataEnd
-movb $'*', (%rsi)
+movb $1, (%rsi)
 inc %rsi 
 dec %rdi 
 jmp __clearUserDataLocal
@@ -1411,7 +1424,7 @@ mov $lenBuf3, %rdi
 __clearBufLocal3: 
 cmp $1, %rdi 
 jz __clearBufEnd3
-movb $'*', (%rsi)
+movb $1, (%rsi)
 inc %rsi 
 dec %rdi 
 jmp __clearBufLocal3
@@ -1426,7 +1439,7 @@ mov $lenBuf4, %rdi
 __clearBufLocal4: 
 cmp $1, %rdi 
 jz __clearBufEnd4
-movb $'*', (%rsi)
+movb $1, (%rsi)
 inc %rsi 
 dec %rdi 
 jmp __clearBufLocal4
