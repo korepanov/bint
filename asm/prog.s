@@ -2739,8 +2739,6 @@ _start:
  call __set 
  call __defineVar
 
-    
-
   #set sVar2
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -2750,7 +2748,6 @@ _start:
  mov $data9, %rax 
  mov %rax, (userData)
  call __setVar
-
  /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName6, %rax 
@@ -2906,6 +2903,7 @@ _start:
  call __set
  call __getVar
  mov (userData), %r8 
+ 
 
   # get sVar2  
  mov $lenVarName, %rsi 
