@@ -2712,6 +2712,16 @@ _start:
  mov $labelName2, %rax 
  mov %rax, (userData)
  call __setVar*/ 
+
+ #set sVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
+ call __set 
+ mov $data11, %rax 
+ mov %rax, (userData)
+ call __setVar
  
  # sVar2
  mov $lenVarName, %rsi 
@@ -2726,15 +2736,7 @@ _start:
  call __set 
  call __defineVar
 
- #set sVar
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi
- call __set 
- mov $data11, %rax 
- mov %rax, (userData)
- call __setVar   
+    
 
   #set sVar2
  mov $lenVarName, %rsi 
