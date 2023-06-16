@@ -621,6 +621,9 @@ __defineVar:
  add (typeSize), %r8
  mov (strPointer), %rax 
  movb $0, (%rax)
+ add (valSize), %rax 
+ movb $0, (%rax)
+ sub (valSize), %rax 
  mov %r8, %r12 
  call __toStr 
  mov %r12, %r8 
