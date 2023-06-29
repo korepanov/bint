@@ -2707,6 +2707,19 @@ _start:
  call __set 
  call __defineVar
 
+
+  # sVar2
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName6, %rax 
+ mov $varName6, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
  /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
@@ -2725,19 +2738,6 @@ _start:
  mov $data11, %rax 
  mov %rax, (userData)
  call __setVar
- 
- # sVar2
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName6, %rax 
- mov $varName6, %rdi
- call __set 
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenStringType, %rax 
- mov $stringType, %rdi
- call __set 
- call __defineVar
 
   #set sVar2
  mov $lenVarName, %rsi 
@@ -2747,6 +2747,8 @@ _start:
  call __set 
  mov $data9, %rax 
  mov %rax, (userData)
+ call __setVar
+ call __setVar
  call __setVar
  /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -2913,7 +2915,8 @@ _start:
  call __set
  call __getVar
 
- mov (userData), %r9 
+ mov (userData), %r9  
+
 
  mov %r8, %r11 
  call __userConcatinate 
