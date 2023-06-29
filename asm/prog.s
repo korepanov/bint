@@ -467,10 +467,76 @@ __concatinate:
  # входные параметры 
  # r8 - адрес начала первой строки 
  # r9 - адрес начала второй строки 
- # r11 - адрес в памяти строк, куда положить результат  
- mov %r8, %rsi 
- 
+ # r11 - адрес имени переменной, куда положить результат  
+ mov %r13, %rbx
+ __setVarLocal:
+ cmp %r15, %rbx
+ jg __setVarEnd
 
+ mov %rbx, %r12 
+ call __read 
+ cmp $1, (buf)
+ jz __setVarEnd 
+ 
+ add (varSize), %rbx 
+ jmp __setVarLocal  
+  
+ __setVarEnd:
+ __setVarSearch:
+ sub (varSize), %rbx 
+ mov %rbx, %r12 
+ call __read 
+ cmp $1, (buf)
+ jz __throughError
+ mov $buf, %rsi 
+ mov %rbx, %r12 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
+ call __compare
+ mov %r12, %rbx 
+ cmp $0, %rax 
+ jz __setVarSearch
+
+
+
+
+
+
+ movb $0, (mem) # признак первого захода
+ __userConcatinateSetNow:
+ mov (%r11), %dil 
+ cmp $1, %dil 
+ jz __userConcatinateSetVarMoreMemEnd
+
+ mov %r8, (mem4)
+ mov %r9, (mem5) 
+ mov %r11, (mem8)
+ call __internalShiftStr
+ mov (mem8), %r11 
+ mov (mem4), %r8
+ mov (mem5), %r9 
+
+ __userConcatinateSetVarMoreMemEnd:
+ mov (%r8), %dl
+ cmp $0, %dl 
+ jz __userConcatinateSetVarRet 
+ mov %dl, (%r11)
+ inc %r11 
+ inc %r8
+ jmp __userConcatinateSetNow 
+
+ __userConcatinateSetVarRet:
+ mov (mem), %dl 
+ cmp $1, %dl 
+ jz __userConcatinateEnd 
+ mov %r9, %r8 
+ movb $1, (mem) # признак второго захода 
+ jmp __userConcatinateSetNow
+
+ __userConcatinateEnd:
  ret
 
 __toNumber:
@@ -2918,7 +2984,7 @@ _start:
  mov (userData), %r9  
 
 
- mov %r8, %r11 
+ mov $varName1, %r11 
  call __userConcatinate 
 
  call __printHeap
