@@ -467,22 +467,23 @@ __concatinate:
  # входные параметры 
  # r8 - адрес начала первой строки 
  # r9 - адрес начала второй строки 
- # r11 - адрес имени переменной, куда положить результат  
+ # $varName - адрес имени переменной, куда положить результат  
  mov %r13, %rbx
- __setVarLocal:
+ __userConcatinateVarLocal:
  cmp %r15, %rbx
- jg __setVarEnd
+ jg __userConcatinateVarEnd
 
  mov %rbx, %r12 
  call __read 
  cmp $1, (buf)
- jz __setVarEnd 
+ jz __userConcatinateVarEnd 
  
  add (varSize), %rbx 
- jmp __setVarLocal  
+ jmp __userConcatinateVarLocal  
   
- __setVarEnd:
- __setVarSearch:
+ __userConcatinateVarEnd:
+
+ __userConcatinateVarSearch:
  sub (varSize), %rbx 
  mov %rbx, %r12 
  call __read 
@@ -498,11 +499,13 @@ __concatinate:
  call __compare
  mov %r12, %rbx 
  cmp $0, %rax 
- jz __setVarSearch
+ jz __userConcatinateVarSearch
 
-
-
-
+ mov %rbx, %rsi 
+ call __print 
+ ret 
+ 
+ // ПРОДОЛЖИТЬ !!!
 
 
  movb $0, (mem) # признак первого захода
@@ -2984,7 +2987,13 @@ _start:
  mov (userData), %r9  
 
 
- mov $varName1, %r11 
+ 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
+ call __set
+
  call __userConcatinate 
 
  call __printHeap
