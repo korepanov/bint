@@ -1190,6 +1190,7 @@ mov %rsi, (mem7)
 mov %rsi, %r12 
 call __read 
 call __toNumber
+mov %rax, (mem8)
 add (valSize), %rax 
 
 
@@ -1250,6 +1251,30 @@ mov (mem), %rsi
 mov (mem2), %rax 
  
 __internalShiftStrOk:
+
+# ПРОДОЛЖИТЬ!!!
+
+mov (mem8), %rax # начиная с этого адреса нужно сдвинуть непосредственно строки на valSize   
+
+
+ # формируем адрес нового конца 
+ mov (strMax), %r10 
+ add (valSize), %r10
+ 
+ # адрес старого конца
+ mov (strMax), %r11
+ __internalShiftMake: 
+ mov %rax, %r9
+ cmp %r9, %r11   
+ jz __internalShiftMakeEnd
+ movb (%r11), %r12b 
+ movb %r12b, (%r10)
+
+ dec %r10
+ dec %r11 
+ jmp __internalShiftMake
+ __internalShiftMakeEnd:
+
 
 jmp  __internalShiftStrLocal
 
