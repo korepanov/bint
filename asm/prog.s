@@ -483,109 +483,47 @@ __concatinate:
  # входные параметры 
  # r8 - адрес начала первой строки 
  # r9 - адрес начала второй строки 
- # $varName - адрес имени переменной, куда положить результат 
- #mov $lenBuf, %rsi 
- #mov $buf, %rdx 
- #mov $lenVarName, %rax 
- #mov $varName, %rdi 
- #call __set
+ # $varName - адрес имени переменной, куда положить результат
 
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenTStrName, %rax 
- mov $tStrName, %rdi 
- call __set
+ # вычислить общую длину результирующей строки 
+ mov %r8, %rsi 
+ call __len 
+ mov %rax, (mem)
+ mov %r9, %rsi 
+ call __len 
+ add (mem), %rax 
+ 
+ mov %r8, (mem)
+ mov %r9, (mem2)
+ mov (strMax), %r11 
+ mov %r11, (mem3)
+ mov %rax, (mem4)
+ # выделить необходимый объем памяти 
+ mov %rax, %rdi
+ add (strMax), %rdi
+ add %rax, (strMax) 
+ mov $12, %rax
+ syscall
+ # заполним выделенную память
+ mov (mem4), %rax 
+ mov (mem3), %r11 
+ mov $'!', %dl
+ mov $0, %rbx
+ __userConcatinateLo:
+ movb %dl, (%r11, %rbx)
+ inc %rbx
+ cmp %rax, %rbx
+ jz __userConcatineteEx
+ jmp __userConcatinateLo
+ __userConcatineteEx:
+ mov (mem3), %r11 
+ movb $'!', (%r11)
 
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenStringType, %rax 
- mov $stringType, %rdi 
- call __set
- call __defineVar
+ 
 
  call __printHeap
  call __throughError
-
- mov %r8, (mem2)
- mov %r9, (mem3)
-
- mov %r13, %rbx
- __userConcatinateVarLocal:
- cmp %r15, %rbx
- jg __userConcatinateVarEnd
-
- mov %rbx, %r12 
- call __read 
- cmp $1, (buf)
- jz __userConcatinateVarEnd 
  
- add (varSize), %rbx 
- jmp __userConcatinateVarLocal  
-  
- __userConcatinateVarEnd:
-
- __userConcatinateVarSearch:
- sub (varSize), %rbx 
- mov %rbx, %r12 
- call __read 
- cmp $1, (buf)
- jz __throughError
- mov $buf, %rsi 
- mov %rbx, %r12 
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenVarName, %rax 
- mov $varName, %rdi 
- call __set
- call __compare
- mov %r12, %rbx 
- cmp $0, %rax 
- jz __userConcatinateVarSearch
-
- mov %rbx, (mem7)
- call __getVar # получить адрес в (userData), куда класть данные
- mov (userData), %r11 
-
- mov (mem2), %r8 
- mov (mem3), %r9 
-
- movb $0, (mem) # признак первого захода
- __userConcatinateSetNow:
- mov (%r11), %dil 
- cmp $1, %dil 
- jz __userConcatinateSetVarMoreMemEnd
-
- mov %r8, (mem4)
- mov %r9, (mem5) 
- mov %r11, (mem8)
- mov (mem7), %r12 
- call __internalShiftStr
-
- mov (mem8), %r11 
- mov (mem4), %r8
- mov (mem5), %r9 
-
- call __printHeap 
- call __throughError
-
- __userConcatinateSetVarMoreMemEnd:
- mov (%r8), %dl
- cmp $0, %dl 
- jz __userConcatinateSetVarRet 
- mov %dl, (%r11)
- inc %r11 
- inc %r8
- jmp __userConcatinateSetNow 
-
- __userConcatinateSetVarRet:
- mov (mem), %dl 
- cmp $1, %dl 
- jz __userConcatinateEnd 
- mov %r9, %r8 
- movb $1, (mem) # признак второго захода 
- jmp __userConcatinateSetNow
-
- __userConcatinateEnd:
  ret
 
 __toNumber:
