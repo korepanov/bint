@@ -141,9 +141,6 @@ stringType:
 .ascii "string"
 .space 1, 0
 lenStringType = . - stringType
-tStrName:
-.ascii "tStr"
-lenTStrName = . - tStrName
 enter:
 .ascii "\n"
 .space 1, 0
@@ -185,13 +182,13 @@ data8:
 .space 1, 0
 lenData8 = . - data8 
 data9:
-.ascii "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"
+.ascii "DBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBD"
 .space 1, 0
 data10:
 .ascii "1"
 .space 1,0 
 data11:
-.ascii "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+.ascii "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC"
 .space 1,0 
 
 labelName1:
@@ -519,8 +516,32 @@ __concatinate:
  mov (mem3), %r11 
  movb $'!', (%r11)
 
- 
+ mov (mem), %r8 
+ mov (mem2), %r9 
 
+ __userConcatinateFirst:
+ mov (%r8), %sil 
+ cmp $0, %sil 
+ jz __userConcatinateFirstEnd
+ mov %sil, (%r11)
+ inc %r8 
+ inc %r11 
+ jmp __userConcatinateFirst
+ __userConcatinateFirstEnd:
+
+ __userConcatinateSecond:
+ mov (%r9), %sil 
+ cmp $0, %sil 
+ jz __userConcatinateSecondEnd
+ mov %sil, (%r11)
+ inc %r9 
+ inc %r11 
+ jmp __userConcatinateSecond 
+ __userConcatinateSecondEnd:
+ movb $0, (%r11)
+ mov (mem3), %r11 
+ mov %r11, (userData)
+ call __setVar 
  call __printHeap
  call __throughError
  
@@ -1123,6 +1144,7 @@ __compare:
 
 __internalShiftStr:
 # %r12 - место, после которого нужно сделать сдвиг 
+ 
 mov (valSize), %rsi 
 add %rsi, (strPointer)
 
@@ -1361,7 +1383,7 @@ __setVar:
  mov (mem8), %r12 
  mov (mem4), %rax
  mov (mem5), %rbx
-
+  
  __setVarMoreMemEnd:
  mov (%rax), %dl
  cmp $0, %dl 
@@ -2783,16 +2805,6 @@ _start:
  mov %rax, (userData)
  call __setVar*/ 
 
- #set sVar
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi
- call __set 
- mov $data11, %rax 
- mov %rax, (userData)
- call __setVar
-
   #set sVar2
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -2802,8 +2814,17 @@ _start:
  mov $data9, %rax 
  mov %rax, (userData)
  call __setVar
+
+ #set sVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
+ call __set 
+ mov $data11, %rax 
+ mov %rax, (userData)
  call __setVar
- call __setVar
+ 
  /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName6, %rax 
@@ -2984,7 +3005,7 @@ _start:
  mov (mem), %r8 
  mov (mem2), %r9 
 
- call __userConcatinate 
+ #call __userConcatinate 
 
  call __printHeap
 
