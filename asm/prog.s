@@ -1,6 +1,8 @@
 .data
 starSymbol:
 .ascii "*"
+endSymbol:
+.ascii ";"
 pageSize:
 .quad 4096
 varNameSize:
@@ -139,6 +141,9 @@ stringType:
 .ascii "string"
 .space 1, 0
 lenStringType = . - stringType
+tStrName:
+.ascii "tStr"
+lenTStrName = . - tStrName
 enter:
 .ascii "\n"
 .space 1, 0
@@ -290,6 +295,17 @@ __printHeap:
  cmp (strMax), %r8 
  jz __printHeapEx
  mov (%r8), %dl 
+ /*cmp $0, %dl 
+ jnz __printHeapNotZero
+ mov $endSymbol, %rsi 
+ mov $1, %rdi	
+ mov $1, %rdx
+ mov $1, %rax	
+ syscall
+ inc %r8 
+ jmp __printHeapLoop
+ __printHeapNotZero: */
+
  cmp $1, %dl 
  jnz printHeapNopEnd
  mov $starSymbol, %rsi 
@@ -467,7 +483,32 @@ __concatinate:
  # входные параметры 
  # r8 - адрес начала первой строки 
  # r9 - адрес начала второй строки 
- # $varName - адрес имени переменной, куда положить результат  
+ # $varName - адрес имени переменной, куда положить результат 
+ #mov $lenBuf, %rsi 
+ #mov $buf, %rdx 
+ #mov $lenVarName, %rax 
+ #mov $varName, %rdi 
+ #call __set
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenTStrName, %rax 
+ mov $tStrName, %rdi 
+ call __set
+
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi 
+ call __set
+ call __defineVar
+
+ call __printHeap
+ call __throughError
+
+ mov %r8, (mem2)
+ mov %r9, (mem3)
+
  mov %r13, %rbx
  __userConcatinateVarLocal:
  cmp %r15, %rbx
@@ -501,12 +542,12 @@ __concatinate:
  cmp $0, %rax 
  jz __userConcatinateVarSearch
 
- mov %rbx, %rsi 
- call __print 
- ret 
- 
- // ПРОДОЛЖИТЬ !!!
+ mov %rbx, (mem7)
+ call __getVar # получить адрес в (userData), куда класть данные
+ mov (userData), %r11 
 
+ mov (mem2), %r8 
+ mov (mem3), %r9 
 
  movb $0, (mem) # признак первого захода
  __userConcatinateSetNow:
@@ -517,10 +558,15 @@ __concatinate:
  mov %r8, (mem4)
  mov %r9, (mem5) 
  mov %r11, (mem8)
+ mov (mem7), %r12 
  call __internalShiftStr
+
  mov (mem8), %r11 
  mov (mem4), %r8
  mov (mem5), %r9 
+
+ call __printHeap 
+ call __throughError
 
  __userConcatinateSetVarMoreMemEnd:
  mov (%r8), %dl
@@ -1199,7 +1245,7 @@ jmp __internalShiftStrClear
 
 __internalShiftStrClearEnd:
 dec %rsi 
-movb $0, (%rsi) 
+#movb $0, (%rsi) 
 
 mov (mem), %rsi 
 add (typeSize), %rsi 
@@ -1207,7 +1253,8 @@ add (typeSize), %rsi
 mov $buf2, %rdi 
 
 __internalShiftStrSet:
-cmp $0, (%rdi)
+mov (%rdi), %al 
+cmp $0, %al 
 jz __internalShiftStrChangeEnd
 mov (%rdi), %al 
 mov %al, (%rsi)
@@ -2965,6 +3012,7 @@ _start:
  call __set 
  call __setVar
 
+ # подготавливаем вызов __userConcatinate
 
   # get sVar  
  mov $lenVarName, %rsi 
@@ -2974,7 +3022,8 @@ _start:
  call __set
  call __getVar
  mov (userData), %r8 
- 
+
+ mov %r8, (mem) 
 
   # get sVar2  
  mov $lenVarName, %rsi 
@@ -2986,13 +3035,16 @@ _start:
 
  mov (userData), %r9  
 
+ mov %r9, (mem2)
 
- 
  mov $lenVarName, %rsi 
  mov $varName, %rdx
  mov $lenVarName1, %rax 
  mov $varName1, %rdi 
  call __set
+
+ mov (mem), %r8 
+ mov (mem2), %r9 
 
  call __userConcatinate 
 
