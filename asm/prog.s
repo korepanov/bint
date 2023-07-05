@@ -1146,7 +1146,10 @@ __compare:
  ret 
 
 __internalMakeShiftStr:
-# %r12 - адрес внутри таблицы строк, начиная с которого нужно сделать сдвиг 
+# %r12 - адрес внутри таблицы строк, начиная с которого нужно сделать сдвиг
+ movb $'%', (%r12) 
+ call __printHeap
+ call __throughError
 # ПРОДОЛЖИТЬ!!!
 #call __printHeap
 #call __throughError
@@ -1181,7 +1184,7 @@ add %rsi, (strPointer)
 
 
 mov %r12, (mem9)
-call __read 
+call __read
 call __toNumber
 mov (mem9), %r12 
 mov %rax, (mem9) # с этого адреса нужно сделать сдвиг в таблице строк 
@@ -1250,7 +1253,7 @@ mov (mem), %rsi
 add (typeSize), %rsi 
  
 mov $buf2, %rdi 
-
+ 
 __internalShiftStrSet:
 mov (%rdi), %al 
 cmp $0, %al 
@@ -2844,7 +2847,27 @@ _start:
  mov $labelName2, %rax 
  mov %rax, (userData)
  call __setVar*/ 
+  #set sVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
+ call __set 
+ mov $data7, %rax 
+ mov %rax, (userData)
+ call __setVar
 
+  #set sVar2
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName6, %rax 
+ mov $varName6, %rdi
+ call __set 
+ mov $data8, %rax 
+ mov %rax, (userData)
+ call __setVar
+ call __printHeap
+ call __throughError
   #set sVar2
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
