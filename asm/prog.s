@@ -53,6 +53,9 @@ lenMem7 = . - mem7
 mem8:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenMem8 = . - mem8
+mem9:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem9 = . - mem9
 strBegin:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrBegin = . - strBegin
@@ -1142,11 +1145,46 @@ __compare:
  mov $1, %rax  
  ret 
 
+__internalMakeShiftStr:
+# %r12 - адрес внутри таблицы строк, начиная с которого нужно сделать сдвиг 
+# ПРОДОЛЖИТЬ!!!
+#call __printHeap
+#call __throughError
+#mov (mem8), %rax # начиная с этого адреса нужно сдвинуть непосредственно строки на valSize   
+
+
+ # формируем адрес нового конца 
+ #mov (strMax), %r10 
+ #add (valSize), %r10
+ 
+ # адрес старого конца
+ #mov (strMax), %r11
+ #__internalShiftMake: 
+ #mov %rax, %r9
+ #cmp %r9, %r11   
+ #jz __internalShiftMakeEnd
+ #movb (%r11), %r12b 
+ #movb %r12b, (%r10)
+
+# dec %r10
+# dec %r11 
+# jmp __internalShiftMake
+# __internalShiftMakeEnd:
+ret 
+
+
 __internalShiftStr:
-# %r12 - место, после которого нужно сделать сдвиг 
+# %r12 - место внутри таблицы переменных, после которого нужно сделать сдвиг 
  
 mov (valSize), %rsi 
 add %rsi, (strPointer)
+
+
+mov %r12, (mem9)
+call __read 
+call __toNumber
+mov (mem9), %r12 
+mov %rax, (mem9) # с этого адреса нужно сделать сдвиг в таблице строк 
 
 mov %r12, %rsi 
 sub (typeSize), %rsi 
@@ -1252,35 +1290,11 @@ mov (mem2), %rax
  
 __internalShiftStrOk:
 
-# ПРОДОЛЖИТЬ!!!
-#call __printHeap
-#call __throughError
-#mov (mem8), %rax # начиная с этого адреса нужно сдвинуть непосредственно строки на valSize   
-
-
- # формируем адрес нового конца 
- #mov (strMax), %r10 
- #add (valSize), %r10
- 
- # адрес старого конца
- #mov (strMax), %r11
- #__internalShiftMake: 
- #mov %rax, %r9
- #cmp %r9, %r11   
- #jz __internalShiftMakeEnd
- #movb (%r11), %r12b 
- #movb %r12b, (%r10)
-
-# dec %r10
-# dec %r11 
-# jmp __internalShiftMake
-# __internalShiftMakeEnd:
-
-
 jmp  __internalShiftStrLocal
 
 __internalShiftStrEnd:
-
+mov (mem9), %r12 
+call __internalMakeShiftStr
 
 ret 
 
