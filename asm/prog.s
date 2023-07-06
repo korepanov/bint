@@ -305,6 +305,16 @@ __printHeap:
  inc %r8 
  jmp __printHeapLoop
  __printHeapNotZero: */
+ cmp $2, %dl 
+ jnz __printHeapNotTwo
+ mov $endSymbol, %rsi 
+ mov $1, %rdi	
+ mov $1, %rdx
+ mov $1, %rax	
+ syscall
+ inc %r8 
+ jmp __printHeapLoop
+ __printHeapNotTwo: 
 
  cmp $1, %dl 
  jnz printHeapNopEnd
@@ -698,8 +708,10 @@ __defineVar:
  add (typeSize), %r8
  mov (strPointer), %rax 
  movb $0, (%rax)
- add (valSize), %rax 
- movb $0, (%rax)
+ add (valSize), %rax
+ dec %rax  
+ movb $2, (%rax) # признак конца поля для строки 
+ inc %rax 
  sub (valSize), %rax 
  mov %r8, %r12 
  call __toStr 
@@ -1177,8 +1189,7 @@ ret
 
 
 __internalShiftStr:
-# %r12 - место внутри таблицы переменных, после которого нужно сделать сдвиг 
- 
+# %r12 - место внутри таблицы переменных, после которого нужно сделать сдвиг  
 mov (valSize), %rsi 
 add %rsi, (strPointer)
 
@@ -1297,6 +1308,8 @@ jmp  __internalShiftStrLocal
 
 __internalShiftStrEnd:
 mov (mem9), %r12 
+add (valSize), %r12 
+dec %r12 
 call __internalMakeShiftStr
 
 ret 
@@ -1381,13 +1394,13 @@ __setVar:
 
  __setVarClearStr:
  mov (%rbx), %dil 
- cmp $1, %dil 
+ cmp $2, %dil 
  jz __setVarClearStrEnd
  movb $1, (%rbx)
  inc %rbx 
  jmp __setVarClearStr
  __setVarClearStrEnd:
- #dec %rbx 
+ dec %rbx 
  movb $0, (%rbx)
  mov %r10, %rbx 
 
@@ -1416,8 +1429,12 @@ __setVar:
  mov (userData), %rax 
  __setNow:
  mov (%rbx), %dil 
- cmp $1, %dil 
- jz __setVarMoreMemEnd
+ cmp $2, %dil 
+ jnz __setVarMoreMemEnd
+ #cmp $1, %dil 
+ #jz __setVarMoreMemEnd
+ #cmp $0, %dil 
+ #jz __setVarMoreMemEnd
 
  mov %rax, (mem4)
  mov %rbx, (mem5) 
@@ -2847,6 +2864,7 @@ _start:
  mov $labelName2, %rax 
  mov %rax, (userData)
  call __setVar*/ 
+ 
   #set sVar
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -2866,8 +2884,7 @@ _start:
  mov $data8, %rax 
  mov %rax, (userData)
  call __setVar
- call __printHeap
- call __throughError
+
   #set sVar2
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -2878,6 +2895,8 @@ _start:
  mov %rax, (userData)
  call __setVar
 
+ call __printHeap
+ call __throughError
  #set sVar
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
