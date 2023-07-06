@@ -1159,7 +1159,6 @@ __compare:
 
 __internalMakeShiftStr:
 # %r12 - адрес внутри таблицы строк, начиная с которого нужно сделать сдвиг 
- 
  mov %r12, %rax # начиная с этого адреса нужно сдвинуть непосредственно строки на valSize   
 
 
@@ -1193,6 +1192,7 @@ add %rsi, (strPointer)
 
 mov %r12, (mem9)
 call __read
+
 call __toNumber
 mov (mem9), %r12 
 mov %rax, (mem9) # с этого адреса нужно сделать сдвиг в таблице строк 
@@ -1305,14 +1305,20 @@ jmp  __internalShiftStrLocal
 
 __internalShiftStrEnd:
 mov (mem9), %r12 
-__internalMakeShiftStrNowLoop:
+
+__internalMakeShiftStrNowLoop: 
 mov (%r12), %dl 
 cmp $2, %dl 
 jz __internalMakeShiftStrNow
 inc %r12 
+mov %r12, %rsi 
+call __print
+mov $enter, %rsi 
+call __print
+
 jmp __internalMakeShiftStrNowLoop
 __internalMakeShiftStrNow:
-
+ 
 call __internalMakeShiftStr
 
 ret 
@@ -1442,11 +1448,13 @@ __setVar:
  mov %rax, (mem4)
  mov %rbx, (mem5) 
  mov %r12, (mem8)
+ 
  call __internalShiftStr
+ 
  mov (mem8), %r12 
  mov (mem4), %rax
- mov (mem5), %rbx
-  
+ mov (mem5), %rbx 
+ 
  __setVarMoreMemEnd:
  mov (%rax), %dl
  cmp $0, %dl 
@@ -1454,6 +1462,7 @@ __setVar:
  mov %dl, (%rbx)
  inc %rbx 
  inc %rax 
+ 
  jmp __setNow 
 
  __setVarRet:
@@ -2898,8 +2907,6 @@ _start:
  mov %rax, (userData)
  call __setVar
 
- call __printHeap
- call __throughError
  #set sVar
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -2910,6 +2917,8 @@ _start:
  mov %rax, (userData)
  call __setVar
  
+ call __printHeap 
+ call __throughError
  /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName6, %rax 
