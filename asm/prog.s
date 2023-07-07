@@ -59,6 +59,12 @@ lenMem9 = . - mem9
 mem10:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenMem10 = . - mem10 
+mem11:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem11 = . - mem11 
+mem12:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem12 = . - mem12 
 strBegin:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrBegin = . - strBegin
@@ -1163,14 +1169,22 @@ __compare:
 __internalMakeShiftStr:
 # %r12 - адрес внутри таблицы строк, начиная с которого нужно сделать сдвиг 
  mov %r12, %rax # начиная с этого адреса нужно сдвинуть непосредственно строки на valSize   
-
-
+ mov %rax, (mem11)
  # формируем адрес нового конца 
- mov (strMax), %r10 
+ mov (strPointer), %r10 
  add (valSize), %r10
- 
+ mov %r10, (mem12)
+ cmp (strMax), %r10 
+ jl __internalMakeShiftStrOk
+ mov (strMax), %r8 
+ call __newStrMem
+ mov (pageSize), %r8 
+ add %r8, (strMax) 
+ __internalMakeShiftStrOk:
  # адрес старого конца
- mov (strMax), %r11
+ mov (strPointer), %r11
+ mov (mem12), %r10 
+ mov (mem11), %rax  
  mov %rax, %r9
  __internalShiftMake: 
 
@@ -1184,6 +1198,8 @@ __internalMakeShiftStr:
  dec %r11 
  jmp __internalShiftMake
  __internalShiftMakeEnd:
+ mov (valSize), %r10 
+ add %r10, (strPointer)
  ret 
 
 
@@ -1319,6 +1335,7 @@ inc %r12
 jmp __internalMakeShiftStrNowLoop
 __internalMakeShiftStrNow:
 
+
 call __internalMakeShiftStr
 ret 
 
@@ -1326,7 +1343,7 @@ ret
 __setVar:
  # вход: 
  # имя переменной по адресу $varName 
- # данные по указателю в (userData) 
+ # данные по указателю в (userData)
  mov %r13, %rbx
  __setVarLocal:
  cmp %r15, %rbx
@@ -3097,7 +3114,7 @@ _start:
  #call __userConcatinate 
 
  #get sVar 
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
@@ -3106,7 +3123,7 @@ _start:
  mov (userData), %rsi 
  call __print 
  mov $enter, %rsi 
- call __print 
+ call __print */
 
 
 
