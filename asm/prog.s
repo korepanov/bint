@@ -56,6 +56,9 @@ lenMem8 = . - mem8
 mem9:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenMem9 = . - mem9
+mem10:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem10 = . - mem10 
 strBegin:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrBegin = . - strBegin
@@ -1168,12 +1171,13 @@ __internalMakeShiftStr:
  
  # адрес старого конца
  mov (strMax), %r11
- __internalShiftMake: 
  mov %rax, %r9
+ __internalShiftMake: 
+
  cmp %r9, %r11   
  jl __internalShiftMakeEnd
- movb (%r11), %r12b 
- movb %r12b, (%r10)
+ movb (%r11), %al 
+ movb %al, (%r10)
  movb $1, (%r11)
 
  dec %r10
@@ -1187,14 +1191,14 @@ __internalMakeShiftStr:
 __internalShiftStr:
 # %r12 - место внутри таблицы переменных, после которого нужно сделать сдвиг  
 mov (valSize), %rsi 
-add %rsi, (strPointer)
-
+add %rsi, (strPointer) 
 
 mov %r12, (mem9)
 call __read
 
 call __toNumber
 mov (mem9), %r12 
+
 mov %rax, (mem9) # с этого адреса нужно сделать сдвиг в таблице строк 
 
 mov %r12, %rsi 
@@ -1311,14 +1315,10 @@ mov (%r12), %dl
 cmp $2, %dl 
 jz __internalMakeShiftStrNow
 inc %r12 
-mov %r12, %rsi 
-call __print
-mov $enter, %rsi 
-call __print
 
 jmp __internalMakeShiftStrNowLoop
 __internalMakeShiftStrNow:
- 
+
 call __internalMakeShiftStr
 
 ret 
@@ -1447,11 +1447,9 @@ __setVar:
 
  mov %rax, (mem4)
  mov %rbx, (mem5) 
- mov %r12, (mem8)
- 
+ mov %r12, (mem10)
  call __internalShiftStr
- 
- mov (mem8), %r12 
+ mov (mem10), %r12 
  mov (mem4), %rax
  mov (mem5), %rbx 
  
@@ -2917,8 +2915,6 @@ _start:
  mov %rax, (userData)
  call __setVar
  
- call __printHeap 
- call __throughError
  /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName6, %rax 
