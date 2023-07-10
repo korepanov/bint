@@ -255,6 +255,9 @@ powZeroZeroError:
 noSuchMarkError:
 .ascii "runtime error: no such mark: "
 .space 1, 0
+concError:
+.ascii "could not concatinate not string arguments\n"
+.space 1, 0 
 
 .text	
 
@@ -513,71 +516,140 @@ __concatinate:
  # r8 - адрес начала первой строки 
  # r9 - адрес начала второй строки 
  # $varName - адрес имени переменной, куда положить результат
-
- # вычислить общую длину результирующей строки 
- mov %r8, %rsi 
- call __len 
- mov %rax, (mem)
- mov %r9, %rsi 
- call __len 
- add (mem), %rax 
- 
  mov %r8, (mem)
  mov %r9, (mem2)
- mov (strMax), %r11 
- mov %r11, (mem3)
- mov %rax, (mem4)
- # выделить необходимый объем памяти 
- mov %rax, %rdi
- add (strMax), %rdi
- add %rax, (strMax) 
- mov $12, %rax
- syscall
- # заполним выделенную память
- mov (mem4), %rax 
- mov (mem3), %r11 
- mov $'!', %dl
- mov $0, %rbx
- __userConcatinateLo:
- movb %dl, (%r11, %rbx)
- inc %rbx
- cmp %rax, %rbx
- jz __userConcatineteEx
- jmp __userConcatinateLo
- __userConcatineteEx:
- mov (mem3), %r11 
- movb $'!', (%r11)
 
+ mov %r13, %rbx
+ __userConcatinateLocal:
+ cmp %r15, %rbx
+ jg __userConcatinateEnd
+
+ mov %rbx, %r12 
+ call __read 
+ cmp $1, (buf)
+ jz __userConcatinateEnd 
+ 
+ add (varSize), %rbx 
+ jmp __userConcatinateLocal  
+  
+ __userConcatinateEnd:
+ __userConcatinateSearch:
+ sub (varSize), %rbx 
+ mov %rbx, %r12 
+ call __read 
+ cmp $1, (buf)
+ jz __throughError
+ mov $buf, %rsi 
+ mov %rbx, %r12 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
+ call __compare
+ mov %r12, %rbx 
+ cmp $0, %rax 
+ jz __userConcatinateSearch
+ 
+
+ add (varNameSize), %rbx 
+ mov %rbx, %rax 
+ mov %rbx, %r12 
+ call __read  
+ add (typeSize), %rbx 
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi 
+ call __set
+ mov %rbx, %r12 
+ call __compare
+ mov %r12, %rbx 
+ cmp $0, %rax 
+ jnz __userConcatinateStr
+ 
+ mov $concError, %rsi 
+ call __throughUserError
+
+ __userConcatinateStr:
+ mov %rbx, %r12 
+ call __read 
+ call __toNumber 
+ mov %rax, %rbx  
+ mov %rbx, %r10 
+
+ __userConcatinateClearStr:
+ mov (%rbx), %dil 
+ cmp $2, %dil 
+ jz __userConcatinateClearStrEnd
+ movb $1, (%rbx)
+ inc %rbx 
+ jmp __userConcatinateClearStr
+ __userConcatinateClearStrEnd:
+ dec %rbx 
+ movb $0, (%rbx)
+ mov %r10, %rbx 
+
+ __userConcatinateIsNotStr:
  mov (mem), %r8 
+
+ mov %r8, %rax 
+ __userConcatinateNow:
+ mov (%rbx), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateMoreMemEnd
+
+ mov %rax, (mem4)
+ mov %rbx, (mem5) 
+ mov %r12, (mem10)
+ call __internalShiftStr
+ mov (mem10), %r12 
+ mov (mem4), %rax
+ mov (mem5), %rbx 
+ 
+ __userConcatinateMoreMemEnd:
+ mov (%rax), %dl
+ cmp $0, %dl 
+ jz __userConcatinateRet 
+ mov %dl, (%rbx)
+ inc %rbx 
+ inc %rax 
+ 
+ jmp __userConcatinateNow 
+
+ __userConcatinateRet:
+
  mov (mem2), %r9 
+ mov %r9, %rax 
+ __userConcatinateNow2:
+ mov (%rbx), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateMoreMemEnd2
 
- __userConcatinateFirst:
- mov (%r8), %sil 
- cmp $0, %sil 
- jz __userConcatinateFirstEnd
- mov %sil, (%r11)
- inc %r8 
- inc %r11 
- jmp __userConcatinateFirst
- __userConcatinateFirstEnd:
+ mov %rax, (mem4)
+ mov %rbx, (mem5) 
+ mov %r12, (mem10)
+ call __internalShiftStr
+ mov (mem10), %r12 
+ mov (mem4), %rax
+ mov (mem5), %rbx 
+ 
+ __userConcatinateMoreMemEnd2:
+ mov (%rax), %dl
+ cmp $0, %dl 
+ jz __userConcatinateRet2 
+ mov %dl, (%rbx)
+ inc %rbx 
+ inc %rax 
+ 
+ jmp __userConcatinateNow2
 
- __userConcatinateSecond:
- mov (%r9), %sil 
- cmp $0, %sil 
- jz __userConcatinateSecondEnd
- mov %sil, (%r11)
- inc %r9 
- inc %r11 
- jmp __userConcatinateSecond 
- __userConcatinateSecondEnd:
- movb $0, (%r11)
- mov (mem3), %r11 
- mov %r11, (userData)
- call __setVar 
- call __printHeap
- call __throughError
+ __userConcatinateRet2:
+ movb $0, (%rbx) 
  
  ret
+ 
 
 __toNumber:
  # вход: buf 
@@ -2954,7 +3026,7 @@ _start:
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
  call __set 
- mov $data11, %rax 
+ mov $data7, %rax 
  mov %rax, (userData)
  call __setVar
   
@@ -2965,7 +3037,7 @@ _start:
  mov $lenVarName6, %rax 
  mov $varName6, %rdi
  call __set 
- mov $data9, %rax 
+ mov $data8, %rax 
  mov %rax, (userData)
  call __setVar
 
@@ -3169,7 +3241,7 @@ _start:
  mov (mem), %r8 
  mov (mem2), %r9 
 
- #call __userConcatinate 
+ call __userConcatinate 
 
  #get sVar 
  /*mov $lenVarName, %rsi 
