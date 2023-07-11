@@ -582,8 +582,10 @@ __concatinate:
  __secondStrEnd: 
 
  mov %r10, (userData)
+ mov %r10, (mem13)
  call __setVar 
-  
+ mov (mem13), %r10
+
  # освободить временную память 
  mov %r10, %rax
  syscall
