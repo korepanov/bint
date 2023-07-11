@@ -1,4 +1,7 @@
 .data
+file:
+.ascii "/dev/zero"
+.space 1, 0 
 starSymbol:
 .ascii "*"
 endSymbol:
@@ -29,6 +32,12 @@ lenBuf3 = . - buf3
 buf4:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenBuf4 = . - buf4
+userMem:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenUserMem = . - userMem 
+userMem2:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenUserMem2 = . - userMem2 
 mem:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenMem = . - mem 
@@ -71,6 +80,9 @@ lenMem13 = . - mem13
 mem14:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenMem14 = . - mem14 
+mem15:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem15 = . - mem15 
 strBegin:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrBegin = . - strBegin
@@ -116,6 +128,9 @@ lenLabelsEnd = . - labelsEnd
 labelsPointer:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenLabelsPointer = . - labelsPointer 
+systemVarName:
+.ascii "^systemVar"
+lenSystemVarName = . - systemVarName
 varName0:
 .ascii "iVar"
 lenVarName0 = . - varName0
@@ -265,7 +280,7 @@ concError:
 .ascii "could not concatinate not string arguments\n"
 .space 1, 0 
 memError:
-.ascii "dynamic memory allocation error\n"
+.ascii "error opening file /dev/zero\n"
 
 .text	
 
@@ -520,19 +535,24 @@ __concatinate:
  ret 
 
  __newTempMem:
- # %rax - адрес начала выделяемой памяти 
- # %rbx - размер выделяемой памяти  
-# выделить динамическую память
- mov %rbx, %rdi
- add %rax, %rdi
- mov $12, %rax
- syscall
-# обработка ошибки
- cmp $-1, %rax
- jnz __newTempMemEx
+ # выход: номер дескриптора в %rax 
+ mov $file, %rdi   # адрес строки с именем файла 
+ mov $2,  %rsi   # открываем для чтения и записи 
+ mov $2,  %rax   # номер системного вызова
+ syscall         # вызов функции "открыть файл"
+ cmp $0, %rax    # нет ли ошибки при открытии
+ jge  __newTempMemEx          # перейти к концу программы
  mov $memError, %rsi 
  call __throughUserError
  __newTempMemEx: 
+ mov %rax, %r8   # запомним номер дескриптора 
+ ret 
+
+ __closeTempMem:
+ # вход: номер дескриптора в %rax 
+ mov  %rax, %rdi  # дескриптор файла
+ mov  $3, %rax   # номер системного вызова
+ syscall
  ret 
 
  __userConcatinate:
@@ -540,55 +560,96 @@ __concatinate:
  # r8 - адрес начала первой строки 
  # r9 - адрес начала второй строки 
  # $varName - адрес имени переменной, куда положить результат
- mov %r8, %rsi 
- call __len 
- mov %rax, %rbx 
- mov %r9, %rsi 
- call __len 
- add %rax, %rbx # в %rbx требуемый размер памяти 
- inc %rbx # под нулевые байты в конце строк 
+ mov %r8, (mem13)
+ mov %r9, (mem14)
+ 
+ mov $lenMem15, %rsi 
+ mov $mem15, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi
+ call __set
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenSystemVarName, %rax 
+ mov $systemVarName, %rdi
+ call __set
+ call __getVar
+ mov (mem13), %r8
+ mov (mem14), %r9 
+ mov (userData), %rbx # сюда будем писать временный результат 
+
+
+  __userConcatinateClearStr:
+ mov (%rbx), %dil 
+ cmp $2, %dil 
+ jz __userConcatinateClearStrEnd
+ movb $1, (%rbx)
  inc %rbx 
+ jmp __userConcatinateClearStr
+ __userConcatinateClearStrEnd:
+ dec %rbx 
+ movb $0, (%rbx)
+ mov (userData), %rbx  
 
- # выделим временную память 
- # получить адрес начала области для выделения памяти
- mov $12, %rax
- xor %rdi, %rdi
- syscall
-# запомнить адрес начала выделяемой памяти
- mov %rax, %r10
- call __newTempMem
- mov %r10, %rax 
+ mov %r8, %rax # отсюда пишем 
 
- __firstStr:
- mov (%r8), %dl 
- cmp $0, %dl
- jz __firstStrEnd
- mov %dl, (%rax)
- inc %r8
- inc %rax 
- jmp __firstStr 
+ __userConcatinateNow:
+   
+ mov (%rbx), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateMoreMemEnd
 
- __firstStrEnd:
-
- __secondStr:
- mov (%r9), %dl 
+ mov %rax, (mem4)
+ mov %rbx, (mem5) 
+ call __internalShiftStr
+ mov (mem4), %rax
+ mov (mem5), %rbx 
+ 
+ __userConcatinateMoreMemEnd:
+ mov (%rax), %dl
  cmp $0, %dl 
- jz __secondStrEnd
- mov %dl, (%rax)
- inc %r9 
- inc %rax
- jmp __secondStr
+ jz __userConcatinateRet 
+ mov %dl, (%rbx)
+ inc %rbx 
+ inc %rax 
+ 
+ jmp __userConcatinateNow 
 
- __secondStrEnd: 
+ __userConcatinateRet: 
 
- mov %r10, (userData)
- mov %r10, (mem13)
+ mov %r9, %rax # отсюда пишем 
+
+ __userConcatinateNow2:
+   
+ mov (%rbx), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateMoreMemEnd2
+
+ mov %rax, (mem4)
+ mov %rbx, (mem5) 
+ call __internalShiftStr
+ mov (mem4), %rax
+ mov (mem5), %rbx 
+ 
+ __userConcatinateMoreMemEnd2:
+ mov (%rax), %dl
+ cmp $0, %dl 
+ jz __userConcatinateRet2 
+ mov %dl, (%rbx)
+ inc %rbx 
+ inc %rax 
+ 
+ jmp __userConcatinateNow2 
+
+ __userConcatinateRet2: 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenMem15, %rax 
+ mov $mem15, %rdi
+ call __set
+  
  call __setVar 
- mov (mem13), %r10
-
- # освободить временную память 
- mov %r10, %rax
- syscall
  ret
  
 
@@ -1452,37 +1513,14 @@ __setVar:
  movb $0, (%rbx)
  mov %r10, %rbx 
 
- #mov (userData), %rsi 
- #call __len 
- #mov (valSize), %rdi 
- #__setVarMoreMem:
- #cmp %rdi, %rax 
- #jl __setVarMoreMemEnd
- #mov %rdi, (mem3) 
- #mov %rax, (mem4)
- #mov %rbx, (mem5) 
- #mov %r12, (mem8)
-#call __internalShiftStr
-# mov (mem8), %r12 
-# mov (mem3), %rdi
-# mov (mem4), %rax
-# mov (mem5), %rbx   
-# add (valSize), %rdi 
-# jmp __setVarMoreMem 
- #__setVarMoreMemEnd:
-
  __setVarIsNotStr:
 
- #mov %rbx, %r10 # сохраняем значение %rbx  
  mov (userData), %rax 
  __setNow:
+   
  mov (%rbx), %dil 
  cmp $2, %dil 
  jnz __setVarMoreMemEnd
- #cmp $1, %dil 
- #jz __setVarMoreMemEnd
- #cmp $0, %dil 
- #jz __setVarMoreMemEnd
 
  mov %rax, (mem4)
  mov %rbx, (mem5) 
@@ -2751,6 +2789,19 @@ _start:
  call __firstStrMem
  
 
+  # systemVar  
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenSystemVarName, %rax 
+ mov $systemVarName, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
+
  # sVar 
  /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -3159,7 +3210,7 @@ _start:
  call __getVar
  mov (userData), %r8 
 
- mov %r8, (mem) 
+ mov %r8, (userMem) 
 
   # get sVar2  
  mov $lenVarName, %rsi 
@@ -3171,7 +3222,7 @@ _start:
 
  mov (userData), %r9  
 
- mov %r9, (mem2)
+ mov %r9, (userMem2)
 
  mov $lenVarName, %rsi 
  mov $varName, %rdx
@@ -3179,8 +3230,10 @@ _start:
  mov $varName1, %rdi 
  call __set
 
- mov (mem), %r8 
- mov (mem2), %r9 
+ mov (userMem), %r8 
+ mov (userMem2), %r9
+ #mov $data11, %r8
+ #mov $data12, %r9 
 
  call __userConcatinate 
 
