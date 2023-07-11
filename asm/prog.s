@@ -83,6 +83,9 @@ lenMem14 = . - mem14
 mem15:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenMem15 = . - mem15 
+mem16:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem16 = . - mem16 
 strBegin:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrBegin = . - strBegin
@@ -558,10 +561,67 @@ __concatinate:
  __userConcatinate:
  # входные параметры 
  # r8 - адрес начала первой строки 
- # r9 - адрес начала второй строки 
+ # r9 - адрес начала второй строки
+ # rax = 1 - строка слева лежит в переменной
+ # rax = 0 - строка слева в статической памяти
+ # rbx = 1 - строка справа лежит в переменной 
+ # rbx = 0 - строка справа лежит в статичесой памяти 
  # $varName - адрес имени переменной, куда положить результат
-    
+ mov %r8, (mem13)
+ mov %r9, (mem14)
+ mov %rax, (mem15)
+ mov %rbx, (mem16)
+
+ call __getVar
  
+ mov (userData), %rbx 
+ mov (mem13), %rax 
+
+ __userConcatinateClearStr:
+ mov (%rbx), %dil 
+ cmp $2, %dil 
+ jz __userConcatinateClearStrEnd
+ movb $1, (%rbx)
+ inc %rbx 
+ jmp __userConcatinateClearStr
+ __userConcatinateClearStrEnd:
+ dec %rbx 
+ movb $0, (%rbx)
+
+ __userConcatinateIsNotStr:
+
+ __userConcatinateNow:
+   
+ mov (%rbx), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateMoreMemEnd
+
+ mov %rax, (mem4)
+ mov %rbx, (mem5) 
+ mov %r12, (mem10)
+ call __internalShiftStr
+ mov (mem10), %r12 
+ mov (mem4), %rax
+ mov (mem5), %rbx 
+ 
+ __userConcatinateMoreMemEnd:
+ mov (%rax), %dl
+ cmp $0, %dl 
+ jz __userConcatinateRet 
+ mov %dl, (%rbx)
+ inc %rbx 
+ inc %rax 
+ 
+ jmp __userConcatinateNow 
+
+ __userConcatinateRet:
+ movb $0, (%rbx) 
+
+
+ mov (mem13), %r8 
+ mov (mem14), %r9 
+ mov (mem15), %rax 
+ mov (mem16), %rbx 
  ret
  
 
