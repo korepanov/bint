@@ -561,137 +561,7 @@ __concatinate:
  # r9 - адрес начала второй строки 
  # $varName - адрес имени переменной, куда положить результат
     
- mov %r8, (mem13)
- mov %r9, (mem14)
  
- mov $lenMem15, %rsi 
- mov $mem15, %rdx 
- mov $lenVarName, %rax 
- mov $varName, %rdi
- call __set
-
- // define systemVar
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenSystemVarName, %rax 
- mov $systemVarName, %rdi
- call __set 
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenStringType, %rax 
- mov $stringType, %rdi
- call __set 
- call __defineVar
-
-
-
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenSystemVarName, %rax 
- mov $systemVarName, %rdi
- call __set
- call __getVar
- mov (mem13), %r8
- mov (mem14), %r9 
- mov (userData), %rbx # сюда будем писать временный результат 
-
-
-  __userConcatinateClearStr:
- mov (%rbx), %dil 
- cmp $2, %dil 
- jz __userConcatinateClearStrEnd
- movb $1, (%rbx)
- inc %rbx 
- jmp __userConcatinateClearStr
- __userConcatinateClearStrEnd:
- dec %rbx 
- movb $0, (%rbx)
-   
-
- mov %r8, %rax # отсюда пишем
-
- mov %r13, %rbx
- __userConcatinateLocal0:
- cmp %r15, %rbx
- jg __userConcatinateEnd0
-
- mov %rbx, %r12 
- call __read 
- cmp $1, (buf)
- jz __userConcatinateEnd0 
- 
- add (varSize), %rbx 
- jmp __userConcatinateLocal0
- 
- __userConcatinateEnd0:
- sub (valSize), %rbx 
- mov %rbx, %r12 
- 
- mov (userData), %rbx
- 
- __userConcatinateNow:
-   
- mov (%rbx), %dil 
- cmp $2, %dil 
- jnz __userConcatinateMoreMemEnd
-
- mov %rax, (mem4)
- mov %rbx, (mem5) 
- mov %r12, (mem10) 
- call __internalShiftStr
- mov (mem10), %r12 
- mov (mem4), %rax
- mov (mem5), %rbx 
- 
- __userConcatinateMoreMemEnd:
- mov (%rax), %dl
- cmp $0, %dl 
- jz __userConcatinateRet 
- mov %dl, (%rbx)
- inc %rbx 
- inc %rax 
- 
- jmp __userConcatinateNow 
-
- __userConcatinateRet: 
-  
- mov (mem14), %r9 
- mov %r9, %rax # отсюда пишем 
- 
- __userConcatinateNow2:
-
- mov (%rbx), %dil 
- cmp $2, %dil 
- jnz __userConcatinateMoreMemEnd2
- 
- mov %rax, (mem4)
- mov %rbx, (mem5) 
- mov %r12, (mem10)
- call __internalShiftStr
- mov (mem10), %r12 
- mov (mem4), %rax
- mov (mem5), %rbx 
- 
- __userConcatinateMoreMemEnd2:
- mov (%rax), %dl
- cmp $0, %dl 
- jz __userConcatinateRet2 
- mov %dl, (%rbx)
- inc %rbx 
- inc %rax 
- 
- jmp __userConcatinateNow2 
-
- __userConcatinateRet2: 
- call __printHeap
- call __throughError
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenMem15, %rax 
- mov $mem15, %rdi
- call __set
-  
- call __setVar 
  ret
  
 
@@ -3280,7 +3150,7 @@ _start:
  mov $enter, %rsi 
  call __print */
 
- #call __printHeap
+ call __printHeap
 
 __stop:
  mov $60,  %rax      # номер системного вызова exit
