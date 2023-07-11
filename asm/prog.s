@@ -65,6 +65,12 @@ lenMem11 = . - mem11
 mem12:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenMem12 = . - mem12 
+mem13:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem13 = . - mem13 
+mem14:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem14 = . - mem14 
 strBegin:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrBegin = . - strBegin
@@ -258,6 +264,8 @@ noSuchMarkError:
 concError:
 .ascii "could not concatinate not string arguments\n"
 .space 1, 0 
+memError:
+.ascii "dynamic memory allocation error\n"
 
 .text	
 
@@ -511,143 +519,73 @@ __concatinate:
  
  ret 
 
+ __newTempMem:
+ # %rax - адрес начала выделяемой памяти 
+ # %rbx - размер выделяемой памяти  
+# выделить динамическую память
+ mov %rbx, %rdi
+ add %rax, %rdi
+ mov $12, %rax
+ syscall
+# обработка ошибки
+ cmp $-1, %rax
+ jnz __newTempMemEx
+ mov $memError, %rsi 
+ call __throughUserError
+ __newTempMemEx: 
+ ret 
+
  __userConcatinate:
  # входные параметры 
  # r8 - адрес начала первой строки 
  # r9 - адрес начала второй строки 
  # $varName - адрес имени переменной, куда положить результат
- mov %r8, (mem)
- mov %r9, (mem2)
-
- mov %r13, %rbx
- __userConcatinateLocal:
- cmp %r15, %rbx
- jg __userConcatinateEnd
-
- mov %rbx, %r12 
- call __read 
- cmp $1, (buf)
- jz __userConcatinateEnd 
- 
- add (varSize), %rbx 
- jmp __userConcatinateLocal  
-  
- __userConcatinateEnd:
- __userConcatinateSearch:
- sub (varSize), %rbx 
- mov %rbx, %r12 
- call __read 
- cmp $1, (buf)
- jz __throughError
- mov $buf, %rsi 
- mov %rbx, %r12 
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenVarName, %rax 
- mov $varName, %rdi 
- call __set
- call __compare
- mov %r12, %rbx 
- cmp $0, %rax 
- jz __userConcatinateSearch
- 
-
- add (varNameSize), %rbx 
- mov %rbx, %rax 
- mov %rbx, %r12 
- call __read  
- add (typeSize), %rbx 
-
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenStringType, %rax 
- mov $stringType, %rdi 
- call __set
- mov %rbx, %r12 
- call __compare
- mov %r12, %rbx 
- cmp $0, %rax 
- jnz __userConcatinateStr
- 
- mov $concError, %rsi 
- call __throughUserError
-
- __userConcatinateStr:
- mov %rbx, %r12 
- call __read 
- call __toNumber 
- mov %rax, %rbx  
- mov %rbx, %r10 
-
- __userConcatinateClearStr:
- mov (%rbx), %dil 
- cmp $2, %dil 
- jz __userConcatinateClearStrEnd
- movb $1, (%rbx)
+ mov %r8, %rsi 
+ call __len 
+ mov %rax, %rbx 
+ mov %r9, %rsi 
+ call __len 
+ add %rax, %rbx # в %rbx требуемый размер памяти 
+ inc %rbx # под нулевые байты в конце строк 
  inc %rbx 
- jmp __userConcatinateClearStr
- __userConcatinateClearStrEnd:
- dec %rbx 
- movb $0, (%rbx)
- mov %r10, %rbx 
 
- __userConcatinateIsNotStr:
- mov (mem), %r8 
+ # выделим временную память 
+ # получить адрес начала области для выделения памяти
+ mov $12, %rax
+ xor %rdi, %rdi
+ syscall
+# запомнить адрес начала выделяемой памяти
+ mov %rax, %r10
+ call __newTempMem
+ mov %r10, %rax 
 
- mov %r8, %rax 
- __userConcatinateNow:
- mov (%rbx), %dil 
- cmp $2, %dil 
- jnz __userConcatinateMoreMemEnd
-
- mov %rax, (mem4)
- mov %rbx, (mem5) 
- mov %r12, (mem10)
- call __internalShiftStr
- mov (mem10), %r12 
- mov (mem4), %rax
- mov (mem5), %rbx 
- 
- __userConcatinateMoreMemEnd:
- mov (%rax), %dl
- cmp $0, %dl 
- jz __userConcatinateRet 
- mov %dl, (%rbx)
- inc %rbx 
+ __firstStr:
+ mov (%r8), %dl 
+ cmp $0, %dl
+ jz __firstStrEnd
+ mov %dl, (%rax)
+ inc %r8
  inc %rax 
- 
- jmp __userConcatinateNow 
+ jmp __firstStr 
 
- __userConcatinateRet:
+ __firstStrEnd:
 
- mov (mem2), %r9 
- mov %r9, %rax 
- __userConcatinateNow2:
- mov (%rbx), %dil 
- cmp $2, %dil 
- jnz __userConcatinateMoreMemEnd2
-
- mov %rax, (mem4)
- mov %rbx, (mem5) 
- mov %r12, (mem10)
- call __internalShiftStr
- mov (mem10), %r12 
- mov (mem4), %rax
- mov (mem5), %rbx 
- 
- __userConcatinateMoreMemEnd2:
- mov (%rax), %dl
+ __secondStr:
+ mov (%r9), %dl 
  cmp $0, %dl 
- jz __userConcatinateRet2 
- mov %dl, (%rbx)
- inc %rbx 
- inc %rax 
- 
- jmp __userConcatinateNow2
+ jz __secondStrEnd
+ mov %dl, (%rax)
+ inc %r9 
+ inc %rax
+ jmp __secondStr
 
- __userConcatinateRet2:
- movb $0, (%rbx) 
- 
+ __secondStrEnd: 
+
+ mov %r10, %rsi 
+ call __print 
+ # освободить временную память 
+ mov %r10, %rax
+ syscall
  ret
  
 
