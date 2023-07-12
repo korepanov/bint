@@ -284,7 +284,9 @@ concError:
 .space 1, 0 
 memError:
 .ascii "error opening file /dev/zero\n"
-
+strError:
+.ascii "the type of the variable to which you want to assign the result of string concatenation is not a string\n"
+.space 1, 0 
 .text	
 
 __throughError:
@@ -571,8 +573,63 @@ __concatinate:
  mov %r9, (mem14)
  mov %rax, (mem15)
  mov %rbx, (mem16)
-
+ 
  call __getVar
+
+ mov %r13, %rbx
+ __userConcatinateLocal:
+ cmp %r15, %rbx
+ jg __userConcatinateEnd
+
+ mov %rbx, %r12 
+ call __read 
+ cmp $1, (buf)
+ jz __userConcatinateEnd 
+ 
+ add (varSize), %rbx 
+ jmp __userConcatinateLocal  
+  
+ __userConcatinateEnd:
+ __userConcatinateSearch:
+ sub (varSize), %rbx 
+ mov %rbx, %r12 
+ call __read 
+ cmp $1, (buf)
+ jz __throughError
+ mov $buf, %rsi 
+ mov %rbx, %r12 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
+ call __compare
+ mov %r12, %rbx 
+ cmp $0, %rax 
+ jz __userConcatinateSearch
+ 
+
+ add (varNameSize), %rbx 
+ mov %rbx, %rax 
+ mov %rbx, %r12 
+ call __read  
+ add (typeSize), %rbx 
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi 
+ call __set
+ mov %rbx, %r12 
+ call __compare
+ mov %r12, %rbx 
+ cmp $0, %rax 
+ jnz __userConcatinateErrEnd
+ mov $strError, %rsi 
+ call __throughUserError
+
+ __userConcatinateErrEnd:
+
  
  mov (userData), %rbx 
  mov (mem13), %rax 
@@ -614,9 +671,35 @@ __concatinate:
  
  jmp __userConcatinateNow 
 
- __userConcatinateRet:
- movb $0, (%rbx) 
+ __userConcatinateRet: 
+ 
+ mov (mem14), %rax  
+__userConcatinateNow2:
+   
+ mov (%rbx), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateMoreMemEnd2
 
+ mov %rax, (mem4)
+ mov %rbx, (mem5) 
+ mov %r12, (mem10)
+ call __internalShiftStr
+ mov (mem10), %r12 
+ mov (mem4), %rax
+ mov (mem5), %rbx 
+ 
+ __userConcatinateMoreMemEnd2:
+ mov (%rax), %dl
+ cmp $0, %dl 
+ jz __userConcatinateRet2 
+ mov %dl, (%rbx)
+ inc %rbx 
+ inc %rax 
+ 
+ jmp __userConcatinateNow2 
+
+ __userConcatinateRet2:
+ movb $0, (%rbx) 
 
  mov (mem13), %r8 
  mov (mem14), %r9 
