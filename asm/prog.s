@@ -727,16 +727,15 @@ __concatinate:
  mov $lenMem15, %rax 
  mov $mem15, %rdi 
  call __set
- xor %rax, %rax 
- call __setVar 
  
  mov (userData), %rsi 
  call __len 
  add (mem16), %rax # длина результата 
  
- call __toStr 
- mov $buf2, %rsi
- call __print
+ call __getVar 
+ mov (userData), %rax 
+ movb $'5', (%rax)
+ call __printHeap
 
  call __throughError
 
@@ -3295,29 +3294,6 @@ _start:
  call __setVar
 
  # подготавливаем вызов __userConcatinate
-
-  # get sVar  
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi
- call __set
- call __getVar
- mov (userData), %r8 
-
- mov %r8, (userMem) 
-
-  # get sVar2  
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName6, %rax 
- mov $varName6, %rdi
- call __set
- call __getVar
-
- mov (userData), %r9  
-
- mov %r9, (userMem2)
 
  mov $lenVarName, %rsi 
  mov $varName, %rdx
