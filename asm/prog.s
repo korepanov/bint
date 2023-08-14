@@ -130,36 +130,47 @@ labelsPointer:
 lenLabelsPointer = . - labelsPointer 
 systemVarName:
 .ascii "^systemVar"
+.space 1, 0
 lenSystemVarName = . - systemVarName
 varName0:
 .ascii "iVar"
+.space 1, 0
 lenVarName0 = . - varName0
 varName1:
 .ascii "sVar"
+.space 1, 0
 lenVarName1 = . - varName1
 varName2:
 .ascii "fVar"
+.space 1, 0
 lenVarName2 = . - varName2
 varName3:
 .ascii "bVar"
+.space 1, 0
 lenVarName3 = . - varName3
 varName4:
 .ascii "iVar2"
+.space 1, 0
 lenVarName4 = . - varName4 
 varName5:
 .ascii "fVar2"
+.space 1, 0
 lenVarName5 = . - varName5
 varName6:
 .ascii "sVar2"
+.space 1, 0
 lenVarName6 = . - varName6
 varName7:
 .ascii "sVar3"
+.space 1, 0
 lenVarName7 = . - varName7
 varName8:
 .ascii "bVar"
+.space 1, 0
 lenVarName8 = . - varName8
 varName9:
 .ascii "sVar4"
+.space 1, 0
 lenVarName9 = . - varName9 
 
 intType:
@@ -647,9 +658,32 @@ __concatinate:
  cmp $1, (mem16)
  jz __userConcatinateTwoVars
  
- // переменная только слева 
- mov $data14, %rsi 
- call __print 
+ // переменная только слева
+
+ # сохранили приемник
+ mov $lenMem15, %rsi 
+ mov $mem15, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName, %rax 
+ mov (mem13), %rdi 
+ call __set
+ call __getVar 
+
+ # восстановили приемник
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenMem15, %rax 
+ mov $mem15, %rdi 
+ call __set
+
+ call __setVar  
+ call __printHeap
+ call __throughError  # дописать! 
  jmp __userConcatinateEndCheck
 
  __userConcatinateTwoVars:
