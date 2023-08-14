@@ -83,6 +83,9 @@ lenMem15 = . - mem15
 mem16:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenMem16 = . - mem16 
+mem17:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem17 = . - mem17 
 strBegin:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrBegin = . - strBegin
@@ -226,7 +229,7 @@ data7:
 .space 1, 0 
 lenData7 = . - data7
 data8:
-.ascii "some cool message"
+.ascii "CCrypto AG — швейцарская компания, существовавшая в 1952—2018 годах и специализировавшаяся на технологиях в сфере коммуникаций и информационной безопасности. Компанию основал в 1952 году шведский бизнесмен Борис Хагелин. Штаб компании располагался в швейцарском городе Штайнхаузен, в кантоне Цуг. Компания была широко известна в мире как производитель высококачественных шифровальных машин и большого ассортимента различных шифровальных устройств, оставаясь коммерчески успешной на протяжении многих лет. У неё также были офисы в городах Абиджан, Абу-Даби, Буэнос-Айрес, Куала-Лумпур, Маскат и юго-восточном районе Лондона под названием Селсдон. По некоторым данным, у компании были заказчики из 130 разных стран мира, штат компании насчитывал до 400 человек. \n С момента своего основания Crypto AG негласно сотрудничала с американским Агентством национальной безопасности в рамках джентльменского соглашения. В 1970 году Crypto AG в условиях секретности приобрели за 5,75 млн. долларов США две разведслужбы — американская ЦРУ и немецкая БНД, которые владели компанией с 1970 по 1993 год, а позже ЦРУ выкупила немецкую долю и оставалась владельцем Crypto AG вплоть до прекращения её существования в 2018 году. Сведения о владельце фирмы оставались в тайне даже от её менеджеров: право собственности подтверждалось акциями на предъявителя. Обвинения в связях с АНБ и иными западными спецслужбами компания отрицала, несмотря на различные скандалы. \n 11 февраля 2020 года американская газета The Washington Post, немецкая телерадиокомпания ZDF и швейцарская телерадиокомпания Schweizer Radio und Fernsehen официально заявили, что владельцами Crypto AG были именно ЦРУ и БНД, которые с лёгкостью взламывали шифры, сопровождавшие продукты Crypto AG, и свободно расшифровывали закодированные сообщения с 1970 по 2018 год в рамках операции «Рубикон». По итогам швейцарского парламентского расследования выяснилось, что спецслужбы Швейцарии были в курсе оказываемой Crypto AG помощи американским разведслужбам и извлекали из этого выгоду. Публикация информации о том, что ресурсы Crypto AG использовались для взлома зашифрованной переписки высокопоставленных государственных лиц разных стран мира, привела к скандалу. Компанию также обвиняли в продаже программных продуктов с бэкдорами, позволявшими американским, британским и немецким службам радиоэлектронной разведки перехватывать секретную информацию. C"
 .space 1, 0
 lenData8 = . - data8 
 data9:
@@ -680,7 +683,7 @@ __concatinate:
  mov $lenMem15, %rax 
  mov $mem15, %rdi 
  call __set
-
+ xor %rax, %rax 
  call __setVar  
  call __printHeap
  call __throughError  # дописать! 
@@ -1538,7 +1541,12 @@ ret
 __setVar:
  # вход: 
  # имя переменной по адресу $varName 
- # данные по указателю в (userData)
+ # данные по указателю в (userData) - статика 
+ # адрес имени переменной в (userData) - данные в переменной 
+ # rax = 0 - статические данные 
+ # rax = 1 - данные в переменной
+ mov %rax, (mem4)
+
  mov %r13, %rbx
  __setVarLocal:
  cmp %r15, %rbx
@@ -1623,16 +1631,70 @@ __setVar:
  dec %rbx 
  movb $0, (%rbx)
  mov %r10, %rbx 
+ mov %rbx, (mem5)
+ mov %r12, (mem10)
 
  __setVarIsNotStr:
+ cmp $1, (mem4) # переменная? 
+ jnz __setVarNotVar
+ mov %rbx, (mem17) # сохраним %rbx 
+ mov $lenMem4, %rsi # сохранить varName 
+ mov $mem4, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenUserData, %rax 
+ mov (userData), %rdi 
+ call __set
+
+ call __getVar 
+ mov (userData), %rsi 
+ call __len  
+ mov (mem5), %rbx 
+ mov (mem10), %r12 
+
+ __setVarPrepare:
+ mov (%rbx), %dil 
+ cmp $2, %dil 
+ jnz __setVarMoreMemEnd0
+ mov %rax, (mem4)
+ mov %rbx, (mem5) 
+ mov %r12, (mem10)
+ call __internalShiftStr
+ mov (mem10), %r12 
+ mov (mem4), %rax
+ mov (mem5), %rbx
+ __setVarMoreMemEnd0:
+ cmp $0, %rax 
+ jz __setVarPrepareEnd
+ inc %rbx 
+ dec %rax 
+ jmp __setVarPrepare
+ __setVarPrepareEnd:
+ call __getVar # обновим указатель в (userData)
+ mov (mem17), %rbx # восстановим первоначальный %rbx 
+
+ __setVarNotStr0:
+ mov (userData), %rax 
+ __setNow0:
+ mov (%rax), %dl
+ cmp $0, %dl 
+ jz __setVarRet 
+ mov %dl, (%rbx)
+ inc %rbx 
+ inc %rax 
+ jmp __setNow0
+
+ __setVarNotVar: 
  mov (userData), %rax 
  __setNow:
    
  mov (%rbx), %dil 
  cmp $2, %dil 
  jnz __setVarMoreMemEnd
-
  mov %rax, (mem4)
  mov %rbx, (mem5) 
  mov %r12, (mem10)
@@ -1653,7 +1715,7 @@ __setVar:
 
  __setVarRet:
  movb $0, (%rbx) 
- 
+
  ret
 
  __getVar:
@@ -2962,6 +3024,7 @@ _start:
  call __set 
  mov $data3, %rax 
  mov %rax, (userData)
+ xor %rax, %rax 
  call __setVar
 
  #set bVar
@@ -2972,6 +3035,7 @@ _start:
  call __set 
  mov $data10, %rax 
  mov %rax, (userData)
+ xor %rax, %rax 
  call __setVar
 
  #set iVar2
@@ -2982,6 +3046,7 @@ _start:
  call __set 
  mov $data0, %rax 
  mov %rax, (userData)
+ xor %rax, %rax 
  call __setVar
  
  # fVar 
@@ -3004,6 +3069,7 @@ _start:
  call __set 
  mov $data4, %rax 
  mov %rax, (userData)
+ xor %rax, %rax 
  call __setVar
 
   # fVar2
@@ -3026,6 +3092,7 @@ _start:
  call __set 
  mov $data5, %rax 
  mov %rax, (userData)
+ xor %rax, %rax 
  call __setVar
  
  # sVar 
@@ -3080,35 +3147,6 @@ _start:
  mov $stringType, %rdi
  call __set 
  call __defineVar
- /*mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi
- call __set 
- mov $labelName2, %rax 
- mov %rax, (userData)
- call __setVar*/ 
- 
-  #set sVar
-/* mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi
- call __set 
- mov $data7, %rax 
- mov %rax, (userData)
- call __setVar
-
-  #set sVar2
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName6, %rax 
- mov $varName6, %rdi
- call __set 
- mov $data8, %rax 
- mov %rax, (userData)
- call __setVar*/
-
   
   #set sVar
  mov $lenVarName, %rsi 
@@ -3118,67 +3156,33 @@ _start:
  call __set 
  mov $data7, %rax 
  mov %rax, (userData)
+ xor %rax, %rax 
  call __setVar
   
   
-  #set sVar2
- /*mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName6, %rax 
- mov $varName6, %rdi
- call __set 
- mov $data8, %rax 
- mov %rax, (userData)
- call __setVar*/
-
- #set sVar4
- /*mov $lenVarName, %rsi 
+  #set sVar4
+ mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName9, %rax 
  mov $varName9, %rdi
  call __set 
- mov $data13, %rax 
+ mov $data8, %rax 
  mov %rax, (userData)
- call __setVar*/
+ xor %rax, %rax 
+ call __setVar
 
- #set sVar3
- /*mov $lenVarName, %rsi 
+ # set sVar3 
+ mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName7, %rax 
  mov $varName7, %rdi
  call __set 
- mov $data12, %rax 
+ mov $varName9, %rax 
  mov %rax, (userData)
- call __setVar*/
- 
- /*mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName6, %rax 
- mov $varName6, %rdi
- call __set 
- mov $data7, %rax 
- mov %rax, (userData)
- call __setVar*/
-
-  # get sVar 
- /*mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName6, %rax 
- mov $varName6, %rdi
- call __set
- call __getVar
- mov (userData), %rdi 
- call __goto*/ 
-
- # get bVar  
- /*mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName8, %rax 
- mov $varName8, %rdi
- call __set
- call __getVar
- mov (userData), %rsi 
- call __print*/ 
+ mov $1, %rax 
+ call __setVar 
+ call __printHeap 
+ call __throughError 
 
  # get fVar  
  mov $lenVarName, %rsi 
@@ -3287,6 +3291,7 @@ _start:
  mov $lenVarName4, %rax 
  mov $varName4, %rdi
  call __set 
+ xor %rax, %rax 
  call __setVar
 
  # подготавливаем вызов __userConcatinate
