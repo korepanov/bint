@@ -684,10 +684,14 @@ __concatinate:
  mov $mem15, %rdi 
  call __set
  xor %rax, %rax 
- call __setVar  
- call __printHeap
- call __throughError  # дописать! 
- jmp __userConcatinateEndCheck
+ call __setVar 
+ call __getVar 
+ mov (userData), %rsi 
+ call __len 
+ mov %rax, %rbx 
+ add (userData), %rbx 
+ mov (mem14), %rax 
+ jmp __userConcatinateNow2 
 
  __userConcatinateTwoVars:
  // с обеих сторон переменная
@@ -3161,7 +3165,7 @@ _start:
   
   
   #set sVar3
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName7, %rax 
  mov $varName7, %rdi
@@ -3180,7 +3184,7 @@ _start:
  mov $varName7, %rax 
  mov %rax, (userData)
  mov $1, %rax 
- call __setVar 
+ call __setVar */
  
 
  # get fVar  
