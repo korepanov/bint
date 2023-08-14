@@ -3160,29 +3160,28 @@ _start:
  call __setVar
   
   
-  #set sVar4
+  #set sVar3
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName9, %rax 
- mov $varName9, %rdi
+ mov $lenVarName7, %rax 
+ mov $varName7, %rdi
  call __set 
  mov $data8, %rax 
  mov %rax, (userData)
  xor %rax, %rax 
  call __setVar
 
- # set sVar3 
+ # set sVar4
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName7, %rax 
- mov $varName7, %rdi
+ mov $lenVarName9, %rax 
+ mov $varName9, %rdi
  call __set 
- mov $varName9, %rax 
+ mov $varName7, %rax 
  mov %rax, (userData)
  mov $1, %rax 
  call __setVar 
- call __printHeap 
- call __throughError 
+ 
 
  # get fVar  
  mov $lenVarName, %rsi 
@@ -3220,49 +3219,11 @@ _start:
  mov $buf3, %rdi 
  call __set
 
- #mov $buf, %rsi 
- #call __print 
- #mov $enter, %rsi 
- #call __print 
- #mov $buf2, %rsi 
- #call __print 
- #mov $enter, %rsi 
- #call __print
- #mov $1, %rax
  call __clearBuf
- #call __clearBuf2 
  movb $'1', (buf)
-# movb $'0', (buf2)  
  call __not  
 
- #mov $userData, %rsi 
- #call __print 
 
- # sVar
-/* mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi
- call __set 
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenStringType, %rax 
- mov $stringType, %rdi
- call __set 
- call __defineVar*/
-
- # get sVar2 
- /*mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName6, %rax 
- mov $varName6, %rdi
- call __set
- call __getVar
- mov (userData), %rsi 
- call __print 
- mov $enter, %rsi 
- call __print*/
- #call __printHeap
 
   # get fVar  
  mov $lenVarName, %rsi 
