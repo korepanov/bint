@@ -703,8 +703,43 @@ __concatinate:
  cmp $1, (mem16)
  jnz __userConcatinateNoVars
  // переменная только справа 
- mov $data15, %rsi 
- call __print 
+ mov (mem13), %rsi 
+ call __len 
+ mov %rax, (mem16) # сохранили длину первого операнда
+ 
+ # сохранили приемник
+ mov $lenMem15, %rsi 
+ mov $mem15, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName, %rax 
+ mov (mem14), %rdi 
+ call __set
+ call __getVar 
+
+ # восстановили приемник
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenMem15, %rax 
+ mov $mem15, %rdi 
+ call __set
+ xor %rax, %rax 
+ call __setVar 
+ 
+ mov (userData), %rsi 
+ call __len 
+ add (mem16), %rax # длина результата 
+ 
+ call __toStr 
+ mov $buf2, %rsi
+ call __print
+
+ call __throughError
+
  jmp __userConcatinateEndCheck 
 
  __userConcatinateNoVars:
@@ -3292,10 +3327,10 @@ _start:
 
  #mov (userMem), %r8 
  #mov (userMem2), %r9
- mov $varName1, %r8
- mov $data12, %r9 
- mov $1, %rax 
- mov $0, %rbx 
+ mov $data12, %r8
+ mov $varName1, %r9 
+ mov $0, %rax 
+ mov $1, %rbx 
 
  /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
