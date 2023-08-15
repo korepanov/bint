@@ -795,12 +795,8 @@ __concatinate:
  
  jmp __userConcatinateNow1 
  __userConcatinateRet1:
- #movb $'5', (%rbx)
- call __printHeap
 
- call __throughError
-
- jmp __userConcatinateEndCheck 
+ ret  
 
  __userConcatinateNoVars:
  // нет переменных 
