@@ -311,8 +311,6 @@ noSuchMarkError:
 concError:
 .ascii "could not concatinate not string arguments\n"
 .space 1, 0 
-memError:
-.ascii "error opening file /dev/zero\n"
 strError:
 .ascii "the type of the variable to which you want to assign the result of string concatenation is not a string\n"
 .space 1, 0 
@@ -3249,7 +3247,18 @@ _start:
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
  call __set 
- mov $data7, %rax 
+ mov $data1, %rax 
+ mov %rax, (userData)
+ xor %rax, %rax 
+ call __setVar
+
+ #set sVar2
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName6, %rax 
+ mov $varName6, %rdi
+ call __set 
+ mov $data2, %rax 
  mov %rax, (userData)
  xor %rax, %rax 
  call __setVar
@@ -3360,9 +3369,10 @@ _start:
 
  #mov (userMem), %r8 
  #mov (userMem2), %r9
- mov $data11, %r8
- mov $varName1, %r9 
- mov $0, %rax 
+ 
+ mov $varName1, %r8
+ mov $varName6, %r9 
+ mov $1, %rax 
  mov $1, %rbx 
 
  /*mov $lenVarName, %rsi 
