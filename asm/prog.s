@@ -3360,7 +3360,7 @@ _start:
 
  #mov (userMem), %r8 
  #mov (userMem2), %r9
- mov $data8, %r8
+ mov $data11, %r8
  mov $varName1, %r9 
  mov $0, %rax 
  mov $1, %rbx 
@@ -3380,14 +3380,14 @@ _start:
  #get sVar 
  /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi
+ mov $lenVarName6, %rax 
+ mov $varName6, %rdi
  call __set
  call __getVar
  mov (userData), %rsi 
  call __print 
  mov $enter, %rsi 
- call __print */
+ call __print*/ 
 
  call __printHeap
 
