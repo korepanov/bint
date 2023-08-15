@@ -86,6 +86,12 @@ lenMem16 = . - mem16
 mem17:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenMem17 = . - mem17 
+mem18:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem18 = . - mem18 
+mem19:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem19 = . - mem19 
 strBegin:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrBegin = . - strBegin
@@ -565,6 +571,18 @@ __concatinate:
  #movb $0, (%r8)
  
  ret   
+ 
+ __userConcatinateVars:
+ # входные параметры 
+ # r8 - адрес имени первой переменной 
+ # r9 - адрес имени второй переменной
+ # $varName - адрес имени переменной, куда положить результат 
+
+ #mem13 - 16 свободны 
+ mov $varName, %rsi 
+ call __print  
+
+ ret 
 
  __userConcatinate:
  # входные параметры 
@@ -580,6 +598,39 @@ __concatinate:
  mov %rax, (mem15)
  mov %rbx, (mem16)
  
+ # сохранили приемник
+ mov $lenMem17, %rsi 
+ mov $mem17, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
+
+ mov $mem17, %r8  
+ mov %r8, (userData)
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenSystemVarName, %rax 
+ mov $systemVarName, %rdi 
+ call __set
+
+ mov $1, %rax 
+ call __setVar 
+ call __printHeap
+ call __throughError
+
+ # восстановили приемник
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenMem17, %rax 
+ mov $mem17, %rdi 
+ call __set
+
+
+
+
+
+
  call __getVar
 
  mov %r13, %rbx
@@ -639,7 +690,8 @@ __concatinate:
  
  mov (userData), %rbx 
  mov (mem13), %rax 
-
+ 
+ // очистка не всегда нужна!
  __userConcatinateClearStr:
  mov (%rbx), %dil 
  cmp $2, %dil 
@@ -659,43 +711,31 @@ __concatinate:
  cmp $1, (mem16)
  jz __userConcatinateTwoVars
  
- // переменная только слева
+ // переменная только слева 
 
- # сохранили приемник
- mov $lenMem15, %rsi 
- mov $mem15, %rdx 
- mov $lenVarName, %rax 
- mov $varName, %rdi 
- call __set
+ mov (mem13), %rsi 
+ mov %rsi, (userData)
+ mov $1, %rax 
+ 
+ call __setVar
+ call __printHeap 
+ call __throughError
 
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName, %rax 
- mov (mem13), %rdi 
- call __set
- call __getVar 
-
- # восстановили приемник
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenMem15, %rax 
- mov $mem15, %rdi 
- call __set
- xor %rax, %rax 
- call __setVar 
  call __getVar 
  mov (userData), %rsi 
  call __len 
  mov %rax, %rbx 
  add (userData), %rbx 
  mov (mem14), %rax 
+
  jmp __userConcatinateNow2 
 
  __userConcatinateTwoVars:
  // с обеих сторон переменная
- mov $data16, %rsi 
- call __print
- jmp __userConcatinateEndCheck
+ mov (mem13), %r8 
+ mov (mem14), %r9 
+ call __userConcatinateVars 
+ ret 
 
  __userConcatinateRightVar:
  cmp $1, (mem16)
@@ -1638,7 +1678,28 @@ __setVar:
  # адрес имени переменной в (userData) - данные в переменной 
  # rax = 0 - статические данные 
  # rax = 1 - данные в переменной
- mov %rax, (mem4)
+ cmp $1, %rax 
+ jnz __setVarStat
+
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf, %rax 
+ mov (userData), %rdi 
+ call __set
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
+ call __compare 
+
+ cmp $1, %rax 
+ jnz __setVarStat0 
+ ret # присвоение переменной в саму себя 
+ __setVarStat0:
+ mov $1, %rax 
+ __setVarStat:
+ mov %rax, (mem4) 
 
  mov %r13, %rbx
  __setVarLocal:
@@ -1728,22 +1789,28 @@ __setVar:
  mov %r12, (mem10)
 
  __setVarIsNotStr:
+
  cmp $1, (mem4) # переменная? 
  jnz __setVarNotVar
- mov %rbx, (mem17) # сохраним %rbx 
- mov $lenMem4, %rsi # сохранить varName 
- mov $mem4, %rdx 
+ 
+ mov %rbx, (mem19) # сохраним %rbx 
+
+ mov $lenMem18, %rsi # сохранить varName 
+ mov $mem18, %rdx 
  mov $lenVarName, %rax 
  mov $varName, %rdi 
  call __set
+ 
 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenUserData, %rax 
  mov (userData), %rdi 
  call __set
+ 
+ call __getVar
+ 
 
- call __getVar 
  mov (userData), %rsi 
  call __len  
  mov (mem5), %rbx 
@@ -1767,20 +1834,28 @@ __setVar:
  dec %rax 
  jmp __setVarPrepare
  __setVarPrepareEnd:
- call __getVar # обновим указатель в (userData)
- mov (mem17), %rbx # восстановим первоначальный %rbx 
+ call __getVar # обновим указатель в (userData) 
+ mov (mem19), %rbx # восстановим первоначальный %rbx 
 
  __setVarNotStr0:
  mov (userData), %rax 
  __setNow0:
  mov (%rax), %dl
  cmp $0, %dl 
- jz __setVarRet 
+ jz __setVarRet0
  mov %dl, (%rbx)
  inc %rbx 
  inc %rax 
  jmp __setNow0
 
+ __setVarRet0:
+ movb $0, (%rbx)
+ mov $lenVarName, %rsi # восстановим varName 
+ mov $varName, %rdx 
+ mov $lenMem18, %rax 
+ mov $mem18, %rdi 
+ call __set
+ ret
  __setVarNotVar: 
  mov (userData), %rax 
  __setNow:
@@ -3053,7 +3128,19 @@ _start:
  call __initLabels
  call __firstMem
  call __firstStrMem
- 
+
+ # ^systemVar 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenSystemVarName, %rax 
+ mov $systemVarName, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar 
 
  # sVar 
  /*mov $lenVarName, %rsi 
@@ -3363,17 +3450,17 @@ _start:
 
  mov $lenVarName, %rsi 
  mov $varName, %rdx
- mov $lenVarName6, %rax 
- mov $varName6, %rdi 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
  call __set
 
  #mov (userMem), %r8 
  #mov (userMem2), %r9
  
  mov $varName1, %r8
- mov $varName6, %r9 
+ mov $data12, %r9 
  mov $1, %rax 
- mov $1, %rbx 
+ mov $0, %rbx 
 
  /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
