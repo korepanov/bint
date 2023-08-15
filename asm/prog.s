@@ -772,6 +772,29 @@ __concatinate:
  
  jmp __userConcatinateNow0 
  __userConcatinateRet0:
+
+ mov %rbx, (mem16) # сохранили %rbx, куда нужно записывать результат
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName, %rax 
+ mov (mem14), %rdi 
+ call __set
+ call __getVar 
+
+ mov (userData), %rax 
+ mov (mem16), %rbx 
+
+ __userConcatinateNow1: 
+ mov (%rax), %dl
+ cmp $0, %dl 
+ jz __userConcatinateRet1 
+ mov %dl, (%rbx)
+ inc %rbx 
+ inc %rax 
+ 
+ jmp __userConcatinateNow1 
+ __userConcatinateRet1:
  #movb $'5', (%rbx)
  call __printHeap
 
