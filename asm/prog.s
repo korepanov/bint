@@ -758,8 +758,21 @@ __concatinate:
  __userConcatinatePrepareEnd:
 
  call __getVar 
- mov (userData), %rbx 
- movb $'5', (%rbx)
+ mov (userData), %rbx
+
+ mov (mem13), %rax
+
+ __userConcatinateNow0: 
+ mov (%rax), %dl
+ cmp $0, %dl 
+ jz __userConcatinateRet0 
+ mov %dl, (%rbx)
+ inc %rbx 
+ inc %rax 
+ 
+ jmp __userConcatinateNow0 
+ __userConcatinateRet0:
+ #movb $'5', (%rbx)
  call __printHeap
 
  call __throughError
