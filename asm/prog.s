@@ -731,10 +731,35 @@ __concatinate:
  mov (userData), %rsi 
  call __len 
  add (mem16), %rax # длина результата 
- 
+ mov %rax, (mem16)
+
  call __getVar 
- mov (userData), %rax 
- movb $'5', (%rax)
+ mov (userData), %rbx
+ mov (mem16), %rax  
+
+
+  __userConcatinatePrepare:
+ mov (%rbx), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateMoreMemEnd0
+ mov %rax, (mem4)
+ mov %rbx, (mem5) 
+ mov %r12, (mem10)
+ call __internalShiftStr
+ mov (mem10), %r12 
+ mov (mem4), %rax
+ mov (mem5), %rbx
+ __userConcatinateMoreMemEnd0:
+ cmp $0, %rax 
+ jz __userConcatinatePrepareEnd
+ inc %rbx 
+ dec %rax 
+ jmp __userConcatinatePrepare
+ __userConcatinatePrepareEnd:
+
+ call __getVar 
+ mov (userData), %rbx 
+ movb $'5', (%rbx)
  call __printHeap
 
  call __throughError
@@ -3303,7 +3328,7 @@ _start:
 
  #mov (userMem), %r8 
  #mov (userMem2), %r9
- mov $data12, %r8
+ mov $data8, %r8
  mov $varName1, %r9 
  mov $0, %rax 
  mov $1, %rbx 
