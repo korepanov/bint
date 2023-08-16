@@ -92,6 +92,9 @@ lenMem18 = . - mem18
 mem19:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenMem19 = . - mem19 
+mem20:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem20 = . - mem20  
 strBegin:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrBegin = . - strBegin
@@ -576,12 +579,14 @@ __concatinate:
  # входные параметры 
  # r8 - адрес имени первой переменной 
  # r9 - адрес имени второй переменной
+ # r12 - место, откуда расширять строку 
  # $varName - адрес имени переменной, куда положить результат 
 
  #mem13 - 16 свободны 
+ mov %r12, (mem20)
  mov %r8, (mem13)
  mov %r9, (mem14)
-
+ 
  # проверим, нет ли в выражении той же переменной, куда выполняется присваивание 
  mov $lenBuf, %rsi 
  mov $buf, %rdx 
@@ -631,9 +636,67 @@ __concatinate:
  call __throughError 
  __userConcatinateVarsNo:
  # нет той же переменной 
- mov $data17, %rsi 
- call __print 
- call __throughError
+
+ # устанавливаем в приемник значение переменной слева 
+ mov (mem13), %rax 
+ mov %rax, (userData)
+ mov $1, %rax 
+ call __setVar 
+ 
+ # выделим дополнительное место для приемника, если требуется
+ call __getVar 
+ mov (userData), %rbx 
+ mov %rbx, %rsi 
+ call __len 
+ add %rax, %rbx # смещаемся на длину первого операнда 
+ mov %rbx, (mem16) # сохраним %rbx 
+
+ # сохранили приемник
+ mov $lenMem15, %rsi 
+ mov $mem15, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName, %rax 
+ mov (mem14), %rdi
+ call __set
+ 
+ call __getVar 
+
+ # восстанавливаем приемник 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenMem15, %rax 
+ mov $mem15, %rdi 
+ call __set
+
+ mov (userData), %rsi 
+ call __len 
+
+ mov (mem16), %rbx # восстановим %rbx 
+ mov (mem20), %r12 
+ __userConcatinateVarsPrepare:
+ mov (%rbx), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateVarsMoreMemEnd0
+ mov %rax, (mem4)
+ mov %rbx, (mem5) 
+ mov %r12, (mem10)
+ call __internalShiftStr
+ mov (mem10), %r12 
+ mov (mem4), %rax
+ mov (mem5), %rbx
+ __userConcatinateVarsMoreMemEnd0:
+ cmp $0, %rax 
+ jz __userConcatinateVarsPrepareEnd
+ inc %rbx 
+ dec %rax 
+ jmp __userConcatinateVarsPrepare
+ __userConcatinateVarsPrepareEnd:
+
  ret 
 
  __userConcatinate:
@@ -3431,7 +3494,7 @@ _start:
  mov $lenVarName6, %rax 
  mov $varName6, %rdi
  call __set 
- mov $data2, %rax 
+ mov $data8, %rax 
  mov %rax, (userData)
  xor %rax, %rax 
  call __setVar
@@ -3443,7 +3506,7 @@ _start:
  mov $lenVarName7, %rax 
  mov $varName7, %rdi
  call __set 
- mov $data12, %rax 
+ mov $data9, %rax 
  mov %rax, (userData)
  xor %rax, %rax 
  call __setVar
@@ -3539,22 +3602,11 @@ _start:
  mov $lenVarName1, %rax 
  mov $varName1, %rdi 
  call __set
-
- #mov (userMem), %r8 
- #mov (userMem2), %r9
  
  mov $varName6, %r8
  mov $varName7, %r9 
  mov $1, %rax 
  mov $1, %rbx 
-
- /*mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName6, %rax 
- mov $varName6, %rdi
- call __set
- call __undefineVar
- call __printHeap*/
 
  call __userConcatinate 
 
