@@ -809,7 +809,7 @@ __concatinate:
  dec %rax 
  jmp __userConcatinatePrepare
  __userConcatinatePrepareEnd:
-
+ 
  call __getVar 
  mov (userData), %rbx
 
@@ -825,8 +825,27 @@ __concatinate:
  
  jmp __userConcatinateNow0 
  __userConcatinateRet0:
-
  mov %rbx, (mem16) # сохранили %rbx, куда нужно записывать результат
+
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenMem14, %rax 
+ mov (mem14), %rdi 
+ call __set
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
+ call __compare 
+
+ cmp $1, %rax 
+ jnz __userConcatinateNotTheSameRight
+ 
+ mov $systemVarName, %rax 
+ mov %rax, (mem14)
+ 
+ __userConcatinateNotTheSameRight:
 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -3472,10 +3491,10 @@ _start:
  #mov (userMem), %r8 
  #mov (userMem2), %r9
  
- mov $varName1, %r8
- mov $data12, %r9 
- mov $1, %rax 
- mov $0, %rbx 
+ mov $data12, %r8
+ mov $varName1, %r9 
+ mov $0, %rax 
+ mov $1, %rbx 
 
  /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
