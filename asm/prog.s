@@ -260,16 +260,16 @@ data13:
 .ascii "FНиканор (др.-греч. Νικάνωρ; IV век до н. э. — 318 или 317 год до н. э.) — военачальник Кассандра, участник Второй войны диадохов. \n В историографии существует несколько взаимоисключающих гипотез, которые идентифицируют Никанора как племянника Аристотеля, либо как сына личного телохранителя-соматофилака македонских царей и сатрапа Киликии[fr] Балакра, либо как одного из военачальников Александра Македонского, который в 334 году до н. э. обеспечил морскую блокаду Милета. \n После смерти регента Македонской империи Антипатра в 319 году до н. э. Никанор принял сторону Кассандра, который боролся за власть в Македонии с Полиперхоном. Никанор руководил македонским гарнизоном в крепости над Афинами Мунихий. Он не только удержал крепость, но и захватил главный порт Аттики Пирей, что стало причиной смены власти в Афинах. Вскоре Кассандр поручил Никанору командование флотом. В сражении при Византии союзный флот Никанора и Антигона Одноглазого разгромил морские силы Полиперхона под командованием Клита Белого. \n Вскоре после победы при Византии Кассандр заподозрил Никанора в измене, приказал арестовать, а затем инициировал войсковое собрание, которое приговорило военачальника к смертиF"
 .space 1, 0
 data14:
-.ascii "переменная только слева"
+.ascii "слева та же переменная"
 .space 1, 0
 data15:
-.ascii "переменная только справа"
+.ascii "справа та же переменная"
 .space 1, 0
 data16:
-.ascii "переменная и слева, и справа"
+.ascii "та же переменная и слева, и справа"
 .space 1, 0 
 data17:
-.ascii "нет переменных"
+.ascii "нет той же переменной"
 .space 1, 0
 
 labelName1:
@@ -579,9 +579,61 @@ __concatinate:
  # $varName - адрес имени переменной, куда положить результат 
 
  #mem13 - 16 свободны 
- mov $varName, %rsi 
- call __print  
+ mov %r8, (mem13)
+ mov %r9, (mem14)
 
+ # проверим, нет ли в выражении той же переменной, куда выполняется присваивание 
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenMem13, %rax 
+ mov (mem13), %rdi 
+ call __set
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
+ call __compare 
+
+ mov %rax, (mem15) # запомнили признак 
+
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenMem14, %rax 
+ mov (mem14), %rdi 
+ call __set
+ call __compare 
+
+ mov %rax, (mem16) # запомнили признак 
+
+ mov (mem15), %r8 
+ mov (mem16), %r9 
+
+ cmp $1, %r8 # слева та же переменная? 
+ jnz __userConcatinateVarsNotLeft
+ cmp $1, %r9 # справа та же переменная?
+ jnz __userConcatinateVarsLeft
+ # та же переменная и слева, и справа
+ mov $data16, %rsi 
+ call __print 
+ call __throughError 
+ __userConcatinateVarsLeft:
+ # та же переменная только слева 
+ mov $data14, %rsi 
+ call __print 
+ call __throughError 
+ __userConcatinateVarsNotLeft:
+ cmp $1, %r9
+ jnz __userConcatinateVarsNo
+ # та же переменная только справа 
+ mov $data15, %rsi 
+ call __print 
+ call __throughError 
+ __userConcatinateVarsNo:
+ # нет той же переменной 
+ mov $data17, %rsi 
+ call __print 
+ call __throughError
  ret 
 
  __userConcatinate:
@@ -3386,16 +3438,16 @@ _start:
   
   
   #set sVar3
- /*mov $lenVarName, %rsi 
+ mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName7, %rax 
  mov $varName7, %rdi
  call __set 
- mov $data8, %rax 
+ mov $data12, %rax 
  mov %rax, (userData)
  xor %rax, %rax 
  call __setVar
-
+/*
  # set sVar4
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -3491,9 +3543,9 @@ _start:
  #mov (userMem), %r8 
  #mov (userMem2), %r9
  
- mov $data12, %r8
- mov $varName1, %r9 
- mov $0, %rax 
+ mov $varName6, %r8
+ mov $varName7, %r9 
+ mov $1, %rax 
  mov $1, %rbx 
 
  /*mov $lenVarName, %rsi 
