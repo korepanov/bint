@@ -607,7 +607,7 @@ __concatinate:
 
  mov $mem17, %r8  
  mov %r8, (userData)
-
+ // сохраним в системной переменной значение, которое сейчас хранится в приемнике
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName, %rax 
@@ -616,8 +616,6 @@ __concatinate:
 
  mov $1, %rax 
  call __setVar 
- call __printHeap
- call __throughError
 
  # восстановили приемник
  mov $lenVarName, %rsi 
@@ -625,11 +623,6 @@ __concatinate:
  mov $lenMem17, %rax 
  mov $mem17, %rdi 
  call __set
-
-
-
-
-
 
  call __getVar
 
@@ -691,7 +684,6 @@ __concatinate:
  mov (userData), %rbx 
  mov (mem13), %rax 
  
- // очистка не всегда нужна!
  __userConcatinateClearStr:
  mov (%rbx), %dil 
  cmp $2, %dil 
@@ -712,15 +704,38 @@ __concatinate:
  jz __userConcatinateTwoVars
  
  // переменная только слева 
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenMem13, %rax 
+ mov (mem13), %rdi 
+ call __set
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
+ call __compare 
+
+ cmp $1, %rax 
+ jnz __userConcatinateNotTheSameLeft
+ 
+ mov $systemVarName, %rax 
+ mov %rax, (userData)
+
+ mov $1, %rax 
+
+ call __setVar 
+ jmp __userConcatinateTheSameLeft
+
+ __userConcatinateNotTheSameLeft:
 
  mov (mem13), %rsi 
  mov %rsi, (userData)
  mov $1, %rax 
  
  call __setVar
- call __printHeap 
- call __throughError
-
+ 
+ __userConcatinateTheSameLeft:
  call __getVar 
  mov (userData), %rsi 
  call __len 
