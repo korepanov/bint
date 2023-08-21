@@ -3629,10 +3629,10 @@ _start:
  mov $varName1, %rdi 
  call __set
  
- mov $varName1, %r8
- mov $varName1, %r9 
- mov $1, %rax 
- mov $1, %rbx 
+ mov $data8, %r8
+ mov $data8, %r9 
+ mov $0, %rax 
+ mov $0, %rbx 
 
  call __userConcatinate 
 
