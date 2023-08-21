@@ -3518,7 +3518,7 @@ _start:
  mov $lenVarName6, %rax 
  mov $varName6, %rdi
  call __set 
- mov $data8, %rax 
+ mov $data1, %rax 
  mov %rax, (userData)
  xor %rax, %rax 
  call __setVar
@@ -3530,7 +3530,7 @@ _start:
  mov $lenVarName7, %rax 
  mov $varName7, %rdi
  call __set 
- mov $data9, %rax 
+ mov $data2, %rax 
  mov %rax, (userData)
  xor %rax, %rax 
  call __setVar
@@ -3627,7 +3627,7 @@ _start:
  mov $varName1, %rdi 
  call __set
  
- mov $varName6, %r8
+ mov $varName1, %r8
  mov $varName7, %r9 
  mov $1, %rax 
  mov $1, %rbx 
