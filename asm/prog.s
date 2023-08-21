@@ -620,9 +620,11 @@ __concatinate:
  cmp $1, %r9 # справа та же переменная?
  jnz __userConcatinateVarsLeft
  # та же переменная и слева, и справа
- mov $data16, %rsi 
- call __print 
- call __throughError 
+ mov $systemVarName, %r8 
+ mov %r8, (mem13)
+ mov $systemVarName, %r9 
+ mov %r9, (mem14) 
+ jmp __userConcatinateVarsNo 
  __userConcatinateVarsLeft:
  # та же переменная только слева 
  mov $systemVarName, %r8 
@@ -3507,7 +3509,7 @@ _start:
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
  call __set 
- mov $data8, %rax 
+ mov $data1, %rax 
  mov %rax, (userData)
  xor %rax, %rax 
  call __setVar
@@ -3627,7 +3629,7 @@ _start:
  mov $varName1, %rdi 
  call __set
  
- mov $varName7, %r8
+ mov $varName1, %r8
  mov $varName1, %r9 
  mov $1, %rax 
  mov $1, %rbx 
@@ -3646,7 +3648,7 @@ _start:
  mov (userData), %rsi 
  call __print 
  mov $enter, %rsi 
- call __print*/ 
+ call __print*/
 
  call __printHeap
 
