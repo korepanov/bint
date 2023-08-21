@@ -632,9 +632,9 @@ __concatinate:
  cmp $1, %r9
  jnz __userConcatinateVarsNo
  # та же переменная только справа 
- mov $data15, %rsi 
- call __print 
- call __throughError 
+ mov $systemVarName, %r9 
+ mov %r9, (mem14) 
+ jmp __userConcatinateVarsNo 
  __userConcatinateVarsNo:
  # нет той же переменной 
 
@@ -3627,8 +3627,8 @@ _start:
  mov $varName1, %rdi 
  call __set
  
- mov $varName1, %r8
- mov $varName7, %r9 
+ mov $varName7, %r8
+ mov $varName1, %r9 
  mov $1, %rax 
  mov $1, %rbx 
 
