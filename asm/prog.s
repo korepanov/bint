@@ -625,9 +625,9 @@ __concatinate:
  call __throughError 
  __userConcatinateVarsLeft:
  # та же переменная только слева 
- mov $data14, %rsi 
- call __print 
- call __throughError 
+ mov $systemVarName, %r8 
+ mov %r8, (mem13)
+ jmp __userConcatinateVarsNo  
  __userConcatinateVarsNotLeft:
  cmp $1, %r9
  jnz __userConcatinateVarsNo
@@ -3507,7 +3507,7 @@ _start:
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
  call __set 
- mov $data1, %rax 
+ mov $data8, %rax 
  mov %rax, (userData)
  xor %rax, %rax 
  call __setVar
@@ -3530,7 +3530,7 @@ _start:
  mov $lenVarName7, %rax 
  mov $varName7, %rdi
  call __set 
- mov $data2, %rax 
+ mov $data9, %rax 
  mov %rax, (userData)
  xor %rax, %rax 
  call __setVar
