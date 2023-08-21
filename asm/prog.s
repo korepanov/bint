@@ -678,6 +678,8 @@ __concatinate:
 
  mov (mem16), %rbx # восстановим %rbx 
  mov (mem20), %r12 
+ mov (userData), %rsi 
+ mov %rsi, (mem20)
  __userConcatinateVarsPrepare:
  mov (%rbx), %dil 
  cmp $2, %dil 
@@ -696,7 +698,28 @@ __concatinate:
  dec %rax 
  jmp __userConcatinateVarsPrepare
  __userConcatinateVarsPrepareEnd:
+ 
+ # получаем значение второй переменной по новому адресу 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName, %rax 
+ mov (mem14), %rdi
+ call __set
+ 
+ call __getVar 
 
+ mov (userData), %rax 
+ mov (mem16), %rbx 
+ __userConcatinateVarsNow: 
+ mov (%rax), %dl 
+ cmp $0, %dl  
+ jz __userConcatinateVarsEnd 
+ mov %dl, (%rbx)
+ inc %rax 
+ inc %rbx 
+ jmp __userConcatinateVarsNow 
+__userConcatinateVarsEnd:
+ movb $0, (%rbx)
  ret 
 
  __userConcatinate:
@@ -3615,8 +3638,8 @@ _start:
  #get sVar 
  /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName6, %rax 
- mov $varName6, %rdi
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
  call __set
  call __getVar
  mov (userData), %rsi 
