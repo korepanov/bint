@@ -1,4 +1,8 @@
 .data
+starSymbol:
+.ascii "*"
+endSymbol:
+.ascii ";"
 pageSize:
 .quad 4096
 varNameSize:
@@ -25,6 +29,12 @@ lenBuf3 = . - buf3
 buf4:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenBuf4 = . - buf4
+userMem:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenUserMem = . - userMem 
+userMem2:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenUserMem2 = . - userMem2 
 mem:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenMem = . - mem 
@@ -49,6 +59,42 @@ lenMem7 = . - mem7
 mem8:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenMem8 = . - mem8
+mem9:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem9 = . - mem9
+mem10:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem10 = . - mem10 
+mem11:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem11 = . - mem11 
+mem12:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem12 = . - mem12 
+mem13:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem13 = . - mem13 
+mem14:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem14 = . - mem14 
+mem15:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem15 = . - mem15 
+mem16:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem16 = . - mem16 
+mem17:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem17 = . - mem17 
+mem18:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem18 = . - mem18 
+mem19:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem19 = . - mem19 
+mem20:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem20 = . - mem20  
 strBegin:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrBegin = . - strBegin
@@ -94,6 +140,11 @@ lenLabelsEnd = . - labelsEnd
 labelsPointer:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenLabelsPointer = . - labelsPointer 
+systemVarName:
+.ascii "^systemVar"
+.space 1, 0
+lenSystemVarName = . - systemVarName
+
 intType:
 .ascii "int"
 .space 1, 0
@@ -114,6 +165,7 @@ enter:
 .ascii "\n"
 .space 1, 0
 lenEnter = . - enter 
+
 ten:
 .float 10.0 
 one:
@@ -123,7 +175,7 @@ zero:
 floatTail:
 .ascii ".0"
 .space 1, 0 
-lenFloatTail =  . - floatTail 
+lenFloatTail =  . - floatTail
 
 fatalError:
 .ascii "fatal error: internal error\n"
@@ -146,4 +198,9 @@ powZeroZeroError:
 noSuchMarkError:
 .ascii "runtime error: no such mark: "
 .space 1, 0
-
+concError:
+.ascii "could not concatinate not string arguments\n"
+.space 1, 0 
+strError:
+.ascii "the type of the variable to which you want to assign the result of string concatenation is not a string\n"
+.space 1, 0 

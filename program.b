@@ -1,9 +1,8 @@
 void main(){
-	string s;
-	string s2; 
-	s = "A";
-	s2 = "B";
-	s = (s + s2);
+	string a; 
+	a = ("AAA" + "BBB");
+	print(a);
+	print("\n");
 	 
 };
 

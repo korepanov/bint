@@ -353,7 +353,8 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 						} else if "string" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
 							_, err := dataFile.Write([]byte("\nvarName" + fmt.Sprintf("%v", VarsCounter) + ":" +
 								"\n.ascii \"" + fmt.Sprintf("%v", variables[len(variables)-1][1]) +
-								"\"\nlenVarName" + fmt.Sprintf("%v", VarsCounter) + " = . - varName" + fmt.Sprintf("%v", VarsCounter)))
+								"\"\n.space 1, 0" +
+								"\nlenVarName" + fmt.Sprintf("%v", VarsCounter) + " = . - varName" + fmt.Sprintf("%v", VarsCounter)))
 							if nil != err {
 								fmt.Println(err)
 								os.Exit(1)
@@ -369,7 +370,8 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 						} else if "int" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
 							_, err := dataFile.Write([]byte("\nvarName" + fmt.Sprintf("%v", VarsCounter) + ":" +
 								"\n.ascii \"" + fmt.Sprintf("%v", variables[len(variables)-1][1]) +
-								"\"\nlenVarName" + fmt.Sprintf("%v", VarsCounter) + " = . - varName" + fmt.Sprintf("%v", VarsCounter)))
+								"\"\n.space 1, 0" +
+								"\nlenVarName" + fmt.Sprintf("%v", VarsCounter) + " = . - varName" + fmt.Sprintf("%v", VarsCounter)))
 							if nil != err {
 								fmt.Println(err)
 								os.Exit(1)
@@ -389,7 +391,8 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 						} else if "float" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
 							_, err := dataFile.Write([]byte("\nvarName" + fmt.Sprintf("%v", VarsCounter) + ":" +
 								"\n.ascii \"" + fmt.Sprintf("%v", variables[len(variables)-1][1]) +
-								"\"\nlenVarName" + fmt.Sprintf("%v", VarsCounter) + " = . - varName" + fmt.Sprintf("%v", VarsCounter)))
+								"\"\n.space 1, 0" +
+								"\nlenVarName" + fmt.Sprintf("%v", VarsCounter) + " = . - varName" + fmt.Sprintf("%v", VarsCounter)))
 							if nil != err {
 								fmt.Println(err)
 								os.Exit(1)
@@ -409,7 +412,8 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 						} else if "bool" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
 							_, err := dataFile.Write([]byte("\nvarName" + fmt.Sprintf("%v", VarsCounter) + ":" +
 								"\n.ascii \"" + fmt.Sprintf("%v", variables[len(variables)-1][1]) +
-								"\"\nlenVarName" + fmt.Sprintf("%v", VarsCounter) + " = . - varName" + fmt.Sprintf("%v", VarsCounter)))
+								"\"\n.space 1, 0" +
+								"\nlenVarName" + fmt.Sprintf("%v", VarsCounter) + " = . - varName" + fmt.Sprintf("%v", VarsCounter)))
 							if nil != err {
 								fmt.Println(err)
 								os.Exit(1)

@@ -64,6 +64,17 @@ func InitData() (*os.File, error) {
 			os.Exit(1)
 		}
 	}
+	// множество имен временных переменных типа string для расчета конкатенации
+	for i := 0; i < TempStringVarsNum; i++ {
+		_, err = f.Write([]byte("\nsystemVarName" + fmt.Sprintf("%v", i) + ":" +
+			"\n.ascii \"^systemVar" + fmt.Sprintf("%v", i) + "\"" +
+			"\n.space 1, 0" +
+			"\nlenSystemVarName" + fmt.Sprintf("%v", i) + " = . - systemVarName" + fmt.Sprintf("%v", i)))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+	}
 	return f, nil
 }
 
@@ -94,6 +105,17 @@ func InitProg() (*os.File, error) {
 		return f, err
 	}
 
+	// множество временных пользовательских переменных типа string для расчета конкатенации
+	for i := 0; i < TempStringVarsNum; i++ {
+		_, err = f.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov $lenSystemVarName" + fmt.Sprintf("%v", i) +
+			", %rax \n mov $systemVarName" + fmt.Sprintf("%v", i) + ", %rdi\n call __set " +
+			"\n mov $lenVarType, %rsi \n mov $varType, %rdx \n mov $lenStringType, %rax \n mov $stringType, %rdi\n call __set " +
+			"\n call __defineVar"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+	}
 	return f, nil
 }
 
@@ -195,17 +217,19 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				if fmt.Sprintf("%v", ValueFoldInterface(RO[0])) == fmt.Sprintf("%v", v[1]) {
 					wasVar = true
 					// getVar, результат в userData
-					numberS := fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", ValueFoldInterface(v[1]))])
+					numberS := fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", ValueFoldInterface(LO[0]))])
+
 					_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx" +
 						"\n mov $lenVarName" + numberS +
-						", %rax \n mov $varName" + numberS + ", %rdi\n call __set\n call __getVar"))
+						", %rax \n mov $varName" + numberS + ", %rdi\n call __set"))
 					if nil != err {
 						fmt.Println(err)
 						os.Exit(1)
 					}
-					numberS = fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", ValueFoldInterface(LO[0]))])
-					_, err = progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx" +
-						"\n mov $lenVarName" + numberS + ", %rax \n mov $varName" + numberS + ", %rdi\n call __set \n call __setVar"))
+					numberS = fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", ValueFoldInterface(v[1]))])
+
+					_, err = progFile.Write([]byte("\nmov $varName" + numberS + ", %rax" + "\nmov %rax, (userData)\n mov $1, %rax" +
+						"\ncall __setVar"))
 					if nil != err {
 						fmt.Println(err)
 						os.Exit(1)
@@ -227,12 +251,18 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 					os.Exit(1)
 				}
 
-				_, err = progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenVarName +
-					", %rax \n mov " + varName + ", %rdi\n call __set \n mov $" + fmt.Sprintf("%v", RO[0]) + ", %rax" +
-					" \n mov %rax, (userData)\n call __setVar"))
+				if !(len(fmt.Sprintf("%v", RO[0])) > 9 && "systemVar" == fmt.Sprintf("%v", RO[0])[0:9]) {
+					_, err = progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenVarName +
+						", %rax \n mov " + varName + ", %rdi\n call __set \n mov $" + fmt.Sprintf("%v", RO[0]) + ", %rax" +
+						" \n mov %rax, (userData)\n xor %rax, %rax \n call __setVar"))
 
-				if nil != err {
-					fmt.Println(err)
+					if nil != err {
+						fmt.Println(err)
+						os.Exit(1)
+					}
+				} else {
+					fmt.Println("assigning to string user var")
+
 					os.Exit(1)
 				}
 			} else {
@@ -273,7 +303,8 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				_, err = progFile.Write([]byte("\n mov $lenVarName, %rsi \n mov $varName, %rdx " +
 					"\n mov $lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])]) +
 					", %rax \n mov $varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])]) + ", %rdi \n" +
-					"call __set\n\n mov $data" + fmt.Sprintf("%v", DataNumber) + ", %rax  \n mov %rax, (userData)\n call __setVar"))
+					"call __set\n\n mov $data" + fmt.Sprintf("%v", DataNumber) + ", %rax  \n mov %rax, (userData)\n xor %rax, %rax" +
+					"\ncall __setVar"))
 				if nil != err {
 					fmt.Println(err)
 					os.Exit(1)
@@ -2153,8 +2184,38 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		if len(fmt.Sprintf("%v", RO[0])) >= 2 && "\"" == string(fmt.Sprintf("%v", RO[0])[0]) {
 			RO[0] = RO[0].(string)[1 : len(RO[0].(string))-1]
 		}
+		if "string" == typeLO && "string" == typeRO {
+			if tNumber >= TempStringVarsNum {
+				fmt.Println("ERROR: the concatinatinon expression is too long")
+				os.Exit(1)
+			}
+			if !isVarLO && !isVarRO {
+				_, err := progFile.Write([]byte("mov $lenVarName, %rsi \n mov $varName, %rdx \n mov $lenSystemVar" +
+					fmt.Sprintf("%v", tNumber) + ", %rax \n mov $systemVar" + fmt.Sprintf("%v", tNumber) + ", %rdi \n call __set"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				_, err = progFile.Write([]byte("\nmov " + fmt.Sprintf("%v", LO[0]) + ", %r8" + "\nmov " +
+					fmt.Sprintf("%v", RO[0]) + ", %r9" + "\n xor %rax, %rax \n xor %rbx, %rbx \n call __userConcatinate"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+				/*_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
+					"\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenBuf4, %rax \n mov $buf4, %rdi\n call __set \n xor %rax, %rax \n" +
+					"\n call __add \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+					", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}*/
 
-		return []interface{}{"\"" + fmt.Sprintf("%v", LO[0]) + fmt.Sprintf("%v", RO[0]) + "\""}, systemStack, "", nil
+				// true - признак того, что результат в вычисляемой переменной asm
+				return []interface{}{true, "systemVar" + fmt.Sprintf("%v", tNumber)}, systemStack, "string", nil
+			}
+		}
+		return []interface{}{""}, systemStack, "", errors.New("ERROR in the operands: '+' operation")
 
 	} else if "-" == OP {
 		var lenLO string
@@ -3407,7 +3468,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 		if isVarLO {
 			_, err := progFile.Write([]byte("\npop (userData)\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
-				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set \n call __setVar"))
+				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set \n xor %rax, %rax \n call __setVar"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)

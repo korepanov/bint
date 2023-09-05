@@ -1,4 +1,8 @@
 .data
+starSymbol:
+.ascii "*"
+endSymbol:
+.ascii ";"
 pageSize:
 .quad 4096
 varNameSize:
@@ -25,6 +29,12 @@ lenBuf3 = . - buf3
 buf4:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenBuf4 = . - buf4
+userMem:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenUserMem = . - userMem 
+userMem2:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenUserMem2 = . - userMem2 
 mem:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenMem = . - mem 
@@ -49,6 +59,42 @@ lenMem7 = . - mem7
 mem8:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenMem8 = . - mem8
+mem9:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem9 = . - mem9
+mem10:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem10 = . - mem10 
+mem11:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem11 = . - mem11 
+mem12:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem12 = . - mem12 
+mem13:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem13 = . - mem13 
+mem14:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem14 = . - mem14 
+mem15:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem15 = . - mem15 
+mem16:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem16 = . - mem16 
+mem17:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem17 = . - mem17 
+mem18:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem18 = . - mem18 
+mem19:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem19 = . - mem19 
+mem20:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenMem20 = . - mem20  
 strBegin:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrBegin = . - strBegin
@@ -94,6 +140,11 @@ lenLabelsEnd = . - labelsEnd
 labelsPointer:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenLabelsPointer = . - labelsPointer 
+systemVarName:
+.ascii "^systemVar"
+.space 1, 0
+lenSystemVarName = . - systemVarName
+
 intType:
 .ascii "int"
 .space 1, 0
@@ -114,6 +165,7 @@ enter:
 .ascii "\n"
 .space 1, 0
 lenEnter = . - enter 
+
 ten:
 .float 10.0 
 one:
@@ -123,7 +175,7 @@ zero:
 floatTail:
 .ascii ".0"
 .space 1, 0 
-lenFloatTail =  . - floatTail 
+lenFloatTail =  . - floatTail
 
 fatalError:
 .ascii "fatal error: internal error\n"
@@ -146,7 +198,12 @@ powZeroZeroError:
 noSuchMarkError:
 .ascii "runtime error: no such mark: "
 .space 1, 0
-
+concError:
+.ascii "could not concatinate not string arguments\n"
+.space 1, 0 
+strError:
+.ascii "the type of the variable to which you want to assign the result of string concatenation is not a string\n"
+.space 1, 0 
 
  t0: 
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
@@ -532,11 +589,525 @@ noSuchMarkError:
  t127: 
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
  lenT127 = . - t127
+systemVarName0:
+.ascii "^systemVar0"
+.space 1, 0
+lenSystemVarName0 = . - systemVarName0
+systemVarName1:
+.ascii "^systemVar1"
+.space 1, 0
+lenSystemVarName1 = . - systemVarName1
+systemVarName2:
+.ascii "^systemVar2"
+.space 1, 0
+lenSystemVarName2 = . - systemVarName2
+systemVarName3:
+.ascii "^systemVar3"
+.space 1, 0
+lenSystemVarName3 = . - systemVarName3
+systemVarName4:
+.ascii "^systemVar4"
+.space 1, 0
+lenSystemVarName4 = . - systemVarName4
+systemVarName5:
+.ascii "^systemVar5"
+.space 1, 0
+lenSystemVarName5 = . - systemVarName5
+systemVarName6:
+.ascii "^systemVar6"
+.space 1, 0
+lenSystemVarName6 = . - systemVarName6
+systemVarName7:
+.ascii "^systemVar7"
+.space 1, 0
+lenSystemVarName7 = . - systemVarName7
+systemVarName8:
+.ascii "^systemVar8"
+.space 1, 0
+lenSystemVarName8 = . - systemVarName8
+systemVarName9:
+.ascii "^systemVar9"
+.space 1, 0
+lenSystemVarName9 = . - systemVarName9
+systemVarName10:
+.ascii "^systemVar10"
+.space 1, 0
+lenSystemVarName10 = . - systemVarName10
+systemVarName11:
+.ascii "^systemVar11"
+.space 1, 0
+lenSystemVarName11 = . - systemVarName11
+systemVarName12:
+.ascii "^systemVar12"
+.space 1, 0
+lenSystemVarName12 = . - systemVarName12
+systemVarName13:
+.ascii "^systemVar13"
+.space 1, 0
+lenSystemVarName13 = . - systemVarName13
+systemVarName14:
+.ascii "^systemVar14"
+.space 1, 0
+lenSystemVarName14 = . - systemVarName14
+systemVarName15:
+.ascii "^systemVar15"
+.space 1, 0
+lenSystemVarName15 = . - systemVarName15
+systemVarName16:
+.ascii "^systemVar16"
+.space 1, 0
+lenSystemVarName16 = . - systemVarName16
+systemVarName17:
+.ascii "^systemVar17"
+.space 1, 0
+lenSystemVarName17 = . - systemVarName17
+systemVarName18:
+.ascii "^systemVar18"
+.space 1, 0
+lenSystemVarName18 = . - systemVarName18
+systemVarName19:
+.ascii "^systemVar19"
+.space 1, 0
+lenSystemVarName19 = . - systemVarName19
+systemVarName20:
+.ascii "^systemVar20"
+.space 1, 0
+lenSystemVarName20 = . - systemVarName20
+systemVarName21:
+.ascii "^systemVar21"
+.space 1, 0
+lenSystemVarName21 = . - systemVarName21
+systemVarName22:
+.ascii "^systemVar22"
+.space 1, 0
+lenSystemVarName22 = . - systemVarName22
+systemVarName23:
+.ascii "^systemVar23"
+.space 1, 0
+lenSystemVarName23 = . - systemVarName23
+systemVarName24:
+.ascii "^systemVar24"
+.space 1, 0
+lenSystemVarName24 = . - systemVarName24
+systemVarName25:
+.ascii "^systemVar25"
+.space 1, 0
+lenSystemVarName25 = . - systemVarName25
+systemVarName26:
+.ascii "^systemVar26"
+.space 1, 0
+lenSystemVarName26 = . - systemVarName26
+systemVarName27:
+.ascii "^systemVar27"
+.space 1, 0
+lenSystemVarName27 = . - systemVarName27
+systemVarName28:
+.ascii "^systemVar28"
+.space 1, 0
+lenSystemVarName28 = . - systemVarName28
+systemVarName29:
+.ascii "^systemVar29"
+.space 1, 0
+lenSystemVarName29 = . - systemVarName29
+systemVarName30:
+.ascii "^systemVar30"
+.space 1, 0
+lenSystemVarName30 = . - systemVarName30
+systemVarName31:
+.ascii "^systemVar31"
+.space 1, 0
+lenSystemVarName31 = . - systemVarName31
+systemVarName32:
+.ascii "^systemVar32"
+.space 1, 0
+lenSystemVarName32 = . - systemVarName32
+systemVarName33:
+.ascii "^systemVar33"
+.space 1, 0
+lenSystemVarName33 = . - systemVarName33
+systemVarName34:
+.ascii "^systemVar34"
+.space 1, 0
+lenSystemVarName34 = . - systemVarName34
+systemVarName35:
+.ascii "^systemVar35"
+.space 1, 0
+lenSystemVarName35 = . - systemVarName35
+systemVarName36:
+.ascii "^systemVar36"
+.space 1, 0
+lenSystemVarName36 = . - systemVarName36
+systemVarName37:
+.ascii "^systemVar37"
+.space 1, 0
+lenSystemVarName37 = . - systemVarName37
+systemVarName38:
+.ascii "^systemVar38"
+.space 1, 0
+lenSystemVarName38 = . - systemVarName38
+systemVarName39:
+.ascii "^systemVar39"
+.space 1, 0
+lenSystemVarName39 = . - systemVarName39
+systemVarName40:
+.ascii "^systemVar40"
+.space 1, 0
+lenSystemVarName40 = . - systemVarName40
+systemVarName41:
+.ascii "^systemVar41"
+.space 1, 0
+lenSystemVarName41 = . - systemVarName41
+systemVarName42:
+.ascii "^systemVar42"
+.space 1, 0
+lenSystemVarName42 = . - systemVarName42
+systemVarName43:
+.ascii "^systemVar43"
+.space 1, 0
+lenSystemVarName43 = . - systemVarName43
+systemVarName44:
+.ascii "^systemVar44"
+.space 1, 0
+lenSystemVarName44 = . - systemVarName44
+systemVarName45:
+.ascii "^systemVar45"
+.space 1, 0
+lenSystemVarName45 = . - systemVarName45
+systemVarName46:
+.ascii "^systemVar46"
+.space 1, 0
+lenSystemVarName46 = . - systemVarName46
+systemVarName47:
+.ascii "^systemVar47"
+.space 1, 0
+lenSystemVarName47 = . - systemVarName47
+systemVarName48:
+.ascii "^systemVar48"
+.space 1, 0
+lenSystemVarName48 = . - systemVarName48
+systemVarName49:
+.ascii "^systemVar49"
+.space 1, 0
+lenSystemVarName49 = . - systemVarName49
+systemVarName50:
+.ascii "^systemVar50"
+.space 1, 0
+lenSystemVarName50 = . - systemVarName50
+systemVarName51:
+.ascii "^systemVar51"
+.space 1, 0
+lenSystemVarName51 = . - systemVarName51
+systemVarName52:
+.ascii "^systemVar52"
+.space 1, 0
+lenSystemVarName52 = . - systemVarName52
+systemVarName53:
+.ascii "^systemVar53"
+.space 1, 0
+lenSystemVarName53 = . - systemVarName53
+systemVarName54:
+.ascii "^systemVar54"
+.space 1, 0
+lenSystemVarName54 = . - systemVarName54
+systemVarName55:
+.ascii "^systemVar55"
+.space 1, 0
+lenSystemVarName55 = . - systemVarName55
+systemVarName56:
+.ascii "^systemVar56"
+.space 1, 0
+lenSystemVarName56 = . - systemVarName56
+systemVarName57:
+.ascii "^systemVar57"
+.space 1, 0
+lenSystemVarName57 = . - systemVarName57
+systemVarName58:
+.ascii "^systemVar58"
+.space 1, 0
+lenSystemVarName58 = . - systemVarName58
+systemVarName59:
+.ascii "^systemVar59"
+.space 1, 0
+lenSystemVarName59 = . - systemVarName59
+systemVarName60:
+.ascii "^systemVar60"
+.space 1, 0
+lenSystemVarName60 = . - systemVarName60
+systemVarName61:
+.ascii "^systemVar61"
+.space 1, 0
+lenSystemVarName61 = . - systemVarName61
+systemVarName62:
+.ascii "^systemVar62"
+.space 1, 0
+lenSystemVarName62 = . - systemVarName62
+systemVarName63:
+.ascii "^systemVar63"
+.space 1, 0
+lenSystemVarName63 = . - systemVarName63
+systemVarName64:
+.ascii "^systemVar64"
+.space 1, 0
+lenSystemVarName64 = . - systemVarName64
+systemVarName65:
+.ascii "^systemVar65"
+.space 1, 0
+lenSystemVarName65 = . - systemVarName65
+systemVarName66:
+.ascii "^systemVar66"
+.space 1, 0
+lenSystemVarName66 = . - systemVarName66
+systemVarName67:
+.ascii "^systemVar67"
+.space 1, 0
+lenSystemVarName67 = . - systemVarName67
+systemVarName68:
+.ascii "^systemVar68"
+.space 1, 0
+lenSystemVarName68 = . - systemVarName68
+systemVarName69:
+.ascii "^systemVar69"
+.space 1, 0
+lenSystemVarName69 = . - systemVarName69
+systemVarName70:
+.ascii "^systemVar70"
+.space 1, 0
+lenSystemVarName70 = . - systemVarName70
+systemVarName71:
+.ascii "^systemVar71"
+.space 1, 0
+lenSystemVarName71 = . - systemVarName71
+systemVarName72:
+.ascii "^systemVar72"
+.space 1, 0
+lenSystemVarName72 = . - systemVarName72
+systemVarName73:
+.ascii "^systemVar73"
+.space 1, 0
+lenSystemVarName73 = . - systemVarName73
+systemVarName74:
+.ascii "^systemVar74"
+.space 1, 0
+lenSystemVarName74 = . - systemVarName74
+systemVarName75:
+.ascii "^systemVar75"
+.space 1, 0
+lenSystemVarName75 = . - systemVarName75
+systemVarName76:
+.ascii "^systemVar76"
+.space 1, 0
+lenSystemVarName76 = . - systemVarName76
+systemVarName77:
+.ascii "^systemVar77"
+.space 1, 0
+lenSystemVarName77 = . - systemVarName77
+systemVarName78:
+.ascii "^systemVar78"
+.space 1, 0
+lenSystemVarName78 = . - systemVarName78
+systemVarName79:
+.ascii "^systemVar79"
+.space 1, 0
+lenSystemVarName79 = . - systemVarName79
+systemVarName80:
+.ascii "^systemVar80"
+.space 1, 0
+lenSystemVarName80 = . - systemVarName80
+systemVarName81:
+.ascii "^systemVar81"
+.space 1, 0
+lenSystemVarName81 = . - systemVarName81
+systemVarName82:
+.ascii "^systemVar82"
+.space 1, 0
+lenSystemVarName82 = . - systemVarName82
+systemVarName83:
+.ascii "^systemVar83"
+.space 1, 0
+lenSystemVarName83 = . - systemVarName83
+systemVarName84:
+.ascii "^systemVar84"
+.space 1, 0
+lenSystemVarName84 = . - systemVarName84
+systemVarName85:
+.ascii "^systemVar85"
+.space 1, 0
+lenSystemVarName85 = . - systemVarName85
+systemVarName86:
+.ascii "^systemVar86"
+.space 1, 0
+lenSystemVarName86 = . - systemVarName86
+systemVarName87:
+.ascii "^systemVar87"
+.space 1, 0
+lenSystemVarName87 = . - systemVarName87
+systemVarName88:
+.ascii "^systemVar88"
+.space 1, 0
+lenSystemVarName88 = . - systemVarName88
+systemVarName89:
+.ascii "^systemVar89"
+.space 1, 0
+lenSystemVarName89 = . - systemVarName89
+systemVarName90:
+.ascii "^systemVar90"
+.space 1, 0
+lenSystemVarName90 = . - systemVarName90
+systemVarName91:
+.ascii "^systemVar91"
+.space 1, 0
+lenSystemVarName91 = . - systemVarName91
+systemVarName92:
+.ascii "^systemVar92"
+.space 1, 0
+lenSystemVarName92 = . - systemVarName92
+systemVarName93:
+.ascii "^systemVar93"
+.space 1, 0
+lenSystemVarName93 = . - systemVarName93
+systemVarName94:
+.ascii "^systemVar94"
+.space 1, 0
+lenSystemVarName94 = . - systemVarName94
+systemVarName95:
+.ascii "^systemVar95"
+.space 1, 0
+lenSystemVarName95 = . - systemVarName95
+systemVarName96:
+.ascii "^systemVar96"
+.space 1, 0
+lenSystemVarName96 = . - systemVarName96
+systemVarName97:
+.ascii "^systemVar97"
+.space 1, 0
+lenSystemVarName97 = . - systemVarName97
+systemVarName98:
+.ascii "^systemVar98"
+.space 1, 0
+lenSystemVarName98 = . - systemVarName98
+systemVarName99:
+.ascii "^systemVar99"
+.space 1, 0
+lenSystemVarName99 = . - systemVarName99
+systemVarName100:
+.ascii "^systemVar100"
+.space 1, 0
+lenSystemVarName100 = . - systemVarName100
+systemVarName101:
+.ascii "^systemVar101"
+.space 1, 0
+lenSystemVarName101 = . - systemVarName101
+systemVarName102:
+.ascii "^systemVar102"
+.space 1, 0
+lenSystemVarName102 = . - systemVarName102
+systemVarName103:
+.ascii "^systemVar103"
+.space 1, 0
+lenSystemVarName103 = . - systemVarName103
+systemVarName104:
+.ascii "^systemVar104"
+.space 1, 0
+lenSystemVarName104 = . - systemVarName104
+systemVarName105:
+.ascii "^systemVar105"
+.space 1, 0
+lenSystemVarName105 = . - systemVarName105
+systemVarName106:
+.ascii "^systemVar106"
+.space 1, 0
+lenSystemVarName106 = . - systemVarName106
+systemVarName107:
+.ascii "^systemVar107"
+.space 1, 0
+lenSystemVarName107 = . - systemVarName107
+systemVarName108:
+.ascii "^systemVar108"
+.space 1, 0
+lenSystemVarName108 = . - systemVarName108
+systemVarName109:
+.ascii "^systemVar109"
+.space 1, 0
+lenSystemVarName109 = . - systemVarName109
+systemVarName110:
+.ascii "^systemVar110"
+.space 1, 0
+lenSystemVarName110 = . - systemVarName110
+systemVarName111:
+.ascii "^systemVar111"
+.space 1, 0
+lenSystemVarName111 = . - systemVarName111
+systemVarName112:
+.ascii "^systemVar112"
+.space 1, 0
+lenSystemVarName112 = . - systemVarName112
+systemVarName113:
+.ascii "^systemVar113"
+.space 1, 0
+lenSystemVarName113 = . - systemVarName113
+systemVarName114:
+.ascii "^systemVar114"
+.space 1, 0
+lenSystemVarName114 = . - systemVarName114
+systemVarName115:
+.ascii "^systemVar115"
+.space 1, 0
+lenSystemVarName115 = . - systemVarName115
+systemVarName116:
+.ascii "^systemVar116"
+.space 1, 0
+lenSystemVarName116 = . - systemVarName116
+systemVarName117:
+.ascii "^systemVar117"
+.space 1, 0
+lenSystemVarName117 = . - systemVarName117
+systemVarName118:
+.ascii "^systemVar118"
+.space 1, 0
+lenSystemVarName118 = . - systemVarName118
+systemVarName119:
+.ascii "^systemVar119"
+.space 1, 0
+lenSystemVarName119 = . - systemVarName119
+systemVarName120:
+.ascii "^systemVar120"
+.space 1, 0
+lenSystemVarName120 = . - systemVarName120
+systemVarName121:
+.ascii "^systemVar121"
+.space 1, 0
+lenSystemVarName121 = . - systemVarName121
+systemVarName122:
+.ascii "^systemVar122"
+.space 1, 0
+lenSystemVarName122 = . - systemVarName122
+systemVarName123:
+.ascii "^systemVar123"
+.space 1, 0
+lenSystemVarName123 = . - systemVarName123
+systemVarName124:
+.ascii "^systemVar124"
+.space 1, 0
+lenSystemVarName124 = . - systemVarName124
+systemVarName125:
+.ascii "^systemVar125"
+.space 1, 0
+lenSystemVarName125 = . - systemVarName125
+systemVarName126:
+.ascii "^systemVar126"
+.space 1, 0
+lenSystemVarName126 = . - systemVarName126
+systemVarName127:
+.ascii "^systemVar127"
+.space 1, 0
+lenSystemVarName127 = . - systemVarName127
 varName0:
 .ascii "$ret"
+.space 1, 0
 lenVarName0 = . - varName0
 varName1:
 .ascii "$main_return_var"
+.space 1, 0
 lenVarName1 = . - varName1
 label0:
  .quad .main
@@ -552,128 +1123,14 @@ data1:
 .space 1, 0
 lenData1 = . - data1
 varName2:
-.ascii "s"
+.ascii "a"
+.space 1, 0
 lenVarName2 = . - varName2
 data2:
-.ascii "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n"
+.ascii ""AAA""
 .space 1, 0
 lenData2 = . - data2
-varName3:
-.ascii "s2"
-lenVarName3 = . - varName3
 data3:
-.ascii "ББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББББ\n"
+.ascii ""BBB""
 .space 1, 0
 lenData3 = . - data3
-varName4:
-.ascii "s3"
-lenVarName4 = . - varName4
-varName5:
-.ascii "s4"
-lenVarName5 = . - varName5
-varName6:
-.ascii "s5"
-lenVarName6 = . - varName6
-varName7:
-.ascii "s6"
-lenVarName7 = . - varName7
-varName8:
-.ascii "s7"
-lenVarName8 = . - varName8
-varName9:
-.ascii "s8"
-lenVarName9 = . - varName9
-varName10:
-.ascii "s9"
-lenVarName10 = . - varName10
-varName11:
-.ascii "s10"
-lenVarName11 = . - varName11
-data4:
-.ascii "ВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВВ\n"
-.space 1, 0
-lenData4 = . - data4
-data5:
-.ascii "ГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГГ\n"
-.space 1, 0
-lenData5 = . - data5
-data6:
-.ascii "ДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДДД\n"
-.space 1, 0
-lenData6 = . - data6
-data7:
-.ascii "ЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕ\n"
-.space 1, 0
-lenData7 = . - data7
-data8:
-.ascii "ЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖЖ\n"
-.space 1, 0
-lenData8 = . - data8
-data9:
-.ascii "ЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗЗ\n"
-.space 1, 0
-lenData9 = . - data9
-data10:
-.ascii "ИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИИ\n"
-.space 1, 0
-lenData10 = . - data10
-data11:
-.ascii "КККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККККК\n"
-.space 1, 0
-lenData11 = . - data11
-varName12:
-.ascii "$print_arg0"
-lenVarName12 = . - varName12
-varName13:
-.ascii "$print_arg0"
-lenVarName13 = . - varName13
-varName14:
-.ascii "$print_arg0"
-lenVarName14 = . - varName14
-varName15:
-.ascii "$print_arg0"
-lenVarName15 = . - varName15
-varName16:
-.ascii "$print_arg0"
-lenVarName16 = . - varName16
-varName17:
-.ascii "$print_arg0"
-lenVarName17 = . - varName17
-varName18:
-.ascii "$print_arg0"
-lenVarName18 = . - varName18
-varName19:
-.ascii "$print_arg0"
-lenVarName19 = . - varName19
-varName20:
-.ascii "$print_arg0"
-lenVarName20 = . - varName20
-varName21:
-.ascii "$print_arg0"
-lenVarName21 = . - varName21
-label1:
- .quad .main_end
-labelName1:
-.ascii ".main_end"
-.space 1,0
-data12:
-.ascii ""
-.space 1, 0
-lenData12 = . - data12
-data13:
-.ascii "#main_res0"
-.space 1, 0
-lenData13 = . - data13
-label2:
- .quad .main_res0
-labelName2:
-.ascii ".main_res0"
-.space 1,0
-data14:
-.ascii ""
-.space 1, 0
-lenData14 = . - data14
-data15:
-.ascii ""
-.space 1, 0
-lenData15 = . - data15
