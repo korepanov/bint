@@ -4363,4 +4363,8 @@ mov $lenVarName, %rsi
  mov $varName, %rdx 
  mov $lenVarName2, %rax 
  mov $varName2, %rdi 
- call __set
+ call __setmov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi
+ call __set 

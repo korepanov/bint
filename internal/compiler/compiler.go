@@ -261,6 +261,15 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 						os.Exit(1)
 					}
 				} else {
+					varNumS := fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", ValueFoldInterface(LO[0]))])
+
+					_, err = progFile.Write([]byte("mov $lenVarName, %rsi \n mov $varName, %rdx\n mov $lenVarName" + varNumS +
+						", %rax \n mov $varName" + varNumS + ", %rdi\n call __set "))
+
+					if nil != err {
+						fmt.Println(err)
+						os.Exit(1)
+					}
 					fmt.Println("assigning to string user var")
 
 					os.Exit(1)
