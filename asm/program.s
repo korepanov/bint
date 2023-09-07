@@ -4349,10 +4349,11 @@ mov $lenBuf4, %rsi
  mov $buf4, %rdx 
  mov $lenData3, %rax 
  mov $data3, %rdi
- call __setmov $lenVarName, %rsi 
+ call __set
+mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenSystemVar0, %rax 
- mov $systemVar0, %rdi 
+ mov $lenSystemVarName0, %rax 
+ mov $systemVarName0, %rdi 
  call __set
 mov $data2, %r8
 mov $data3, %r9
@@ -4369,7 +4370,8 @@ mov $lenVarName, %rsi
  mov $lenVarName2, %rax 
  mov $varName2, %rdi
  call __set 
-mov $systemVar0, (userData) 
+mov $systemVarName0, %rax 
+ mov %rax, (userData) 
 mov $1, %rax 
  call __setVar
 mov $lenVarName, %rsi 

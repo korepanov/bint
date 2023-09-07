@@ -271,7 +271,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 						os.Exit(1)
 					}
 
-					_, err = progFile.Write([]byte("\nmov $" + fmt.Sprintf("%v", RO[0]) + ", (userData) \n" +
+					_, err = progFile.Write([]byte("\nmov $" + fmt.Sprintf("%v", RO[0]) + ", %rax \n mov %rax, (userData) \n" +
 						"mov $1, %rax \n call __setVar"))
 
 					if nil != err {
@@ -2216,8 +2216,8 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				os.Exit(1)
 			}
 			if !isVarLO && !isVarRO {
-				_, err := progFile.Write([]byte("mov $lenVarName, %rsi \n mov $varName, %rdx \n mov $lenSystemVar" +
-					fmt.Sprintf("%v", tNumber) + ", %rax \n mov $systemVar" + fmt.Sprintf("%v", tNumber) + ", %rdi \n call __set"))
+				_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov $lenSystemVarName" +
+					fmt.Sprintf("%v", tNumber) + ", %rax \n mov $systemVarName" + fmt.Sprintf("%v", tNumber) + ", %rdi \n call __set"))
 				if nil != err {
 					fmt.Println(err)
 					os.Exit(1)
@@ -2238,7 +2238,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				}*/
 
 				// true - признак того, что результат в вычисляемой переменной asm
-				return []interface{}{true, "systemVar" + fmt.Sprintf("%v", tNumber)}, systemStack, "string", nil
+				return []interface{}{true, "systemVarName" + fmt.Sprintf("%v", tNumber)}, systemStack, "string", nil
 			}
 		}
 		return []interface{}{""}, systemStack, "", errors.New("ERROR in the operands: '+' operation")
