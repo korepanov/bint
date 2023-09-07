@@ -263,16 +263,21 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				} else {
 					varNumS := fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", ValueFoldInterface(LO[0]))])
 
-					_, err = progFile.Write([]byte("mov $lenVarName, %rsi \n mov $varName, %rdx\n mov $lenVarName" + varNumS +
+					_, err = progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx\n mov $lenVarName" + varNumS +
 						", %rax \n mov $varName" + varNumS + ", %rdi\n call __set "))
 
 					if nil != err {
 						fmt.Println(err)
 						os.Exit(1)
 					}
-					fmt.Println("assigning to string user var")
 
-					os.Exit(1)
+					_, err = progFile.Write([]byte("\nmov $" + fmt.Sprintf("%v", RO[0]) + ", (userData) \n" +
+						"mov $1, %rax \n call __setVar"))
+
+					if nil != err {
+						fmt.Println(err)
+						os.Exit(1)
+					}
 				}
 			} else {
 				// справа данные
@@ -2019,7 +2024,12 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			_, err = dataFile.Write([]byte("\n.ascii \"" + fmt.Sprintf("%v", ValueFoldInterface(LO[0])) + "\"\n.space 1, 0"))
+			t := fmt.Sprintf("%v", ValueFoldInterface(LO[0]))
+
+			if len(t) > 1 && "\"" == string(t[0]) && "\"" == string(t[len(t)-1]) {
+				t = t[1 : len(t)-1]
+			}
+			_, err = dataFile.Write([]byte("\n.ascii \"" + t + "\"\n.space 1, 0"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
@@ -2048,7 +2058,14 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			_, err = dataFile.Write([]byte("\n.ascii \"" + fmt.Sprintf("%v", ValueFoldInterface(RO[0])) + "\"\n.space 1, 0"))
+
+			t := fmt.Sprintf("%v", ValueFoldInterface(RO[0]))
+
+			if len(t) > 1 && "\"" == string(t[0]) && "\"" == string(t[len(t)-1]) {
+				t = t[1 : len(t)-1]
+			}
+
+			_, err = dataFile.Write([]byte("\n.ascii \"" + t + "\"\n.space 1, 0"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
