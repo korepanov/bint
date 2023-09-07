@@ -1551,7 +1551,7 @@ __readClear:
  call __toNumber
  __renewValLocal:
  mov (%rax), %r10b 
- cmp $0, %r10b 
+ cmp $2, %r10b 
  jz __renewValEnd
  movb $1, (%rax)
  inc %rax 

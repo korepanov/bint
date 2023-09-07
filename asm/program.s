@@ -54,16 +54,16 @@ __printHeap:
  cmp (strMax), %r8 
  jz __printHeapEx
  mov (%r8), %dl 
- /*cmp $0, %dl 
+ cmp $0, %dl 
  jnz __printHeapNotZero
- mov $endSymbol, %rsi 
+ mov $zeroSymbol, %rsi 
  mov $1, %rdi	
  mov $1, %rdx
  mov $1, %rax	
  syscall
  inc %r8 
  jmp __printHeapLoop
- __printHeapNotZero: */
+ __printHeapNotZero: 
  cmp $2, %dl 
  jnz __printHeapNotTwo
  mov $endSymbol, %rsi 
@@ -407,11 +407,13 @@ __userConcatinateVarsEnd:
  # rbx = 1 - строка справа лежит в переменной 
  # rbx = 0 - строка справа лежит в статичесой памяти 
  # $varName - адрес имени переменной, куда положить результат
+
  mov %r8, (mem13)
  mov %r9, (mem14)
  mov %rax, (mem15)
  mov %rbx, (mem16)
  
+
  # сохранили приемник
  mov $lenMem17, %rsi 
  mov $mem17, %rdx 
@@ -421,6 +423,7 @@ __userConcatinateVarsEnd:
 
  mov $mem17, %r8  
  mov %r8, (userData)
+
  // сохраним в системной переменной значение, которое сейчас хранится в приемнике
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -439,6 +442,13 @@ __userConcatinateVarsEnd:
  call __set
 
  call __getVar
+
+push %rbx 
+ mov $varName, %rsi 
+call __print 
+mov $enter, %rsi 
+call __print
+pop %rbx
 
  mov %r13, %rbx
  __userConcatinateLocal:
@@ -494,9 +504,25 @@ __userConcatinateVarsEnd:
 
  __userConcatinateErrEnd:
 
- 
+
  mov (userData), %rbx 
+
+/*push %rbx 
+ mov %rbx, %rsi 
+call __print 
+mov $enter, %rsi 
+call __print
+pop %rbx*/  
+/*push %rbx 
+ mov (mem13), %rsi 
+call __print
+mov $enter, %rsi 
+call __print 
+ pop %rbx*/
+ 
  mov (mem13), %rax 
+
+
  
  __userConcatinateClearStr:
  mov (%rbx), %dil 
@@ -506,6 +532,7 @@ __userConcatinateVarsEnd:
  inc %rbx 
  jmp __userConcatinateClearStr
  __userConcatinateClearStrEnd:
+  
  dec %rbx 
  movb $0, (%rbx)
  mov (userData), %rbx 
@@ -518,6 +545,7 @@ __userConcatinateVarsEnd:
  jz __userConcatinateTwoVars
  
  // переменная только слева 
+
  mov $lenBuf, %rsi 
  mov $buf, %rdx 
  mov $lenMem13, %rax 
@@ -1236,7 +1264,7 @@ __readClear:
  call __toNumber
  __renewValLocal:
  mov (%rax), %r10b 
- cmp $0, %r10b 
+ cmp $2, %r10b 
  jz __renewValEnd
  movb $1, (%rax)
  inc %rax 
@@ -1281,7 +1309,7 @@ __readClear:
   
  ret 
 
- __shiftStr:
+/* __shiftStr:
  # формируем в %r10 адрес нового начала
  mov (strBegin), %r10 
  add (pageSize), %r10
@@ -1313,7 +1341,11 @@ __readClear:
  mov %r10, (strMax)
  
  call __renewStr
- ret 
+ ret */
+ __shiftStr:
+
+ call __renewStr
+ ret
 
 __compare:
  # сравнить строки по адресу $buf и $buf2
@@ -2903,6 +2935,7 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName1, %rax 
@@ -3013,6 +3046,7 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName11, %rax 
@@ -3068,6 +3102,7 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName16, %rax 
@@ -3123,6 +3158,8 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName21, %rax 
@@ -3200,6 +3237,8 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName28, %rax 
@@ -3222,6 +3261,8 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName30, %rax 
@@ -3233,6 +3274,9 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
+
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName31, %rax 
@@ -3244,6 +3288,8 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName32, %rax 
@@ -3255,6 +3301,8 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName33, %rax 
@@ -3343,6 +3391,8 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName41, %rax 
@@ -3563,6 +3613,7 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName61, %rax 
@@ -3673,6 +3724,8 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
+ #call __printHeap
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName71, %rax 
@@ -3783,6 +3836,7 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName81, %rax 
@@ -3893,6 +3947,7 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName91, %rax 
@@ -3915,6 +3970,8 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName93, %rax 
@@ -3926,6 +3983,8 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName94, %rax 
@@ -3937,6 +3996,7 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName95, %rax 
@@ -3948,6 +4008,19 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenSystemVarName0, %rax 
+ mov $systemVarName0, %rdi
+ call __set
+
+ call __getVar
+mov (userData), %rsi 
+call __print 
+call __printHeap
+call __throughError
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName96, %rax 
@@ -4003,6 +4076,9 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
+
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName101, %rax 
@@ -4300,6 +4376,9 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
+
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName0, %rax 
@@ -4322,13 +4401,16 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
+
 jmp .main_end
 .main:
-
 mov $data0, %rsi
 call __print
 mov $data1, %rsi
 call __print
+
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName2, %rax 
@@ -4360,6 +4442,33 @@ mov $data3, %r9
  xor %rax, %rax 
  xor %rbx, %rbx 
  call __userConcatinate
+
+mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenData4, %rax 
+ mov $data4, %rdi
+ call __set
+mov $lenBuf3, %rsi 
+ mov $buf3, %rdx 
+ mov $lenSystemVarName0, %rax 
+ mov $systemVarName0, %rdi
+ call __set
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenSystemVarName1, %rax 
+ mov $systemVarName1, %rdi 
+ call __set
+
+ 
+ mov $systemVarName0, %r8 
+ mov $data4, %r9 
+ mov $1, %rax 
+ xor %rbx, %rbx 
+
+  mov %r8, %rsi 
+ call __userConcatinate
+#call __printHeap
+ 
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName2, %rax 
@@ -4370,7 +4479,7 @@ mov $lenVarName, %rsi
  mov $lenVarName2, %rax 
  mov $varName2, %rdi
  call __set 
-mov $systemVarName0, %rax 
+mov $systemVarName1, %rax 
  mov %rax, (userData) 
 mov $1, %rax 
  call __setVar
@@ -4425,7 +4534,7 @@ mov $lenVarName, %rsi
  mov $varName4, %rdi 
 call __set
 
- mov $data4, %rax  
+ mov $data5, %rax  
  mov %rax, (userData)
  xor %rax, %rax
 call __setVar
@@ -4455,12 +4564,15 @@ mov $lenVarName, %rsi
  mov $varName1, %rdi 
  call __set 
  call __getVar
+
+
+
 mov (userData), %rdi 
  movb $'.', (%rdi) 
  jmp __goto
 .main_end:
 
-mov $data5, %rsi
+mov $data6, %rsi
 call __print
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -4468,16 +4580,16 @@ call __print
  mov $varName1, %rdi 
 call __set
 
- mov $data6, %rax  
+ mov $data7, %rax  
  mov %rax, (userData)
  xor %rax, %rax
 call __setVar
 jmp .main
 .main_res0:
 
-mov $data7, %rsi
-call __print
 mov $data8, %rsi
+call __print
+mov $data9, %rsi
 call __print
 mov $60,  %rax
 xor %rdi, %rdi

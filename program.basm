@@ -4,7 +4,7 @@ goto(#main_end);
 #main:print("");
 print("");
 stringa;
-a=("AAA"+"BBB");
+a=(("AAA"+"BBB")+"CCC");
 string $print_arg0;
 $print_arg0=a;
 print($print_arg0);

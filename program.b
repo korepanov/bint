@@ -1,6 +1,6 @@
 void main(){
 	string a; 
-	a = ("AAA" + "BBB");
+	a = (("AAA" + "BBB") + "CCC");
 	print(a);
 	print("\n");
 	 
