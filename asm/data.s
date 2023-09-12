@@ -5,8 +5,6 @@ endSymbol:
 .ascii ";"
 pageSize:
 .quad 4096
-shiftSize:
-.quad 4096
 varNameSize:
 .quad 32
 varSize:

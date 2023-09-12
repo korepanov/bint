@@ -791,7 +791,7 @@ __defineVar:
  jg __defOk 
  #mov %r15, %r8
  mov (strMax), %r8 
- call __newMem 
+ call __newMem  
  mov $varName, %rcx 
  mov $varType, %rdx
  __defOk:
@@ -928,7 +928,6 @@ __defineVar:
  __defEnd:
 
  add (varSize), %r14
- 
  ret 
 
 __undefineVar:
@@ -1140,6 +1139,7 @@ __firstMem:
 # запомнить адрес начала выделяемой памяти
  #mov %r8, %r14
  mov %r8, %r9 
+ #add (pageSize), %r9
  
  mov (strPageNumber), %rax
  mov (pageSize), %rdi
@@ -1247,7 +1247,9 @@ __readClear:
  call __read 
  mov $buf, %rsi
  call __toNumber 
- add (shiftSize), %rax 
+ #mov (pageSize), %rax 
+ #call __toStr
+ add (pageSize), %rax 
  call __toStr # в buf2 новый адрес строки 
 
  mov %r12, %rsi 
@@ -1280,11 +1282,12 @@ __readClear:
  ret 
 
  __shiftStr:
-
  # формируем в %r10 адрес нового начала
  mov (strBegin), %r10 
- add (shiftSize), %r10
-
+ add (pageSize), %r10
+ #mov %r10, %r12 
+ #add (pageSize), %r12 
+ #mov %r12, (strMax)
  # адрес старого начала
  mov (strBegin), %r11
  __shiftMake: 
@@ -1298,27 +1301,18 @@ __readClear:
  jmp __shiftMake
  __shiftMakeEnd:
  mov (strPointer), %r10 
- add (shiftSize), %r10 
+ add (pageSize), %r10 
  mov %r10, (strPointer)
 
  mov (strBegin), %r10 
- add (shiftSize), %r10 
+ add (pageSize), %r10 
  mov %r10, (strBegin)
 
  mov (strMax), %r10 
- add (shiftSize), %r10 
+ add (pageSize), %r10 
  mov %r10, (strMax)
  
  call __renewStr
-
- mov (shiftSize), %rax
- imul $2, %rax
- mov %rax, (shiftSize)
- call __toStr
- mov $buf2, %rsi 
- call __print 
- mov $enter, %rsi 
- call __print
  call __printHeap
  ret 
 
