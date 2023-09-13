@@ -3,12 +3,12 @@ starSymbol:
 .ascii "*"
 endSymbol:
 .ascii ";"
-zeroSymbol:
-.ascii "z"
-pageSize:
+deltaSize:
 .quad 128
+pageSize:
+.quad 256
 shiftSize:
-.quad 128 
+.quad 512 
 varNameSize:
 .quad 32
 varSize:
@@ -4764,7 +4764,6 @@ data9:
 .ascii ""
 .space 1, 0
 lenData9 = . - data9
-
 .text
 __initLabels:
  # формирует в %rax адрес начала выделяемой памяти для firstMem
@@ -4905,7 +4904,6 @@ call __newLabelMem
  mov %r12, %rax 
  mov %r12, (labelsMax)
  ret 
-
 __throughError:
  mov $fatalError, %rsi
  call __print 
@@ -4955,54 +4953,6 @@ __lenEx:
  mov $1, %rax	
  syscall		    
  ret
-
-__printHeap0:  
- mov (strBegin), %r8  
- __printHeapLoop0:
- cmp (strMax), %r8 
- jz __printHeapEx0
- mov (%r8), %dl 
- /*cmp $0, %dl 
- jnz __printHeapNotZero
- mov $endSymbol, %rsi 
- mov $1, %rdi	
- mov $1, %rdx
- mov $1, %rax	
- syscall
- inc %r8 
- jmp __printHeapLoop
- __printHeapNotZero: */
- cmp $2, %dl 
- jnz __printHeapNotTwo0
- mov $endSymbol, %rsi 
- mov $1, %rdi	
- mov $1, %rdx
- mov $1, %rax	
- syscall
- inc %r8 
- jmp __printHeapLoop0
- __printHeapNotTwo0: 
-
- cmp $1, %dl 
- jnz printHeapNopEnd0
- mov $starSymbol, %rsi 
- mov $1, %rdi	
- mov $1, %rdx
- mov $1, %rax	
- syscall
- inc %r8 
- jmp __printHeapLoop0
- printHeapNopEnd0:
- mov %r8, %rsi 
- mov $1, %rdi	
- mov $1, %rdx
- mov $1, %rax	
- syscall
- inc %r8 
- jmp __printHeapLoop0
- __printHeapEx0:
- ret 
-
 
 __printHeap:  
  mov (memoryBegin), %r8  
@@ -6085,7 +6035,7 @@ __firstMem:
  jz  __newMemEx
  jmp __newMemlo
  __newMemEx:
- mov %r15, %r8 
+ mov (strMax), %r8 
  call __newStrMem
  call __shiftStr
  ret  
@@ -6188,8 +6138,7 @@ __readClear:
 
  __renewVal:
  add (typeSize), %r12 
- call __read  
-
+ call __read 
  call __toNumber
  __renewValLocal:
  mov (%rax), %r10b 
@@ -6206,7 +6155,7 @@ __readClear:
  call __toNumber 
  #mov (pageSize), %rax 
  #call __toStr
- add (shiftSize), %rax 
+ add (pageSize), %rax 
  call __toStr # в buf2 новый адрес строки 
 
  mov %r12, %rsi 
@@ -6257,7 +6206,6 @@ __readClear:
  inc %r11 
  jmp __shiftMake
  __shiftMakeEnd:
- 
  mov (strPointer), %r10 
  add (shiftSize), %r10 
  mov %r10, (strPointer)
@@ -6270,14 +6218,18 @@ __readClear:
  add (shiftSize), %r10 
  mov %r10, (strMax)
  
- 
  call __renewStr
+
+ mov (strMax), %r10 
+ add (deltaSize), %r10 
+ mov %r10, (strMax)
+
+ mov (shiftSize), %r10 
+ add (deltaSize), %r10 
+ mov %r10, (shiftSize)
+
+
  call __printHeap
-
- mov (shiftSize), %rax 
- #imul $2, %rax 
- mov %rax, (shiftSize)
-
  ret 
 
 __compare:
