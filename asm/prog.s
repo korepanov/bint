@@ -6155,7 +6155,7 @@ __readClear:
  call __toNumber 
  #mov (pageSize), %rax 
  #call __toStr
- add (pageSize), %rax 
+ add (shiftSize), %rax 
  call __toStr # в buf2 новый адрес строки 
 
  mov %r12, %rsi 
