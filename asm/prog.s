@@ -5923,10 +5923,10 @@ __firstMem:
  mov %rax, %r13
  mov %rax, %r14
  mov %rax, %r9 
- add (pageSize), %r9
+ add (shiftSize), %r9
  mov %r9, %r15 
 # выделить динамическую память
- mov (pageSize), %rdi
+ mov (shiftSize), %rdi
  add %rax, %rdi
  mov $12, %rax
  syscall
@@ -5940,7 +5940,7 @@ __firstMem:
  movb %dl, (%r8)
  inc %rbx
  inc %r8 
- cmp (pageSize), %rbx
+ cmp (shiftSize), %rbx
  jz  __ex
  jmp __lo
  __ex:
@@ -6219,7 +6219,10 @@ __readClear:
  mov %r10, (strMax)
  
  call __renewStr
-
+ call __printHeap
+ mov $enter, %rsi 
+ call __print 
+ 
  mov (strMax), %r10 
  add (deltaSize), %r10 
  mov %r10, (strMax)
@@ -6229,7 +6232,7 @@ __readClear:
  mov %r10, (shiftSize)
 
 
- call __printHeap
+ 
  ret 
 
 __compare:
