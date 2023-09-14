@@ -4,11 +4,11 @@ starSymbol:
 endSymbol:
 .ascii ";"
 deltaSize:
-.quad 128
+.quad 1024
 pageSize:
-.quad 256
+.quad 2048
 shiftSize:
-.quad 512 
+.quad 4096
 varNameSize:
 .quad 32
 varSize:
@@ -5923,10 +5923,10 @@ __firstMem:
  mov %rax, %r13
  mov %rax, %r14
  mov %rax, %r9 
- add (shiftSize), %r9
+ add (pageSize), %r9
  mov %r9, %r15 
 # выделить динамическую память
- mov (shiftSize), %rdi
+ mov (pageSize), %rdi
  add %rax, %rdi
  mov $12, %rax
  syscall
@@ -5940,7 +5940,7 @@ __firstMem:
  movb %dl, (%r8)
  inc %rbx
  inc %r8 
- cmp (shiftSize), %rbx
+ cmp (pageSize), %rbx
  jz  __ex
  jmp __lo
  __ex:
@@ -5981,10 +5981,10 @@ __firstMem:
  mov %rax, (strBegin)
  mov %rax, (strPointer)
  mov %rax, %r9 
- add (pageSize), %r9
+ add (shiftSize), %r9
  mov %r9, (strMax)
 # выделить динамическую память
- mov (pageSize), %rdi
+ mov (shiftSize), %rdi
  add %rax, %rdi
  mov $12, %rax
  syscall
@@ -5998,7 +5998,7 @@ __firstMem:
  movb %dl, (%r8)
  inc %rbx
  inc %r8 
- cmp (pageSize), %rbx
+ cmp (shiftSize), %rbx
  jz  __firstStrMemEx
  jmp __firstStrMemLo
  __firstStrMemEx:
@@ -6048,12 +6048,13 @@ __firstMem:
  #add (pageSize), %r9
  
  mov (strPageNumber), %rax
- mov (pageSize), %rdi
+ add $1, %rax 
+ mov (shiftSize), %rdi
  __newStrMemOkBegin: 
  cmp $0, %rax 
  jz __newStrMemOk
  dec %rax 
- add (pageSize), %rdi  
+ add (shiftSize), %rdi  
  jmp __newStrMemOkBegin
  __newStrMemOk:
  mov %rdi, (memorySize)
@@ -6206,6 +6207,9 @@ __readClear:
  inc %r11 
  jmp __shiftMake
  __shiftMakeEnd:
+
+
+ 
  mov (strPointer), %r10 
  add (shiftSize), %r10 
  mov %r10, (strPointer)
