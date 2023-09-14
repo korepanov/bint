@@ -6222,10 +6222,7 @@ __readClear:
  add (shiftSize), %r10 
  mov %r10, (strMax)
  
- call __renewStr
- call __printHeap
- mov $enter, %rsi 
- call __print 
+ call __renewStr 
  
  mov (strMax), %r10 
  add (deltaSize), %r10 
@@ -14515,6 +14512,7 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName609, %rax 
@@ -19102,6 +19100,7 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+ 
 jmp .main_end
 .main:
 
