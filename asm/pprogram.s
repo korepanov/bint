@@ -1075,10 +1075,10 @@ __firstMem:
  mov %rax, (strBegin)
  mov %rax, (strPointer)
  mov %rax, %r9 
- add (pageSize), %r9
+ add (shiftSize), %r9
  mov %r9, (strMax)
 # выделить динамическую память
- mov (pageSize), %rdi
+ mov (shiftSize), %rdi
  add %rax, %rdi
  mov $12, %rax
  syscall
@@ -1092,7 +1092,7 @@ __firstMem:
  movb %dl, (%r8)
  inc %rbx
  inc %r8 
- cmp (pageSize), %rbx
+ cmp (shiftSize), %rbx
  jz  __firstStrMemEx
  jmp __firstStrMemLo
  __firstStrMemEx:
@@ -1129,7 +1129,7 @@ __firstMem:
  jz  __newMemEx
  jmp __newMemlo
  __newMemEx:
- mov %r15, %r8 
+ mov (strMax), %r8 
  call __newStrMem
  call __shiftStr
  ret  
@@ -1142,12 +1142,13 @@ __firstMem:
  #add (pageSize), %r9
  
  mov (strPageNumber), %rax
- mov (pageSize), %rdi
+ add $1, %rax 
+ mov (shiftSize), %rdi
  __newStrMemOkBegin: 
  cmp $0, %rax 
  jz __newStrMemOk
  dec %rax 
- add (pageSize), %rdi  
+ add (shiftSize), %rdi  
  jmp __newStrMemOkBegin
  __newStrMemOk:
  mov %rdi, (memorySize)
@@ -1249,7 +1250,7 @@ __readClear:
  call __toNumber 
  #mov (pageSize), %rax 
  #call __toStr
- add (pageSize), %rax 
+ add (shiftSize), %rax 
  call __toStr # в buf2 новый адрес строки 
 
  mov %r12, %rsi 
@@ -1284,7 +1285,7 @@ __readClear:
  __shiftStr:
  # формируем в %r10 адрес нового начала
  mov (strBegin), %r10 
- add (pageSize), %r10
+ add (shiftSize), %r10
  #mov %r10, %r12 
  #add (pageSize), %r12 
  #mov %r12, (strMax)
@@ -1300,19 +1301,33 @@ __readClear:
  inc %r11 
  jmp __shiftMake
  __shiftMakeEnd:
+
+
+ 
  mov (strPointer), %r10 
- add (pageSize), %r10 
+ add (shiftSize), %r10 
  mov %r10, (strPointer)
 
  mov (strBegin), %r10 
- add (pageSize), %r10 
+ add (shiftSize), %r10 
  mov %r10, (strBegin)
 
  mov (strMax), %r10 
- add (pageSize), %r10 
+ add (shiftSize), %r10 
  mov %r10, (strMax)
  
- call __renewStr
+ call __renewStr 
+ 
+ mov (strMax), %r10 
+ add (deltaSize), %r10 
+ mov %r10, (strMax)
+
+ mov (shiftSize), %r10 
+ add (deltaSize), %r10 
+ mov %r10, (shiftSize)
+
+
+ 
  ret 
 
 __compare:

@@ -3,7 +3,11 @@ starSymbol:
 .ascii "*"
 endSymbol:
 .ascii ";"
+deltaSize:
+.quad 1024
 pageSize:
+.quad 2048
+shiftSize:
 .quad 4096
 varNameSize:
 .quad 32
@@ -204,3 +208,4 @@ concError:
 strError:
 .ascii "the type of the variable to which you want to assign the result of string concatenation is not a string\n"
 .space 1, 0 
+
