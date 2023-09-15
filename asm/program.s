@@ -639,6 +639,7 @@ __userConcatinateVarsEnd:
  
  jmp __userConcatinateNow0 
  __userConcatinateRet0:
+ movb $0, (%rbx)
  mov %rbx, (mem16) # сохранили %rbx, куда нужно записывать результат
 
  mov $lenBuf, %rsi 
@@ -681,6 +682,7 @@ __userConcatinateVarsEnd:
  
  jmp __userConcatinateNow1 
  __userConcatinateRet1:
+ movb $0, (%rbx)
 
  ret  
 
@@ -713,7 +715,8 @@ __userConcatinateVarsEnd:
  jmp __userConcatinateNow 
 
  __userConcatinateRet: 
- 
+ movb $0, (%rbx)
+
  mov (mem14), %rax  
 __userConcatinateNow2:
    
@@ -4375,13 +4378,13 @@ mov $data3, %r9
  xor %rax, %rax 
  xor %rbx, %rbx 
  call __userConcatinate
-mov $lenBuf4, %rsi 
- mov $buf4, %rdx 
+mov $lenBuf3, %rsi 
+ mov $buf3, %rdx 
  mov $lenData4, %rax 
  mov $data4, %rdi
  call __set
-mov $lenBuf3, %rsi 
- mov $buf3, %rdx 
+mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
  mov $lenSystemVarName0, %rax 
  mov $systemVarName0, %rdi
  call __set
@@ -4390,10 +4393,10 @@ mov $lenVarName, %rsi
  mov $lenSystemVarName1, %rax 
  mov $systemVarName1, %rdi 
  call __set
- mov $systemVarName0, %r8 
- mov $data4, %r9 
- mov $1, %rax 
- xor %rbx, %rbx 
+ mov $data4, %r8 
+ mov $systemVarName0, %r9 
+ xor %rax, %rax 
+ mov $1, %rbx 
  call __userConcatinate
 mov $lenVarName, %rsi 
  mov $varName, %rdx 

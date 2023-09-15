@@ -639,6 +639,7 @@ __userConcatinateVarsEnd:
  
  jmp __userConcatinateNow0 
  __userConcatinateRet0:
+ movb $0, (%rbx)
  mov %rbx, (mem16) # сохранили %rbx, куда нужно записывать результат
 
  mov $lenBuf, %rsi 
@@ -681,6 +682,7 @@ __userConcatinateVarsEnd:
  
  jmp __userConcatinateNow1 
  __userConcatinateRet1:
+ movb $0, (%rbx)
 
  ret  
 
@@ -713,7 +715,8 @@ __userConcatinateVarsEnd:
  jmp __userConcatinateNow 
 
  __userConcatinateRet: 
- 
+ movb $0, (%rbx)
+
  mov (mem14), %rax  
 __userConcatinateNow2:
    

@@ -2273,8 +2273,22 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 				return []interface{}{true, "$systemVarName" + fmt.Sprintf("%v", tNumber)}, systemStack, "string", nil
 			} else if !isVarLO && isVarRO {
-				fmt.Println("isVarRO")
-				os.Exit(1)
+				_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov $lenSystemVarName" +
+					fmt.Sprintf("%v", tNumber) + ", %rax \n mov $systemVarName" + fmt.Sprintf("%v", tNumber) + ", %rdi \n call __set"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+
+				_, err = progFile.Write([]byte("\n mov " + fmt.Sprintf("%v", LO[0]) + ", %r8 \n mov " + fmt.Sprintf("%v", RO[0]) +
+					", %r9 \n xor %rax, %rax \n mov $1, %rbx \n call __userConcatinate"))
+
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+
+				return []interface{}{true, "$systemVarName" + fmt.Sprintf("%v", tNumber)}, systemStack, "string", nil
 			} else {
 				fmt.Println("areVars")
 				os.Exit(1)

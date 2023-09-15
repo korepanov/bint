@@ -1132,15 +1132,15 @@ varName2:
 .space 1, 0
 lenVarName2 = . - varName2
 data2:
-.ascii "AAA"
+.ascii "BBB"
 .space 1, 0
 lenData2 = . - data2
 data3:
-.ascii "BBB"
+.ascii "CCC"
 .space 1, 0
 lenData3 = . - data3
 data4:
-.ascii "CCC"
+.ascii "AAA"
 .space 1, 0
 lenData4 = . - data4
 varName3:
