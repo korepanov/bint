@@ -1,8 +1,10 @@
 void main(){
-	if (4 > 5){
-		print("NO\n");
+	
+	if ("AAA" == "AAA"){
+		print("YES\n");	
 	}else{
-		print("YES\n");
+		print("NO\n");	
 	};
+	
 };
 main();

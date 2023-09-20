@@ -1181,6 +1181,11 @@ data9:
 .ascii ""
 .space 1, 0
 lenData9 = . - data9
+data10:
+.ascii "AAA"
+.space 1, 0
+lenData10 = . - data10 
+
 .text
 __initLabels:
  # формирует в %rax адрес начала выделяемой памяти для firstMem
@@ -4093,6 +4098,38 @@ ret
  movb $'0', (userData)
  ret 
 
+ __eqString:
+ # (buf) - адрес первой строки 
+ # (buf2) - адрес второй строки 
+ # выход: rax = 1 - равны, rax = 0 - не равны 
+ mov (buf), %rsi 
+ call __len 
+ mov %rax, %rbx 
+ mov (buf2), %rsi 
+ call __len 
+ cmp %rax, %rbx 
+ jnz __eqStringNotEqual
+
+ mov (buf), %rax 
+ mov (buf2), %rbx 
+ __eqStringCompareLocal:
+ movb (%rax), %dl 
+ cmp $0, %dl 
+ jz __eqStringEqual
+ movb (%rax), %dl
+ cmp %dl, (%rbx) 
+ jnz __eqStringNotEqual
+ inc %rax 
+ inc %rbx 
+ jmp __eqStringCompareLocal
+
+ __eqStringNotEqual:
+ mov $0, %rax 
+ ret 
+ __eqStringEqual:
+ mov $1, %rax
+ ret 
+
  __parseBool:
  # buf - источник (строка)
  # %rax - результат
@@ -5664,6 +5701,23 @@ mov $lenVarName, %rsi
 jmp .main_end
 .main:
 
+mov $data9, %rax 
+mov %rax, (buf)
+mov $data9, %rax 
+mov %rax, (buf2)
+call __eqString
+cmp $1, %rax 
+jnz __next
+mov $data4, %rsi 
+call __print 
+mov $enter, %rsi 
+call __print 
+call __throughError 
+__next:
+
+
+
+
 mov $data0, %rsi
 call __print
 mov $data1, %rsi
@@ -5720,17 +5774,6 @@ mov $lenVarName, %rsi
  xor %rax, %rax 
  mov $1, %rbx 
  call __userConcatinate
-
-
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenSystemVarName1, %rax 
- mov $systemVarName1, %rdi 
- call __set
- call __getVar
- mov (userData), %rsi 
- call __print 
- call __throughError
 
 
 mov $lenVarName, %rsi 

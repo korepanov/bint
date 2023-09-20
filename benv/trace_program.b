@@ -1,8 +1,8 @@
 $fileprogram.b$;
 $trace1$;
-voidmain(){if(4>5){print("NO\n");
+voidmain(){if("AAA"=="AAA"){print("YES\n");
 $trace2$;
-}else{print("YES\n");
+}else{print("NO\n");
 $trace3$;
 };
 $trace4$;

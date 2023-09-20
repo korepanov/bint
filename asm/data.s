@@ -1127,89 +1127,11 @@ data1:
 .ascii ""
 .space 1, 0
 lenData1 = . - data1
-varName2:
-.ascii "s"
-.space 1, 0
-lenVarName2 = . - varName2
 data2:
-.ascii "Соцго́род (сокр. от социалистический город, также соцпосёлок)"
+.ascii ""AAA""
 .space 1, 0
 lenData2 = . - data2
-varName3:
-.ascii "s2"
-.space 1, 0
-lenVarName3 = . - varName3
 data3:
-.ascii " — советская градостроительная концепция 1920—1930-х годов, представлявшая"
+.ascii ""AAA""
 .space 1, 0
 lenData3 = . - data3
-varName4:
-.ascii "s3"
-.space 1, 0
-lenVarName4 = . - varName4
-data4:
-.ascii " собой замкнутое самостоятельное селитебное образование (поселение) "
-.space 1, 0
-lenData4 = . - data4
-varName5:
-.ascii "s4"
-.space 1, 0
-lenVarName5 = . - varName5
-data5:
-.ascii "с фиксированным количеством населения при новой промышленности,"
-.space 1, 0
-lenData5 = . - data5
-varName6:
-.ascii "s5"
-.space 1, 0
-lenVarName6 = . - varName6
-data6:
-.ascii " которая создавалась в рамках программы индустриализации. Соцгорода "
-.space 1, 0
-lenData6 = . - data6
-varName7:
-.ascii "s6"
-.space 1, 0
-lenVarName7 = . - varName7
-data7:
-.ascii "рассматриваются как ценный в мировом масштабе пример утопической архитектуры."
-.space 1, 0
-lenData7 = . - data7
-varName8:
-.ascii "$print_arg0"
-.space 1, 0
-lenVarName8 = . - varName8
-varName9:
-.ascii "$print_arg0"
-.space 1, 0
-lenVarName9 = . - varName9
-data8:
-.ascii "\n"
-.space 1, 0
-lenData8 = . - data8
-label1:
- .quad .main_end
-labelName1:
-.ascii ".main_end"
-.space 1,0
-data9:
-.ascii ""
-.space 1, 0
-lenData9 = . - data9
-data10:
-.ascii "#main_res0"
-.space 1, 0
-lenData10 = . - data10
-label2:
- .quad .main_res0
-labelName2:
-.ascii ".main_res0"
-.space 1,0
-data11:
-.ascii ""
-.space 1, 0
-lenData11 = . - data11
-data12:
-.ascii ""
-.space 1, 0
-lenData12 = . - data12
