@@ -1136,68 +1136,58 @@ data3:
 .space 1, 0
 lenData3 = . - data3
 data4:
-.ascii ""
+.ascii "5"
 .space 1, 0
 lenData4 = . - data4
-varName2:
-.ascii "$print_arg0"
-.space 1, 0
-lenVarName2 = . - varName2
 data5:
-.ascii "YES\n"
+.ascii "4"
 .space 1, 0
 lenData5 = . - data5
-label1:
- .quad ._cond0_end
-labelName1:
-.ascii "._cond0_end"
-.space 1,0
 data6:
-.ascii ""
+.ascii "aaa"
 .space 1, 0
 lenData6 = . - data6
-varName3:
-.ascii "$print_arg0"
-.space 1, 0
-lenVarName3 = . - varName3
 data7:
-.ascii "NO\n"
+.ascii "aaa"
 .space 1, 0
 lenData7 = . - data7
 data8:
 .ascii ""
 .space 1, 0
 lenData8 = . - data8
-label2:
- .quad ._cond_exit0
-labelName2:
-.ascii "._cond_exit0"
-.space 1,0
+varName2:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName2 = . - varName2
 data9:
-.ascii ""
+.ascii "YES\n"
 .space 1, 0
 lenData9 = . - data9
+label1:
+ .quad ._cond0_end
+labelName1:
+.ascii "._cond0_end"
+.space 1,0
 data10:
 .ascii ""
 .space 1, 0
 lenData10 = . - data10
-label3:
- .quad .main_end
-labelName3:
-.ascii ".main_end"
-.space 1,0
+varName3:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName3 = . - varName3
 data11:
-.ascii ""
+.ascii "NO\n"
 .space 1, 0
 lenData11 = . - data11
 data12:
-.ascii "#main_res0"
+.ascii ""
 .space 1, 0
 lenData12 = . - data12
-label4:
- .quad .main_res0
-labelName4:
-.ascii ".main_res0"
+label2:
+ .quad ._cond_exit0
+labelName2:
+.ascii "._cond_exit0"
 .space 1,0
 data13:
 .ascii ""
@@ -1207,3 +1197,29 @@ data14:
 .ascii ""
 .space 1, 0
 lenData14 = . - data14
+label3:
+ .quad .main_end
+labelName3:
+.ascii ".main_end"
+.space 1,0
+data15:
+.ascii ""
+.space 1, 0
+lenData15 = . - data15
+data16:
+.ascii "#main_res0"
+.space 1, 0
+lenData16 = . - data16
+label4:
+ .quad .main_res0
+labelName4:
+.ascii ".main_res0"
+.space 1,0
+data17:
+.ascii ""
+.space 1, 0
+lenData17 = . - data17
+data18:
+.ascii ""
+.space 1, 0
+lenData18 = . - data18

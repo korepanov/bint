@@ -1,6 +1,6 @@
 $fileprogram.b$;
 $trace1$;
-voidmain(){if("BB3"=="BB4"){print("YES\n");
+voidmain(){if((("BB3"=="BB4")AND(5>4))XOR(NOT("aaa"=="aaa"))){print("YES\n");
 $trace2$;
 }else{print("NO\n");
 $trace3$;

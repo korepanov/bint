@@ -3,7 +3,7 @@ string$main_return_var;
 goto(#main_end);
 #main:print("");
 print("");
-[print(""),("BB3"=="BB4"),goto(#_cond0_end)];
+[print(""),((("BB3"=="BB4")AND(5>4))XOR(NOT("aaa"=="aaa"))),goto(#_cond0_end)];
 string $print_arg0;
 $print_arg0="YES\n";
 print($print_arg0);
