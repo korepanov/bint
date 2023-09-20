@@ -1,10 +1,10 @@
 $fileprogram.b$;
 $trace1$;
-voidmain(){if((("BB3"=="BB4")AND(5>4))XOR(NOT("aaa"=="aaa"))){print("YES\n");
+voidmain(){inta;
 $trace2$;
-}else{print("NO\n");
+a=int("10");
 $trace3$;
-};
+print((str(a)+"\n"));
 $trace4$;
 };
 $trace5$;

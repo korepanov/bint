@@ -1,10 +1,7 @@
 void main(){
-	
-	if ((("BB3" =="BB4")AND(5 > 4))XOR(NOT("aaa" == "aaa"))){
-		print("YES\n");	
-	}else{
-		print("NO\n"); 	
-	};
+	int a;
+	a = int("10");
+	print((str(a) + "\n"));
 	
 };
 main();
