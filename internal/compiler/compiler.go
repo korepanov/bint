@@ -1531,9 +1531,11 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 		if "string" == typeLO && isVarLO {
 			fmt.Println("ERROR: == for left string var not realized")
+			os.Exit(1)
 		}
 		if "string" == typeRO && isVarRO {
 			fmt.Println("ERROR: == for right string var not realized")
+			os.Exit(1)
 		}
 
 		if "int" == typeLO && "int" == typeRO {
