@@ -1127,26 +1127,22 @@ data1:
 .ascii ""
 .space 1, 0
 lenData1 = . - data1
-varName2:
-.ascii "a"
-.space 1, 0
-lenVarName2 = . - varName2
 data2:
-.ascii "AAAA"
+.ascii "BB3"
 .space 1, 0
 lenData2 = . - data2
 data3:
-.ascii "AAAA"
+.ascii "BB4"
 .space 1, 0
 lenData3 = . - data3
 data4:
 .ascii ""
 .space 1, 0
 lenData4 = . - data4
-varName3:
+varName2:
 .ascii "$print_arg0"
 .space 1, 0
-lenVarName3 = . - varName3
+lenVarName2 = . - varName2
 data5:
 .ascii "YES\n"
 .space 1, 0
@@ -1160,10 +1156,10 @@ data6:
 .ascii ""
 .space 1, 0
 lenData6 = . - data6
-varName4:
+varName3:
 .ascii "$print_arg0"
 .space 1, 0
-lenVarName4 = . - varName4
+lenVarName3 = . - varName3
 data7:
 .ascii "NO\n"
 .space 1, 0

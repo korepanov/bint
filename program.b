@@ -1,9 +1,6 @@
 void main(){
 	
-	string a; 
-	a = "AAAA";
-
-	if (a == "AAAA"){
+	if ("BB3" =="BB4"){
 		print("YES\n");	
 	}else{
 		print("NO\n"); 	
