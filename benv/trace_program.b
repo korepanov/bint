@@ -1,0 +1,11 @@
+$fileprogram.b$;
+$trace1$;
+voidmain(){if(4>5){print("NO\n");
+$trace2$;
+}else{print("YES\n");
+$trace3$;
+};
+$trace4$;
+};
+$trace5$;
+main();
