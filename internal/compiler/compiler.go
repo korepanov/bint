@@ -1438,7 +1438,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 					os.Exit(1)
 				}
 			} else {
-				_, err := progFile.Write([]byte("\nmov " + fmt.Sprintf("%v", LO[0]) + ", %rax \n mov %rax, (buf)"))
+				_, err := progFile.Write([]byte("\nmov " + fmt.Sprintf("%v", LO[0]) + ", %rax \n mov %rax, (buf3)"))
 				if nil != err {
 					fmt.Println(err)
 					os.Exit(1)
@@ -1481,7 +1481,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 					os.Exit(1)
 				}
 			} else {
-				_, err := progFile.Write([]byte("\n mov " + fmt.Sprintf("%v", RO[0]) + ", %rax \n mov %rax, (buf2)"))
+				_, err := progFile.Write([]byte("\n mov " + fmt.Sprintf("%v", RO[0]) + ", %rax \n mov %rax, (buf4)"))
 				if nil != err {
 					fmt.Println(err)
 					os.Exit(1)
@@ -1530,12 +1530,32 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		if "string" == typeLO && isVarLO {
-			fmt.Println("ERROR: == for left string var not realized")
-			os.Exit(1)
+			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
+				"\n call __getVar \n mov (userData), %rax \n mov %rax, (buf)"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		}
+		if "string" == typeLO && !isVarLO {
+			_, err := progFile.Write([]byte("\n mov (buf3), %rax \n mov %rax, (buf)"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		}
 		if "string" == typeRO && isVarRO {
 			fmt.Println("ERROR: == for right string var not realized")
 			os.Exit(1)
+		}
+
+		if "string" == typeRO && !isVarRO {
+			_, err := progFile.Write([]byte("\n mov (buf4), %rax \n mov %rax, (buf2)"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		}
 
 		if "int" == typeLO && "int" == typeRO {

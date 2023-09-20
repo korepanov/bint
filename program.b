@@ -1,7 +1,7 @@
 void main(){
 	
 	string a; 
-	a = "BBB";
+	a = "AAAA";
 
 	if (a == "AAAA"){
 		print("YES\n");	

@@ -4,7 +4,7 @@ goto(#main_end);
 #main:print("");
 print("");
 stringa;
-a="BBB";
+a="AAAA";
 [print(""),(a=="AAAA"),goto(#_cond0_end)];
 string $print_arg0;
 $print_arg0="YES\n";

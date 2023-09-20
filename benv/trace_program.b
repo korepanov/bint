@@ -2,7 +2,7 @@ $fileprogram.b$;
 $trace1$;
 voidmain(){stringa;
 $trace2$;
-a="BBB";
+a="AAAA";
 $trace3$;
 if(a=="AAAA"){print("YES\n");
 $trace4$;
