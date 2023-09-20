@@ -1,9 +1,12 @@
 void main(){
 	
-	if ("AAA" == "AAA"){
+	string a; 
+	a = "BBB";
+
+	if (a == "AAAA"){
 		print("YES\n");	
 	}else{
-		print("NO\n");	
+		print("NO\n"); 	
 	};
 	
 };

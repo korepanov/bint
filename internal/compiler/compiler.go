@@ -1,10 +1,6 @@
 package compiler
 
 import (
-	. "bint.com/internal/compilerVars"
-	"bint.com/internal/lexer"
-	"bint.com/internal/parser"
-	. "bint.com/pkg/serviceTools"
 	"errors"
 	"fmt"
 	"io"
@@ -14,6 +10,11 @@ import (
 	"strconv"
 	"strings"
 	"unicode"
+
+	. "bint.com/internal/compilerVars"
+	"bint.com/internal/lexer"
+	"bint.com/internal/parser"
+	. "bint.com/pkg/serviceTools"
 )
 
 var typeHist []string
@@ -1403,12 +1404,19 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			lenRO = "$lenT" + string(fmt.Sprintf("%v", RO[1])[len(fmt.Sprintf("%v", RO[1]))-1])
 		}
 		if !isVarLO && !(2 == len(LO) && true == LO[0]) {
+
+			t := fmt.Sprintf("%v", ValueFoldInterface(LO[0]))
+
+			if len(t) > 1 && "\"" == string(t[0]) && "\"" == string(t[len(t)-1]) {
+				t = t[1 : len(t)-1]
+			}
+
 			_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			_, err = dataFile.Write([]byte("\n.ascii \"" + fmt.Sprintf("%v", ValueFoldInterface(LO[0])) + "\"\n.space 1, 0"))
+			_, err = dataFile.Write([]byte("\n.ascii \"" + t + "\"\n.space 1, 0"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
@@ -1422,22 +1430,37 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			LO[0] = "$data" + fmt.Sprintf("%v", DataNumber)
 			lenLO = "$lenData" + fmt.Sprintf("%v", DataNumber)
 
-			_, err = progFile.Write([]byte("\nmov $lenBuf3, %rsi \n mov $buf3, %rdx \n mov " + lenLO + ", %rax \n mov " +
-				fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
+			if "string" != typeLO {
+				_, err = progFile.Write([]byte("\nmov $lenBuf3, %rsi \n mov $buf3, %rdx \n mov " + lenLO + ", %rax \n mov " +
+					fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+			} else {
+				_, err := progFile.Write([]byte("\nmov " + fmt.Sprintf("%v", LO[0]) + ", %rax \n mov %rax, (buf)"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
 			}
 
 			DataNumber++
 		}
 		if !isVarRO && !(2 == len(RO) && true == RO[0]) {
+
+			t := fmt.Sprintf("%v", ValueFoldInterface(RO[0]))
+
+			if len(t) > 1 && "\"" == string(t[0]) && "\"" == string(t[len(t)-1]) {
+				t = t[1 : len(t)-1]
+			}
+
 			_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			_, err = dataFile.Write([]byte("\n.ascii \"" + fmt.Sprintf("%v", ValueFoldInterface(RO[0])) + "\"\n.space 1, 0"))
+			_, err = dataFile.Write([]byte("\n.ascii \"" + t + "\"\n.space 1, 0"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
@@ -1450,11 +1473,19 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			RO[0] = "$data" + fmt.Sprintf("%v", DataNumber)
 			lenRO = "$lenData" + fmt.Sprintf("%v", DataNumber)
 
-			_, err = progFile.Write([]byte("\nmov $lenBuf4, %rsi \n mov $buf4, %rdx \n mov " + lenRO + ", %rax \n mov " +
-				fmt.Sprintf("%v", RO[0]) + ", %rdi\n call __set"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
+			if "string" != typeRO {
+				_, err = progFile.Write([]byte("\nmov $lenBuf4, %rsi \n mov $buf4, %rdx \n mov " + lenRO + ", %rax \n mov " +
+					fmt.Sprintf("%v", RO[0]) + ", %rdi\n call __set"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+			} else {
+				_, err := progFile.Write([]byte("\n mov " + fmt.Sprintf("%v", RO[0]) + ", %rax \n mov %rax, (buf2)"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
 			}
 
 			DataNumber++
@@ -1496,6 +1527,13 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				fmt.Println(err)
 				os.Exit(1)
 			}
+		}
+
+		if "string" == typeLO && isVarLO {
+			fmt.Println("ERROR: == for left string var not realized")
+		}
+		if "string" == typeRO && isVarRO {
+			fmt.Println("ERROR: == for right string var not realized")
 		}
 
 		if "int" == typeLO && "int" == typeRO {
@@ -1578,7 +1616,23 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "bool", nil
 		}
 
-		// string не реализован!
+		if "string" == typeLO && "string" == typeRO {
+			if tNumber >= TempVarsNum {
+				fmt.Println("ERROR: the arithmetic expression is too long")
+				os.Exit(1)
+			}
+			_, err := progFile.Write([]byte(
+				"\n call __eqString \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+					", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			// true - признак того, что результат в вычисляемой переменной asm
+			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "bool", nil
+		}
+
 		fmt.Println("ERROR: type error in == : " + typeLO + " and " + typeRO)
 		os.Exit(1)
 	} else if ">" == OP {

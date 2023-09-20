@@ -2772,6 +2772,39 @@ ret
  movb $'0', (userData)
  ret 
 
+  __eqString:
+ # (buf) - адрес первой строки 
+ # (buf2) - адрес второй строки 
+ # выход: (userData) = 1 - равны, (userData) = 0 - не равны 
+ mov (buf), %rsi 
+ call __len 
+ mov %rax, %rbx 
+ mov (buf2), %rsi 
+ call __len 
+ cmp %rax, %rbx 
+ jnz __eqStringNotEqual
+
+ mov (buf), %rax 
+ mov (buf2), %rbx 
+ __eqStringCompareLocal:
+ movb (%rax), %dl 
+ cmp $0, %dl 
+ jz __eqStringEqual
+ movb (%rax), %dl
+ cmp %dl, (%rbx) 
+ jnz __eqStringNotEqual
+ inc %rax 
+ inc %rbx 
+ jmp __eqStringCompareLocal
+
+ __eqStringNotEqual: 
+ movb $'0', (userData)
+ ret 
+ __eqStringEqual:
+ movb $'1', (userData)
+ ret
+
+
  __parseBool:
  # buf - источник (строка)
  # %rax - результат

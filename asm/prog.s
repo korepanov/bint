@@ -4101,7 +4101,7 @@ ret
  __eqString:
  # (buf) - адрес первой строки 
  # (buf2) - адрес второй строки 
- # выход: rax = 1 - равны, rax = 0 - не равны 
+ # выход: (userData) = 1 - равны, (userData) = 0 - не равны 
  mov (buf), %rsi 
  call __len 
  mov %rax, %rbx 
@@ -4124,10 +4124,10 @@ ret
  jmp __eqStringCompareLocal
 
  __eqStringNotEqual:
- mov $0, %rax 
+ movb $'0', (userData)
  ret 
  __eqStringEqual:
- mov $1, %rax
+ movb $'1', (userData)
  ret 
 
  __parseBool:
@@ -5700,23 +5700,6 @@ mov $lenVarName, %rsi
  call __defineVar
 jmp .main_end
 .main:
-
-mov $data9, %rax 
-mov %rax, (buf)
-mov $data9, %rax 
-mov %rax, (buf2)
-call __eqString
-cmp $1, %rax 
-jnz __next
-mov $data4, %rsi 
-call __print 
-mov $enter, %rsi 
-call __print 
-call __throughError 
-__next:
-
-
-
 
 mov $data0, %rsi
 call __print
