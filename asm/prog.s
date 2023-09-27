@@ -1189,7 +1189,7 @@ data10:
 .space 1, 0
 lenData10 = . - data10 
 data11:
-.ascii "123.756"
+.ascii "-123"
 .space 1, 0
 lenData11 = . - data11 
 

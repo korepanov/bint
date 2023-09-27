@@ -3376,22 +3376,31 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
 		}
-		if "float" == WhatsType(fmt.Sprintf("%v", LO[0])) {
-			floatLO, err := strconv.ParseFloat(fmt.Sprintf("%v", LO[0]), 64)
-			if nil != err {
-				return LO, systemStack, "", err
+
+		var lenLO string
+		isVarLO := false
+
+		newVariable := EachVariable(variables)
+
+		for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
+			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
+				isVarLO = true
+				lenLO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+				LO[0] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
 			}
-
-			return []interface{}{int(floatLO)}, systemStack, "", nil
 		}
 
-		intLO, err := strconv.Atoi(fmt.Sprintf("%v", LO[0]))
-
-		if nil != err {
-			return LO, systemStack, "", err
+		if !isVarLO {
+			fmt.Println(LO[0])
+			os.Exit(1)
+		} else {
+			fmt.Println("int() operation with vars not realized")
+			fmt.Println(LO[0])
+			fmt.Println(lenLO)
+			os.Exit(1)
 		}
 
-		return []interface{}{intLO}, systemStack, "", nil
+		return []interface{}{0}, systemStack, "", nil
 	} else if "float" == OP {
 		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]

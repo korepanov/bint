@@ -208,4 +208,6 @@ concError:
 strError:
 .ascii "the type of the variable to which you want to assign the result of string concatenation is not a string\n"
 .space 1, 0 
-
+userToNumberError:
+.ascii "could not parse number: invalid number format\n"
+.space 1, 0 

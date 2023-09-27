@@ -783,6 +783,45 @@ __toNumber:
  __toNumberIsPos:
  ret
 
+ __userToNumber:
+ # вход: buf 
+ # выход:  %rax 
+ mov $buf, %rdx # our string
+ movzx (%rdx), %rcx 
+ cmp $'-', %rcx 
+ jnz __userToNumberAtoi
+ inc %rdx 
+ __userToNumberAtoi:
+ xor %rax, %rax # zero a "result so far"
+ __userToNumberTop:
+ movzx (%rdx), %rcx # get a character
+ inc %rdx # ready for next one
+ cmp $0, %rcx # end?
+ jz __userToNumberDone
+ cmp $'.', %rcx # дробная точка?
+ jz __userToNumberDone  
+ cmp $48, %rcx 
+ jl __userToNumberException
+ cmp $57, %rcx 
+ jg __userToNumberException
+ sub $48, %rcx # "convert" character to number
+ imul $10, %rax # multiply "result so far" by ten
+ add %rcx, %rax # add in current digit
+ jmp __userToNumberTop # until done
+ __userToNumberDone:
+ mov $buf, %rdx 
+ movzx (%rdx), %rcx 
+ cmp $'-', %rcx 
+ jnz __userToNumberIsPos
+ mov $0, %rdx 
+ sub $1, %rdx 
+ //mov %rdx, (buf)
+ imul %rdx 
+ __userToNumberIsPos:
+ ret
+ __userToNumberException:
+ mov $userToNumberError, %rsi 
+ call __throughUserError 
 
 __defineVar:
  # адрес имени переменной в $varName
