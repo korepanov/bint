@@ -208,6 +208,9 @@ concError:
 strError:
 .ascii "the type of the variable to which you want to assign the result of string concatenation is not a string\n"
 .space 1, 0 
+userToNumberError:
+.ascii "could not parse number: invalid number format\n"
+.space 1, 0 
 
 
  t0: 
@@ -1185,6 +1188,10 @@ data10:
 .ascii "AAA"
 .space 1, 0
 lenData10 = . - data10 
+data11:
+.ascii "123.756"
+.space 1, 0
+lenData11 = . - data11 
 
 .text
 __initLabels:
@@ -2109,6 +2116,45 @@ __toNumber:
  __toNumberIsPos:
  ret
 
+ __userToNumber:
+ # вход: buf 
+ # выход:  %rax 
+ mov $buf, %rdx # our string
+ movzx (%rdx), %rcx 
+ cmp $'-', %rcx 
+ jnz __userToNumberAtoi
+ inc %rdx 
+ __userToNumberAtoi:
+ xor %rax, %rax # zero a "result so far"
+ __userToNumberTop:
+ movzx (%rdx), %rcx # get a character
+ inc %rdx # ready for next one
+ cmp $0, %rcx # end?
+ jz __userToNumberDone
+ cmp $'.', %rcx # дробная точка?
+ jz __userToNumberDone  
+ cmp $48, %rcx 
+ jl __userToNumberException
+ cmp $57, %rcx 
+ jg __userToNumberException
+ sub $48, %rcx # "convert" character to number
+ imul $10, %rax # multiply "result so far" by ten
+ add %rcx, %rax # add in current digit
+ jmp __userToNumberTop # until done
+ __userToNumberDone:
+ mov $buf, %rdx 
+ movzx (%rdx), %rcx 
+ cmp $'-', %rcx 
+ jnz __userToNumberIsPos
+ mov $0, %rdx 
+ sub $1, %rdx 
+ //mov %rdx, (buf)
+ imul %rdx 
+ __userToNumberIsPos:
+ ret
+ __userToNumberException:
+ mov $userToNumberError, %rsi 
+ call __throughUserError 
 
 __defineVar:
  # адрес имени переменной в $varName
@@ -5700,6 +5746,19 @@ mov $lenVarName, %rsi
  call __defineVar
 jmp .main_end
 .main:
+mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenData11, %rax 
+ mov $data11, %rdi 
+ call __set
+ call __userToNumber
+ call __toStr 
+ mov $buf2, %rsi 
+ call __print 
+ mov $enter, %rsi 
+ call __print 
+ call __throughError
+
 
 mov $data0, %rsi
 call __print
