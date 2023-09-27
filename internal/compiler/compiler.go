@@ -3391,8 +3391,38 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		if !isVarLO {
-			fmt.Println(LO[0])
+			_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			t := fmt.Sprintf("%v", ValueFoldInterface(LO[0]))
+
+			if len(t) > 1 && "\"" == string(t[0]) && "\"" == string(t[len(t)-1]) {
+				t = t[1 : len(t)-1]
+			}
+			_, err = dataFile.Write([]byte("\n.ascii \"" + t + "\"\n.space 1, 0"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = dataFile.Write([]byte("\nlenData" + fmt.Sprintf("%v", DataNumber) + " = . - data" + fmt.Sprintf("%v", DataNumber)))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			LO[0] = "$data" + fmt.Sprintf("%v", DataNumber)
+			lenLO = "$lenData" + fmt.Sprintf("%v", DataNumber)
+
+			DataNumber++
+			fmt.Println("int() operation not realized")
 			os.Exit(1)
+			//progFile.Write([]byte("\n mov $lenBuf, %rsi \n mov $buf, %rdx \n mov " + lenLO + ", %rax \n mov " + fmt.Sprintf("%v", LO[0]) +
+			//", %rdi \n call __set \n call __userToNumber\n \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov %rax, "))
+
+			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "int", nil
+
 		} else {
 			fmt.Println("int() operation with vars not realized")
 			fmt.Println(LO[0])

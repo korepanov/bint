@@ -1133,7 +1133,15 @@ varName2:
 .ascii "a"
 .space 1, 0
 lenVarName2 = . - varName2
-varName3:
-.ascii "$I0"
+data2:
+.ascii ""
 .space 1, 0
-lenVarName3 = . - varName3
+lenData2 = . - data2
+data3:
+.ascii "10"
+.space 1, 0
+lenData3 = . - data3
+data4:
+.ascii "5"
+.space 1, 0
+lenData4 = . - data4
