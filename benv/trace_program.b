@@ -2,7 +2,7 @@ $fileprogram.b$;
 $trace1$;
 voidmain(){inta;
 $trace2$;
-a=((int("10")+int("37.756"))*int(2.0));
+a=((int("10")+int("bla"))*int(2.0));
 $trace3$;
 print((str(a)+"\n"));
 $trace4$;

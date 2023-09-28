@@ -209,8 +209,11 @@ strError:
 .ascii "the type of the variable to which you want to assign the result of string concatenation is not a string\n"
 .space 1, 0 
 userToNumberError:
-.ascii "could not parse number: invalid number format\n"
+.ascii "int(): could not parse number: invalid number format\n"
 .space 1, 0 
+userParseFloatError:
+.ascii "float(): could not parse number: invalid number format\n"
+.space 1, 0
 
 
  t0: 
@@ -1189,7 +1192,7 @@ data10:
 .space 1, 0
 lenData10 = . - data10 
 data11:
-.ascii "-123"
+.ascii "-123.57"
 .space 1, 0
 lenData11 = . - data11 
 
@@ -3792,6 +3795,7 @@ __floatToStrEnd:
 fstp (buf)
 ret 
 
+
 __parseFloat:
 # $buf - источник (строка)
 # %xmm0 - результат
@@ -3802,11 +3806,11 @@ mov $buf2, %rbx # здесь будет содержаться целая час
 mov $buf3, %rcx # здесь будет содержаться дробная часть
 mov (%rax), %dl 
 cmp $'-', %dl 
-jnz isPos
+jnz __isPos
 mov $1, %r12 # признак отрицательного числа 
 inc %rax 
 jmp __parseFloatLocal 
-isPos:
+__isPos:
 mov $0, %r12 
 __parseFloatLocal: 
 mov (%rax), %dl 
@@ -3905,7 +3909,151 @@ fsub (buf)
 fstp (buf)
 movss (buf), %xmm0 
 __pos:
-ret  
+ret 
+
+
+__userParseFloat:
+# $buf - источник (строка)
+# %xmm0 - результат
+mov $buf, %rax 
+
+mov (%rax), %dl 
+cmp $'.', %dl 
+jz __userParseFloatException
+
+__userParseFloatCheckPoint:
+cmp $0, %dl 
+jz __userParseFloatCheckPointNotOk
+inc %rax 
+mov (%rax), %dl 
+cmp $'.', %dl 
+jz __userParseFloatCheckPointOk
+jmp __userParseFloatCheckPoint
+
+__userParseFloatCheckPointNotOk:
+movb $'.', (%rax)
+inc %rax 
+movb $'0', (%rax)
+__userParseFloatCheckPointOk:
+mov $buf, %rax 
+
+mov $buf, %rsi 
+call __print 
+call __throughError
+
+call __clearBuf2
+call __clearBuf3
+mov $buf2, %rbx # здесь будет содержаться целая часть 
+mov $buf3, %rcx # здесь будет содержаться дробная часть
+mov (%rax), %dl 
+cmp $'-', %dl 
+jnz __userIsPos
+mov $1, %r12 # признак отрицательного числа 
+inc %rax 
+jmp __userParseFloatLocal 
+__userIsPos:
+mov $0, %r12 
+__userParseFloatLocal: 
+mov (%rax), %dl 
+cmp $'.', %dl
+jz __userPoint
+mov %dl, (%rbx)
+inc %rax 
+inc %rbx 
+jmp __userParseFloatLocal
+__userPoint:
+movb $0, (%rbx)
+mov %rax, %rbx 
+mov $buf2, %rsi 
+call __len 
+cmp $8, %rax # целое число - не более 7 цифр 
+jl __userParseFloatZ
+mov $buf2, %rbx 
+movb $48, (%rbx)
+inc %rbx 
+movb $0, (%rbx) 
+mov $buf3, %rbx 
+movb $48, (%rbx)
+inc %rbx 
+movb $0, (%rbx)
+jmp __userParseNow 
+__userParseFloatZ: 
+mov %rbx, %rax 
+
+__userPointLocal:             
+inc %rax
+mov (%rax), %dl 
+cmp $0, %dl 
+jz __userParseNow
+mov (%rax), %dl 
+mov %dl, (%rcx) 
+inc %rcx 
+jmp __userPointLocal   
+__userParseNow:
+movb $0, (%rcx)
+
+call __clearBuf
+mov $lenBuf, %rsi 
+mov $buf, %rdx 
+mov $lenBuf2, %rax 
+mov $buf2, %rdi 
+call __set 
+call __toNumber
+mov %rax, %r10 # целая часть числа в %r10
+
+call __clearBuf
+mov $lenBuf, %rsi 
+mov $buf, %rdx 
+mov $lenBuf3, %rax 
+mov $buf3, %rdi 
+call __set
+
+mov $buf, %rsi 
+call __len 
+mov %rax, %rbx # длина дробной части числа в %rbx 
+cmp $6, %rbx # дробная часть не более шести знаков 
+jl __userParseFloatCut
+mov $buf, %rsi 
+add $6, %rsi 
+movb $0, (%rsi)
+mov $6, %rbx 
+__userParseFloatCut: 
+call __toNumber
+mov %rax, (buf)
+cvtsi2ss (buf), %xmm0  
+movss %xmm0, (buf)
+
+__userFloatLocal:
+fld (buf)
+cmp $0, %rbx 
+jz __userFloatOk
+dec %rbx 
+movss (ten), %xmm0
+movss %xmm0, (buf)
+fdiv (buf)
+fstp (buf)
+jmp __userFloatLocal
+__userFloatOk:
+mov %r10, (buf)
+cvtsi2ss (buf), %xmm0    
+movss %xmm0, (buf) # целая часть числа 
+fadd (buf)
+fstp (buf)
+movss (buf), %xmm0  
+cmp $1, %r12 
+jnz __userPos
+mov (zero), %rax   
+mov %rax, (buf)
+fld (buf)
+movss %xmm0, (buf)
+fsub (buf)
+fstp (buf)
+movss (buf), %xmm0 
+__userPos:
+ret
+__userParseFloatException:
+mov $userParseFloatError, %rsi 
+call __throughUserError
 
  __goto:
  # адрес имени метки, по которой нужно прыгнуть, в %rdi 
@@ -5751,9 +5899,10 @@ mov $lenBuf, %rsi
  mov $lenData11, %rax 
  mov $data11, %rdi 
  call __set
- call __userToNumber
- call __toStr 
- mov $buf2, %rsi 
+ call __userParseFloat
+ movss %xmm0, (buf)
+ call __floatToStr  
+ mov $userData, %rsi 
  call __print 
  mov $enter, %rsi 
  call __print 

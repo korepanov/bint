@@ -209,7 +209,7 @@ strError:
 .ascii "the type of the variable to which you want to assign the result of string concatenation is not a string\n"
 .space 1, 0 
 userToNumberError:
-.ascii "could not parse number: invalid number format\n"
+.ascii "int() could not parse number: invalid number format\n"
 .space 1, 0 
 
  t0: 
@@ -1146,7 +1146,7 @@ varName4:
 .space 1, 0
 lenVarName4 = . - varName4
 data3:
-.ascii "37.756"
+.ascii "bla"
 .space 1, 0
 lenData3 = . - data3
 varName5:
