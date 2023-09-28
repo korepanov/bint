@@ -1,11 +1,6 @@
 package validator
 
 import (
-	"bint.com/internal/const/status"
-	"bint.com/internal/executor"
-	"bint.com/internal/lexer"
-	"bint.com/internal/parser"
-	. "bint.com/pkg/serviceTools"
 	"errors"
 	"fmt"
 	"os"
@@ -14,6 +9,12 @@ import (
 	"strings"
 	"time"
 	"unicode"
+
+	"bint.com/internal/const/status"
+	"bint.com/internal/executor"
+	"bint.com/internal/lexer"
+	"bint.com/internal/parser"
+	. "bint.com/pkg/serviceTools"
 )
 
 var COMMAND_COUNTER int
@@ -662,19 +663,24 @@ func dValidateInt(command string, variables [][][]interface{}) (string, [][][]in
 				if nil != err {
 					return tail, variables, err
 				}
-				t, err = getExprType(tail[pos[0]+4:exprEnd-1], variables)
+				arg := tail[pos[0]+4 : exprEnd-1]
+				t, err = getExprType(arg, variables)
 				if nil != err {
 					tail2, _, variables, err = dValidateFuncCall(tail[pos[0]+4:exprEnd-1], variables, true)
 					if nil != err {
 						return tail, variables, err
 					}
-					t, err = getExprType(tail2, variables)
+					arg = tail2
+					t, err = getExprType(arg, variables)
 					if nil != err {
 						return ``, variables, err
 					}
 				}
 				if "stack" == t {
-					return tail, variables, errors.New("data type mismatch in str: stack")
+					return tail, variables, errors.New("data type mismatch in int(): stack")
+				}
+				if len(arg) > 0 && "." == string(arg[0]) {
+					return tail, variables, errors.New("invalid arg for int()")
 				}
 				tail = tail[:pos[0]] + `$ival` + tail[exprEnd:]
 				return dValidateInt(tail, variables)
@@ -707,20 +713,27 @@ func dValidateFloat(command string, variables [][][]interface{}) (string, [][][]
 				if nil != err {
 					return tail, variables, err
 				}
-				t, err = getExprType(tail[pos[0]+6:exprEnd-1], variables)
+				arg := tail[pos[0]+6 : exprEnd-1]
+				t, err = getExprType(arg, variables)
 				if nil != err {
 					tail2, _, variables, err = dValidateFuncCall(tail[pos[0]+4:exprEnd-1], variables, true)
 					if nil != err {
 						return tail, variables, err
 					}
-					t, err = getExprType(tail2, variables)
+					arg = tail2
+					t, err = getExprType(arg, variables)
 					if nil != err {
 						return ``, variables, err
 					}
 				}
+
 				if "stack" == t {
-					return tail, variables, errors.New("data type mismatch in str: stack")
+					return tail, variables, errors.New("data type mismatch in float(): stack")
 				}
+				if len(arg) > 0 && "." == string(arg[0]) {
+					return tail, variables, errors.New("invalid arg for float()")
+				}
+
 				tail = tail[:pos[0]] + `$fval` + tail[exprEnd:]
 				return dValidateFloat(tail, variables)
 			}
