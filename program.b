@@ -1,8 +1,8 @@
 void main(){
 	float a; 
-	a = 75.99;
+	a = (float(.10) + 0.2);
 
-	print((str(int(a)) + "\n"));
+	print((str(a) + "\n"));
 	
 };
 main();
