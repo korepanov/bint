@@ -1133,15 +1133,49 @@ varName2:
 .ascii "a"
 .space 1, 0
 lenVarName2 = . - varName2
-varName3:
-.ascii "s"
-.space 1, 0
-lenVarName3 = . - varName3
 data2:
-.ascii "10.5"
+.ascii "75.99"
 .space 1, 0
 lenData2 = . - data2
-varName4:
+varName3:
 .ascii "$I0"
 .space 1, 0
+lenVarName3 = . - varName3
+varName4:
+.ascii "$s0"
+.space 1, 0
 lenVarName4 = . - varName4
+varName5:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName5 = . - varName5
+data3:
+.ascii "\n"
+.space 1, 0
+lenData3 = . - data3
+label1:
+ .quad .main_end
+labelName1:
+.ascii ".main_end"
+.space 1,0
+data4:
+.ascii ""
+.space 1, 0
+lenData4 = . - data4
+data5:
+.ascii "#main_res0"
+.space 1, 0
+lenData5 = . - data5
+label2:
+ .quad .main_res0
+labelName2:
+.ascii ".main_res0"
+.space 1,0
+data6:
+.ascii ""
+.space 1, 0
+lenData6 = . - data6
+data7:
+.ascii ""
+.space 1, 0
+lenData7 = . - data7

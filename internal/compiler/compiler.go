@@ -3418,20 +3418,36 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 			DataNumber++
 
-			progFile.Write([]byte("\n mov $lenBuf, %rsi \n mov $buf, %rdx \n mov " + lenLO + ", %rax \n mov " + fmt.Sprintf("%v", LO[0]) +
+			_, err = progFile.Write([]byte("\n mov $lenBuf, %rsi \n mov $buf, %rdx \n mov " + lenLO + ", %rax \n mov " + fmt.Sprintf("%v", LO[0]) +
 				", %rdi \n call __set \n call __userToNumber\n call __toStr \n  \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
 				", %rdx \n mov $lenBuf2, %rax \n mov $buf2, %rdi\n call __set"))
+
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 
 			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "int", nil
 
 		} else {
-			fmt.Println("int() operation with vars not realized")
-			fmt.Println(LO[0])
-			fmt.Println(lenLO)
-			os.Exit(1)
+			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
+				"\n call __getVar \n mov (userData), %rsi \n call __len \n mov $lenBuf, %rsi \n mov $buf, %rdx \n " +
+				"mov (userData), %rdi\n call __set"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = progFile.Write([]byte("\n call __userToNumber\n call __toStr \n  \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+				", %rdx \n mov $lenBuf2, %rax \n mov $buf2, %rdi\n call __set"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "int", nil
 		}
 
-		return []interface{}{0}, systemStack, "", nil
 	} else if "float" == OP {
 		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
