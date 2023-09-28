@@ -3417,8 +3417,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			lenLO = "$lenData" + fmt.Sprintf("%v", DataNumber)
 
 			DataNumber++
-			//fmt.Println("int() operation not realized")
-			//os.Exit(1)
+
 			progFile.Write([]byte("\n mov $lenBuf, %rsi \n mov $buf, %rdx \n mov " + lenLO + ", %rax \n mov " + fmt.Sprintf("%v", LO[0]) +
 				", %rdi \n call __set \n call __userToNumber\n call __toStr \n  \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
 				", %rdx \n mov $lenBuf2, %rax \n mov $buf2, %rdi\n call __set"))

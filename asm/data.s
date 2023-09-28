@@ -208,9 +208,9 @@ concError:
 strError:
 .ascii "the type of the variable to which you want to assign the result of string concatenation is not a string\n"
 .space 1, 0 
-userToNumberError:
-.ascii "int() could not parse number: invalid number format\n"
-.space 1, 0 
+parseNumberError:
+.ascii "could not parse number: invalid number format\n"
+.space 1, 0  
 
  t0: 
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
@@ -1134,64 +1134,14 @@ varName2:
 .space 1, 0
 lenVarName2 = . - varName2
 varName3:
-.ascii "$I0"
+.ascii "s"
 .space 1, 0
 lenVarName3 = . - varName3
 data2:
-.ascii "2.0"
+.ascii "10.5"
 .space 1, 0
 lenData2 = . - data2
 varName4:
-.ascii "$I1"
+.ascii "$I0"
 .space 1, 0
 lenVarName4 = . - varName4
-data3:
-.ascii "bla"
-.space 1, 0
-lenData3 = . - data3
-varName5:
-.ascii "$I2"
-.space 1, 0
-lenVarName5 = . - varName5
-data4:
-.ascii "10"
-.space 1, 0
-lenData4 = . - data4
-varName6:
-.ascii "$s0"
-.space 1, 0
-lenVarName6 = . - varName6
-varName7:
-.ascii "$print_arg0"
-.space 1, 0
-lenVarName7 = . - varName7
-data5:
-.ascii "\n"
-.space 1, 0
-lenData5 = . - data5
-label1:
- .quad .main_end
-labelName1:
-.ascii ".main_end"
-.space 1,0
-data6:
-.ascii ""
-.space 1, 0
-lenData6 = . - data6
-data7:
-.ascii "#main_res0"
-.space 1, 0
-lenData7 = . - data7
-label2:
- .quad .main_res0
-labelName2:
-.ascii ".main_res0"
-.space 1,0
-data8:
-.ascii ""
-.space 1, 0
-lenData8 = . - data8
-data9:
-.ascii ""
-.space 1, 0
-lenData9 = . - data9

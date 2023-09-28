@@ -1,6 +1,8 @@
 void main(){
 	int a;
-	a = ((int("10") + int("bla")) * int(2.0));
+	string s;
+	s = "10.5";
+	a = int(s);
 	print((str(a) + "\n"));
 	
 };
