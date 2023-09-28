@@ -208,12 +208,9 @@ concError:
 strError:
 .ascii "the type of the variable to which you want to assign the result of string concatenation is not a string\n"
 .space 1, 0 
-userToNumberError:
-.ascii "int(): could not parse number: invalid number format\n"
+parseNumberError:
+.ascii "could not parse number: invalid number format\n"
 .space 1, 0 
-userParseFloatError:
-.ascii "float(): could not parse number: invalid number format\n"
-.space 1, 0
 
 
  t0: 
@@ -1192,7 +1189,7 @@ data10:
 .space 1, 0
 lenData10 = . - data10 
 data11:
-.ascii "-123.57"
+.ascii "1157."
 .space 1, 0
 lenData11 = . - data11 
 
@@ -2138,6 +2135,7 @@ __toNumber:
  jz __userToNumberDone  
  cmp $48, %rcx 
  jl __userToNumberException
+  
  cmp $57, %rcx 
  jg __userToNumberException
  sub $48, %rcx # "convert" character to number
@@ -2156,7 +2154,7 @@ __toNumber:
  __userToNumberIsPos:
  ret
  __userToNumberException:
- mov $userToNumberError, %rsi 
+ mov $parseNumberError, %rsi 
  call __throughUserError 
 
 __defineVar:
@@ -3934,12 +3932,11 @@ __userParseFloatCheckPointNotOk:
 movb $'.', (%rax)
 inc %rax 
 movb $'0', (%rax)
+inc %rax 
+movb $0, (%rax)
+
 __userParseFloatCheckPointOk:
 mov $buf, %rax 
-
-mov $buf, %rsi 
-call __print 
-call __throughError
 
 call __clearBuf2
 call __clearBuf3
@@ -3998,7 +3995,7 @@ mov $buf, %rdx
 mov $lenBuf2, %rax 
 mov $buf2, %rdi 
 call __set 
-call __toNumber
+call __userToNumber
 mov %rax, %r10 # целая часть числа в %r10
 
 call __clearBuf
@@ -4018,7 +4015,8 @@ add $6, %rsi
 movb $0, (%rsi)
 mov $6, %rbx 
 __userParseFloatCut: 
-call __toNumber
+call __userToNumber
+
 mov %rax, (buf)
 cvtsi2ss (buf), %xmm0  
 movss %xmm0, (buf)
@@ -4052,7 +4050,7 @@ movss (buf), %xmm0
 __userPos:
 ret
 __userParseFloatException:
-mov $userParseFloatError, %rsi 
+mov $parseNumberError, %rsi 
 call __throughUserError
 
  __goto:
@@ -5894,6 +5892,7 @@ mov $lenVarName, %rsi
  call __defineVar
 jmp .main_end
 .main:
+
 mov $lenBuf, %rsi 
  mov $buf, %rdx 
  mov $lenData11, %rax 
