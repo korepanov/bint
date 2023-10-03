@@ -3530,6 +3530,8 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
 		}
 
+		fmt.Println("bool() operation is not realized")
+		os.Exit(1)
 		return LO, systemStack, "", nil
 	} else if "input" == OP {
 		var s string
