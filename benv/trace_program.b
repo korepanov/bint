@@ -1,11 +1,13 @@
 $fileprogram.b$;
 $trace1$;
-voidmain(){inta;
+voidmain(){floata;
 $trace2$;
-a=(int(5.10)+2);
+a=7.65;
 $trace3$;
-print((str(a)+"\n"));
+a=(float(a)+2);
 $trace4$;
-};
+print((str(a)+"\n"));
 $trace5$;
+};
+$trace6$;
 main();
