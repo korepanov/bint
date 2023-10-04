@@ -168,7 +168,32 @@ lenStringType = . - stringType
 enter:
 .ascii "\n"
 .space 1, 0
-lenEnter = . - enter 
+lenEnter = . - enter
+bigTrueVal:
+.ascii "True"
+.space 1, 0
+lenBigTrueVal = . - bigTrueVal
+trueVal:
+.ascii "true"
+.space 1, 0
+lenTrueVal = . - trueVal 
+bigFalseVal:
+.ascii "False"
+.space 1, 0
+lenBigFalseVal = . - bigFalseVal 
+falseVal:
+.ascii "false"
+.space 1, 0
+lenFalseVal = . - falseVal 
+oneVal:
+.ascii "1"
+.space 1, 0
+lenOneVal = . - oneVal 
+zeroVal:
+.ascii "0"
+.space 1, 0
+lenZeroVal = . - zeroVal 
+ 
 
 ten:
 .float 10.0 
@@ -210,6 +235,9 @@ strError:
 .space 1, 0 
 parseNumberError:
 .ascii "could not parse number: invalid number format\n"
+.space 1, 0 
+parseBoolError:
+.ascii "could not parse bool: invalid bool format\n"
 .space 1, 0 
 
 
@@ -1192,6 +1220,10 @@ data11:
 .ascii "1157."
 .space 1, 0
 lenData11 = . - data11 
+data12:
+.ascii "False"
+.space 1, 0
+lenData12 = . - data12 
 
 .text
 __initLabels:
@@ -4336,6 +4368,39 @@ call __throughUserError
  mov $0, %rax 
  ret 
 
+ __userParseBool:
+ # buf - источник (строка)
+ # %rax - результат
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenBigTrueVal, %rax 
+ mov $bigTrueVal, %rdi 
+ call __set
+ call __compare
+ cmp $1, %rax 
+ jz __userParseBoolTrue 
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenBigFalseVal, %rax 
+ mov $bigFalseVal, %rdi 
+ call __set
+ call __compare
+ cmp $1, %rax 
+ jz __userParseBoolFalse 
+
+ jmp __userParseBoolException 
+ __userParseBoolTrue:
+ mov $1, %rax 
+ ret
+ __userParseBoolFalse:
+ mov $0, %rax 
+ ret 
+ __userParseBoolException:
+ mov $parseBoolError, %rsi 
+ call __throughUserError
+  
+
  __boolToStr:
  # вход: buf
  # выход: userData
@@ -5895,12 +5960,12 @@ jmp .main_end
 
 mov $lenBuf, %rsi 
  mov $buf, %rdx 
- mov $lenData11, %rax 
- mov $data11, %rdi 
+ mov $lenData12, %rax 
+ mov $data12, %rdi 
  call __set
- call __userParseFloat
- movss %xmm0, (buf)
- call __floatToStr  
+ call __userParseBool 
+ mov %rax, (buf)
+ call __boolToStr  
  mov $userData, %rsi 
  call __print 
  mov $enter, %rsi 
