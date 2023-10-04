@@ -1179,6 +1179,13 @@ func dValidateIf(command string, variables [][][]interface{}) (string, int, [][]
 			return tail, stat, variables, err
 		}
 
+		re, err = regexp.Compile(`(?:bool\([^()]*\))`)
+		if nil != err {
+			panic(err)
+		}
+
+		ifStruct = re.ReplaceAllString(ifStruct, "$$bval")
+
 		t, err := getExprType(ifStruct, variables)
 
 		if "bool" != t || nil != err {

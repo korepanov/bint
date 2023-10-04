@@ -1,6 +1,8 @@
 void main(){
-	bool b; 
-	b = bool(True);
+	string s;
+	s = "True";
+	bool b;
+	b = bool(s); 
 
 	if (b){
 		print("YES\n");
