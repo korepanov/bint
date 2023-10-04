@@ -169,6 +169,30 @@ enter:
 .ascii "\n"
 .space 1, 0
 lenEnter = . - enter 
+bigTrueVal:
+.ascii "True"
+.space 1, 0
+lenBigTrueVal = . - bigTrueVal
+trueVal:
+.ascii "true"
+.space 1, 0
+lenTrueVal = . - trueVal 
+bigFalseVal:
+.ascii "False"
+.space 1, 0
+lenBigFalseVal = . - bigFalseVal 
+falseVal:
+.ascii "false"
+.space 1, 0
+lenFalseVal = . - falseVal 
+oneVal:
+.ascii "1"
+.space 1, 0
+lenOneVal = . - oneVal 
+zeroVal:
+.ascii "0"
+.space 1, 0
+lenZeroVal = . - zeroVal 
 
 ten:
 .float 10.0 
@@ -211,3 +235,6 @@ strError:
 parseNumberError:
 .ascii "could not parse number: invalid number format\n"
 .space 1, 0  
+parseBoolError:
+.ascii "could not parse bool: invalid bool format\n"
+.space 1, 0 

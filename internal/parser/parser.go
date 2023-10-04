@@ -1,13 +1,14 @@
 package parser
 
 import (
-	. "bint.com/internal/compilerVars"
-	. "bint.com/internal/executor"
-	. "bint.com/pkg/serviceTools"
 	"errors"
 	"fmt"
 	"os"
 	"strconv"
+
+	. "bint.com/internal/compilerVars"
+	. "bint.com/internal/executor"
+	. "bint.com/pkg/serviceTools"
 )
 
 func maxBraces(exprList [][]interface{}) int {
@@ -755,8 +756,12 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 				}
 			}
 
-			if "bool" != WhatsType(fmt.Sprintf("%v", resCon[0])) && !toTranspile {
+			if "bool" != WhatsType(fmt.Sprintf("%v", resCon[0])) && !toTranspile && nil == programDest {
 				panic("parser: ERROR: data type mismatch")
+			}
+
+			if "bool" != WhatsType(fmt.Sprintf("%v", resCon[0])) && !toTranspile && nil != programDest {
+				resCon[0] = "False"
 			}
 		}
 

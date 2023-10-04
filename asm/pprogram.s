@@ -3003,18 +3003,92 @@ call __throughUserError
  mov $0, %rax 
  ret 
 
- __boolToStr:
+ __userParseBool:
+ # buf - источник (строка)
+ # %rax - результат
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenBigTrueVal, %rax 
+ mov $bigTrueVal, %rdi 
+ call __set
+ call __compare
+ cmp $1, %rax 
+ jz __userParseBoolTrue 
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenBigFalseVal, %rax 
+ mov $bigFalseVal, %rdi 
+ call __set
+ call __compare
+ cmp $1, %rax 
+ jz __userParseBoolFalse 
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenTrueVal, %rax 
+ mov $trueVal, %rdi 
+ call __set
+ call __compare
+ cmp $1, %rax 
+ jz __userParseBoolTrue
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenFalseVal, %rax 
+ mov $falseVal, %rdi 
+ call __set
+ call __compare
+ cmp $1, %rax 
+ jz __userParseBoolFalse 
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenOneVal, %rax 
+ mov $oneVal, %rdi 
+ call __set
+ call __compare
+ cmp $1, %rax 
+ jz __userParseBoolTrue 
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenZeroVal, %rax 
+ mov $zeroVal, %rdi 
+ call __set
+ call __compare
+ cmp $1, %rax 
+ jz __userParseBoolFalse  
+
+ jmp __userParseBoolException 
+ __userParseBoolTrue:
+ mov $1, %rax 
+ ret
+ __userParseBoolFalse:
+ mov $0, %rax 
+ ret 
+ __userParseBoolException:
+ mov $parseBoolError, %rsi 
+ call __throughUserError
+
+__boolToStr:
  # вход: buf
  # выход: userData
  call __clearUserData
  mov (buf), %al 
  cmp $1, %al 
  jnz __boolToStrEndTrue
- movb $'1', (userData)
+ mov $userData, %rax 
+ movb $'1', (%rax)
+ inc %rax 
+ movb $0, (%rax)
  ret 
  __boolToStrEndTrue:
- movb $'0', (userData)
- ret 
+ mov $userData, %rax 
+ movb $'0', (%rax)
+ inc %rax 
+ movb $0, (%rax)
+ ret
 
  __and:
  # вход: buf и buf2 в виде строк 

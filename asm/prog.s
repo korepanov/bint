@@ -4444,10 +4444,16 @@ call __throughUserError
  mov (buf), %al 
  cmp $1, %al 
  jnz __boolToStrEndTrue
- movb $'1', (userData)
+ mov $userData, %rax 
+ movb $'1', (%rax)
+ inc %rax 
+ movb $0, (%rax)
  ret 
  __boolToStrEndTrue:
- movb $'0', (userData)
+ mov $userData, %rax 
+ movb $'0', (%rax)
+ inc %rax 
+ movb $0, (%rax)
  ret 
 
  __and:

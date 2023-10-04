@@ -169,6 +169,30 @@ enter:
 .ascii "\n"
 .space 1, 0
 lenEnter = . - enter 
+bigTrueVal:
+.ascii "True"
+.space 1, 0
+lenBigTrueVal = . - bigTrueVal
+trueVal:
+.ascii "true"
+.space 1, 0
+lenTrueVal = . - trueVal 
+bigFalseVal:
+.ascii "False"
+.space 1, 0
+lenBigFalseVal = . - bigFalseVal 
+falseVal:
+.ascii "false"
+.space 1, 0
+lenFalseVal = . - falseVal 
+oneVal:
+.ascii "1"
+.space 1, 0
+lenOneVal = . - oneVal 
+zeroVal:
+.ascii "0"
+.space 1, 0
+lenZeroVal = . - zeroVal 
 
 ten:
 .float 10.0 
@@ -211,6 +235,9 @@ strError:
 parseNumberError:
 .ascii "could not parse number: invalid number format\n"
 .space 1, 0  
+parseBoolError:
+.ascii "could not parse bool: invalid bool format\n"
+.space 1, 0 
 
  t0: 
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
@@ -1137,3 +1164,79 @@ varName3:
 .ascii "$B0"
 .space 1, 0
 lenVarName3 = . - varName3
+data2:
+.ascii "True"
+.space 1, 0
+lenData2 = . - data2
+data3:
+.ascii ""
+.space 1, 0
+lenData3 = . - data3
+varName4:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName4 = . - varName4
+data4:
+.ascii "YES\n"
+.space 1, 0
+lenData4 = . - data4
+label1:
+ .quad ._cond0_end
+labelName1:
+.ascii "._cond0_end"
+.space 1,0
+data5:
+.ascii ""
+.space 1, 0
+lenData5 = . - data5
+varName5:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName5 = . - varName5
+data6:
+.ascii "NO\n"
+.space 1, 0
+lenData6 = . - data6
+data7:
+.ascii ""
+.space 1, 0
+lenData7 = . - data7
+label2:
+ .quad ._cond_exit0
+labelName2:
+.ascii "._cond_exit0"
+.space 1,0
+data8:
+.ascii ""
+.space 1, 0
+lenData8 = . - data8
+data9:
+.ascii ""
+.space 1, 0
+lenData9 = . - data9
+label3:
+ .quad .main_end
+labelName3:
+.ascii ".main_end"
+.space 1,0
+data10:
+.ascii ""
+.space 1, 0
+lenData10 = . - data10
+data11:
+.ascii "#main_res0"
+.space 1, 0
+lenData11 = . - data11
+label4:
+ .quad .main_res0
+labelName4:
+.ascii ".main_res0"
+.space 1,0
+data12:
+.ascii ""
+.space 1, 0
+lenData12 = . - data12
+data13:
+.ascii ""
+.space 1, 0
+lenData13 = . - data13
