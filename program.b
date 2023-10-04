@@ -1,17 +1,8 @@
 void main(){
-	string s;
-	s = "False";
-	bool b;
-	b = bool(s); 
-	s = "False";
-	bool b2;
-	b2 = bool(s);
-
-	if ((b)XOR(b2)){
-		print("YES\n");
-	}else{
-		print("NO\n"); 
-	};
+	float f;
+	f = float("5.7");
+	f = (f + 1);
+	print((str(f) + "\n")); 
 	
 };
 main();

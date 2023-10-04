@@ -3502,7 +3502,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				os.Exit(1)
 			}
 
-			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "int", nil
+			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "float", nil
 
 		} else {
 
@@ -3523,7 +3523,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				os.Exit(1)
 			}
 
-			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "int", nil
+			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "float", nil
 		}
 	} else if "bool" == OP {
 		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
