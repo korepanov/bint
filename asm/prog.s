@@ -1221,7 +1221,7 @@ data11:
 .space 1, 0
 lenData11 = . - data11 
 data12:
-.ascii "False"
+.ascii "0"
 .space 1, 0
 lenData12 = . - data12 
 
@@ -4388,6 +4388,42 @@ call __throughUserError
  call __compare
  cmp $1, %rax 
  jz __userParseBoolFalse 
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenTrueVal, %rax 
+ mov $trueVal, %rdi 
+ call __set
+ call __compare
+ cmp $1, %rax 
+ jz __userParseBoolTrue
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenFalseVal, %rax 
+ mov $falseVal, %rdi 
+ call __set
+ call __compare
+ cmp $1, %rax 
+ jz __userParseBoolFalse 
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenOneVal, %rax 
+ mov $oneVal, %rdi 
+ call __set
+ call __compare
+ cmp $1, %rax 
+ jz __userParseBoolTrue 
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenZeroVal, %rax 
+ mov $zeroVal, %rdi 
+ call __set
+ call __compare
+ cmp $1, %rax 
+ jz __userParseBoolFalse  
 
  jmp __userParseBoolException 
  __userParseBoolTrue:
