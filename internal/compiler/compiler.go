@@ -3582,9 +3582,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "bool", nil
 
 		} else {
-			fmt.Println("bool() operation for vars is not realized")
-			os.Exit(1)
-			/*_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
 				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
 				"\n call __getVar \n mov (userData), %rsi \n call __len \n mov $lenBuf, %rsi \n mov $buf, %rdx \n " +
 				"mov (userData), %rdi\n call __set"))
@@ -3592,14 +3590,14 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			_, err = progFile.Write([]byte("\n call __userToNumber\n call __toStr \n  \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
-				", %rdx \n mov $lenBuf2, %rax \n mov $buf2, %rdi\n call __set"))
+			_, err = progFile.Write([]byte("\n call __userParseBool\n mov %rax, (buf) \n call __boolToStr \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+				", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "int", nil*/
+			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "bool", nil
 		}
 	} else if "input" == OP {
 		var s string
