@@ -1,5 +1,5 @@
 void main(){
-	print((str(float(("5" + ".6"))) + "\n"));
+	print((str(bool(("Tr" + "ue"))) + "\n")); 
 	
 };
 main();
