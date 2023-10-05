@@ -4,7 +4,7 @@ goto(#main_end);
 #main:print("");
 print("");
 float$F0;
-$F0=float((4.5+2));
+$F0=float(("5"+".6"));
 string$s0;
 $s0=str($F0);
 string $print_arg0;
