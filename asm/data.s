@@ -1168,11 +1168,4 @@ data3:
 .ascii "0.7"
 .space 1, 0
 lenData3 = . - data3
-varName3:
-.ascii "$s0"
-.space 1, 0
-lenVarName3 = . - varName3
-varName4:
-.ascii "$print_arg0"
-.space 1, 0
-lenVarName4 = . - varName4
+data4:

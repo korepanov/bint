@@ -54,8 +54,8 @@ func makeOperationBinary(exprListInput [][]interface{}) [][]interface{} {
 	i := 0
 	operation := fmt.Sprintf("%v", exprList[i][1])
 	exprList = Pop(exprList, i) // выталкиваем операцию
-	exprList = Pop(exprList, i) // выталкиваем скобки рядом с именем операции
-	exprList = Pop(exprList, len(exprList)-1)
+	//exprList = Pop(exprList, i) // выталкиваем скобки рядом с именем операции
+	//exprList = Pop(exprList, len(exprList)-1)
 
 	exprList = append(exprList, []interface{}{"OP", operation})
 	exprList = append(exprList, []interface{}{"VAL", "null", "null"})
