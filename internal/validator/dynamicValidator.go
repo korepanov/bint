@@ -158,7 +158,10 @@ func sysGetExprType(command string, variables [][][]interface{}) (string, error)
 			"str" == fmt.Sprintf("%v", infoListList[0][0])) && "null" == infoListList[0][len(infoListList[0])-1] {
 			left := infoListList[0][0]
 			right := infoListList[0][len(infoListList[0])-1]
-
+			re := regexp.MustCompile(`(?m)(?:(int|float|bool|str)\([^(].*[^)]\))`)
+			if re.MatchString(command) {
+				return ``, errors.New("invalid brace format for the expression in the " + fmt.Sprintf("%v", infoListList[0][0]) + "()")
+			}
 			infoListList[0] = infoListList[0][1 : len(infoListList[0])-1]
 			res, _, _ = executor.ExecuteTree(infoListList[0], allVariables, nil, false, false, nil, nil)
 			infoListList[0] = []interface{}{}
@@ -963,8 +966,9 @@ func dValidateSliceInternal(command string, variables [][][]interface{}) (string
 
 		r := strings.NewReplacer(replacerArgs...)
 		tail = r.Replace(tail)
+		return tail, variables, nil
 	}
-	return tail, variables, nil
+	return command, variables, nil
 }
 
 func dValidateSlice(command string, variables [][][]interface{}) (string, [][][]interface{}, error) {

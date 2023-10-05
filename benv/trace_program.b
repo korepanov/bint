@@ -1,6 +1,6 @@
 $fileprogram.b$;
 $trace1$;
-voidmain(){print((str(int(15+0.28))+"\n"));
+voidmain(){print((str(float((4.5+2)))+"\n"));
 $trace2$;
 };
 $trace3$;
