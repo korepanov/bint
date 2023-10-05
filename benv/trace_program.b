@@ -1,7 +1,11 @@
 $fileprogram.b$;
 $trace1$;
-voidmain(){print((str(bool(("Tr"+"ue")))+"\n"));
+voidmain(){inti;
 $trace2$;
-};
+i=len("blabla");
 $trace3$;
+print((str(i)+"\n"));
+$trace4$;
+};
+$trace5$;
 main();

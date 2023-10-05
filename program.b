@@ -1,5 +1,8 @@
 void main(){
-	print((str(bool(("Tr" + "ue"))) + "\n")); 
+	int i;
+	i = len("blabla"); 
+	print((str(i) + "\n")); 
+	
 	
 };
 main();
