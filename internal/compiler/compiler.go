@@ -3395,18 +3395,33 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		if 2 == len(LO) && true == LO[0] {
 			computedLO = true
 
-			lenLO = "$lenT" + string(fmt.Sprintf("%v", LO[1])[len(fmt.Sprintf("%v", LO[1]))-1])
+			if len(fmt.Sprintf("%v", LO[1])) > 10 && "$systemVar" == fmt.Sprintf("%v", LO[1])[0:10] {
+				lenLO = "$lenSystemVarName" + string(fmt.Sprintf("%v", LO[1])[len(fmt.Sprintf("%v", LO[1]))-1])
 
-			t := fmt.Sprintf("%v", LO[1])
-			if "$" == string(t[0]) {
-				t = t[1:]
+				_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+					", %rax \n mov " + fmt.Sprintf("%v", LO[1]) + ", %rdi\n call __set " +
+					"\n call __getVar \n mov (userData), %rsi \n call __len \n mov $lenBuf3, %rsi \n mov $buf3, %rdx \n " +
+					"mov (userData), %rdi\n call __set "))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+
+			} else {
+				lenLO = "$lenT" + string(fmt.Sprintf("%v", LO[1])[len(fmt.Sprintf("%v", LO[1]))-1])
+
+				t := fmt.Sprintf("%v", LO[1])
+				if "$" == string(t[0]) {
+					t = t[1:]
+				}
+				_, err := progFile.Write([]byte("\nmov $lenBuf3, %rsi \n mov $buf3, %rdx \n mov " + lenLO + ", %rax \n mov $" +
+					t + ", %rdi\n call __set"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
 			}
-			_, err := progFile.Write([]byte("\nmov $lenBuf3, %rsi \n mov $buf3, %rdx \n mov " + lenLO + ", %rax \n mov $" +
-				t + ", %rdi\n call __set"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
+
 			LO = []interface{}{LO[1]}
 		}
 
@@ -3468,6 +3483,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "int", nil
 		}
 		if !isVarLO && computedLO {
+
 			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3" +
 				", %rax \n mov $buf3, %rdi\n call __set "))
 			if nil != err {

@@ -4,7 +4,7 @@ goto(#main_end);
 #main:print("");
 print("");
 int$I0;
-$I0=int(11+0.7);
+$I0=int(15+0.28);
 string$s0;
 $s0=str($I0);
 string $print_arg0;

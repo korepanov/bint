@@ -1,5 +1,5 @@
 void main(){
-	print((str(int(11 + 0.7)) + "\n"));
+	print((str(int(15 + 0.28)) + "\n"));
 	
 };
 main();

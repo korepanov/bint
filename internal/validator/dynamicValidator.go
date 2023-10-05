@@ -153,6 +153,20 @@ func sysGetExprType(command string, variables [][][]interface{}) (string, error)
 		if modFlag {
 			infoListList[0] = infoListList[0][2:]
 		}
+		if len(infoListList[0]) > 3 && (("int" == fmt.Sprintf("%v", infoListList[0][0])) ||
+			"float" == fmt.Sprintf("%v", infoListList[0][0]) || "bool" == fmt.Sprintf("%v", infoListList[0][0]) ||
+			"str" == fmt.Sprintf("%v", infoListList[0][0])) && "null" == infoListList[0][len(infoListList[0])-1] {
+			left := infoListList[0][0]
+			right := infoListList[0][len(infoListList[0])-1]
+
+			infoListList[0] = infoListList[0][1 : len(infoListList[0])-1]
+			res, _, _ = executor.ExecuteTree(infoListList[0], allVariables, nil, false, false, nil, nil)
+			infoListList[0] = []interface{}{}
+			infoListList[0] = append(infoListList[0], left)
+			infoListList[0] = append(infoListList[0], res[0])
+			infoListList[0] = append(infoListList[0], right)
+
+		}
 		if 3 == len(infoListList[0]) && "int" == fmt.Sprintf("%v", infoListList[0][0]) &&
 			"null" == fmt.Sprintf("%v", infoListList[0][2]) {
 			t, err := getExprType(fmt.Sprintf("%v", infoListList[0][1]), variables)
