@@ -1,7 +1,8 @@
 void main(){
+	string s;
+	s = "bla";
 	int i;
-	i = len("blabla"); 
-	print((str(i) + "\n")); 
+	print((str(len(s)) + "\n")); 
 	
 	
 };

@@ -1,11 +1,13 @@
 $fileprogram.b$;
 $trace1$;
-voidmain(){inti;
+voidmain(){strings;
 $trace2$;
-i=len("blabla");
+s="bla";
 $trace3$;
-print((str(i)+"\n"));
+inti;
 $trace4$;
-};
+print((str(len(s))+"\n"));
 $trace5$;
+};
+$trace6$;
 main();

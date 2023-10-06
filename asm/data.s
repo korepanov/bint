@@ -1157,25 +1157,29 @@ data1:
 .space 1, 0
 lenData1 = . - data1
 varName2:
-.ascii "i"
+.ascii "s"
 .space 1, 0
 lenVarName2 = . - varName2
-varName3:
-.ascii "$l0"
-.space 1, 0
-lenVarName3 = . - varName3
 data2:
-.ascii "blabla"
+.ascii "bla"
 .space 1, 0
 lenData2 = . - data2
+varName3:
+.ascii "i"
+.space 1, 0
+lenVarName3 = . - varName3
 varName4:
-.ascii "$s0"
+.ascii "$l0"
 .space 1, 0
 lenVarName4 = . - varName4
 varName5:
-.ascii "$print_arg0"
+.ascii "$s0"
 .space 1, 0
 lenVarName5 = . - varName5
+varName6:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName6 = . - varName6
 data3:
 .ascii "\n"
 .space 1, 0

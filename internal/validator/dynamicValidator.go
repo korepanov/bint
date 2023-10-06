@@ -1403,7 +1403,7 @@ func dValidatePrint(command string, variables [][][]interface{}) (string, int, [
 		if "string" != T {
 			return tail, status.Err, variables, errors.New("print: data type mismatch: string and " + T)
 		}
-		return "", stat, variables, nil
+		return tail[:len(tail)-1], stat, variables, nil
 	}
 	return command, status.No, variables, nil
 }
@@ -1414,6 +1414,91 @@ func dValidateUndefine(command string, variables [][][]interface{}) (string, int
 		return "", stat, variables, nil
 	}
 	return command, status.No, variables, nil
+}
+
+func dValidateArithmetic(command string, variables [][][]interface{}, isOp bool) (tail string, stat int, err error) {
+
+	re, err := regexp.Compile(`(?m)(?:\(([[[:alnum:]|\$|_|.]|\[|])*[+|\-|*|/|^|@]([[[:alnum:]|_|.|\$]|\[|])*\))`)
+	if nil != err {
+		panic(err)
+	}
+
+	reConc, err := regexp.Compile(`(?m)(?:\(([[[:alnum:]|_|\$]|\[|]|:)*[+]([[[:alnum:]|_|\$]|\[|]|:)*\))`)
+	if nil != err {
+		panic(err)
+	}
+
+	loc := re.FindIndex([]byte(command))
+	locConc := reConc.FindIndex([]byte(command))
+
+	if nil == loc && nil == locConc {
+		if isOp {
+			return command, status.Yes, nil
+		}
+		return command, status.No, nil
+	}
+
+	indexes := re.FindAllIndex([]byte(command), -1)
+	indexes = append(indexes, reConc.FindAllIndex([]byte(command), -1)...)
+
+	var replacerArgs []string
+
+	for _, index := range indexes {
+		reOp := regexp.MustCompile(`[\+|\-|\*|\\|\@|\^]`)
+		subCommand := command[index[0]:index[1]]
+		indexOp := reOp.FindIndex([]byte(subCommand))
+
+		if nil == indexOp {
+			return command, status.Err, errors.New("invalid syntax for the arithmetic expression")
+		}
+
+		left := subCommand[1:indexOp[0]]
+		right := subCommand[indexOp[1] : len(subCommand)-1]
+
+		Tleft, err := getExprType(left, variables)
+
+		if nil != err {
+			return command, status.Err, err
+		}
+
+		Tright, err := getExprType(right, variables)
+
+		if nil != err {
+			return command, status.Err, err
+		}
+
+		if Tleft != Tright {
+			return command, status.Err, errors.New("data type mismatch in " + subCommand[indexOp[0]:indexOp[1]] + " : " +
+				Tleft + " and " + Tright)
+		}
+
+		if "int" == Tleft {
+			replacerArgs = append(replacerArgs, subCommand)
+			replacerArgs = append(replacerArgs, `$ival`)
+		}
+		if "float" == Tleft {
+			replacerArgs = append(replacerArgs, subCommand)
+			replacerArgs = append(replacerArgs, `$fval`)
+		}
+		if "bool" == Tleft {
+			replacerArgs = append(replacerArgs, subCommand)
+			replacerArgs = append(replacerArgs, `$bval`)
+		}
+		if "string" == Tleft {
+			replacerArgs = append(replacerArgs, subCommand)
+			replacerArgs = append(replacerArgs, `$val`)
+		}
+		if "stack" == Tleft {
+			replacerArgs = append(replacerArgs, subCommand)
+			replacerArgs = append(replacerArgs, `$stackVal`)
+		}
+
+	}
+
+	r := strings.NewReplacer(replacerArgs...)
+	command = r.Replace(command)
+
+	return dValidateArithmetic(command, variables, true)
 }
 
 func dValidateAssignment(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
@@ -1867,6 +1952,12 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		again = true
 	}
 
+	_, stat, err = dValidateArithmetic(command, variables, false)
+
+	if nil != err {
+		return variables, err
+	}
+
 	command, variables, err = dValidateStr(command, variables)
 	if nil != err {
 		return variables, err
@@ -1921,13 +2012,18 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		return dynamicValidateCommand(tail, variables)
 	}
 
-	_, stat, variables, err = dValidatePrint(command, variables)
+	command, stat, variables, err = dValidatePrint(command, variables)
 
 	if nil != err {
 		return variables, err
 	}
 
 	if status.Yes == stat {
+		_, stat, err = dValidateArithmetic(command, variables, false)
+
+		if nil != err {
+			return variables, err
+		}
 		return variables, nil
 	}
 
