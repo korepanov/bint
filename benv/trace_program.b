@@ -1,13 +1,7 @@
 $fileprogram.b$;
 $trace1$;
-voidmain(){strings;
+voidmain(){print(str(len(("bla"+"bla"))));
 $trace2$;
-s="bla";
-$trace3$;
-inti;
-$trace4$;
-print((str(len(s))+"\n"));
-$trace5$;
 };
-$trace6$;
+$trace3$;
 main();

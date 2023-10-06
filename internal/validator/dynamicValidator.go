@@ -155,10 +155,11 @@ func sysGetExprType(command string, variables [][][]interface{}) (string, error)
 		}
 		if len(infoListList[0]) > 3 && (("int" == fmt.Sprintf("%v", infoListList[0][0])) ||
 			"float" == fmt.Sprintf("%v", infoListList[0][0]) || "bool" == fmt.Sprintf("%v", infoListList[0][0]) ||
-			"str" == fmt.Sprintf("%v", infoListList[0][0])) && "null" == infoListList[0][len(infoListList[0])-1] {
+			"str" == fmt.Sprintf("%v", infoListList[0][0]) || "len" == fmt.Sprintf("%v", infoListList[0][0])) &&
+			"null" == infoListList[0][len(infoListList[0])-1] {
 			left := infoListList[0][0]
 			right := infoListList[0][len(infoListList[0])-1]
-			re := regexp.MustCompile(`(?m)(?:(int|float|bool|str)\([^(].*[^)]\))`)
+			re := regexp.MustCompile(`(?m)(?:(int|float|bool|str|len)\([^(].*[^)]\))`)
 			if re.MatchString(command) {
 				return ``, errors.New("invalid brace format for the expression in the " + fmt.Sprintf("%v", infoListList[0][0]) + "()")
 			}
