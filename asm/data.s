@@ -1157,14 +1157,10 @@ data1:
 .space 1, 0
 lenData1 = . - data1
 varName2:
-.ascii "$l0"
+.ascii "b"
 .space 1, 0
 lenVarName2 = . - varName2
-data2:
-.ascii "bla"
+varName3:
+.ascii "$ex0"
 .space 1, 0
-lenData2 = . - data2
-data3:
-.ascii "bla"
-.space 1, 0
-lenData3 = . - data3
+lenVarName3 = . - varName3

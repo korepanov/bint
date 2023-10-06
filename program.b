@@ -1,5 +1,7 @@
 void main(){
-	print(str(len(("bla" + "bla"))));
+	bool b;
+	b = exists("/home/slava/Go/bint/s.txt");
+	print((str(b) + "\n"));
 	
 	
 };
