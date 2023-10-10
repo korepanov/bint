@@ -3182,6 +3182,24 @@ __not:
  movb $'0', (userData)
  ret 
 
+ __exists:
+# %rdi - адрес строки с именем файла 
+# открыть файл
+  mov $0,  %rsi   # открываем для чтения
+  mov $2,  %rax   # номер системного вызова
+  syscall         # вызов функции "открыть файл"
+  cmp $0, %rax    # нет ли ошибки при открытии  
+  jl __existsNot
+  # закрыть файл
+  mov  %rax, %rdi  # дескриптор файла
+  mov  $3, %rax   # номер системного вызова
+  syscall 
+  mov $1, %rax 
+  ret 
+  __existsNot:
+  xor %rax, %rax 
+  ret 
+
 .globl _start
 _start:
  call __initLabels
@@ -4664,3 +4682,159 @@ mov $lenVarName, %rsi
  mov $varName, %rcx 
  mov $varType, %rdx  
  call __defineVar
+ mov $data2, %rdi 
+ call __exists 
+ call __toStr 
+ mov $lenT0, %rsi 
+ mov $t0, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi
+ call __set
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName3, %rax 
+ mov $varName3, %rdi 
+ call __set
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName3, %rax 
+ mov $varName3, %rdi
+ call __set 
+ mov $t0, %rax 
+ mov %rax, (userData)
+ xor %rax, %rax 
+ call __setVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi
+ call __set
+mov $varName3, %rax
+mov %rax, (userData)
+ mov $1, %rax
+call __setVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName3, %rax 
+mov $varName3, %rdi 
+ call __set 
+call __undefineVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName4, %rax 
+ mov $varName4, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName4, %rax 
+ mov $varName4, %rdi
+ call __set
+mov $varName2, %rax
+mov %rax, (userData)
+ mov $1, %rax
+call __setVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName5, %rax 
+ mov $varName5, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
+mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenData3, %rax 
+ mov $data3, %rdi
+ call __set
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenSystemVarName0, %rax 
+ mov $systemVarName0, %rdi 
+ call __set
+ mov $varName4, %r8 
+ mov $data3, %r9 
+ mov $1, %rax 
+ xor %rbx, %rbx 
+ call __userConcatinate
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName5, %rax 
+ mov $varName5, %rdi 
+ call __set
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName5, %rax 
+ mov $varName5, %rdi
+ call __set 
+mov $systemVarName0, %rax 
+ mov %rax, (userData) 
+mov $1, %rax 
+ call __setVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName5, %rax 
+ mov $varName5, %rdi
+ call __set
+ call __getVar
+ mov (userData), %rsi 
+ call __print
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName5, %rax 
+mov $varName5, %rdi 
+ call __set 
+call __undefineVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName4, %rax 
+mov $varName4, %rdi 
+ call __set 
+call __undefineVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName2, %rax 
+mov $varName2, %rdi 
+ call __set 
+call __undefineVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
+ call __set 
+ call __getVar
+mov (userData), %rdi 
+ movb $'.', (%rdi) 
+ jmp __goto
+.main_end:
+
+mov $data4, %rsi
+call __print
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
+call __set
+
+ mov $data5, %rax  
+ mov %rax, (userData)
+ xor %rax, %rax
+call __setVar
+jmp .main
+.main_res0:
+
+mov $data6, %rsi
+call __print
+mov $data7, %rsi
+call __print
+mov $60,  %rax
+xor %rdi, %rdi
+syscall

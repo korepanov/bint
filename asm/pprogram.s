@@ -3182,6 +3182,24 @@ __not:
  movb $'0', (userData)
  ret 
 
+ __exists:
+# %rdi - адрес строки с именем файла 
+# открыть файл
+  mov $0,  %rsi   # открываем для чтения
+  mov $2,  %rax   # номер системного вызова
+  syscall         # вызов функции "открыть файл"
+  cmp $0, %rax    # нет ли ошибки при открытии  
+  jl __existsNot
+  # закрыть файл
+  mov  %rax, %rdi  # дескриптор файла
+  mov  $3, %rax   # номер системного вызова
+  syscall 
+  mov $1, %rax 
+  ret 
+  __existsNot:
+  xor %rax, %rax 
+  ret 
+
 .globl _start
 _start:
  call __initLabels
