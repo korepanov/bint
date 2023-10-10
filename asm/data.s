@@ -1165,9 +1165,17 @@ varName3:
 .space 1, 0
 lenVarName3 = . - varName3
 data2:
-.ascii "/home/slava/Go/bint/s.txt"
+.ascii "/bint/"
 .space 1, 0
 lenData2 = . - data2
+data3:
+.ascii "s.txt"
+.space 1, 0
+lenData3 = . - data3
+data4:
+.ascii "/home/slava/Go"
+.space 1, 0
+lenData4 = . - data4
 varName4:
 .ascii "$s0"
 .space 1, 0
@@ -1176,33 +1184,33 @@ varName5:
 .ascii "$print_arg0"
 .space 1, 0
 lenVarName5 = . - varName5
-data3:
+data5:
 .ascii "\n"
 .space 1, 0
-lenData3 = . - data3
+lenData5 = . - data5
 label1:
  .quad .main_end
 labelName1:
 .ascii ".main_end"
-.space 1,0
-data4:
-.ascii ""
-.space 1, 0
-lenData4 = . - data4
-data5:
-.ascii "#main_res0"
-.space 1, 0
-lenData5 = . - data5
-label2:
- .quad .main_res0
-labelName2:
-.ascii ".main_res0"
 .space 1,0
 data6:
 .ascii ""
 .space 1, 0
 lenData6 = . - data6
 data7:
-.ascii ""
+.ascii "#main_res0"
 .space 1, 0
 lenData7 = . - data7
+label2:
+ .quad .main_res0
+labelName2:
+.ascii ".main_res0"
+.space 1,0
+data8:
+.ascii ""
+.space 1, 0
+lenData8 = . - data8
+data9:
+.ascii ""
+.space 1, 0
+lenData9 = . - data9

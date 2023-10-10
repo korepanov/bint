@@ -5,7 +5,7 @@ goto(#main_end);
 print("");
 boolb;
 bool$ex0;
-$ex0=exists("/home/slava/Go/bint/s.txt");
+$ex0=exists(("/home/slava/Go"+("/bint/"+"s.txt")));
 b=$ex0;
 UNDEFINE($ex0);
 string$s0;

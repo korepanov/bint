@@ -482,7 +482,6 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		if 2 == len(LO) && true == LO[0] {
-			panic("complex arg for exists() is not realized")
 			computedLO = true
 
 			if len(fmt.Sprintf("%v", LO[1])) > 10 && "$systemVar" == fmt.Sprintf("%v", LO[1])[0:10] {
@@ -551,7 +550,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				os.Exit(1)
 			}
 
-			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "int", nil
+			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "bool", nil
 
 		}
 		if isVarLO && !computedLO {
@@ -571,7 +570,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				os.Exit(1)
 			}
 
-			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "int", nil
+			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "bool", nil
 		}
 		if !isVarLO && computedLO {
 
@@ -581,14 +580,14 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			_, err = progFile.Write([]byte("\n call __userToNumber\n call __toStr \n  \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+			_, err = progFile.Write([]byte("\n mov $buf3, %rdi \n call __exists \n call __toStr \n  \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
 				", %rdx \n mov $lenBuf2, %rax \n mov $buf2, %rdi\n call __set"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 
-			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "int", nil
+			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "bool", nil
 		}
 
 		panic("compiler.go: could not compile exists() operation")
