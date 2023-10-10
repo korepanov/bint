@@ -1224,6 +1224,10 @@ data12:
 .ascii "0"
 .space 1, 0
 lenData12 = . - data12 
+data13:
+.ascii "/home/slava/Go/bint/asm/temp.txt"
+.space 1, 0
+lenData13 = . - data13 
 
 .text
 __initLabels:
@@ -4548,6 +4552,25 @@ __not:
  movb $'0', (userData)
  ret 
 
+__exists:
+# %rdi - адрес строки с именем файла 
+# открыть файл
+  mov $0,  %rsi   # открываем для чтения
+  mov $2,  %rax   # номер системного вызова
+  syscall         # вызов функции "открыть файл"
+  cmp $0, %rax    # нет ли ошибки при открытии  
+  jl __existsNot
+  # закрыть файл
+  mov  %rax, %rdi  # дескриптор файла
+  mov  $3, %rax   # номер системного вызова
+  syscall 
+  mov $1, %rax 
+  ret 
+  __existsNot:
+  xor %rax, %rax 
+  ret 
+
+
 .globl _start
 _start:
  call __initLabels
@@ -5999,19 +6022,15 @@ mov $lenVarName, %rsi
  call __defineVar
 jmp .main_end
 .main:
-
-mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenData12, %rax 
- mov $data12, %rdi 
- call __set
- call __userParseBool 
- mov %rax, (buf)
- call __boolToStr  
- mov $userData, %rsi 
+ mov $data13, %rdi 
+ call __exists  
+ cmp $1, %rax 
+ jnz __no
+ mov $data13, %rsi 
  call __print 
  mov $enter, %rsi 
- call __print 
+ call __print  
+ __no:
  call __throughError
 
 
