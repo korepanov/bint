@@ -1,6 +1,8 @@
 void main(){
 	bool b;
-	b = exists(("/home/slava/Go" + ("/bint/" + "s.txt")));
+	string s;
+	s = ("/home/slava/Go" + ("/bint/" + "s.txt"));
+	b = exists(s);
 	print((str(b) + "\n"));
 	
 	

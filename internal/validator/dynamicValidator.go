@@ -121,6 +121,7 @@ func sysGetExprType(command string, variables [][][]interface{}) (string, error)
 	if nil != err {
 		return "", err
 	}
+
 	if "OP" == exprList[0][0] && IsKeyWordWithAssignment(fmt.Sprintf("%v", exprList[0][1])) {
 		modFlag = true
 		exprList = Insert(exprList, 0, []interface{}{"OP", "="})
