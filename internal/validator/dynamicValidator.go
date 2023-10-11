@@ -433,25 +433,6 @@ func dValidateSetSource(command string, variables [][][]interface{}) (string, in
 	return command, status.No, variables, nil
 }
 
-func dValidateExists(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
-	tail, stat := check(`(?:exists\(.*\))`, command)
-
-	if status.Yes == stat && `` == tail {
-		tail, _ = check(`(?:exists\()`, command)
-		tail = tail[:len(tail)-1]
-		t, err := getExprType(tail, variables)
-		if nil != err {
-			return ``, status.Err, variables, err
-		}
-		if "string" != t {
-			return ``, status.Err, variables, errors.New("data type mismatch in exists: string and " + t)
-		}
-		return ``, status.Yes, variables, nil
-	}
-
-	return command, status.No, variables, nil
-}
-
 func dValidateDelDest(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
 	tail, stat := check(`(?:DEL_DEST\(.*\))`, command)
 
@@ -623,6 +604,51 @@ func dValidateString(command string) (string, int, error) {
 	}
 
 	return tail, status.No, nil
+}
+
+func dValidateExists(command string, variables [][][]interface{}) (string, [][][]interface{}, error) {
+	tail := command
+	var err error
+	var re *regexp.Regexp
+	var exprEnd int
+	var t string
+	var tail2 string
+
+	re, err = regexp.Compile(`exists\(`)
+	if nil != err {
+		panic(err)
+	}
+	if nil != re.FindIndex([]byte(tail)) {
+		var poses [][]int
+		poses = re.FindAllIndex([]byte(tail), -1)
+		var replacerArgs []string
+		for _, pos := range poses {
+			exprEnd, err = getExprEnd(tail, pos[1]-1)
+			if nil != err {
+				return tail, variables, err
+			}
+			t, err = getExprType(tail[pos[0]+7:exprEnd-1], variables)
+			if nil != err {
+				tail2, _, variables, err = dValidateFuncCall(tail[pos[0]+7:exprEnd-1], variables, true)
+				if nil != err {
+					return tail, variables, err
+				}
+				t, err = getExprType(tail2, variables)
+				if nil != err {
+					return ``, variables, err
+				}
+			}
+			if "stack" == t {
+				return tail, variables, errors.New("data type mismatch in exists: stack")
+			}
+			replacerArgs = append(replacerArgs, tail[pos[0]:exprEnd])
+			replacerArgs = append(replacerArgs, `$bval`)
+		}
+
+		r := strings.NewReplacer(replacerArgs...)
+		tail = r.Replace(tail)
+	}
+	return tail, variables, nil
 }
 
 func dValidateStr(command string, variables [][][]interface{}) (string, [][][]interface{}, error) {
@@ -1514,6 +1540,106 @@ func dValidateArithmetic(command string, variables [][][]interface{}, isOp bool)
 	return dValidateArithmetic(command, variables, true)
 }
 
+func dcheckComparison(command string, variables [][][]interface{}, reg string) (isComparison bool, newCommand string, err error) {
+
+	re, err := regexp.Compile(reg)
+	if nil != err {
+		panic(err)
+	}
+	indexes := re.FindAllIndex([]byte(command), -1)
+	if nil != indexes {
+		for _, index := range indexes {
+			temp := command[index[0]:index[1]]
+			t, err := getExprType("("+temp+")", variables)
+			if nil != err {
+				return false, ``, err
+			}
+
+			if "bool" != t {
+				return false, ``, errors.New("data type mismatch: expected bool, got " + t)
+			}
+			isComparison = true
+		}
+	}
+	newCommand = string(re.ReplaceAll([]byte(command), []byte("$$bval")))
+
+	return isComparison, newCommand, nil
+}
+
+func dvalidateComparison(command string, variables [][][]interface{}, isOp bool) (tail string, stat int, err error) {
+	var isComparison bool
+
+	if !isOp {
+		re, err := regexp.Compile(`(?m)(?:[^[[:alnum:]|_,\)]\-([[:alpha:]]([[:alnum:]|_]+)?))`)
+		if nil != err {
+			panic(err)
+		}
+		if nil != re.FindIndex([]byte(command)) {
+			return ``, status.Err, errors.New(`unary minus before variable is not allowed, use expression like (-1)*var`)
+		}
+	}
+
+	temp, command, err := dcheckComparison(command, variables, `(?:[^=(]+=={1}[^=)]+)`)
+
+	if nil != err {
+		return ``, status.Err, err
+	}
+
+	if temp {
+		isComparison = true
+	}
+
+	temp, command, err = dcheckComparison(command, variables,
+		`(?m)(?:()*(?:(>=|<=|>|<))([[[:alnum:]|_|\.])*)`)
+
+	if nil != err {
+		return ``, status.Err, err
+	}
+
+	if temp {
+		isComparison = true
+	}
+
+	temp, command, err = dcheckComparison(command, variables,
+		`(?m)(?:\(([[[:alpha:]|_|\$])+[[:alnum:]]*\)(?:(AND|OR|XOR))\(([[[:alpha:]|_|\$])+[[:alnum:]]*\))`)
+
+	if nil != err {
+		return ``, status.Err, err
+	}
+
+	if temp {
+		isComparison = true
+	}
+
+	temp, command, err = dcheckComparison(command, variables, `(?:NOT\([[:alpha:]|_|\$]+[[:alnum:]]*)\)`)
+
+	if nil != err {
+		return ``, status.Err, err
+	}
+
+	if temp {
+		isComparison = true
+	}
+
+	if `$$bval` == command && isOp {
+		return command, status.Yes, nil
+	}
+
+	if !isComparison {
+
+		if `($$bval)` == command {
+			command = `$$bval`
+		}
+
+		if isOp {
+			return command, status.Yes, nil
+		}
+		return command, status.No, nil
+	}
+
+	return validateComparison(command, true)
+}
+
 func dValidateAssignment(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
 	_, stat := check(`(?:\$?[[:alpha:]][[:alnum:]|_]*={1}[^=]+)`, command)
 	if status.Yes == stat {
@@ -1827,7 +1953,7 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		return variables, nil
 	}
 
-	command, stat, variables, err = dValidateExists(command, variables)
+	command, variables, err = dValidateExists(command, variables)
 
 	if nil != err {
 		return variables, err
@@ -1966,6 +2092,12 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 	}
 
 	_, stat, err = dValidateArithmetic(command, variables, false)
+
+	if nil != err {
+		return variables, err
+	}
+
+	_, stat, err = dvalidateComparison(command, variables, false)
 
 	if nil != err {
 		return variables, err
