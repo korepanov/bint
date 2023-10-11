@@ -216,6 +216,17 @@ func sysGetExprType(command string, variables [][][]interface{}) (string, error)
 			}
 			return "string", nil
 		}
+		if 3 == len(infoListList[0]) && "exists" == fmt.Sprintf("%v", infoListList[0][0]) &&
+			"null" == fmt.Sprintf("%v", infoListList[0][2]) {
+			t, err := getExprType(fmt.Sprintf("%v", infoListList[0][1]), variables)
+			if nil != err {
+				return ``, err
+			}
+			if "stack" == t {
+				return ``, errors.New("data type mismatch in exists: stack")
+			}
+			return "bool", nil
+		}
 		res, _, _ = executor.ExecuteTree(infoListList[0], allVariables, nil, false, false, nil, nil)
 	}
 
