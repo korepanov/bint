@@ -4596,13 +4596,40 @@ cmp %r8, %rax
 mov $-1,  %rax
 jg __indexCompareEnd
 
+mov %rdi, %r8 # save %rdi  
+
+xor %rax, %rax 
 __indexCompare:
-/*mov (%rsi), %bl
+mov $1, %dl # is substring in this index?
+mov %rsi, %r9 # save %rsi 
+__indexCompareLoop:
+mov (%rdi), %bl
 cmp $0, %bl
 jz __indexCompareEnd  
-mov (%rdi), %dl 
-cmp %al, %dl*/
+mov (%rsi), %cl 
+cmp %bl, %cl
+jnz __indexChange
+inc %rdi
+inc %rsi  
+jmp __indexCompareLoop   
+__indexChange:
+mov $0, %dl 
 __indexCompareEnd:
+cmp $1, %dl 
+jz __indexEnd 
+mov %r9, %rsi # restore %rsi 
+inc %rsi 
+mov (%rsi), %bl 
+cmp $0, %bl 
+jnz __indexNoEnd 
+mov $-1, %rax  
+jmp __indexEnd 
+__indexNoEnd: 
+inc %rax 
+mov %r8, %rdi # restore %rdi 
+jmp __indexCompare 
+
+__indexEnd:
 
 ret 
 
