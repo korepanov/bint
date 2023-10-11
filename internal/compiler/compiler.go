@@ -203,6 +203,9 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			RO[0] = RO[0].(string)[1 : len(RO[0].(string))-1]
 		}
 
+		fmt.Println(LO[0])
+		fmt.Println(RO[0])
+		panic("index() operation is not realized in the compiler")
 		return []interface{}{strings.Index(fmt.Sprintf("%v", LO[0]), fmt.Sprintf("%v", RO[0]))}, systemStack, "", nil
 	} else if "=" == OP {
 		var wasVar bool
