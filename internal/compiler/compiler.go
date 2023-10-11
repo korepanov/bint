@@ -554,7 +554,6 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 		}
 		if isVarLO && !computedLO {
-			panic("variable for exists() is not realized")
 			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
 				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
 				"\n call __getVar \n mov (userData), %rsi \n call __len \n mov $lenBuf, %rsi \n mov $buf, %rdx \n " +
@@ -563,7 +562,8 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			_, err = progFile.Write([]byte("\n call __userToNumber\n call __toStr \n  \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+			_, err = progFile.Write([]byte("\nmov $buf, %rdi \n call __exists\n call __toStr \n  \n mov $lenT" + fmt.Sprintf("%v", tNumber) +
+				", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
 				", %rdx \n mov $lenBuf2, %rax \n mov $buf2, %rdi\n call __set"))
 			if nil != err {
 				fmt.Println(err)

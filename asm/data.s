@@ -1161,7 +1161,7 @@ varName2:
 .space 1, 0
 lenVarName2 = . - varName2
 varName3:
-.ascii "$ex0"
+.ascii "s"
 .space 1, 0
 lenVarName3 = . - varName3
 data2:
@@ -1177,13 +1177,17 @@ data4:
 .space 1, 0
 lenData4 = . - data4
 varName4:
-.ascii "$s0"
+.ascii "$ex0"
 .space 1, 0
 lenVarName4 = . - varName4
 varName5:
-.ascii "$print_arg0"
+.ascii "$s0"
 .space 1, 0
 lenVarName5 = . - varName5
+varName6:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName6 = . - varName6
 data5:
 .ascii "\n"
 .space 1, 0
