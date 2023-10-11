@@ -1229,11 +1229,11 @@ data13:
 .space 1, 0
 lenData13 = . - data13 
 data14:
-.ascii "banana"
+.ascii "abcdefghig"
 .space 1, 0
 lenData14 = . - data14 
 data15:
-.ascii "ana"
+.ascii "defg"
 .space 1, 0
 lenData15 = . - data15 
 
@@ -4592,9 +4592,10 @@ mov %rdi, %rsi
 call __len 
 mov %r9, %rsi
 
-cmp %r8, %rax 
+mov %rax, %r9 
 mov $-1,  %rax
-jg __indexCompareEnd
+cmp %r8, %r9 
+jg __indexEnd
 
 mov %rdi, %r8 # save %rdi  
 
@@ -4606,6 +4607,10 @@ __indexCompareLoop:
 mov (%rdi), %bl
 cmp $0, %bl
 jz __indexCompareEnd  
+mov (%rsi), %bl
+cmp $0, %bl
+jz __indexNo   
+mov (%rdi), %bl 
 mov (%rsi), %cl 
 cmp %bl, %cl
 jnz __indexChange
@@ -4621,7 +4626,8 @@ mov %r9, %rsi # restore %rsi
 inc %rsi 
 mov (%rsi), %bl 
 cmp $0, %bl 
-jnz __indexNoEnd 
+jnz __indexNoEnd
+__indexNo: 
 mov $-1, %rax  
 jmp __indexEnd 
 __indexNoEnd: 
