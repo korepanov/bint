@@ -1228,6 +1228,14 @@ data13:
 .ascii "/home/slava/Go/bint/asm/temp.txt"
 .space 1, 0
 lenData13 = . - data13 
+data14:
+.ascii "banana"
+.space 1, 0
+lenData14 = . - data14 
+data15:
+.ascii "ana"
+.space 1, 0
+lenData15 = . - data15 
 
 .text
 __initLabels:
@@ -4570,6 +4578,33 @@ __exists:
   xor %rax, %rax 
   ret 
 
+__index:
+# вход:
+# %rsi - адрес строки
+# %rdi - адрес подстроки 
+# выход: %rax
+mov %rsi, %r8 
+call __len 
+mov %r8, %rsi 
+mov %rax, %r8 
+mov %rsi, %r9 
+mov %rdi, %rsi 
+call __len 
+mov %r9, %rsi
+
+cmp %r8, %rax 
+mov $-1,  %rax
+jg __indexCompareEnd
+
+__indexCompare:
+/*mov (%rsi), %bl
+cmp $0, %bl
+jz __indexCompareEnd  
+mov (%rdi), %dl 
+cmp %al, %dl*/
+__indexCompareEnd:
+
+ret 
 
 .globl _start
 _start:
@@ -6022,15 +6057,14 @@ mov $lenVarName, %rsi
  call __defineVar
 jmp .main_end
 .main:
- mov $data13, %rdi 
- call __exists  
- cmp $1, %rax 
- jnz __no
- mov $data13, %rsi 
+ mov $data14, %rsi 
+ mov $data15, %rdi 
+ call __index 
+ call __toStr 
+ mov $buf2, %rsi 
  call __print 
  mov $enter, %rsi 
- call __print  
- __no:
+ call __print 
  call __throughError
 
 
