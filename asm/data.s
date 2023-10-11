@@ -1157,76 +1157,10 @@ data1:
 .space 1, 0
 lenData1 = . - data1
 varName2:
-.ascii "b"
+.ascii "i"
 .space 1, 0
 lenVarName2 = . - varName2
 varName3:
-.ascii "s"
+.ascii "$ind0"
 .space 1, 0
 lenVarName3 = . - varName3
-varName4:
-.ascii "s2"
-.space 1, 0
-lenVarName4 = . - varName4
-varName5:
-.ascii "s3"
-.space 1, 0
-lenVarName5 = . - varName5
-data2:
-.ascii "/home/slava/Go"
-.space 1, 0
-lenData2 = . - data2
-data3:
-.ascii "/bint/"
-.space 1, 0
-lenData3 = . - data3
-data4:
-.ascii "s.txt"
-.space 1, 0
-lenData4 = . - data4
-varName6:
-.ascii "$ex0"
-.space 1, 0
-lenVarName6 = . - varName6
-data5:
-.ascii "s.txt"
-.space 1, 0
-lenData5 = . - data5
-varName7:
-.ascii "$s0"
-.space 1, 0
-lenVarName7 = . - varName7
-varName8:
-.ascii "$print_arg0"
-.space 1, 0
-lenVarName8 = . - varName8
-data6:
-.ascii "\n"
-.space 1, 0
-lenData6 = . - data6
-label1:
- .quad .main_end
-labelName1:
-.ascii ".main_end"
-.space 1,0
-data7:
-.ascii ""
-.space 1, 0
-lenData7 = . - data7
-data8:
-.ascii "#main_res0"
-.space 1, 0
-lenData8 = . - data8
-label2:
- .quad .main_res0
-labelName2:
-.ascii ".main_res0"
-.space 1,0
-data9:
-.ascii ""
-.space 1, 0
-lenData9 = . - data9
-data10:
-.ascii ""
-.space 1, 0
-lenData10 = . - data10
