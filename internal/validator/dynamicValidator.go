@@ -154,6 +154,7 @@ func sysGetExprType(command string, variables [][][]interface{}) (string, error)
 		if modFlag {
 			infoListList[0] = infoListList[0][2:]
 		}
+
 		if len(infoListList[0]) > 3 && (("int" == fmt.Sprintf("%v", infoListList[0][0])) ||
 			"float" == fmt.Sprintf("%v", infoListList[0][0]) || "bool" == fmt.Sprintf("%v", infoListList[0][0]) ||
 			"str" == fmt.Sprintf("%v", infoListList[0][0]) || "len" == fmt.Sprintf("%v", infoListList[0][0])) &&
@@ -627,6 +628,17 @@ func dValidateExists(command string, variables [][][]interface{}) (string, [][][
 			if nil != err {
 				return tail, variables, err
 			}
+			temp, _, err := dValidateArithmetic(tail[pos[0]+7:exprEnd-1], variables, false)
+			if nil != err {
+				return tail, variables, err
+			}
+
+			reOp := regexp.MustCompile(`[\+|\-|\*|\\|\@|\^]`)
+
+			if nil != reOp.FindIndex([]byte(temp)) {
+				return ``, variables, errors.New("invalid arithmetic syntax")
+			}
+
 			t, err = getExprType(tail[pos[0]+7:exprEnd-1], variables)
 			if nil != err {
 				tail2, _, variables, err = dValidateFuncCall(tail[pos[0]+7:exprEnd-1], variables, true)
