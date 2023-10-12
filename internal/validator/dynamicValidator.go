@@ -2103,13 +2103,13 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		again = true
 	}
 
-	_, stat, err = dValidateArithmetic(command, variables, false)
+	command, stat, err = dValidateArithmetic(command, variables, false)
 
 	if nil != err {
 		return variables, err
 	}
 
-	_, stat, err = dvalidateComparison(command, variables, false)
+	command, stat, err = dvalidateComparison(command, variables, false)
 
 	if nil != err {
 		return variables, err
