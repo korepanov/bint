@@ -249,13 +249,6 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			LO[0] = "$data" + fmt.Sprintf("%v", DataNumber)
 			lenLO = "$lenData" + fmt.Sprintf("%v", DataNumber)
 
-			_, err = progFile.Write([]byte("\nmov $lenBuf3, %rsi \n mov $buf3, %rdx \n mov " + lenLO + ", %rax \n mov " +
-				fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-
 			DataNumber++
 		}
 		if !isVarRO && !(2 == len(RO) && true == RO[0]) {
@@ -276,13 +269,6 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			}
 			RO[0] = "$data" + fmt.Sprintf("%v", DataNumber)
 			lenRO = "$lenData" + fmt.Sprintf("%v", DataNumber)
-
-			_, err = progFile.Write([]byte("\nmov $lenBuf4, %rsi \n mov $buf4, %rdx \n mov " + lenRO + ", %rax \n mov " +
-				fmt.Sprintf("%v", RO[0]) + ", %rdi\n call __set"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
 
 			DataNumber++
 		}
@@ -307,15 +293,22 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			RO = []interface{}{RO[1]}
 		}
 
-		if "int" == typeLO && "int" == typeRO {
+		if "string" == typeLO && "string" == typeRO {
 			if tNumber >= TempVarsNum {
 				fmt.Println("ERROR: the arithmetic expression is too long")
 				os.Exit(1)
 			}
-			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3, %rax \n mov $buf3, %rdi\n call __set" +
-				"\n mov $lenBuf2, %rsi \n mov $buf2, %rdx \n mov $lenBuf4, %rax \n mov $buf4, %rdi\n call __set \n xor %rax, %rax \n" +
-				"\n call __sub \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
-				", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
+
+			if isVarLO {
+				panic("variables in index() operation are not realized")
+			}
+			if isVarRO {
+				panic("variables in index() operation are not realized")
+			}
+
+			_, err := progFile.Write([]byte("\nmov " + fmt.Sprintf("%v", LO[0]) + ", %rsi" + "\nmov " + fmt.Sprintf("%v", RO[0]) + ", %rdi" +
+				"\n call __index \n call __toStr \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+				", %rdx \n mov $lenBuf2, %rax \n mov $buf2, %rdi\n call __set"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)

@@ -1,6 +1,6 @@
 void main(){
 	int i; 
-	i = index("banana", "ana");
+	i = index("abcdef", "de");
 	print((str(i) + "\n"));
 	
 };
