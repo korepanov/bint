@@ -4764,5 +4764,5 @@ mov $lenVarName, %rsi
  mov $varName, %rcx 
  mov $varType, %rdx  
  call __defineVar
-mov $data3, %rax
- mov %rax, (buf4)
+mov $data3, %rax 
+ mov %rax, (buf3)

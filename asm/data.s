@@ -1165,7 +1165,7 @@ varName3:
 .space 1, 0
 lenVarName3 = . - varName3
 data2:
-.ascii "abcdef"
+.ascii "de"
 .space 1, 0
 lenData2 = . - data2
 varName4:
@@ -1173,6 +1173,6 @@ varName4:
 .space 1, 0
 lenVarName4 = . - varName4
 data3:
-.ascii "de"
+.ascii "abcdef"
 .space 1, 0
 lenData3 = . - data3
