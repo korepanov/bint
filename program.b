@@ -1,6 +1,8 @@
 void main(){
 	int i; 
-	i = index("abcdef", "de");
+	string s;
+	s = "abcdef";
+	i = index(s, "de");
 	print((str(i) + "\n"));
 	
 };
