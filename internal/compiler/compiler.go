@@ -249,6 +249,12 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			LO[0] = "$data" + fmt.Sprintf("%v", DataNumber)
 			lenLO = "$lenData" + fmt.Sprintf("%v", DataNumber)
 
+			_, err = progFile.Write([]byte("\nmov " + fmt.Sprintf("%v", LO[0]) + ", %rax \n mov %rax, (buf3)"))
+
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 			DataNumber++
 		}
 		if !isVarRO && !(2 == len(RO) && true == RO[0]) {
@@ -271,11 +277,20 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			lenRO = "$lenData" + fmt.Sprintf("%v", DataNumber)
 
 			DataNumber++
+
+			_, err = progFile.Write([]byte("\nmov " + fmt.Sprintf("%v", RO[0]) + ", %rax\n mov %rax, (buf4)"))
+
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		}
 		if 2 == len(LO) && true == LO[0] {
-			panic("complex arg in index() operation is not realized")
-			_, err := progFile.Write([]byte("\nmov $lenBuf3, %rsi \n mov $buf3, %rdx \n mov " + lenLO + ", %rax \n mov $" +
-				fmt.Sprintf("%v", LO[1]) + ", %rdi\n call __set"))
+			lenLO = "$lenSystemVarName" + string(fmt.Sprintf("%v", LO[1])[len(fmt.Sprintf("%v", LO[1]))-1])
+
+			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+				", %rax \n mov " + fmt.Sprintf("%v", LO[1]) + ", %rdi\n call __set " +
+				"\n call __getVar \n mov (userData), %rax \n mov %rax, (buf3)"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
@@ -283,9 +298,11 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			LO = []interface{}{LO[1]}
 		}
 		if 2 == len(RO) && true == RO[0] {
-			panic("complex arg in index() operation is not realized")
-			_, err := progFile.Write([]byte("\nmov $lenBuf4, %rsi \n mov $buf4, %rdx \n mov " + lenRO + ", %rax \n mov $" +
-				fmt.Sprintf("%v", RO[1]) + ", %rdi\n call __set"))
+			lenRO = "$lenSystemVarName" + string(fmt.Sprintf("%v", RO[1])[len(fmt.Sprintf("%v", RO[1]))-1])
+
+			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenRO +
+				", %rax \n mov " + fmt.Sprintf("%v", RO[1]) + ", %rdi\n call __set " +
+				"\n call __getVar \n mov (userData), %rax \n mov %rax, (buf4)"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
@@ -306,9 +323,9 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				panic("variables in index() operation are not realized")
 			}
 
-			_, err := progFile.Write([]byte("\nmov " + fmt.Sprintf("%v", LO[0]) + ", %rsi" + "\nmov " + fmt.Sprintf("%v", RO[0]) + ", %rdi" +
-				"\n call __index \n call __toStr \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
-				", %rdx \n mov $lenBuf2, %rax \n mov $buf2, %rdi\n call __set"))
+			_, err := progFile.Write([]byte(
+				"\nmov (buf3), %rsi \n mov (buf4), %rdi \n call __index \n call __toStr \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+					", %rdx \n mov $lenBuf2, %rax \n mov $buf2, %rdi\n call __set"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
