@@ -3198,7 +3198,68 @@ __not:
   ret 
   __existsNot:
   xor %rax, %rax 
-  ret 
+  ret
+ 
+ __index:
+# вход:
+# %rsi - адрес строки
+# %rdi - адрес подстроки 
+# выход: %rax
+mov %rsi, %r8 
+call __len 
+mov %r8, %rsi 
+mov %rax, %r8 
+mov %rsi, %r9 
+mov %rdi, %rsi 
+call __len 
+mov %r9, %rsi
+
+mov %rax, %r9 
+mov $-1,  %rax
+cmp %r8, %r9 
+jg __indexEnd
+
+mov %rdi, %r8 # save %rdi  
+
+xor %rax, %rax 
+__indexCompare:
+mov $1, %dl # is substring in this index?
+mov %rsi, %r9 # save %rsi 
+__indexCompareLoop:
+mov (%rdi), %bl
+cmp $0, %bl
+jz __indexCompareEnd  
+mov (%rsi), %bl
+cmp $0, %bl
+jz __indexNo   
+mov (%rdi), %bl 
+mov (%rsi), %cl 
+cmp %bl, %cl
+jnz __indexChange
+inc %rdi
+inc %rsi  
+jmp __indexCompareLoop   
+__indexChange:
+mov $0, %dl 
+__indexCompareEnd:
+cmp $1, %dl 
+jz __indexEnd 
+mov %r9, %rsi # restore %rsi 
+inc %rsi 
+mov (%rsi), %bl 
+cmp $0, %bl 
+jnz __indexNoEnd
+__indexNo: 
+mov $-1, %rax  
+jmp __indexEnd 
+__indexNoEnd: 
+inc %rax 
+mov %r8, %rdi # restore %rdi 
+jmp __indexCompare 
+
+__indexEnd:
+
+ret  
 
 .globl _start
 _start:
