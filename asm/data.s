@@ -1176,3 +1176,41 @@ data3:
 .ascii "abcdef"
 .space 1, 0
 lenData3 = . - data3
+varName5:
+.ascii "$s0"
+.space 1, 0
+lenVarName5 = . - varName5
+varName6:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName6 = . - varName6
+data4:
+.ascii "\n"
+.space 1, 0
+lenData4 = . - data4
+label1:
+ .quad .main_end
+labelName1:
+.ascii ".main_end"
+.space 1,0
+data5:
+.ascii ""
+.space 1, 0
+lenData5 = . - data5
+data6:
+.ascii "#main_res0"
+.space 1, 0
+lenData6 = . - data6
+label2:
+ .quad .main_res0
+labelName2:
+.ascii ".main_res0"
+.space 1,0
+data7:
+.ascii ""
+.space 1, 0
+lenData7 = . - data7
+data8:
+.ascii ""
+.space 1, 0
+lenData8 = . - data8

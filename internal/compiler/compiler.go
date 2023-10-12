@@ -326,7 +326,13 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				}
 			}
 			if isVarRO {
-				panic("variables in index() operation for right operand are not realized")
+				_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenRO +
+					", %rax \n mov " + fmt.Sprintf("%v", RO[0]) + ", %rdi\n call __set " +
+					"\n call __getVar \n mov (userData), %rax \n mov %rax, (buf4) "))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
 			}
 
 			_, err := progFile.Write([]byte(
