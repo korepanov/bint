@@ -2,7 +2,7 @@ $fileprogram.b$;
 $trace1$;
 voidmain(){inti;
 $trace2$;
-i=index("abcdef","de");
+i=index(("abc"+"def"),"de");
 $trace3$;
 print((str(i)+"\n"));
 $trace4$;

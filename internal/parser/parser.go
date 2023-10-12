@@ -577,15 +577,20 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 
 				operation := fmt.Sprintf("%v", exprInside[0][1])
 				exprInside = Pop(exprInside, 0) // выталкиваем операцию
-				exprInside = Pop(exprInside, 0) // выталкиваем скобки рядом с именем операции
-				exprInside = Pop(exprInside, 1) // выталкиваем запятую
-				rightVal := fmt.Sprintf("%v", exprInside[1][1])
-				exprInside = Pop(exprInside, 1)
-				exprInside = Pop(exprInside, len(exprInside)-1)
-				exprInside = append(exprInside, []interface{}{"OP", operation})
-				exprInside = append(exprInside, []interface{}{"VAL", rightVal})
+				exprInside = Pop(exprInside, 0) // выталкиваем скобку рядом с именем операции
+
+				var index int
+				for i, expr := range exprInside {
+					if "SEP" == expr[0] && "," == expr[1] {
+						index = i
+						break
+					}
+				}
+
+				exprInside = Pop(exprInside, index) // выталкиваем запятую
+				exprInside = Insert(exprInside, index, []interface{}{"OP", operation})
 				exprInside = Insert(exprInside, 0, []interface{}{"BR", "("})
-				exprInside = append(exprInside, []interface{}{"BR", ")"})
+				//exprInside = Pop(exprInside, len(exprInside)-1)
 
 			}
 			if "is_letter" == exprInside[0][1] {

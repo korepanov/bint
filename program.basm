@@ -5,7 +5,7 @@ goto(#main_end);
 print("");
 inti;
 int$ind0;
-$ind0=index("abcdef","de");
+$ind0=index(("abc"+"def"),"de");
 i=$ind0;
 UNDEFINE($ind0);
 string$s0;
