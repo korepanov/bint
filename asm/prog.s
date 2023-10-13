@@ -1229,7 +1229,7 @@ data13:
 .space 1, 0
 lenData13 = . - data13 
 data14:
-.ascii "abcdefghig"
+.ascii "banana"
 .space 1, 0
 lenData14 = . - data14 
 data15:
@@ -4644,8 +4644,34 @@ __slice:
 # %rbx - left number 
 # %rcx - right number 
 # output: ^systemVar
+push %rax
+push %rbx
+push %rcx
 
+call __clearBuf  
+mov $buf, %rax  
+mov %rax, (userData)
 
+mov $lenVarName, %rsi 
+mov $varName, %rdx 
+mov $lenSystemVarName, %rax 
+mov $systemVarName, %rdi 
+call __set
+xor %rax, %rax
+call __setVar 
+
+/*mov $lenVarName, %rsi 
+mov $varName, %rdx 
+mov $lenSystemVarName, %rax 
+mov $systemVarName, %rdi 
+call __set
+call __getVar 
+mov (userData), %rsi 
+call __print*/ 
+
+pop %rax 
+pop %rbx 
+pop %rcx 
 
 ret 
 
@@ -6100,13 +6126,17 @@ mov $lenVarName, %rsi
  call __defineVar
 jmp .main_end
 .main:
- mov $data14, %rsi 
- mov $data15, %rdi 
- call __index 
- call __toStr 
- mov $buf2, %rsi 
- call __print 
- mov $enter, %rsi 
+ mov $data14, %rax 
+ mov $1, %rbx 
+ mov $4, %rcx 
+ call __slice 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenSystemVarName, %rax 
+ mov $systemVarName, %rdi
+ call __set
+ call __getVar
+ mov (userData), %rsi 
  call __print 
  call __throughError
 
