@@ -1001,6 +1001,10 @@ func dValidateSliceInternal(command string, variables [][][]interface{}) (string
 			}
 
 			for _, com := range subcommands {
+				com, variables, err = dValidateLen(com, variables)
+				if nil != err {
+					return ``, variables, err
+				}
 				t, err := getExprType(`$ival=`+com, variables)
 
 				if nil != err {

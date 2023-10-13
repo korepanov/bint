@@ -1157,113 +1157,38 @@ data1:
 .space 1, 0
 lenData1 = . - data1
 varName2:
-.ascii "i"
-.space 1, 0
-lenVarName2 = . - varName2
-varName3:
 .ascii "s"
 .space 1, 0
-lenVarName3 = . - varName3
+lenVarName2 = . - varName2
 data2:
-.ascii "bana"
+.ascii "banana"
 .space 1, 0
 lenData2 = . - data2
+varName3:
+.ascii "$sl_internal0"
+.space 1, 0
+lenVarName3 = . - varName3
 varName4:
-.ascii "s2"
+.ascii "$sl_left0"
 .space 1, 0
 lenVarName4 = . - varName4
-data3:
-.ascii "a"
-.space 1, 0
-lenData3 = . - data3
 varName5:
-.ascii "s3"
+.ascii "$sl_right0"
 .space 1, 0
 lenVarName5 = . - varName5
-data4:
-.ascii "na"
-.space 1, 0
-lenData4 = . - data4
 varName6:
-.ascii "s4"
+.ascii "$l0"
 .space 1, 0
 lenVarName6 = . - varName6
-data5:
-.ascii "n"
+data3:
+.ascii "2"
 .space 1, 0
-lenData5 = . - data5
+lenData3 = . - data3
 varName7:
-.ascii "$ind0"
+.ascii "$l0"
 .space 1, 0
 lenVarName7 = . - varName7
-data6:
-.ascii "abcdef"
-.space 1, 0
-lenData6 = . - data6
-data7:
-.ascii "cd"
-.space 1, 0
-lenData7 = . - data7
 varName8:
-.ascii "$ind1"
+.ascii "$sl0"
 .space 1, 0
 lenVarName8 = . - varName8
-data8:
-.ascii "a"
-.space 1, 0
-lenData8 = . - data8
-data9:
-.ascii "5"
-.space 1, 0
-lenData9 = . - data9
-data10:
-.ascii ""
-.space 1, 0
-lenData10 = . - data10
-varName9:
-.ascii "$print_arg0"
-.space 1, 0
-lenVarName9 = . - varName9
-data11:
-.ascii "YES\n"
-.space 1, 0
-lenData11 = . - data11
-label1:
- .quad ._cond0_end
-labelName1:
-.ascii "._cond0_end"
-.space 1,0
-data12:
-.ascii ""
-.space 1, 0
-lenData12 = . - data12
-data13:
-.ascii ""
-.space 1, 0
-lenData13 = . - data13
-label2:
- .quad .main_end
-labelName2:
-.ascii ".main_end"
-.space 1,0
-data14:
-.ascii ""
-.space 1, 0
-lenData14 = . - data14
-data15:
-.ascii "#main_res0"
-.space 1, 0
-lenData15 = . - data15
-label3:
- .quad .main_res0
-labelName3:
-.ascii ".main_res0"
-.space 1,0
-data16:
-.ascii ""
-.space 1, 0
-lenData16 = . - data16
-data17:
-.ascii ""
-.space 1, 0
-lenData17 = . - data17
