@@ -1578,7 +1578,7 @@ func dcheckComparison(command string, variables [][][]interface{}, reg string) (
 	return isComparison, newCommand, nil
 }
 
-func dvalidateComparison(command string, variables [][][]interface{}, isOp bool) (tail string, stat int, err error) {
+func dValidateComparison(command string, variables [][][]interface{}, isOp bool) (tail string, stat int, err error) {
 	var isComparison bool
 
 	if !isOp {
@@ -2109,7 +2109,7 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		return variables, err
 	}
 
-	command, stat, err = dvalidateComparison(command, variables, false)
+	command, stat, err = dValidateComparison(command, variables, false)
 
 	if nil != err {
 		return variables, err
