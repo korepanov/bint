@@ -1140,55 +1140,22 @@ varName0:
 .space 1, 0
 lenVarName0 = . - varName0
 varName1:
-.ascii "$main_return_var"
+.ascii "i"
 .space 1, 0
 lenVarName1 = . - varName1
-label0:
- .quad .main
-labelName0:
-.ascii ".main"
-.space 1,0
 data0:
-.ascii ""
+.ascii "5"
 .space 1, 0
 lenData0 = . - data0
 data1:
-.ascii ""
+.ascii "1"
 .space 1, 0
 lenData1 = . - data1
 varName2:
-.ascii "s"
+.ascii "$s0"
 .space 1, 0
 lenVarName2 = . - varName2
-data2:
-.ascii "banana"
-.space 1, 0
-lenData2 = . - data2
 varName3:
-.ascii "$sl_internal0"
+.ascii "$print_arg0"
 .space 1, 0
 lenVarName3 = . - varName3
-varName4:
-.ascii "$sl_left0"
-.space 1, 0
-lenVarName4 = . - varName4
-varName5:
-.ascii "$sl_right0"
-.space 1, 0
-lenVarName5 = . - varName5
-varName6:
-.ascii "$l0"
-.space 1, 0
-lenVarName6 = . - varName6
-data3:
-.ascii "2"
-.space 1, 0
-lenData3 = . - data3
-varName7:
-.ascii "$l0"
-.space 1, 0
-lenVarName7 = . - varName7
-varName8:
-.ascii "$sl0"
-.space 1, 0
-lenVarName8 = . - varName8

@@ -4639,6 +4639,16 @@ __indexEnd:
 
 ret 
 
+__slice:
+# input: %rax - address of the string 
+# %rbx - left number 
+# %rcx - right number 
+# output: ^systemVar
+
+
+
+ret 
+
 .globl _start
 _start:
  call __initLabels
