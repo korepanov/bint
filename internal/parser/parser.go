@@ -447,7 +447,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 				var rightNumber interface{}
 
 				leftNumber, err := strconv.Atoi(fmt.Sprintf("%v", ValueFoldInterface(exprListInside[0][1])))
-				if nil != err && !toTranspile {
+				if nil != err && !toTranspile && nil == programDest {
 					err = errors.New("parser: ERROR: data type mismatch")
 					panic(err)
 				} else if toTranspile {
@@ -455,23 +455,30 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 				}
 
 				rightNumber, err = strconv.Atoi(fmt.Sprintf("%v", ValueFoldInterface(exprListInside[2][1])))
-				if nil != err && !toTranspile {
+				if nil != err && !toTranspile && nil == programDest {
 					err = errors.New("parser: ERROR: data type mismatch")
 					panic(err)
 				} else if toTranspile {
 					rightNumber = fmt.Sprintf("%v", ValueFoldInterface(exprListInside[2][1]))
 				}
 
-				for k := 0; k < 6; k++ {
-					exprList = Pop(exprList, i-1) // выражение
+				if nil == programDest {
+					for k := 0; k < 6; k++ {
+						exprList = Pop(exprList, i-1) // выражение
+					}
 				}
+
 				if !toTranspile {
-					if rightNumber.(int) >= leftNumber.(int) && rightNumber.(int) <= len(varVal) {
-						exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" +
-							string([]rune(varVal)[leftNumber.(int):rightNumber.(int)]) + "\""})
+					if nil != programDest {
+						panic("parser.go: slices are not realized in the compiler")
 					} else {
-						exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"\""})
-						sizeError = errors.New("slice bounds out of range")
+						if rightNumber.(int) >= leftNumber.(int) && rightNumber.(int) <= len(varVal) {
+							exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" +
+								string([]rune(varVal)[leftNumber.(int):rightNumber.(int)]) + "\""})
+						} else {
+							exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"\""})
+							sizeError = errors.New("slice bounds out of range")
+						}
 					}
 				} else {
 					exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" + "getVar(\"" + varName + "\").(string)[" +
