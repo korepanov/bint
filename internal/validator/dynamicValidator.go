@@ -1602,7 +1602,7 @@ func dValidateComparison(command string, variables [][][]interface{}, isOp bool)
 	}
 
 	temp, command, err = dcheckComparison(command, variables,
-		`(?m)(?:()*(?:(>=|<=|>|<))([[[:alnum:]|_|\.])*)`)
+		`(?m)(?:([[[:alnum:]|_|\.|\$])*(?:(>=|<=|>|<))([[[:alnum:]|_|\.|\$])*)`)
 
 	if nil != err {
 		return ``, status.Err, err
