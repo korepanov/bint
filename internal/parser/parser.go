@@ -131,7 +131,7 @@ func makePrintBinary(exprListInput [][]interface{}, variables [][]interface{}, u
 
 			if len(boolExpr) > 3 { // составное логическое выражение
 				_, infoListList, _, err := Parse(boolExpr, variables, usersStack, showTree, toTranspile, toPrimitive,
-					primitiveDest, transpileDest, nil)
+					primitiveDest, transpileDest, nil, nil)
 				if nil != err {
 					return exprList, err
 				}
@@ -240,7 +240,7 @@ func codeTree(exprList [][]interface{}, treeStructure string, infoList []interfa
 }
 
 func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack []interface{}, showTree bool,
-	toTranspile bool, toPrimitive bool, primitiveDest *os.File, transpileDest *os.File, programDest *os.File) ([]string, [][]interface{}, []interface{}, error) {
+	toTranspile bool, toPrimitive bool, primitiveDest *os.File, transpileDest *os.File, dataDest *os.File, programDest *os.File) ([]string, [][]interface{}, []interface{}, error) {
 	const imgWidth = 1600
 	const imgHeight = 800
 	var treeStructure string
@@ -383,15 +383,21 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 
 			newVariable := EachVariable(variables)
 			for v := newVariable(); "end" != v[0]; v = newVariable() {
-				if fmt.Sprintf("%v", v[1]) == varName {
+				if fmt.Sprintf("%v", v[1]) == varName && nil == programDest {
 					varVal = fmt.Sprintf("%v", ValueFoldInterface(v[2]))
 
 					if len(varVal) > 2 && `"` == string([]rune(varVal)[0]) && `"` == string([]rune(varVal)[len(varVal)-1]) {
 						varVal = string([]rune(varVal)[1 : len([]rune(varVal))-1])
 					}
-					//if "\"" == string(varVal[0]) {
-					//	varVal = varVal[1 : len(varVal)-1]
-					//}
+
+					break
+				}
+				if fmt.Sprintf("%v", v[1]) == varName && nil != programDest {
+					varVal = fmt.Sprintf("%v", ValueFoldInterface(v[1]))
+
+					if len(varVal) > 2 && `"` == string([]rune(varVal)[0]) && `"` == string([]rune(varVal)[len(varVal)-1]) {
+						varVal = string([]rune(varVal)[1 : len([]rune(varVal))-1])
+					}
 
 					break
 				}
@@ -476,7 +482,96 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 
 				if !toTranspile {
 					if nil != programDest {
-						panic("parser.go: slices are not realized in the compiler")
+						newVariable := EachVariable(variables)
+						var lenLO string
+						var lenRO string
+						var isVarLO bool
+						var isVarRO bool
+
+						for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
+							if fmt.Sprintf("%v", leftNumber) == fmt.Sprintf("%v", v[1]) {
+								isVarLO = true
+								lenLO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", leftNumber)])
+								leftNumber = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", leftNumber)])
+							}
+							if fmt.Sprintf("%v", rightNumber) == fmt.Sprintf("%v", v[1]) {
+								isVarRO = true
+								lenRO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", rightNumber)])
+								rightNumber = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", rightNumber)])
+							}
+						}
+
+						if !isVarLO {
+							_, err := dataDest.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
+							if nil != err {
+								fmt.Println(err)
+								os.Exit(1)
+							}
+							t := fmt.Sprintf("%v", ValueFoldInterface(leftNumber))
+
+							if len(t) > 1 && "\"" == string(t[0]) && "\"" == string(t[len(t)-1]) {
+								t = t[1 : len(t)-1]
+							}
+							_, err = dataDest.Write([]byte("\n.ascii \"" + t + "\"\n.space 1, 0"))
+							if nil != err {
+								fmt.Println(err)
+								os.Exit(1)
+							}
+							_, err = dataDest.Write([]byte("\nlenData" + fmt.Sprintf("%v", DataNumber) + " = . - data" + fmt.Sprintf("%v", DataNumber)))
+							if nil != err {
+								fmt.Println(err)
+								os.Exit(1)
+							}
+
+							leftNumber = "$data" + fmt.Sprintf("%v", DataNumber)
+							lenLO = "$lenData" + fmt.Sprintf("%v", DataNumber)
+
+							_, err = programDest.Write([]byte("\nmov $lenBuf3, %rsi \n mov $buf3, %rdx \n mov " + lenLO + ", %rax \n mov " +
+								fmt.Sprintf("%v", leftNumber) + ", %rdi\n call __set"))
+							if nil != err {
+								fmt.Println(err)
+								os.Exit(1)
+							}
+
+							DataNumber++
+						}
+						if !isVarRO {
+							_, err := dataDest.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
+							if nil != err {
+								fmt.Println(err)
+								os.Exit(1)
+							}
+
+							t := fmt.Sprintf("%v", ValueFoldInterface(rightNumber))
+
+							if len(t) > 1 && "\"" == string(t[0]) && "\"" == string(t[len(t)-1]) {
+								t = t[1 : len(t)-1]
+							}
+
+							_, err = dataDest.Write([]byte("\n.ascii \"" + t + "\"\n.space 1, 0"))
+							if nil != err {
+								fmt.Println(err)
+								os.Exit(1)
+							}
+							_, err = dataDest.Write([]byte("\nlenData" + fmt.Sprintf("%v", DataNumber) + " = . - data" + fmt.Sprintf("%v", DataNumber)))
+							if nil != err {
+								fmt.Println(err)
+								os.Exit(1)
+							}
+							rightNumber = "$data" + fmt.Sprintf("%v", DataNumber)
+							lenRO = "$lenData" + fmt.Sprintf("%v", DataNumber)
+
+							_, err = programDest.Write([]byte("\nmov $lenBuf4, %rsi \n mov $buf4, %rdx \n mov " + lenRO + ", %rax \n mov " +
+								fmt.Sprintf("%v", rightNumber) + ", %rdi\n call __set"))
+							if nil != err {
+								fmt.Println(err)
+								os.Exit(1)
+							}
+
+							DataNumber++
+						}
+
+						panic("parser.go: this case of slice is not realized")
 					} else {
 						if rightNumber.(int) >= leftNumber.(int) && rightNumber.(int) <= len(varVal) {
 							exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" +
@@ -686,7 +781,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 			exprList = append(exprList, []interface{}{"BR", ")"})
 		} else {
 			_, infoListList, _, err = Parse(leftExpr, variables, usersStack, showTree, toTranspile, toPrimitive,
-				primitiveDest, transpileDest, nil)
+				primitiveDest, transpileDest, nil, nil)
 			if nil != err {
 				return treeStructureList, infoListList, usersStack, err
 			}
@@ -699,7 +794,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 		if len(condition) > 1 {
 
 			_, infoListList, _, err = Parse(condition, variables, usersStack, showTree, toTranspile, toPrimitive,
-				primitiveDest, transpileDest, nil)
+				primitiveDest, transpileDest, nil, nil)
 			if nil != err {
 				return treeStructureList, infoListList, usersStack, err
 			}
@@ -807,7 +902,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 			exprList = append(exprList, []interface{}{"BR", ")"})
 		} else {
 			_, infoListList, _, err = Parse(rightExpr, variables, usersStack, showTree, toTranspile, toPrimitive,
-				primitiveDest, transpileDest, nil)
+				primitiveDest, transpileDest, nil, nil)
 			if nil != err {
 				return treeStructureList, infoListList, usersStack, err
 			}

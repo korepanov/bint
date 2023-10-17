@@ -1330,7 +1330,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			os.Exit(1)
 		}
 
-		_, infoList, _, _ := parser.Parse(res, variables, systemStack, false, false, false, nil, nil, nil)
+		_, infoList, _, _ := parser.Parse(res, variables, systemStack, false, false, false, nil, nil, nil, nil)
 
 		CompileTree(infoList[0], variables, systemStack, dataFile, progFile)
 
@@ -1345,7 +1345,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			os.Exit(1)
 		}
 
-		_, infoList, _, _ = parser.Parse(res, variables, systemStack, false, false, false, nil, nil, nil)
+		_, infoList, _, _ = parser.Parse(res, variables, systemStack, false, false, false, nil, nil, nil, nil)
 
 		CompileTree(infoList[0], variables, systemStack, dataFile, progFile)
 

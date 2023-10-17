@@ -1,6 +1,15 @@
 package internalTools
 
 import (
+	"errors"
+	"flag"
+	"fmt"
+	"io"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
+
 	"bint.com/internal/compiler"
 	"bint.com/internal/compilerVars"
 	"bint.com/internal/const/options"
@@ -11,14 +20,6 @@ import (
 	"bint.com/internal/parser"
 	. "bint.com/internal/primitiveLexer"
 	. "bint.com/pkg/serviceTools"
-	"errors"
-	"flag"
-	"fmt"
-	"io"
-	"os"
-	"os/exec"
-	"path/filepath"
-	"strings"
 )
 
 var help = flag.Bool("help", false, "show help")
@@ -649,7 +650,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 
 			if options.InterpPrimitive != sysMod && options.ExecEncrypt != sysMod && 0 != exprList[0][1] { // выражение содержит команды
 				_, infoListList, systemStack, err = parser.Parse(exprList, variables, systemStack, options.HideTree,
-					options.Transpile == sysMod, options.Primitive == sysMod, primitiveDest, transpileDest, nil)
+					options.Transpile == sysMod, options.Primitive == sysMod, primitiveDest, transpileDest, nil, nil)
 				if nil != err {
 					panic(err)
 				}
@@ -660,7 +661,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 					exprList, variables, err = LexicalAnalyze(inputedCode,
 						variables, options.Transpile == sysMod, false, transpileDest, options.Primitive == sysMod, primitiveDest, nil, nil, nil)
 					_, infoListList, systemStack, err = parser.Parse(exprList, variables, systemStack, options.HideTree,
-						options.Transpile == sysMod, options.Primitive == sysMod, primitiveDest, transpileDest, nil)
+						options.Transpile == sysMod, options.Primitive == sysMod, primitiveDest, transpileDest, nil, nil)
 					if nil != err {
 						panic(err)
 					}
@@ -944,7 +945,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 				panic(err)
 			}
 			_, infoListList, systemStack, err =
-				parser.Parse(exprList, variables, systemStack, options.HideTree, false, false, nil, nil, progFile)
+				parser.Parse(exprList, variables, systemStack, options.HideTree, false, false, nil, nil, progFile, dataFile)
 			if nil != err {
 				panic(err)
 			}

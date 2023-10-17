@@ -133,7 +133,7 @@ func sysGetExprType(command string, variables [][][]interface{}) (string, error)
 		return "", err
 	}
 
-	_, infoListList, _, err := parser.Parse(exprList, allVariables, nil, false, false, false, nil, nil, nil)
+	_, infoListList, _, err := parser.Parse(exprList, allVariables, nil, false, false, false, nil, nil, nil, nil)
 
 	if nil != err && "slice bounds out of range" != err.Error() {
 		return "", err

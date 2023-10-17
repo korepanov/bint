@@ -1139,55 +1139,20 @@ systemVarName127:
 .space 1, 0
 lenSystemVarName127 = . - systemVarName127
 varName0:
-.ascii "$ret"
-.space 1, 0
-lenVarName0 = . - varName0
-varName1:
-.ascii "$main_return_var"
-.space 1, 0
-lenVarName1 = . - varName1
-label0:
- .quad .main
-labelName0:
-.ascii ".main"
-.space 1,0
-data0:
-.ascii ""
-.space 1, 0
-lenData0 = . - data0
-data1:
-.ascii ""
-.space 1, 0
-lenData1 = . - data1
-varName2:
 .ascii "s"
 .space 1, 0
-lenVarName2 = . - varName2
-data2:
+lenVarName0 = . - varName0
+data0:
 .ascii "banana"
 .space 1, 0
-lenData2 = . - data2
-varName3:
-.ascii "$sl_internal0"
-.space 1, 0
-lenVarName3 = . - varName3
-varName4:
-.ascii "$sl_left0"
-.space 1, 0
-lenVarName4 = . - varName4
-varName5:
-.ascii "$sl_right0"
-.space 1, 0
-lenVarName5 = . - varName5
-data3:
-.ascii "1"
-.space 1, 0
-lenData3 = . - data3
-data4:
-.ascii "4"
-.space 1, 0
-lenData4 = . - data4
-varName6:
-.ascii "$sl0"
-.space 1, 0
-lenVarName6 = . - varName6
+lenData0 = . - data0
+mov $lenBuf3, %rsi 
+ mov $buf3, %rdx 
+ mov $lenData1, %rax 
+ mov $data1, %rdi
+ call __set
+mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenData2, %rax 
+ mov $data2, %rdi
+ call __set
