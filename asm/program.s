@@ -4790,11 +4790,47 @@ call __set
  mov %rax, (userData)
  xor %rax, %rax
 call __setVar
-data1:
-.ascii "1"
-.space 1, 0
-lenData1 = . - data1
-data2:
-.ascii "4"
-.space 1, 0
-lenData2 = . - data2
+mov $lenBuf3, %rsi 
+ mov $buf3, %rdx 
+ mov $lenData1, %rax 
+ mov $data1, %rdi
+ call __set
+mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenData2, %rax 
+ mov $data2, %rdi
+ call __set
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi
+ call __set 
+call __getVar
+ mov (userData), %rsi 
+ call __print 
+ mov $enter, %rsi 
+ call __print 
+ call __throughError
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi 
+call __set
+
+ mov $data3, %rax  
+ mov %rax, (userData)
+ xor %rax, %rax
+call __setVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi
+ call __set
+ call __getVar
+ mov (userData), %rsi 
+ call __print
+mov $data4, %rsi
+call __print
+mov $60,  %rax
+xor %rdi, %rdi
+syscall

@@ -571,7 +571,25 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 							DataNumber++
 						}
 
-						panic("parser.go: this case of slice is not realized")
+						lenS := "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", varVal)])
+						s := "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", varVal)])
+
+						_, err := programDest.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenS +
+							", %rax \n mov " + fmt.Sprintf("%v", s) + ", %rdi\n call __set " +
+							"\ncall __getVar"))
+						if nil != err {
+							fmt.Println(err)
+							os.Exit(1)
+						}
+
+						// for debug
+						_, err = programDest.Write([]byte("\n mov (userData), %rsi \n call __print \n mov $enter, %rsi \n call __print \n call __throughError"))
+						if nil != err {
+							fmt.Println(err)
+							os.Exit(1)
+						}
+						exprList = exprList[0:2]
+						exprList = append(exprList, []interface{}{true, "$systemVar"})
 					} else {
 						if rightNumber.(int) >= leftNumber.(int) && rightNumber.(int) <= len(varVal) {
 							exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" +

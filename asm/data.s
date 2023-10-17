@@ -1146,13 +1146,19 @@ data0:
 .ascii "banana"
 .space 1, 0
 lenData0 = . - data0
-mov $lenBuf3, %rsi 
- mov $buf3, %rdx 
- mov $lenData1, %rax 
- mov $data1, %rdi
- call __set
-mov $lenBuf4, %rsi 
- mov $buf4, %rdx 
- mov $lenData2, %rax 
- mov $data2, %rdi
- call __set
+data1:
+.ascii "1"
+.space 1, 0
+lenData1 = . - data1
+data2:
+.ascii "4"
+.space 1, 0
+lenData2 = . - data2
+data3:
+.ascii "$systemVar"
+.space 1, 0
+lenData3 = . - data3
+data4:
+.ascii "\n"
+.space 1, 0
+lenData4 = . - data4

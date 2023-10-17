@@ -945,7 +945,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 				panic(err)
 			}
 			_, infoListList, systemStack, err =
-				parser.Parse(exprList, variables, systemStack, options.HideTree, false, false, nil, nil, progFile, dataFile)
+				parser.Parse(exprList, variables, systemStack, options.HideTree, false, false, nil, nil, dataFile, progFile)
 			if nil != err {
 				panic(err)
 			}
