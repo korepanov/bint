@@ -1232,7 +1232,7 @@ data13:
 .space 1, 0
 lenData13 = . - data13 
 data14:
-.ascii "banana"
+.ascii "something"
 .space 1, 0
 lenData14 = . - data14 
 data15:
@@ -4690,7 +4690,7 @@ pop %rcx
 pop %rbx 
 pop %rax 
 
-#check if we are out of bounds 
+# check if we are out of bounds 
 cmp $0, %rbx 
 jl __sliceException
 cmp $0, %rcx 
@@ -4698,10 +4698,26 @@ jl __sliceException
 cmp %rbx, %rsi 
 jle __sliceException
 cmp %rcx, %rsi 
-jle __sliceException 
+jl __sliceException 
 cmp %rbx, %rcx 
 jle __sliceException
 
+# make slice 
+mov (userData), %rdi 
+mov %rax, %rsi 
+add %rbx, %rax # left bound 
+add %rcx, %rsi # right bound 
+
+__sliceMake:
+cmp %rax, %rsi 
+jz __sliceMakeEnd  
+mov (%rax), %dl 
+mov %dl, (%rdi)
+inc %rax 
+inc %rdi 
+jmp __sliceMake 
+__sliceMakeEnd:
+movb $0, (%rdi)
 ret 
 __sliceException:  
 mov $sliceBoundError, %rsi 
@@ -6159,7 +6175,7 @@ mov $lenVarName, %rsi
 jmp .main_end
 .main:
  mov $data14, %rax 
- mov $3, %rbx 
+ mov $1, %rbx 
  mov $4, %rcx 
  call __slice 
  mov $lenVarName, %rsi 
