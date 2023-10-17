@@ -1154,11 +1154,3 @@ data2:
 .ascii "4"
 .space 1, 0
 lenData2 = . - data2
-data3:
-.ascii "$systemVar"
-.space 1, 0
-lenData3 = . - data3
-data4:
-.ascii "\n"
-.space 1, 0
-lenData4 = . - data4

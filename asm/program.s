@@ -4795,42 +4795,32 @@ mov $lenBuf3, %rsi
  mov $lenData1, %rax 
  mov $data1, %rdi
  call __set
+mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf3, %rax 
+ mov $buf3, %rdi
+ call __set 
+ call __toNumber 
+ mov %rax, (buf3)
 mov $lenBuf4, %rsi 
  mov $buf4, %rdx 
  mov $lenData2, %rax 
  mov $data2, %rdi
  call __set
+mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf4, %rax 
+ mov $buf4, %rdi
+ call __set 
+ call __toNumber 
+ mov %rax, (buf4)
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName0, %rax 
  mov $varName0, %rdi
  call __set 
 call __getVar
- mov (userData), %rsi 
- call __print 
- mov $enter, %rsi 
- call __print 
- call __throughError
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName0, %rax 
- mov $varName0, %rdi 
-call __set
-
- mov $data3, %rax  
- mov %rax, (userData)
- xor %rax, %rax
-call __setVar
-mov $lenVarName, %rsi 
- mov $varName, %rdx
- mov $lenVarName0, %rax 
- mov $varName0, %rdi
- call __set
- call __getVar
- mov (userData), %rsi 
- call __print
-mov $data4, %rsi
-call __print
-mov $60,  %rax
-xor %rdi, %rdi
-syscall
+ mov (userData), %rax 
+ mov (buf3), %rbx 
+ mov (buf4), %rcx 
+ call __slice

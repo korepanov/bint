@@ -533,6 +533,12 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 								os.Exit(1)
 							}
 
+							_, err = programDest.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3" +
+								", %rax \n mov $buf3, %rdi\n call __set \n call __toNumber \n mov %rax, (buf3)"))
+							if nil != err {
+								fmt.Println(err)
+								os.Exit(1)
+							}
 							DataNumber++
 						}
 						if !isVarRO {
@@ -568,6 +574,12 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 								os.Exit(1)
 							}
 
+							_, err = programDest.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf4" +
+								", %rax \n mov $buf4, %rdi\n call __set \n call __toNumber \n mov %rax, (buf4)"))
+							if nil != err {
+								fmt.Println(err)
+								os.Exit(1)
+							}
 							DataNumber++
 						}
 
@@ -582,14 +594,19 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 							os.Exit(1)
 						}
 
-						// for debug
-						_, err = programDest.Write([]byte("\n mov (userData), %rsi \n call __print \n mov $enter, %rsi \n call __print \n call __throughError"))
+						// now (userData) has address of the string
+						// (buf3) has left number
+						// (buf4) has right number
+
+						_, err = programDest.Write([]byte("\n mov (userData), %rax \n mov (buf3), %rbx \n mov (buf4), %rcx \n call __slice"))
 						if nil != err {
 							fmt.Println(err)
 							os.Exit(1)
 						}
 						exprList = exprList[0:2]
-						exprList = append(exprList, []interface{}{true, "$systemVar"})
+
+						exprList = append(exprList, []interface{}{"VAL", []interface{}{true, "$systemVar"}})
+						panic("parser.go: could not resolve $systemVar")
 					} else {
 						if rightNumber.(int) >= leftNumber.(int) && rightNumber.(int) <= len(varVal) {
 							exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" +
