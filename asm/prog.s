@@ -239,6 +239,9 @@ parseNumberError:
 parseBoolError:
 .ascii "could not parse bool: invalid bool format\n"
 .space 1, 0 
+sliceBoundError:
+.ascii "slice index is out of bounds"
+.space 1, 0 
 
 
  t0: 
@@ -4675,11 +4678,34 @@ pop %rcx
 pop %rbx 
 pop %rax 
 
-#add %rbx, %rax 
-mov %rax, %rsi  
-call __print 
+push %rax 
+push %rbx 
+push %rcx 
+
+mov %rax, %rsi 
+call __len  
+mov %rax, %rsi 
+
+pop %rcx 
+pop %rbx 
+pop %rax 
+
+#check if we are out of bounds 
+cmp $0, %rbx 
+jl __sliceException
+cmp $0, %rcx 
+jl __sliceException
+cmp %rbx, %rsi 
+jle __sliceException
+cmp %rcx, %rsi 
+jle __sliceException 
+cmp %rbx, %rcx 
+jle __sliceException
 
 ret 
+__sliceException:  
+mov $sliceBoundError, %rsi 
+call __throughUserError
 
 .globl _start
 _start:
@@ -6133,7 +6159,7 @@ mov $lenVarName, %rsi
 jmp .main_end
 .main:
  mov $data14, %rax 
- mov $1, %rbx 
+ mov $3, %rbx 
  mov $4, %rcx 
  call __slice 
  mov $lenVarName, %rsi 
