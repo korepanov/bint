@@ -1,4 +1,7 @@
-int i;
-i = 5; 
-i = (i + 1);
-print(str(i)); 
+void main(){
+	string s;
+	s = "banana";
+	print((s[1:4] + "\n"));
+};
+
+main();

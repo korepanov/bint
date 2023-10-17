@@ -1945,6 +1945,19 @@ __clearBufEnd4:
 movb $0, (%rsi)
 ret
 
+__clear:
+# %rsi - adress from witch to clear everything until 0 byte  
+__clearLocal: 
+mov (%rsi), %al
+cmp $0, %al  
+jz __clearEnd
+movb $1, (%rsi)
+inc %rsi 
+jmp __clearLocal
+
+__clearEnd:
+ret
+
 __add:
  # вход: buf и buf2
  # %rax - тип операции 

@@ -1,9 +1,11 @@
 $fileprogram.b$;
 $trace1$;
-inti;
+voidmain(){strings;
 $trace2$;
-i=5;
+s="banana";
 $trace3$;
-i=(i+1);
+print((s[1:4]+"\n"));
 $trace4$;
-print(str(i));
+};
+$trace5$;
+main();

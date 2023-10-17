@@ -417,10 +417,11 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 
 					for v := newVariable(); "end" != v[0]; v = newVariable() {
 						if fmt.Sprintf("%v", exprListInside[0][1]) == fmt.Sprintf("%v", v[1]) {
-							if !toTranspile {
+							if !toTranspile && nil == programDest {
 								exprListInside[0][0] = "VAL"
 								exprListInside[0][1] = v[2]
-							} else {
+							}
+							if toTranspile && nil == programDest {
 								exprListInside[0][0] = "VAL"
 								exprListInside[0][1] = "toInt(getVar(\"" + fmt.Sprintf("%v", v[1]) + "\"))"
 							}
@@ -432,10 +433,11 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 					newVariable = EachVariable(variables)
 					for v := newVariable(); "end" != v[0]; v = newVariable() {
 						if fmt.Sprintf("%v", exprListInside[2][1]) == fmt.Sprintf("%v", v[1]) {
-							if !toTranspile {
+							if !toTranspile && nil == programDest {
 								exprList[2][0] = "VAL"
 								exprListInside[2][1] = v[2]
-							} else {
+							}
+							if toTranspile && nil == programDest {
 								exprListInside[2][0] = "VAL"
 								exprListInside[2][1] = "toInt(getVar(\"" + fmt.Sprintf("%v", v[1]) + "\"))"
 							}
@@ -452,6 +454,8 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 					panic(err)
 				} else if toTranspile {
 					leftNumber = fmt.Sprintf("%v", ValueFoldInterface(exprListInside[0][1]))
+				} else if nil != programDest {
+					leftNumber = exprListInside[0][1]
 				}
 
 				rightNumber, err = strconv.Atoi(fmt.Sprintf("%v", ValueFoldInterface(exprListInside[2][1])))
@@ -460,6 +464,8 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 					panic(err)
 				} else if toTranspile {
 					rightNumber = fmt.Sprintf("%v", ValueFoldInterface(exprListInside[2][1]))
+				} else if nil != programDest {
+					rightNumber = exprListInside[2][1]
 				}
 
 				if nil == programDest {

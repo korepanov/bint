@@ -238,6 +238,9 @@ parseNumberError:
 parseBoolError:
 .ascii "could not parse bool: invalid bool format\n"
 .space 1, 0 
+sliceBoundError:
+.ascii "slice index is out of bounds"
+.space 1, 0 
 
  t0: 
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
@@ -1140,22 +1143,51 @@ varName0:
 .space 1, 0
 lenVarName0 = . - varName0
 varName1:
-.ascii "i"
+.ascii "$main_return_var"
 .space 1, 0
 lenVarName1 = . - varName1
+label0:
+ .quad .main
+labelName0:
+.ascii ".main"
+.space 1,0
 data0:
-.ascii "5"
+.ascii ""
 .space 1, 0
 lenData0 = . - data0
 data1:
-.ascii "1"
+.ascii ""
 .space 1, 0
 lenData1 = . - data1
 varName2:
-.ascii "$s0"
+.ascii "s"
 .space 1, 0
 lenVarName2 = . - varName2
+data2:
+.ascii "banana"
+.space 1, 0
+lenData2 = . - data2
 varName3:
-.ascii "$print_arg0"
+.ascii "$sl_internal0"
 .space 1, 0
 lenVarName3 = . - varName3
+varName4:
+.ascii "$sl_left0"
+.space 1, 0
+lenVarName4 = . - varName4
+varName5:
+.ascii "$sl_right0"
+.space 1, 0
+lenVarName5 = . - varName5
+data3:
+.ascii "1"
+.space 1, 0
+lenData3 = . - data3
+data4:
+.ascii "4"
+.space 1, 0
+lenData4 = . - data4
+varName6:
+.ascii "$sl0"
+.space 1, 0
+lenVarName6 = . - varName6
