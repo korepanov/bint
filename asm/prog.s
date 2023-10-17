@@ -3323,6 +3323,19 @@ __clearBufEnd4:
 movb $0, (%rsi)
 ret
 
+__clear:
+# %rsi - adress from witch to clear everything until 0 byte  
+__clearLocal: 
+mov (%rsi), %al
+cmp $0, %al  
+jz __clearEnd
+movb $1, (%rsi)
+inc %rsi 
+jmp __clearLocal
+
+__clearEnd:
+ret
+
 __add:
  # вход: buf и buf2
  # %rax - тип операции 
@@ -4648,26 +4661,16 @@ push %rax
 push %rbx
 push %rcx
 
-call __clearBuf  
-mov $buf, %rax  
-mov %rax, (userData)
-
 mov $lenVarName, %rsi 
 mov $varName, %rdx 
 mov $lenSystemVarName, %rax 
 mov $systemVarName, %rdi 
-call __set
-xor %rax, %rax
-call __setVar 
+call __set 
+call __getVar
 
-/*mov $lenVarName, %rsi 
-mov $varName, %rdx 
-mov $lenSystemVarName, %rax 
-mov $systemVarName, %rdi 
-call __set
-call __getVar 
 mov (userData), %rsi 
-call __print*/ 
+call __clear 
+ 
 
 pop %rax 
 pop %rbx 
