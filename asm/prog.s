@@ -4671,10 +4671,13 @@ call __getVar
 mov (userData), %rsi 
 call __clear 
  
-
-pop %rax 
+pop %rcx
 pop %rbx 
-pop %rcx 
+pop %rax 
+
+#add %rbx, %rax 
+mov %rax, %rsi  
+call __print 
 
 ret 
 
