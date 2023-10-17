@@ -238,3 +238,6 @@ parseNumberError:
 parseBoolError:
 .ascii "could not parse bool: invalid bool format\n"
 .space 1, 0 
+sliceBoundError:
+.ascii "slice index is out of bounds"
+.space 1, 0 

@@ -3259,7 +3259,75 @@ jmp __indexCompare
 
 __indexEnd:
 
-ret  
+ret 
+
+__slice:
+# input: %rax - address of the string 
+# %rbx - left number 
+# %rcx - right number 
+# output: ^systemVar
+push %rax
+push %rbx
+push %rcx
+
+mov $lenVarName, %rsi 
+mov $varName, %rdx 
+mov $lenSystemVarName, %rax 
+mov $systemVarName, %rdi 
+call __set 
+call __getVar
+
+mov (userData), %rsi 
+call __clear 
+ 
+pop %rcx
+pop %rbx 
+pop %rax 
+
+push %rax 
+push %rbx 
+push %rcx 
+
+mov %rax, %rsi 
+call __len  
+mov %rax, %rsi 
+
+pop %rcx 
+pop %rbx 
+pop %rax 
+
+# check if we are out of bounds 
+cmp $0, %rbx 
+jl __sliceException
+cmp $0, %rcx 
+jl __sliceException
+cmp %rbx, %rsi 
+jle __sliceException
+cmp %rcx, %rsi 
+jl __sliceException 
+cmp %rbx, %rcx 
+jle __sliceException
+
+# make slice 
+mov (userData), %rdi 
+mov %rax, %rsi 
+add %rbx, %rax # left bound 
+add %rcx, %rsi # right bound 
+
+__sliceMake:
+cmp %rax, %rsi 
+jz __sliceMakeEnd  
+mov (%rax), %dl 
+mov %dl, (%rdi)
+inc %rax 
+inc %rdi 
+jmp __sliceMake 
+__sliceMakeEnd:
+movb $0, (%rdi)
+ret 
+__sliceException:  
+mov $sliceBoundError, %rsi 
+call __throughUserError 
 
 .globl _start
 _start:
