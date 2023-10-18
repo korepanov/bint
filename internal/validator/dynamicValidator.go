@@ -1862,10 +1862,13 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 	if toBlock {
 		tail, stat, variables, err = dValidateFuncDefinition(command, variables)
 
-		if nil != err {
-			return variables, err
-		}
-		return variables, nil
+		return variables, err
+	}
+
+	command, stat, variables, err = dValidateFuncDefinition(command, variables)
+
+	if nil != err {
+		return variables, err
 	}
 
 	command, variables, err = dValidateIndex(command, variables)
