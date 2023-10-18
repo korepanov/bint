@@ -582,13 +582,12 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
 				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
-				"\n call __getVar \n mov (userData), %rsi \n call __len \n mov $lenBuf, %rsi \n mov $buf, %rdx \n " +
-				"mov (userData), %rdi\n call __set"))
+				"\n call __getVar \n mov (userData), %rsi \n call __len"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			_, err = progFile.Write([]byte("\nmov $buf, %rsi \n call __len \n call __toStr  \n mov $lenT" +
+			_, err = progFile.Write([]byte("\ncall __toStr  \n mov $lenT" +
 				fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
 				", %rdx \n mov $lenBuf2, %rax \n mov $buf2, %rdi\n call __set"))
 			if nil != err {
@@ -4357,29 +4356,43 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 	} else if "push" == OP {
 		systemStack = append(systemStack, LO)
 		var isVarLO bool
-		var lenLO string
+
+		// 0 in the top of data - flag of the data in the pointer
+		// 1 in the top of data - flag of the variable name in the pointer
 
 		newVariable := EachVariable(variables)
 
 		for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
 			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
 				isVarLO = true
-				lenLO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
 				LO[0] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
 			}
 		}
 
 		if isVarLO {
-			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO + ", %rax \n mov " +
-				fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set\n call __getVar\n\n push (userData)"))
+			_, err := progFile.Write([]byte("\npush $varName"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
 			}
+			_, err = progFile.Write([]byte("\npush $1"))
+
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
 		} else {
 			// вычисляемая временная переменная
 			if 2 == len(LO) && true == LO[0] {
 				_, err := progFile.Write([]byte("\npush $" + fmt.Sprintf("%v", LO[1])))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+
+				_, err = progFile.Write([]byte("\npush $0"))
+
 				if nil != err {
 					fmt.Println(err)
 					os.Exit(1)
@@ -4424,10 +4437,21 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			}
 
 			DataNumber++
+
+			_, err = progFile.Write([]byte("\npush $0"))
+
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		}
 
 		return []interface{}{0}, systemStack, "", nil
 	} else if "pop" == OP {
+
+		// 0 in the top of data - flag of the data in the pointer
+		// 1 in the top data - flag of the variable name in the pointer
+
 		res := systemStack[len(systemStack)-1]
 		if "end" != res {
 			systemStack = systemStack[:len(systemStack)-1]
@@ -4447,13 +4471,18 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		if isVarLO {
-			_, err := progFile.Write([]byte("\npop (userData)\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
-				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set \n xor %rax, %rax \n call __setVar"))
+			_, err := progFile.Write([]byte("\npop %rax \n cmp $1, %rax \n jz __pop" + fmt.Sprintf("%v", PopNumber) +
+				"\npop (userData)\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set \n xor %rax, %rax \n call __setVar \n jmp __popEnd" +
+				fmt.Sprintf("%v", PopNumber) + "\n __pop" +
+				fmt.Sprintf("%v", PopNumber) + ":\n" + "\npop (userData)\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set \n mov $1, %rax \n call __setVar \n __popEnd" +
+				fmt.Sprintf("%v", PopNumber) + ":"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-
+			PopNumber++
 		} else {
 			fmt.Println("no variable in pop")
 			os.Exit(1)

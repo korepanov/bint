@@ -1143,109 +1143,184 @@ varName0:
 .space 1, 0
 lenVarName0 = . - varName0
 varName1:
-.ascii "$main_return_var"
+.ascii "$cut_return_var"
 .space 1, 0
 lenVarName1 = . - varName1
+varName2:
+.ascii "$cut_res"
+.space 1, 0
+lenVarName2 = . - varName2
 label0:
- .quad .main
+ .quad .cut
 labelName0:
-.ascii ".main"
+.ascii ".cut"
 .space 1,0
 data0:
 .ascii ""
 .space 1, 0
 lenData0 = . - data0
+varName3:
+.ascii "s"
+.space 1, 0
+lenVarName3 = . - varName3
 data1:
 .ascii ""
 .space 1, 0
 lenData1 = . - data1
-varName2:
-.ascii "s"
-.space 1, 0
-lenVarName2 = . - varName2
 data2:
-.ascii "something"
+.ascii ""
 .space 1, 0
 lenData2 = . - data2
-varName3:
-.ascii "$sl_internal0"
-.space 1, 0
-lenVarName3 = . - varName3
 varName4:
-.ascii "$sl_left0"
+.ascii "i"
 .space 1, 0
 lenVarName4 = . - varName4
 varName5:
-.ascii "$sl_right0"
+.ascii "$ind0"
 .space 1, 0
 lenVarName5 = . - varName5
 data3:
-.ascii "0"
+.ascii "Foundation"
 .space 1, 0
 lenData3 = . - data3
-data4:
-.ascii "4"
-.space 1, 0
-lenData4 = . - data4
 varName6:
-.ascii "$sl0"
+.ascii "$s0"
 .space 1, 0
 lenVarName6 = . - varName6
 varName7:
-.ascii "$sl_internal1"
+.ascii "$print_arg0"
 .space 1, 0
 lenVarName7 = . - varName7
+data4:
+.ascii "\n"
+.space 1, 0
+lenData4 = . - data4
 varName8:
-.ascii "$sl_left1"
+.ascii "$l0"
 .space 1, 0
 lenVarName8 = . - varName8
 varName9:
-.ascii "$sl_right1"
+.ascii "$s0"
 .space 1, 0
 lenVarName9 = . - varName9
-data5:
-.ascii "4"
-.space 1, 0
-lenData5 = . - data5
 varName10:
-.ascii "$l0"
+.ascii "$print_arg0"
 .space 1, 0
 lenVarName10 = . - varName10
+data5:
+.ascii "\n"
+.space 1, 0
+lenData5 = . - data5
 varName11:
-.ascii "$sl1"
+.ascii "$sl_internal0"
 .space 1, 0
 lenVarName11 = . - varName11
 varName12:
-.ascii "$print_arg0"
+.ascii "$sl_left0"
 .space 1, 0
 lenVarName12 = . - varName12
+varName13:
+.ascii "$sl_right0"
+.space 1, 0
+lenVarName13 = . - varName13
+varName14:
+.ascii "$l0"
+.space 1, 0
+lenVarName14 = . - varName14
+varName15:
+.ascii "$sl0"
+.space 1, 0
+lenVarName15 = . - varName15
+label1:
+ .quad .cut_end
+labelName1:
+.ascii ".cut_end"
+.space 1,0
 data6:
-.ascii "\n"
+.ascii ""
 .space 1, 0
 lenData6 = . - data6
-label1:
- .quad .main_end
-labelName1:
-.ascii ".main_end"
+varName16:
+.ascii "$main_return_var"
+.space 1, 0
+lenVarName16 = . - varName16
+label2:
+ .quad .main
+labelName2:
+.ascii ".main"
 .space 1,0
 data7:
 .ascii ""
 .space 1, 0
 lenData7 = . - data7
 data8:
-.ascii "#main_res0"
+.ascii ""
 .space 1, 0
 lenData8 = . - data8
-label2:
- .quad .main_res0
-labelName2:
-.ascii ".main_res0"
-.space 1,0
+varName17:
+.ascii "s"
+.space 1, 0
+lenVarName17 = . - varName17
 data9:
-.ascii ""
+.ascii "English Wikipedia is hosted alongside other language editions by the Wikimedia Foundation"
 .space 1, 0
 lenData9 = . - data9
 data10:
-.ascii ""
+.ascii ", an American nonprofit organization. Its content is written independently of other"
 .space 1, 0
 lenData10 = . - data10
+data11:
+.ascii " editions[1] in various varieties of English, aiming to stay consistent within"
+.space 1, 0
+lenData11 = . - data11
+data12:
+.ascii " articles. Its internal newspaper is The Signpost."
+.space 1, 0
+lenData12 = . - data12
+varName18:
+.ascii "$cut_res0"
+.space 1, 0
+lenVarName18 = . - varName18
+data13:
+.ascii "#cut_res0"
+.space 1, 0
+lenData13 = . - data13
+label3:
+ .quad .cut_res0
+labelName3:
+.ascii ".cut_res0"
+.space 1,0
+varName19:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName19 = . - varName19
+data14:
+.ascii "\n"
+.space 1, 0
+lenData14 = . - data14
+label4:
+ .quad .main_end
+labelName4:
+.ascii ".main_end"
+.space 1,0
+data15:
+.ascii ""
+.space 1, 0
+lenData15 = . - data15
+data16:
+.ascii "#main_res0"
+.space 1, 0
+lenData16 = . - data16
+label5:
+ .quad .main_res0
+labelName5:
+.ascii ".main_res0"
+.space 1,0
+data17:
+.ascii ""
+.space 1, 0
+lenData17 = . - data17
+data18:
+.ascii ""
+.space 1, 0
+lenData18 = . - data18

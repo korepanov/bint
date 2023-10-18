@@ -1232,11 +1232,11 @@ data13:
 .space 1, 0
 lenData13 = . - data13 
 data14:
-.ascii "something"
+.ascii "English Wikipedia is hosted alongside other language editions by the Wikimedia Foundation, an American nonprofit organization. Its content is written independently of other editions[1] in various varieties of English, aiming to stay consistent within articles. Its internal newspaper is The Signpost. "
 .space 1, 0
 lenData14 = . - data14 
 data15:
-.ascii "defg"
+.ascii "Foundation"
 .space 1, 0
 lenData15 = . - data15 
 
@@ -6174,7 +6174,19 @@ mov $lenVarName, %rsi
  call __defineVar
 jmp .main_end
 .main:
- mov $data14, %rax 
+ mov $data14, %rsi 
+ mov $data15, %rdi 
+
+ call __len 
+ call __toStr 
+ mov $buf2, %rsi 
+ call __print 
+ mov $enter, %rsi 
+ call __print 
+ call __throughError
+
+
+
  mov $1, %rbx 
  mov $4, %rcx 
  call __slice 

@@ -1,17 +1,17 @@
 string cut(string s){
-	return (s[index(s, "1952"):len(s)]);
+	int i;
+	i = index(s, "Foundation"); 
+	print((str(i) + "\n"));
+	print((str(len(s)) + "\n"));
+	return s[i:len(s)];
 };
 
 void main(){
 	string s;
-	s = "«Страна багровых туч» — приключенческая фантастическая повесть";
-	s = (s + ", первое крупное произведение Аркадия и Бориса Стругацких. ");
-	s = (s + "Замысел повести возник у Аркадия Стругацкого во время военной");
-	s = (s + "службы на Камчатке, первые наброски и черновики датированы 1952—1954 годами");
-	s = (s + ". Основной текст написан братьями Стругацкими в 1956—1957 годах и подвергся");
-	s = (s + " далее существенной редакционной правке. Книга была подписана в печать в 1959 году");
-	s = (s + ", вызвала преимущественно положительную реакцию критиков и коллег-писателей.");
-	s = (s + " Аркадий и Борис Стругацкие сразу стали одними из самых известных советских фантастов");
+	s = "English Wikipedia is hosted alongside other language editions by the Wikimedia Foundation";
+	s = (s + ", an American nonprofit organization. Its content is written independently of other");
+	s = (s + " editions[1] in various varieties of English, aiming to stay consistent within");
+	s = (s + " articles. Its internal newspaper is The Signpost."); 
 
 	print((cut(s) + "\n"));
 	 

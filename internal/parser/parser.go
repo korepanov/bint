@@ -59,6 +59,13 @@ func makeOperationBinary(exprListInput [][]interface{}) [][]interface{} {
 		exprList = Pop(exprList, i) // выталкиваем скобки рядом с именем операции
 		exprList = Pop(exprList, len(exprList)-1)
 	}
+	if 5 == len(exprList) && "(" == exprList[0][1] && "(" == exprList[1][1] && ")" == exprList[len(exprList)-2][1] &&
+		exprList[len(exprList)-1][1] == ")" {
+		exprList = Pop(exprList, i) // выталкиваем скобки рядом с именем операции
+		exprList = Pop(exprList, len(exprList)-1)
+		exprList = Pop(exprList, i)
+		exprList = Pop(exprList, len(exprList)-1)
+	}
 
 	exprList = append(exprList, []interface{}{"OP", operation})
 	exprList = append(exprList, []interface{}{"VAL", "null", "null"})
