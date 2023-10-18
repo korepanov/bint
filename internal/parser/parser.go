@@ -584,10 +584,36 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 						}
 
 						if isVarLO {
-							panic("parser.go: variables in left operand for slice are not realized")
+							_, err := programDest.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+								", %rax \n mov " + fmt.Sprintf("%v", leftNumber) + ", %rdi\n call __set " +
+								"\n call __getVar \n mov (userData), %rsi \n call __len \n mov $lenBuf3, %rsi \n mov $buf3, %rdx \n " +
+								"mov (userData), %rdi\n call __set "))
+							if nil != err {
+								fmt.Println(err)
+								os.Exit(1)
+							}
+							_, err = programDest.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3" +
+								", %rax \n mov $buf3, %rdi\n call __set \n call __toNumber \n mov %rax, (buf3)"))
+							if nil != err {
+								fmt.Println(err)
+								os.Exit(1)
+							}
 						}
 						if isVarRO {
-							panic("parser.go: variables in right operand for slice are not realized")
+							_, err := programDest.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenRO +
+								", %rax \n mov " + fmt.Sprintf("%v", rightNumber) + ", %rdi\n call __set " +
+								"\n call __getVar \n mov (userData), %rsi \n call __len \n mov $lenBuf4, %rsi \n mov $buf4, %rdx \n " +
+								"mov (userData), %rdi\n call __set "))
+							if nil != err {
+								fmt.Println(err)
+								os.Exit(1)
+							}
+							_, err = programDest.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf4" +
+								", %rax \n mov $buf4, %rdi\n call __set \n call __toNumber \n mov %rax, (buf4)"))
+							if nil != err {
+								fmt.Println(err)
+								os.Exit(1)
+							}
 						}
 
 						lenS := "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", varVal)])
