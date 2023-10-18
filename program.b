@@ -1,7 +1,11 @@
 void main(){
 	string s;
-	s = "something";
-	print((s[0:4] + "\n"));
+	s = "banana";
+	if ("bana" == (s[0:2] + s[(len(s) - 2):len(s)])){
+		print("YES\n");	
+	}else{
+		print("NO\n");
+	}; 
+	
 };
-
 main();

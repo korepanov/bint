@@ -1164,7 +1164,7 @@ varName2:
 .space 1, 0
 lenVarName2 = . - varName2
 data2:
-.ascii "something"
+.ascii "banana"
 .space 1, 0
 lenData2 = . - data2
 varName3:
@@ -1179,49 +1179,119 @@ varName5:
 .ascii "$sl_right0"
 .space 1, 0
 lenVarName5 = . - varName5
-data3:
-.ascii "0"
-.space 1, 0
-lenData3 = . - data3
-data4:
-.ascii "4"
-.space 1, 0
-lenData4 = . - data4
 varName6:
-.ascii "$sl0"
+.ascii "$l0"
 .space 1, 0
 lenVarName6 = . - varName6
+data3:
+.ascii "2"
+.space 1, 0
+lenData3 = . - data3
 varName7:
-.ascii "$print_arg0"
+.ascii "$l0"
 .space 1, 0
 lenVarName7 = . - varName7
+varName8:
+.ascii "$sl0"
+.space 1, 0
+lenVarName8 = . - varName8
+varName9:
+.ascii "$sl_internal1"
+.space 1, 0
+lenVarName9 = . - varName9
+varName10:
+.ascii "$sl_left1"
+.space 1, 0
+lenVarName10 = . - varName10
+varName11:
+.ascii "$sl_right1"
+.space 1, 0
+lenVarName11 = . - varName11
+data4:
+.ascii "0"
+.space 1, 0
+lenData4 = . - data4
 data5:
-.ascii "\n"
+.ascii "2"
 .space 1, 0
 lenData5 = . - data5
-label1:
- .quad .main_end
-labelName1:
-.ascii ".main_end"
-.space 1,0
+varName12:
+.ascii "$sl1"
+.space 1, 0
+lenVarName12 = . - varName12
 data6:
-.ascii ""
+.ascii "bana"
 .space 1, 0
 lenData6 = . - data6
 data7:
-.ascii "#main_res0"
-.space 1, 0
-lenData7 = . - data7
-label2:
- .quad .main_res0
-labelName2:
-.ascii ".main_res0"
-.space 1,0
-data8:
 .ascii ""
 .space 1, 0
+lenData7 = . - data7
+varName13:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName13 = . - varName13
+data8:
+.ascii "YES\n"
+.space 1, 0
 lenData8 = . - data8
+label1:
+ .quad ._cond0_end
+labelName1:
+.ascii "._cond0_end"
+.space 1,0
 data9:
 .ascii ""
 .space 1, 0
 lenData9 = . - data9
+varName14:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName14 = . - varName14
+data10:
+.ascii "NO\n"
+.space 1, 0
+lenData10 = . - data10
+data11:
+.ascii ""
+.space 1, 0
+lenData11 = . - data11
+label2:
+ .quad ._cond_exit0
+labelName2:
+.ascii "._cond_exit0"
+.space 1,0
+data12:
+.ascii ""
+.space 1, 0
+lenData12 = . - data12
+data13:
+.ascii ""
+.space 1, 0
+lenData13 = . - data13
+label3:
+ .quad .main_end
+labelName3:
+.ascii ".main_end"
+.space 1,0
+data14:
+.ascii ""
+.space 1, 0
+lenData14 = . - data14
+data15:
+.ascii "#main_res0"
+.space 1, 0
+lenData15 = . - data15
+label4:
+ .quad .main_res0
+labelName4:
+.ascii ".main_res0"
+.space 1,0
+data16:
+.ascii ""
+.space 1, 0
+lenData16 = . - data16
+data17:
+.ascii ""
+.space 1, 0
+lenData17 = . - data17
