@@ -583,6 +583,13 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 							DataNumber++
 						}
 
+						if isVarLO {
+							panic("parser.go: variables in left operand for slice are not realized")
+						}
+						if isVarRO {
+							panic("parser.go: variables in right operand for slice are not realized")
+						}
+
 						lenS := "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", varVal)])
 						s := "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", varVal)])
 

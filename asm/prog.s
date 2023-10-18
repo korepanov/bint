@@ -240,7 +240,7 @@ parseBoolError:
 .ascii "could not parse bool: invalid bool format\n"
 .space 1, 0 
 sliceBoundError:
-.ascii "slice index is out of bounds"
+.ascii "slice index is out of bounds\n"
 .space 1, 0 
 
 
