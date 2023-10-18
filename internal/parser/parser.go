@@ -605,8 +605,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 						}
 						exprList = exprList[0:2]
 
-						exprList = append(exprList, []interface{}{"VAL", []interface{}{true, "$systemVar"}})
-						panic("parser.go: could not resolve $systemVar")
+						exprList = append(exprList, []interface{}{"VAL", []interface{}{true, "$systemVarName"}})
 					} else {
 						if rightNumber.(int) >= leftNumber.(int) && rightNumber.(int) <= len(varVal) {
 							exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" +

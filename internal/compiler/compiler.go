@@ -357,6 +357,13 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			RO = []interface{}{RO[1]}
 			computedRO = true
 		}
+
+		if "[]interface {}" == fmt.Sprintf("%T", RO[0]) {
+			if 2 == len(RO[0].([]interface{})) && true == RO[0].([]interface{})[0] {
+				RO = []interface{}{RO[0].([]interface{})[1]}
+				computedRO = true
+			}
+		}
 		if !computedRO {
 			newVariable := EachVariable(variables)
 			for v := newVariable(); "end" != v[0]; v = newVariable() {
@@ -399,7 +406,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 				if !(len(fmt.Sprintf("%v", RO[0])) > 10 && "$systemVar" == fmt.Sprintf("%v", RO[0])[0:10]) {
 					_, err = progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenVarName +
-						", %rax \n mov " + varName + ", %rdi\n call __set \n mov $" + fmt.Sprintf("%v", RO[0]) + ", %rax" +
+						", %rax \n mov " + varName + ", %rdi\n call __set \n mov " + fmt.Sprintf("%v", RO[0]) + ", %rax" +
 						" \n mov %rax, (userData)\n xor %rax, %rax \n call __setVar"))
 
 					if nil != err {
