@@ -1164,9 +1164,13 @@ data0:
 .space 1, 0
 lenData0 = . - data0
 varName3:
-.ascii "s"
+.ascii "sub_s"
 .space 1, 0
 lenVarName3 = . - varName3
+varName4:
+.ascii "s"
+.space 1, 0
+lenVarName4 = . - varName4
 data1:
 .ascii ""
 .space 1, 0
@@ -1175,146 +1179,146 @@ data2:
 .ascii ""
 .space 1, 0
 lenData2 = . - data2
-varName4:
-.ascii "$sl_internal0"
-.space 1, 0
-lenVarName4 = . - varName4
 varName5:
-.ascii "$sl_left0"
+.ascii "$sl_internal0"
 .space 1, 0
 lenVarName5 = . - varName5
 varName6:
-.ascii "$sl_right0"
+.ascii "$sl_left0"
 .space 1, 0
 lenVarName6 = . - varName6
 varName7:
-.ascii "$ind0"
+.ascii "$sl_right0"
 .space 1, 0
 lenVarName7 = . - varName7
-data3:
-.ascii "Foundation"
-.space 1, 0
-lenData3 = . - data3
 varName8:
-.ascii "$l0"
+.ascii "$ind0"
 .space 1, 0
 lenVarName8 = . - varName8
 varName9:
-.ascii "$sl0"
+.ascii "$l0"
 .space 1, 0
 lenVarName9 = . - varName9
+varName10:
+.ascii "$sl0"
+.space 1, 0
+lenVarName10 = . - varName10
 label1:
  .quad .cut_end
 labelName1:
 .ascii ".cut_end"
 .space 1,0
-data4:
+data3:
 .ascii ""
 .space 1, 0
-lenData4 = . - data4
-varName10:
+lenData3 = . - data3
+varName11:
 .ascii "$pow_return_var"
 .space 1, 0
-lenVarName10 = . - varName10
-varName11:
+lenVarName11 = . - varName11
+varName12:
 .ascii "$pow_res"
 .space 1, 0
-lenVarName11 = . - varName11
+lenVarName12 = . - varName12
 label2:
  .quad .pow
 labelName2:
 .ascii ".pow"
 .space 1,0
+data4:
+.ascii ""
+.space 1, 0
+lenData4 = . - data4
+varName13:
+.ascii "b"
+.space 1, 0
+lenVarName13 = . - varName13
+varName14:
+.ascii "a"
+.space 1, 0
+lenVarName14 = . - varName14
 data5:
 .ascii ""
 .space 1, 0
 lenData5 = . - data5
-varName12:
-.ascii "b"
-.space 1, 0
-lenVarName12 = . - varName12
-varName13:
-.ascii "a"
-.space 1, 0
-lenVarName13 = . - varName13
 data6:
 .ascii ""
 .space 1, 0
 lenData6 = . - data6
-data7:
-.ascii ""
-.space 1, 0
-lenData7 = . - data7
-varName14:
-.ascii "c"
-.space 1, 0
-lenVarName14 = . - varName14
 varName15:
-.ascii "$F0"
+.ascii "c"
 .space 1, 0
 lenVarName15 = . - varName15
 varName16:
-.ascii "d"
+.ascii "$F0"
 .space 1, 0
 lenVarName16 = . - varName16
 varName17:
-.ascii "$F0"
+.ascii "d"
 .space 1, 0
 lenVarName17 = . - varName17
 varName18:
-.ascii "$I0"
+.ascii "$F0"
 .space 1, 0
 lenVarName18 = . - varName18
+varName19:
+.ascii "$I0"
+.space 1, 0
+lenVarName19 = . - varName19
 label3:
  .quad .pow_end
 labelName3:
 .ascii ".pow_end"
 .space 1,0
-data8:
+data7:
 .ascii ""
 .space 1, 0
-lenData8 = . - data8
-varName19:
+lenData7 = . - data7
+varName20:
 .ascii "$main_return_var"
 .space 1, 0
-lenVarName19 = . - varName19
+lenVarName20 = . - varName20
 label4:
  .quad .main
 labelName4:
 .ascii ".main"
 .space 1,0
+data8:
+.ascii ""
+.space 1, 0
+lenData8 = . - data8
 data9:
 .ascii ""
 .space 1, 0
 lenData9 = . - data9
-data10:
-.ascii ""
-.space 1, 0
-lenData10 = . - data10
-varName20:
+varName21:
 .ascii "s"
 .space 1, 0
-lenVarName20 = . - varName20
-data11:
+lenVarName21 = . - varName21
+data10:
 .ascii "English Wikipedia is hosted alongside other language editions by the Wikimedia Foundation"
+.space 1, 0
+lenData10 = . - data10
+data11:
+.ascii ", an American nonprofit organization. Its content is written independently of other"
 .space 1, 0
 lenData11 = . - data11
 data12:
-.ascii ", an American nonprofit organization. Its content is written independently of other"
+.ascii " editions[1] in various varieties of English, aiming to stay consistent within"
 .space 1, 0
 lenData12 = . - data12
 data13:
-.ascii " editions[1] in various varieties of English, aiming to stay consistent within"
-.space 1, 0
-lenData13 = . - data13
-data14:
 .ascii " articles. Its internal newspaper is The Signpost."
 .space 1, 0
-lenData14 = . - data14
-varName21:
+lenData13 = . - data13
+varName22:
 .ascii "$cut_res0"
 .space 1, 0
-lenVarName21 = . - varName21
+lenVarName22 = . - varName22
+data14:
+.ascii "Foundation"
+.space 1, 0
+lenData14 = . - data14
 data15:
 .ascii "#cut_res0"
 .space 1, 0
@@ -1324,18 +1328,18 @@ label5:
 labelName5:
 .ascii ".cut_res0"
 .space 1,0
-varName22:
+varName23:
 .ascii "$print_arg0"
 .space 1, 0
-lenVarName22 = . - varName22
+lenVarName23 = . - varName23
 data16:
 .ascii "\n"
 .space 1, 0
 lenData16 = . - data16
-varName23:
+varName24:
 .ascii "$pow_res0"
 .space 1, 0
-lenVarName23 = . - varName23
+lenVarName24 = . - varName24
 data17:
 .ascii "2"
 .space 1, 0
@@ -1353,41 +1357,99 @@ label6:
 labelName6:
 .ascii ".pow_res0"
 .space 1,0
-varName24:
+varName25:
 .ascii "$s0"
 .space 1, 0
-lenVarName24 = . - varName24
-varName25:
+lenVarName25 = . - varName25
+varName26:
 .ascii "$print_arg0"
 .space 1, 0
-lenVarName25 = . - varName25
+lenVarName26 = . - varName26
 data20:
 .ascii "\n"
 .space 1, 0
 lenData20 = . - data20
-label7:
- .quad .main_end
-labelName7:
-.ascii ".main_end"
-.space 1,0
+varName27:
+.ascii "$cut_res1"
+.space 1, 0
+lenVarName27 = . - varName27
 data21:
-.ascii ""
+.ascii "The"
 .space 1, 0
 lenData21 = . - data21
 data22:
-.ascii "#main_res0"
+.ascii "#cut_res1"
 .space 1, 0
 lenData22 = . - data22
-label8:
- .quad .main_res0
-labelName8:
-.ascii ".main_res0"
+label7:
+ .quad .cut_res1
+labelName7:
+.ascii ".cut_res1"
 .space 1,0
+varName28:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName28 = . - varName28
 data23:
-.ascii ""
+.ascii "\n"
 .space 1, 0
 lenData23 = . - data23
+varName29:
+.ascii "$pow_res1"
+.space 1, 0
+lenVarName29 = . - varName29
 data24:
-.ascii ""
+.ascii "5"
 .space 1, 0
 lenData24 = . - data24
+data25:
+.ascii "3"
+.space 1, 0
+lenData25 = . - data25
+data26:
+.ascii "#pow_res1"
+.space 1, 0
+lenData26 = . - data26
+label8:
+ .quad .pow_res1
+labelName8:
+.ascii ".pow_res1"
+.space 1,0
+varName30:
+.ascii "$s0"
+.space 1, 0
+lenVarName30 = . - varName30
+varName31:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName31 = . - varName31
+data27:
+.ascii "\n"
+.space 1, 0
+lenData27 = . - data27
+label9:
+ .quad .main_end
+labelName9:
+.ascii ".main_end"
+.space 1,0
+data28:
+.ascii ""
+.space 1, 0
+lenData28 = . - data28
+data29:
+.ascii "#main_res0"
+.space 1, 0
+lenData29 = . - data29
+label10:
+ .quad .main_res0
+labelName10:
+.ascii ".main_res0"
+.space 1,0
+data30:
+.ascii ""
+.space 1, 0
+lenData30 = . - data30
+data31:
+.ascii ""
+.space 1, 0
+lenData31 = . - data31

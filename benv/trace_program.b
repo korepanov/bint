@@ -1,6 +1,6 @@
 $fileprogram.b$;
 $trace1$;
-stringcut(strings){return(s[index(s,"Foundation"):len(s)]);
+stringcut(strings,stringsub_s){return(s[index(s,sub_s):len(s)]);
 $trace2$;
 };
 $trace3$;
@@ -26,10 +26,14 @@ s=(s+" editions[1] in various varieties of English, aiming to stay consistent wi
 $trace13$;
 s=(s+" articles. Its internal newspaper is The Signpost.");
 $trace14$;
-print((cut(s)+"\n"));
+print((cut(s,"Foundation")+"\n"));
 $trace15$;
 print((str(pow(2,4))+"\n"));
 $trace16$;
-};
+print((cut(s,"The")+"\n"));
 $trace17$;
+print((str(pow(5,3))+"\n"));
+$trace18$;
+};
+$trace19$;
 main();
