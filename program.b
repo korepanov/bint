@@ -1,9 +1,13 @@
 string cut(string s){
-	int i;
-	i = index(s, "Foundation"); 
-	print((str(i) + "\n"));
-	print((str(len(s)) + "\n"));
-	return s[i:len(s)];
+	return (s[index(s, "Foundation"):len(s)]);
+};
+
+int pow(int a, int b){
+	float c;
+	c = float(a);
+	float d;
+	d = float(b);
+	return (int((c^d)));
 };
 
 void main(){
@@ -14,7 +18,7 @@ void main(){
 	s = (s + " articles. Its internal newspaper is The Signpost."); 
 
 	print((cut(s) + "\n"));
-	 
+	print((str(pow(2, 4)) + "\n")); 	 
 	
 };
 main();
