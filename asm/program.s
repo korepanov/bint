@@ -1033,7 +1033,7 @@ __undefineVar:
  inc %rbx 
  movb $0, (%rbx)
  inc %rbx 
- mov %rbx, %r12 
+ /*mov %rbx, %r12 
  add (valSize), %r12 
  __undefVal: 
  cmp %rbx, %r12 
@@ -1043,7 +1043,7 @@ __undefineVar:
  jmp __undefVal  
  __undefValEx:
  dec %rbx 
- movb $0, (%rbx)
+ movb $0, (%rbx)*/ 
  __undefEnd:
  ret 
 

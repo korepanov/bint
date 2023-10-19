@@ -2426,7 +2426,7 @@ __undefineVar:
  inc %rbx 
  movb $0, (%rbx)
  inc %rbx 
- mov %rbx, %r12 
+ /*mov %rbx, %r12 
  add (valSize), %r12 
  __undefVal: 
  cmp %rbx, %r12 
@@ -2436,7 +2436,7 @@ __undefineVar:
  jmp __undefVal  
  __undefValEx:
  dec %rbx 
- movb $0, (%rbx)
+ movb $0, (%rbx)*/ 
  __undefEnd:
  ret 
 
@@ -6186,87 +6186,14 @@ mov $lenVarName, %rsi
  call __defineVar
 jmp .main_end
 .main:
-
-
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenIntVarName, %rax 
- mov $intVarName, %rdi
+ mov $lenSystemVarName127, %rax 
+ mov $systemVarName127, %rdi 
  call __set 
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenIntType, %rax
- mov $intType, %rdi
- call __set 
- call __defineVar
+ call __undefineVar
 
-  mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenIntVarName2, %rax 
- mov $intVarName2, %rdi
- call __set 
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenIntType, %rax
- mov $intType, %rdi
- call __set 
- call __defineVar
-
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenIntVarName, %rax 
- mov $intVarName, %rdi 
-call __set
-
- mov $data16, %rax  
- mov %rax, (userData)
- xor %rax, %rax
-call __setVar
-
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenSystemVarName, %rax 
- mov $systemVarName, %rdi
- call __set 
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenStringType, %rax
- mov $stringType, %rdi
- call __set 
- call __defineVar
-
-  mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenIntVarName, %rax 
- mov $intVarName, %rdi 
-call __set
-call __getVar
-
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenSystemVarName, %rax 
- mov $systemVarName, %rdi 
-call __set
-
- mov (userData), %rax  
- mov %rax, (userData)
- xor %rax, %rax
-call __setVar
-
-
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenIntVarName2, %rax 
- mov $intVarName2, %rdi 
-call __set
-
- mov $systemVarName, %rax  
- mov %rax, (userData)
- mov $1, %rax 
-call __setVar
-
-
- call __printHeap 
+ call __printHeap
  call __throughError
 
 
