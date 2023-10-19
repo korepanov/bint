@@ -148,6 +148,14 @@ systemVarName:
 .ascii "^systemVar"
 .space 1, 0
 lenSystemVarName = . - systemVarName
+intVarName:
+.ascii "i"
+.space 1, 0
+lenIntVarName = . - intVarName 
+intVarName2:
+.ascii "i2"
+.space 1, 0
+lenIntVarName2 = . - intVarName2 
 
 intType:
 .ascii "int"
@@ -1239,6 +1247,10 @@ data15:
 .ascii "Foundation"
 .space 1, 0
 lenData15 = . - data15 
+data16:
+.ascii "25"
+.space 1, 0
+lenData16 = . - data16 
 
 .text
 __initLabels:
@@ -6174,30 +6186,87 @@ mov $lenVarName, %rsi
  call __defineVar
 jmp .main_end
 .main:
- mov $data14, %rsi 
- mov $data15, %rdi 
-
- call __len 
- call __toStr 
- mov $buf2, %rsi 
- call __print 
- mov $enter, %rsi 
- call __print 
- call __throughError
 
 
-
- mov $1, %rbx 
- mov $4, %rcx 
- call __slice 
  mov $lenVarName, %rsi 
- mov $varName, %rdx
+ mov $varName, %rdx 
+ mov $lenIntVarName, %rax 
+ mov $intVarName, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenIntType, %rax
+ mov $intType, %rdi
+ call __set 
+ call __defineVar
+
+  mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenIntVarName2, %rax 
+ mov $intVarName2, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenIntType, %rax
+ mov $intType, %rdi
+ call __set 
+ call __defineVar
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenIntVarName, %rax 
+ mov $intVarName, %rdi 
+call __set
+
+ mov $data16, %rax  
+ mov %rax, (userData)
+ xor %rax, %rax
+call __setVar
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
  mov $lenSystemVarName, %rax 
  mov $systemVarName, %rdi
- call __set
- call __getVar
- mov (userData), %rsi 
- call __print 
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
+
+  mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenIntVarName, %rax 
+ mov $intVarName, %rdi 
+call __set
+call __getVar
+
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenSystemVarName, %rax 
+ mov $systemVarName, %rdi 
+call __set
+
+ mov (userData), %rax  
+ mov %rax, (userData)
+ xor %rax, %rax
+call __setVar
+
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenIntVarName2, %rax 
+ mov $intVarName2, %rdi 
+call __set
+
+ mov $systemVarName, %rax  
+ mov %rax, (userData)
+ mov $1, %rax 
+call __setVar
+
+
+ call __printHeap 
  call __throughError
 
 

@@ -148,6 +148,10 @@ systemVarName:
 .ascii "^systemVar"
 .space 1, 0
 lenSystemVarName = . - systemVarName
+popVarName:
+.ascii "^popVar"
+.space 1, 0
+lenPopVarName = . - popVarName
 
 intType:
 .ascii "int"

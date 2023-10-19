@@ -7,4 +7,3 @@ var LabelCounter int            // счетчик пользовательски
 var BranchCounter int           // число ветвлений
 var TempVarsNum = 128           // количество временных переменных в asm на одно арифметическое выражение
 var TempStringVarsNum = 128     // количество временных пользовательских переменных типа string на одну конкатенацию
-var PopNumber int               // counter of the pop operations

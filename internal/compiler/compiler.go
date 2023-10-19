@@ -4356,9 +4356,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 	} else if "push" == OP {
 		systemStack = append(systemStack, LO)
 		var isVarLO bool
-
-		// 0 in the top of data - flag of the data in the pointer
-		// 1 in the top of data - flag of the variable name in the pointer
+		var lenLO string
 
 		newVariable := EachVariable(variables)
 
@@ -4366,17 +4364,14 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
 				isVarLO = true
 				LO[0] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+				lenLO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
 			}
 		}
 
 		if isVarLO {
-			_, err := progFile.Write([]byte("\npush $varName"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-			_, err = progFile.Write([]byte("\npush $1"))
-
+			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
+				"\n call __getVar \n push (userData)"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
@@ -4386,13 +4381,6 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			// вычисляемая временная переменная
 			if 2 == len(LO) && true == LO[0] {
 				_, err := progFile.Write([]byte("\npush $" + fmt.Sprintf("%v", LO[1])))
-				if nil != err {
-					fmt.Println(err)
-					os.Exit(1)
-				}
-
-				_, err = progFile.Write([]byte("\npush $0"))
-
 				if nil != err {
 					fmt.Println(err)
 					os.Exit(1)
@@ -4438,19 +4426,10 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 			DataNumber++
 
-			_, err = progFile.Write([]byte("\npush $0"))
-
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
 		}
 
 		return []interface{}{0}, systemStack, "", nil
 	} else if "pop" == OP {
-
-		// 0 in the top of data - flag of the data in the pointer
-		// 1 in the top data - flag of the variable name in the pointer
 
 		res := systemStack[len(systemStack)-1]
 		if "end" != res {
@@ -4471,18 +4450,45 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		if isVarLO {
-			_, err := progFile.Write([]byte("\npop %rax \n cmp $1, %rax \n jz __pop" + fmt.Sprintf("%v", PopNumber) +
-				"\npop (userData)\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
-				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set \n xor %rax, %rax \n call __setVar \n jmp __popEnd" +
-				fmt.Sprintf("%v", PopNumber) + "\n __pop" +
-				fmt.Sprintf("%v", PopNumber) + ":\n" + "\npop (userData)\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
-				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set \n mov $1, %rax \n call __setVar \n __popEnd" +
-				fmt.Sprintf("%v", PopNumber) + ":"))
+			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi" +
+				"\nmov $varName, %rdx" +
+				"\nmov $lenPopVarName, %rax" +
+				"\nmov $popVarName, %rdi" +
+				"\ncall __set" +
+				"\nmov $lenVarType, %rsi" +
+				"\nmov $varType, %rdx" +
+				"\nmov $lenStringType, %rax" +
+				"\nmov $stringType, %rdi" +
+				"\ncall __set" +
+				"\nmov $varName, %rcx" +
+				"\nmov $varType, %rdx" +
+				"\ncall __defineVar"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			PopNumber++
+
+			_, err = progFile.Write([]byte(
+				"\npop (userData)\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov $lenPopVarName" +
+					", %rax \n mov $popVarName, %rdi\n call __set \n xor %rax, %rax \n call __setVar" +
+					"\nmov $popVarName, %rax \nmov %rax, (userData)\n mov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+					", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set \n mov $1, %rax \n call __setVar"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			_, err = progFile.Write([]byte("\nmov $lenVarName, %rsi" +
+				"\nmov $varName, %rdx" +
+				"\nmov $lenPopVarName, %rax" +
+				"\nmov $popVarName, %rdi" +
+				"\ncall __set" +
+				"\ncall __undefineVar"))
+
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
 		} else {
 			fmt.Println("no variable in pop")
 			os.Exit(1)
