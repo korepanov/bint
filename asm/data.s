@@ -1147,172 +1147,47 @@ varName0:
 .space 1, 0
 lenVarName0 = . - varName0
 varName1:
-.ascii "$cut_return_var"
+.ascii "$main_return_var"
 .space 1, 0
 lenVarName1 = . - varName1
-varName2:
-.ascii "$cut_res"
-.space 1, 0
-lenVarName2 = . - varName2
 label0:
- .quad .cut
+ .quad .main
 labelName0:
-.ascii ".cut"
+.ascii ".main"
 .space 1,0
 data0:
 .ascii ""
 .space 1, 0
 lenData0 = . - data0
-varName3:
-.ascii "sub_s"
-.space 1, 0
-lenVarName3 = . - varName3
-varName4:
-.ascii "s"
-.space 1, 0
-lenVarName4 = . - varName4
 data1:
 .ascii ""
 .space 1, 0
 lenData1 = . - data1
-data2:
-.ascii ""
-.space 1, 0
-lenData2 = . - data2
-varName5:
-.ascii "$sl_internal0"
-.space 1, 0
-lenVarName5 = . - varName5
-varName6:
-.ascii "$sl_left0"
-.space 1, 0
-lenVarName6 = . - varName6
-varName7:
-.ascii "$sl_right0"
-.space 1, 0
-lenVarName7 = . - varName7
-varName8:
-.ascii "$ind0"
-.space 1, 0
-lenVarName8 = . - varName8
-varName9:
-.ascii "$l0"
-.space 1, 0
-lenVarName9 = . - varName9
-varName10:
-.ascii "$sl0"
-.space 1, 0
-lenVarName10 = . - varName10
-label1:
- .quad .cut_end
-labelName1:
-.ascii ".cut_end"
-.space 1,0
-data3:
-.ascii ""
-.space 1, 0
-lenData3 = . - data3
-varName11:
-.ascii "$main_return_var"
-.space 1, 0
-lenVarName11 = . - varName11
-label2:
- .quad .main
-labelName2:
-.ascii ".main"
-.space 1,0
-data4:
-.ascii ""
-.space 1, 0
-lenData4 = . - data4
-data5:
-.ascii ""
-.space 1, 0
-lenData5 = . - data5
-varName12:
+varName2:
 .ascii "s"
 .space 1, 0
-lenVarName12 = . - varName12
-data6:
-.ascii "«Страна багровых туч» — приключенческая фантастическая повесть"
+lenVarName2 = . - varName2
+data2:
+.ascii "banana"
 .space 1, 0
-lenData6 = . - data6
-data7:
-.ascii ", первое крупное произведение Аркадия и Бориса Стругацких. "
+lenData2 = . - data2
+varName3:
+.ascii "$sl_internal0"
 .space 1, 0
-lenData7 = . - data7
-data8:
-.ascii "Замысел повести возник у Аркадия Стругацкого во время военной службы на Камчатке"
+lenVarName3 = . - varName3
+varName4:
+.ascii "$sl_left0"
 .space 1, 0
-lenData8 = . - data8
-data9:
-.ascii ", первые наброски и черновики датированы 1952—1954 годами. Основной текст написан"
+lenVarName4 = . - varName4
+varName5:
+.ascii "$sl_right0"
 .space 1, 0
-lenData9 = . - data9
-data10:
-.ascii " братьями Стругацкими в 1956—1957 годах и подвергся далее существенной редакционной правке."
+lenVarName5 = . - varName5
+data3:
+.ascii "2"
 .space 1, 0
-lenData10 = . - data10
-data11:
-.ascii " Книга была подписана в печать в 1959 году, вызвала преимущественно положительную реакцию "
+lenData3 = . - data3
+varName6:
+.ascii "$sl0"
 .space 1, 0
-lenData11 = . - data11
-data12:
-.ascii "критиков и коллег-писателей. Аркадий и Борис Стругацкие сразу стали одними "
-.space 1, 0
-lenData12 = . - data12
-data13:
-.ascii "из самых известных советских фантастов."
-.space 1, 0
-lenData13 = . - data13
-varName13:
-.ascii "$cut_res0"
-.space 1, 0
-lenVarName13 = . - varName13
-data14:
-.ascii "1952"
-.space 1, 0
-lenData14 = . - data14
-data15:
-.ascii "#cut_res0"
-.space 1, 0
-lenData15 = . - data15
-label3:
- .quad .cut_res0
-labelName3:
-.ascii ".cut_res0"
-.space 1,0
-varName14:
-.ascii "$print_arg0"
-.space 1, 0
-lenVarName14 = . - varName14
-data16:
-.ascii "\n"
-.space 1, 0
-lenData16 = . - data16
-label4:
- .quad .main_end
-labelName4:
-.ascii ".main_end"
-.space 1,0
-data17:
-.ascii ""
-.space 1, 0
-lenData17 = . - data17
-data18:
-.ascii "#main_res0"
-.space 1, 0
-lenData18 = . - data18
-label5:
- .quad .main_res0
-labelName5:
-.ascii ".main_res0"
-.space 1,0
-data19:
-.ascii ""
-.space 1, 0
-lenData19 = . - data19
-data20:
-.ascii ""
-.space 1, 0
-lenData20 = . - data20
+lenVarName6 = . - varName6

@@ -679,27 +679,50 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 
 					number, err = strconv.Atoi(fmt.Sprintf("%v", ValueFoldInterface(exprListInside[0][1])))
 
-					if nil != err && !toTranspile {
+					if nil != err && !toTranspile && nil == programDest {
 						err = errors.New("parser: ERROR: data type mismatch")
 						panic(err)
-					} else if toTranspile {
+					}
+					if toTranspile && nil == programDest {
 						number = fmt.Sprintf("%v", ValueFoldInterface(exprListInside[0][1]))
 					}
+					if !toTranspile && nil != programDest {
+						number = exprListInside[0][1]
+					}
 				}
-
-				for k := 0; k < 4; k++ {
-					exprList = Pop(exprList, i-1)
+				if nil == programDest {
+					for k := 0; k < 4; k++ {
+						exprList = Pop(exprList, i-1)
+					}
 				}
-				if !toTranspile {
+				if !toTranspile && nil == programDest {
 					if number.(int) < len(varVal) {
 						exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"" + string([]rune(varVal)[number.(int)]) + "\""})
 					} else {
 						exprList = Insert(exprList, i-1, []interface{}{"VAL", "\"\""})
 						sizeError = errors.New("slice bounds out of range")
 					}
-				} else {
+				}
+				if toTranspile && nil == programDest {
 					exprList = Insert(exprList, i-1, []interface{}{"VAL", "string(getVar(\"" + varName + "\").(string)[" +
 						fmt.Sprintf("%v", number) + "])"})
+				}
+				if !toTranspile && nil != programDest {
+					var isVarLO bool
+					var lenLO string
+
+					for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
+						if fmt.Sprintf("%v", number) == fmt.Sprintf("%v", v[1]) {
+							isVarLO = true
+							lenLO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", number)])
+							number = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", number)])
+						}
+					}
+					exprList = exprList[0:2]
+					exprList = append(exprList, []interface{}{"VAL", []interface{}{true, "$systemVarName"}})
+					fmt.Println(exprList)
+
+					panic("parser.go: ERROR: slice with one index is not realized")
 				}
 			}
 
