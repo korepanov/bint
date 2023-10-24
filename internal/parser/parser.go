@@ -687,7 +687,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 						number = fmt.Sprintf("%v", ValueFoldInterface(exprListInside[0][1]))
 					}
 					if !toTranspile && nil != programDest {
-						number = exprListInside[0][1]
+						number = ValueFoldInterface(exprListInside[0][1])
 					}
 				}
 				if nil == programDest {
@@ -718,11 +718,68 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 							number = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", number)])
 						}
 					}
-					exprList = exprList[0:2]
-					exprList = append(exprList, []interface{}{"VAL", []interface{}{true, "$systemVarName"}})
-					fmt.Println(exprList)
+					if !isVarLO {
+						_, err := dataDest.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
+						if nil != err {
+							fmt.Println(err)
+							os.Exit(1)
+						}
+						t := fmt.Sprintf("%v", ValueFoldInterface(number))
 
-					panic("parser.go: ERROR: slice with one index is not realized")
+						if len(t) > 1 && "\"" == string(t[0]) && "\"" == string(t[len(t)-1]) {
+							t = t[1 : len(t)-1]
+						}
+						_, err = dataDest.Write([]byte("\n.ascii \"" + t + "\"\n.space 1, 0"))
+						if nil != err {
+							fmt.Println(err)
+							os.Exit(1)
+						}
+						_, err = dataDest.Write([]byte("\nlenData" + fmt.Sprintf("%v", DataNumber) + " = . - data" + fmt.Sprintf("%v", DataNumber)))
+						if nil != err {
+							fmt.Println(err)
+							os.Exit(1)
+						}
+
+						number = "$data" + fmt.Sprintf("%v", DataNumber)
+						lenLO = "$lenData" + fmt.Sprintf("%v", DataNumber)
+
+						_, err = programDest.Write([]byte("\nmov $lenBuf3, %rsi \n mov $buf3, %rdx \n mov " + lenLO + ", %rax \n mov " +
+							fmt.Sprintf("%v", number) + ", %rdi\n call __set"))
+						if nil != err {
+							fmt.Println(err)
+							os.Exit(1)
+						}
+
+						_, err = programDest.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3" +
+							", %rax \n mov $buf3, %rdi\n call __set \n call __toNumber \n mov %rax, (buf3)"))
+						if nil != err {
+							fmt.Println(err)
+							os.Exit(1)
+						}
+						DataNumber++
+
+						lenS := "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", varVal)])
+						s := "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", varVal)])
+
+						_, err = programDest.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenS +
+							", %rax \n mov " + fmt.Sprintf("%v", s) + ", %rdi\n call __set " +
+							"\ncall __getVar"))
+						if nil != err {
+							fmt.Println(err)
+							os.Exit(1)
+						}
+
+						//(userData) has address of the string
+						// number in the (buf3)
+
+						exprList = exprList[0:2]
+						exprList = append(exprList, []interface{}{"VAL", []interface{}{true, "$systemVarName"}})
+						fmt.Println(exprList)
+
+						panic("parser.go: ERROR: slice with one index is not realized")
+					} else {
+						panic("parser.go: ERROR: variables in slice with one index is not realized")
+					}
 				}
 			}
 

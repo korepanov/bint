@@ -1191,3 +1191,7 @@ varName6:
 .ascii "$sl0"
 .space 1, 0
 lenVarName6 = . - varName6
+data4:
+.ascii "2"
+.space 1, 0
+lenData4 = . - data4
