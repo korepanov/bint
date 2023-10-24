@@ -1368,7 +1368,15 @@ __readClear:
  add (deltaSize), %r10 
  mov %r10, (shiftSize)
 
+ mov (strMax), %r10 
+ sub (strBegin), %r10 
 
+ xor %rdx, %rdx 
+ mov %r10, %rax 
+ mov $2, %rbx
+ div %rbx 
+
+ mov %rax, (deltaSize)
  
  ret 
 

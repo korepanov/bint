@@ -1,6 +1,4 @@
 string cut(string s, string sub_s){
-	print((str(index(s, sub_s)) + "\n"));
-	print((str(len(s)) + "\n"));
 	return (s[index(s, sub_s):len(s)]);
 };
 
@@ -16,7 +14,7 @@ void main(){
 	s = (s + "критиков и коллег-писателей. Аркадий и Борис Стругацкие сразу стали одними ");
 	s = (s + "из самых известных советских фантастов.");
 
-	s = ((cut(s, "1952") + "\n"));	 
+	print((cut(s, "1952") + "\n"));	 
 	
 };
 main();
