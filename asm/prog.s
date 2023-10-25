@@ -1344,6 +1344,10 @@ data22:
 .ascii ""
 .space 1, 0
 lenData22 = . - data22
+data23:
+.ascii "something"
+.space 1, 0
+lenData23 = . - data23
 
 .text
 __initLabels:
@@ -4882,6 +4886,53 @@ __indexEnd:
 
 ret 
 
+__singleSlice:
+# input: %rax - address of the string 
+# %rbx - number
+# output: ^systemVar 
+push %rax 
+push %rbx
+
+mov $lenVarName, %rsi 
+mov $varName, %rdx 
+mov $lenSystemVarName, %rax 
+mov $systemVarName, %rdi 
+call __set 
+call __getVar
+
+mov (userData), %rsi 
+call __clear
+
+pop %rax 
+pop %rbx
+
+push %rax 
+push %rbx 
+
+mov %rax, %rsi 
+call __len  
+mov %rax, %rsi 
+
+pop %rbx 
+pop %rax 
+
+# check if we are out of bounds 
+cmp $0, %rbx 
+jl __singleSliceException
+cmp %rbx, %rsi 
+jle __sliceException
+
+mov (userData), %rsi 
+# make slice 
+mov (%rax), %bl 
+mov %bl, (%rsi)
+inc %rsi 
+movb $0, (%rsi)
+ret 
+__singleSliceException:
+mov $sliceBoundError, %rsi 
+call __throughUserError 
+
 __slice:
 # input: %rax - address of the string 
 # %rbx - left number 
@@ -7144,7 +7195,19 @@ mov $lenVarName, %rsi
  call __defineVar
 jmp .main_end
 .main:
+mov $data23, %rax 
+mov $0, %rbx
+call __singleSlice
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenSystemVarName, %rax 
+ mov $systemVarName, %rdi
+ call __set 
+ call __getVar
+ mov (userData), %rsi 
+ call __print 
 
+call __throughError 
 mov $data6, %rsi
 call __print
 mov $data7, %rsi
