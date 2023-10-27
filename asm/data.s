@@ -1168,7 +1168,7 @@ varName2:
 .space 1, 0
 lenVarName2 = . - varName2
 data2:
-.ascii "banana"
+.ascii "something"
 .space 1, 0
 lenData2 = . - data2
 varName3:
@@ -1183,11 +1183,49 @@ varName5:
 .ascii "$sl_right0"
 .space 1, 0
 lenVarName5 = . - varName5
-data3:
-.ascii "2"
-.space 1, 0
-lenData3 = . - data3
 varName6:
-.ascii "$sl0"
+.ascii "$l0"
 .space 1, 0
 lenVarName6 = . - varName6
+data3:
+.ascii "3"
+.space 1, 0
+lenData3 = . - data3
+varName7:
+.ascii "$sl0"
+.space 1, 0
+lenVarName7 = . - varName7
+varName8:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName8 = . - varName8
+data4:
+.ascii "\n"
+.space 1, 0
+lenData4 = . - data4
+label1:
+ .quad .main_end
+labelName1:
+.ascii ".main_end"
+.space 1,0
+data5:
+.ascii ""
+.space 1, 0
+lenData5 = . - data5
+data6:
+.ascii "#main_res0"
+.space 1, 0
+lenData6 = . - data6
+label2:
+ .quad .main_res0
+labelName2:
+.ascii ".main_res0"
+.space 1,0
+data7:
+.ascii ""
+.space 1, 0
+lenData7 = . - data7
+data8:
+.ascii ""
+.space 1, 0
+lenData8 = . - data8

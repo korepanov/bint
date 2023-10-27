@@ -760,34 +760,47 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 							os.Exit(1)
 						}
 						DataNumber++
-
-						lenS := "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", varVal)])
-						s := "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", varVal)])
-
-						_, err = programDest.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenS +
-							", %rax \n mov " + fmt.Sprintf("%v", s) + ", %rdi\n call __set " +
-							"\ncall __getVar"))
-						if nil != err {
-							fmt.Println(err)
-							os.Exit(1)
-						}
-
-						//(userData) has address of the string
-						// number in the (buf3)
-
-						_, err = programDest.Write([]byte("\nmov (userData), %rax \n mov (buf3), %rbx \n call __singleSlice"))
-
-						if nil != err {
-							fmt.Println(err)
-							os.Exit(1)
-						}
-
-						exprList = exprList[0:2]
-						exprList = append(exprList, []interface{}{"VAL", []interface{}{true, "$systemVarName"}})
-
 					} else {
-						panic("parser.go: ERROR: variables in slice with one index is not realized")
+						_, err := programDest.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+							", %rax \n mov " + fmt.Sprintf("%v", number) + ", %rdi\n call __set " +
+							"\n call __getVar \n mov (userData), %rsi \n call __len \n mov $lenBuf3, %rsi \n mov $buf3, %rdx \n " +
+							"mov (userData), %rdi\n call __set "))
+						if nil != err {
+							fmt.Println(err)
+							os.Exit(1)
+						}
+						_, err = programDest.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3" +
+							", %rax \n mov $buf3, %rdi\n call __set \n call __toNumber \n mov %rax, (buf3)"))
+						if nil != err {
+							fmt.Println(err)
+							os.Exit(1)
+						}
 					}
+
+					lenS := "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", varVal)])
+					s := "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", varVal)])
+
+					_, err = programDest.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenS +
+						", %rax \n mov " + fmt.Sprintf("%v", s) + ", %rdi\n call __set " +
+						"\ncall __getVar"))
+					if nil != err {
+						fmt.Println(err)
+						os.Exit(1)
+					}
+
+					//(userData) has address of the string
+					// number in the (buf3)
+
+					_, err = programDest.Write([]byte("\nmov (userData), %rax \n mov (buf3), %rbx \n call __singleSlice"))
+
+					if nil != err {
+						fmt.Println(err)
+						os.Exit(1)
+					}
+
+					exprList = exprList[0:2]
+					exprList = append(exprList, []interface{}{"VAL", []interface{}{true, "$systemVarName"}})
+
 				}
 			}
 
