@@ -4903,8 +4903,8 @@ call __getVar
 mov (userData), %rsi 
 call __clear
 
-pop %rax 
 pop %rbx
+pop %rax
 
 push %rax 
 push %rbx 
@@ -4923,6 +4923,7 @@ cmp %rbx, %rsi
 jle __sliceException
 
 mov (userData), %rsi 
+add %rbx, %rax 
 # make slice 
 mov (%rax), %bl 
 mov %bl, (%rsi)
@@ -7206,7 +7207,8 @@ mov $lenVarName, %rsi
  call __getVar
  mov (userData), %rsi 
  call __print 
-
+ mov $enter, %rsi 
+ call __print 
 call __throughError 
 mov $data6, %rsi
 call __print
