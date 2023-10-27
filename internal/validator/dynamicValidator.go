@@ -1130,6 +1130,7 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 			panic(err)
 		}
 
+		tail = tail[:strings.Index(tail, "{")]
 		locs := reg.FindAllIndex([]byte(tail), -1)
 		variables = append(variables, [][]interface{}{})
 
