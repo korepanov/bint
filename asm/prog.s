@@ -245,6 +245,9 @@ parseBoolError:
 sliceBoundError:
 .ascii "slice index is out of bounds\n"
 .space 1, 0 
+isLetterError:
+.ascii "is_letter argument length error\n"
+.space 1, 0 
 
  t0: 
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
@@ -1345,7 +1348,7 @@ data22:
 .space 1, 0
 lenData22 = . - data22
 data23:
-.ascii "something"
+.ascii "g"
 .space 1, 0
 lenData23 = . - data23
 
@@ -5002,6 +5005,42 @@ __sliceException:
 mov $sliceBoundError, %rsi 
 call __throughUserError 
 
+__isLetter:
+# only for English language!
+# input: %rax - address of the string 
+# output: 
+# %rbx = 0 - is not letter 
+# %rbx = 1 - is letter
+push %rax
+
+mov %rax, %rsi 
+call __len 
+cmp $1, %rax 
+jnz __isLetterException
+
+pop %rax
+mov (%rax), %bl 
+
+cmp $65, %bl 
+jl __isLetterNo  
+cmp $91, %bl 
+jl __isLetterYes
+cmp $97, %bl
+jl __isLetterNo 
+cmp $123, %bl 
+jl __isLetterYes 
+
+__isLetterNo:
+xor %rbx, %rbx 
+ret 
+__isLetterYes:
+mov $1, %rbx 
+ret 
+__isLetterException:
+mov $isLetterError, %rsi 
+call __throughUserError
+ret 
+
 .globl _start
 _start:
  call __initLabels
@@ -7198,17 +7237,13 @@ jmp .main_end
 .main:
 mov $data23, %rax 
 mov $0, %rbx
-call __singleSlice
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenSystemVarName, %rax 
- mov $systemVarName, %rdi
- call __set 
- call __getVar
- mov (userData), %rsi 
- call __print 
- mov $enter, %rsi 
- call __print 
+call __isLetter 
+mov %rbx, %rax 
+call __toStr 
+mov $buf2, %rsi 
+call __print 
+mov $enter, %rsi 
+call __print 
 call __throughError 
 mov $data6, %rsi
 call __print
