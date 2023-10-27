@@ -3399,6 +3399,44 @@ __sliceException:
 mov $sliceBoundError, %rsi 
 call __throughUserError 
 
+
+__isLetter:
+# only for English language!
+# input: %rax - address of the string 
+# output: 
+# %rbx = 0 - is not letter 
+# %rbx = 1 - is letter
+push %rax
+
+mov %rax, %rsi 
+call __len 
+cmp $1, %rax 
+jnz __isLetterException
+
+pop %rax
+mov (%rax), %bl 
+
+cmp $65, %bl 
+jl __isLetterNo  
+cmp $91, %bl 
+jl __isLetterYes
+cmp $97, %bl
+jl __isLetterNo 
+cmp $123, %bl 
+jl __isLetterYes 
+
+__isLetterNo:
+xor %rbx, %rbx 
+ret 
+__isLetterYes:
+mov $1, %rbx 
+ret 
+__isLetterException:
+mov $isLetterError, %rsi 
+call __throughUserError
+ret
+
+
 .globl _start
 _start:
  call __initLabels

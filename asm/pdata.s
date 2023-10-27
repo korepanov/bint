@@ -245,3 +245,6 @@ parseBoolError:
 sliceBoundError:
 .ascii "slice index is out of bounds\n"
 .space 1, 0 
+isLetterError:
+.ascii "is_letter argument length error\n"
+.space 1, 0 
