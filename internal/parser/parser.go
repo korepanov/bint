@@ -667,10 +667,11 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 					newVariable = EachVariable(variables)
 					for v := newVariable(); "end" != v[0]; v = newVariable() {
 						if fmt.Sprintf("%v", v[1]) == fmt.Sprintf("%v", exprListInside[0][1]) {
-							if !toTranspile {
+							if !toTranspile && nil == programDest {
 								exprListInside[0][0] = "VAL"
 								exprListInside[0][1] = v[2]
-							} else {
+							}
+							if toTranspile && nil == programDest {
 								exprListInside[0][0] = "VAL"
 								exprListInside[0][1] = "toInt(getVar(\"" + fmt.Sprintf("%v", v[1]) + "\"))"
 							}
@@ -711,11 +712,13 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 					var isVarLO bool
 					var lenLO string
 
+					newVariable = EachVariable(variables)
 					for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
 						if fmt.Sprintf("%v", number) == fmt.Sprintf("%v", v[1]) {
 							isVarLO = true
 							lenLO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", number)])
 							number = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", number)])
+							break
 						}
 					}
 					if !isVarLO {
@@ -724,7 +727,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 							fmt.Println(err)
 							os.Exit(1)
 						}
-						t := fmt.Sprintf("%v", ValueFoldInterface(number))
+						t := fmt.Sprintf("%v", ValueFoldInterface([]interface{}{number}))
 
 						if len(t) > 1 && "\"" == string(t[0]) && "\"" == string(t[len(t)-1]) {
 							t = t[1 : len(t)-1]
@@ -772,7 +775,6 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 						//(userData) has address of the string
 						// number in the (buf3)
 
-						// for debug
 						_, err = programDest.Write([]byte("\nmov (userData), %rax \n mov (buf3), %rbx \n call __singleSlice"))
 
 						if nil != err {
