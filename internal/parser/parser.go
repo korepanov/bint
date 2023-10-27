@@ -772,11 +772,17 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 						//(userData) has address of the string
 						// number in the (buf3)
 
+						// for debug
+						_, err = programDest.Write([]byte("\nmov (userData), %rax \n mov (buf3), %rbx \n call __singleSlice"))
+
+						if nil != err {
+							fmt.Println(err)
+							os.Exit(1)
+						}
+
 						exprList = exprList[0:2]
 						exprList = append(exprList, []interface{}{"VAL", []interface{}{true, "$systemVarName"}})
-						fmt.Println(exprList)
 
-						panic("parser.go: ERROR: slice with one index is not realized")
 					} else {
 						panic("parser.go: ERROR: variables in slice with one index is not realized")
 					}

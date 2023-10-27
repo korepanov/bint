@@ -3282,6 +3282,55 @@ __indexEnd:
 
 ret 
 
+__singleSlice:
+# input: %rax - address of the string 
+# %rbx - number
+# output: ^systemVar 
+push %rax 
+push %rbx
+
+mov $lenVarName, %rsi 
+mov $varName, %rdx 
+mov $lenSystemVarName, %rax 
+mov $systemVarName, %rdi 
+call __set 
+call __getVar
+
+mov (userData), %rsi 
+call __clear
+
+pop %rbx
+pop %rax
+
+push %rax 
+push %rbx 
+
+mov %rax, %rsi 
+call __len  
+mov %rax, %rsi 
+
+pop %rbx 
+pop %rax 
+
+# check if we are out of bounds 
+cmp $0, %rbx 
+jl __singleSliceException
+cmp %rbx, %rsi 
+jle __sliceException
+
+mov (userData), %rsi 
+add %rbx, %rax 
+# make slice 
+mov (%rax), %bl 
+mov %bl, (%rsi)
+inc %rsi 
+movb $0, (%rsi)
+ret 
+__singleSliceException:
+mov $sliceBoundError, %rsi 
+call __throughUserError 
+
+
 __slice:
 # input: %rax - address of the string 
 # %rbx - left number 
