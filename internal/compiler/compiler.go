@@ -194,15 +194,6 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 	} else if "index" == OP {
 
-		if len(fmt.Sprintf("%v", LO[0])) >= 2 && `"` == string(fmt.Sprintf("%v", LO[0])[0]) &&
-			`"` == string(fmt.Sprintf("%v", LO[0])[len(fmt.Sprintf("%v", LO[0]))-1]) {
-			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
-		}
-		if len(fmt.Sprintf("%v", RO[0])) >= 2 && `"` == string(fmt.Sprintf("%v", RO[0])[0]) &&
-			`"` == string(fmt.Sprintf("%v", RO[0])[len(fmt.Sprintf("%v", RO[0]))-1]) {
-			RO[0] = RO[0].(string)[1 : len(RO[0].(string))-1]
-		}
-
 		var lenLO string
 		var lenRO string
 		isVarLO := false
@@ -221,6 +212,15 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				lenRO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", RO[0])])
 				RO[0] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", RO[0])])
 			}
+		}
+
+		if len(fmt.Sprintf("%v", LO[0])) >= 2 && `"` == string(fmt.Sprintf("%v", LO[0])[0]) &&
+			`"` == string(fmt.Sprintf("%v", LO[0])[len(fmt.Sprintf("%v", LO[0]))-1]) {
+			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
+		}
+		if len(fmt.Sprintf("%v", RO[0])) >= 2 && `"` == string(fmt.Sprintf("%v", RO[0])[0]) &&
+			`"` == string(fmt.Sprintf("%v", RO[0])[len(fmt.Sprintf("%v", RO[0]))-1]) {
+			RO[0] = RO[0].(string)[1 : len(RO[0].(string))-1]
 		}
 
 		if 2 == len(LO) && true == LO[0] {
@@ -4079,10 +4079,6 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 		panic("compiler.go: could not compile float() operation")
 	} else if "bool" == OP {
-		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
-			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
-		}
-
 		var lenLO string
 		isVarLO := false
 		var computedLO bool
@@ -4095,6 +4091,10 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				lenLO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
 				LO[0] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
 			}
+		}
+
+		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
+			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
 		}
 
 		if 2 == len(LO) && true == LO[0] {
@@ -4245,19 +4245,10 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 		return []interface{}{0}, systemStack, "", nil
 	} else if "is_letter" == OP {
-		if "string" != WhatsType(fmt.Sprintf("%v", LO[0])) {
-			err := errors.New("executor: is_letter : error: data type mismatch")
-			return LO, systemStack, "", err
-		}
 		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
 		}
-		if 1 != len(fmt.Sprintf("%v", LO[0])) {
-			err := errors.New("executor: is_letter : error: length of the argument is more than 1, argument: " +
-				fmt.Sprintf("%v", LO[0]))
-
-			return LO, systemStack, "", err
-		}
+		panic("compiler.go: is_letter() is not realized in the compiler")
 		return []interface{}{unicode.IsLetter([]rune(fmt.Sprintf("%v", LO[0]))[0])}, systemStack, "", nil
 	} else if "is_digit" == OP {
 		if "string" != WhatsType(fmt.Sprintf("%v", LO[0])) {
