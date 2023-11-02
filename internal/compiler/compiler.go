@@ -4359,27 +4359,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		panic("compiler.go: could not compile exit() operation")
-		/*code, err := strconv.Atoi(fmt.Sprintf("%v", LO[0]))
-		if nil != err {
-			panic(err)
-		}
-		_, err = progFile.Write([]byte("\nmov $60,   %rax\n"))
-		if nil != err {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		_, err = progFile.Write([]byte("mov $" + fmt.Sprintf("%v", code) + ", %rdi\n"))
-		if nil != err {
-			fmt.Println(err)
-			os.Exit(1)
-		}
 
-		_, err = progFile.Write([]byte("syscall\n"))
-		if nil != err {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-		return []interface{}{0}, systemStack, "", nil*/
 	} else if "is_letter" == OP {
 		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
