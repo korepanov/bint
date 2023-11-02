@@ -3,6 +3,7 @@
 string root_source;
 int num;
 bool first_file;
+string condition;
 
 void init(){
 	num = 0;
@@ -93,8 +94,6 @@ void main(){
 			was_internal_for = False;
 			command_len = len(command);
 			command = command[4:command_len];
-			buf = "if(True){print(\"\")";
-			send_command(buf);
 			send_command(command);
 			switch_command();
 			send_command(command);
@@ -103,6 +102,7 @@ void main(){
 			buf = (("#for" + snum) + ":print(\"\")");
 			send_command(buf);  
 			buf = (("if(" + command) + "){print(\"\")");
+			condition = buf;
 			send_command(buf);
 			switch_command();
 			counter = block_end();
@@ -146,13 +146,14 @@ void main(){
 				goto(#next_internal);			
 			};
 			send_command(inc);
+			send_command(command);			
+			send_command(condition);
 			buf = (("goto(#for" + snum) + ")");
+			send_command(buf);
+			buf = "}";
 			send_command(buf); 
-			send_command(command);
 			command = (("#for" + snum) + "_end:print(\"\")");
 			send_command(command); 
-			command = "}";
-			send_command(command);
 			num = (num + 1);
 		}else{
 			send_command(command);

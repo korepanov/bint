@@ -1,12 +1,12 @@
 package validator
 
 import (
+	"fmt"
+	"os"
+
 	"bint.com/internal/const/options"
 	. "bint.com/internal/internalTools"
 	. "bint.com/pkg/serviceTools"
-	"fmt"
-	"os"
-	"path/filepath"
 )
 
 func Validate(toTranslate int, filesListToExecute []string, rootSource string,
@@ -21,13 +21,13 @@ func Validate(toTranslate int, filesListToExecute []string, rootSource string,
 		}
 	}()
 
-	var err error
-	var name string
+	//var err error
+	//var name string
 
 	if options.UserTranslate == toTranslate ||
 		(options.Internal == toTranslate && (options.Internal == sysMode || options.UserTranslate == sysMode)) {
 		// статическая валидация
-		name, err = StaticValidate(rootSource)
+		/*name, err = StaticValidate(rootSource)
 
 		if nil != err {
 			FileToExecute = name
@@ -80,7 +80,7 @@ func Validate(toTranslate int, filesListToExecute []string, rootSource string,
 			}
 			validatingFile := "benv/internal/trace_program.b"
 			DynamicValidate(validatingFile, rootSource)
-		}
+		}*/
 
 	}
 }

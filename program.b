@@ -1,9 +1,13 @@
 void main(){
-	if (is_letter("s")){
-		print("YES");	
-	}else{
-		print("NO");	
+	string s;
+	s = "something";
+	for (int i; i = 0; i < 5; i = (i+1)){
+		string s;
+		s = "nothing";
+		print("Hello world!\n");	
 	};
-	print("\n");
+
+	print((s + "\n"));
 };
+
 main();

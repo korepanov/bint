@@ -1150,14 +1150,145 @@ varName0:
 .space 1, 0
 lenVarName0 = . - varName0
 varName1:
-.ascii "a"
+.ascii "$main_return_var"
 .space 1, 0
 lenVarName1 = . - varName1
+label0:
+ .quad .main
+labelName0:
+.ascii ".main"
+.space 1,0
 data0:
-.ascii "5"
+.ascii ""
 .space 1, 0
 lenData0 = . - data0
 data1:
-.ascii "3"
+.ascii ""
 .space 1, 0
 lenData1 = . - data1
+varName2:
+.ascii "s"
+.space 1, 0
+lenVarName2 = . - varName2
+data2:
+.ascii "something"
+.space 1, 0
+lenData2 = . - data2
+varName3:
+.ascii "i"
+.space 1, 0
+lenVarName3 = . - varName3
+data3:
+.ascii "0"
+.space 1, 0
+lenData3 = . - data3
+label1:
+ .quad .for0
+labelName1:
+.ascii ".for0"
+.space 1,0
+data4:
+.ascii ""
+.space 1, 0
+lenData4 = . - data4
+data5:
+.ascii "5"
+.space 1, 0
+lenData5 = . - data5
+data6:
+.ascii ""
+.space 1, 0
+lenData6 = . - data6
+varName4:
+.ascii "s"
+.space 1, 0
+lenVarName4 = . - varName4
+data7:
+.ascii "nothing"
+.space 1, 0
+lenData7 = . - data7
+varName5:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName5 = . - varName5
+data8:
+.ascii "Hello world!\n"
+.space 1, 0
+lenData8 = . - data8
+data9:
+.ascii "1"
+.space 1, 0
+lenData9 = . - data9
+label2:
+ .quad ._cond0_end
+labelName2:
+.ascii "._cond0_end"
+.space 1,0
+data10:
+.ascii ""
+.space 1, 0
+lenData10 = . - data10
+data11:
+.ascii "5"
+.space 1, 0
+lenData11 = . - data11
+data12:
+.ascii ""
+.space 1, 0
+lenData12 = . - data12
+label3:
+ .quad ._cond1_end
+labelName3:
+.ascii "._cond1_end"
+.space 1,0
+data13:
+.ascii ""
+.space 1, 0
+lenData13 = . - data13
+label4:
+ .quad .for0_end
+labelName4:
+.ascii ".for0_end"
+.space 1,0
+data14:
+.ascii ""
+.space 1, 0
+lenData14 = . - data14
+data15:
+.ascii ""
+.space 1, 0
+lenData15 = . - data15
+varName6:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName6 = . - varName6
+data16:
+.ascii "\n"
+.space 1, 0
+lenData16 = . - data16
+label5:
+ .quad .main_end
+labelName5:
+.ascii ".main_end"
+.space 1,0
+data17:
+.ascii ""
+.space 1, 0
+lenData17 = . - data17
+data18:
+.ascii "#main_res0"
+.space 1, 0
+lenData18 = . - data18
+label6:
+ .quad .main_res0
+labelName6:
+.ascii ".main_res0"
+.space 1,0
+data19:
+.ascii ""
+.space 1, 0
+lenData19 = . - data19
+data20:
+.ascii ""
+.space 1, 0
+lenData20 = . - data20
