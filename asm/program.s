@@ -4898,25 +4898,19 @@ mov $lenVarName, %rsi
  mov $varName, %rcx 
  mov $varType, %rdx  
  call __defineVar
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName0, %rax 
- mov $varName0, %rdi
- call __set 
- call __getVar 
- mov (userData), %rsi 
- call __len 
  mov $lenBuf, %rsi 
  mov $buf, %rdx 
- mov (userData), %rdi
- call __set
- call __userToNumber
- call __toStr 
+ mov $lenData1, %rax 
+ mov $data1, %rdi 
+ call __set 
+ call __userParseFloat
+ movss %xmm0, (buf) 
+ call __floatToStr 
   
  mov $lenT0, %rsi 
  mov $t0, %rdx 
- mov $lenBuf2, %rax 
- mov $buf2, %rdi
+ mov $lenUserData, %rax 
+ mov $userData, %rdi
  call __set
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -4949,7 +4943,7 @@ mov $lenVarName, %rsi
  call __getVar
  mov (userData), %rsi 
  call __print
-mov $data1, %rsi
+mov $data2, %rsi
 call __print
 mov $60,  %rax
 xor %rdi, %rdi

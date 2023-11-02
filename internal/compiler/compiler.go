@@ -3918,9 +3918,6 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		panic("compiler.go: could not compile int() operation")
 
 	} else if "float" == OP {
-		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
-			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
-		}
 
 		var lenLO string
 		isVarLO := false
@@ -3934,6 +3931,10 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 				lenLO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
 				LO[0] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
 			}
+		}
+
+		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
+			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
 		}
 
 		if 2 == len(LO) && true == LO[0] {

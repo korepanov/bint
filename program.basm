@@ -1,7 +1,7 @@
 string s;
 s = "25";
 int i;
-i = int(s);
+i = float(26);
 s = str(i);
 print(s);
 print("\n");
