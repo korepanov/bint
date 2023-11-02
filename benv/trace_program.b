@@ -1,11 +1,7 @@
 $fileprogram.b$;
 $trace1$;
-print("");
+inta;
 $trace2$;
-print("");
+a=5;
 $trace3$;
-stringa;
-$trace4$;
-a="bla";
-$trace5$;
-exit(a);
+exit((a-3));

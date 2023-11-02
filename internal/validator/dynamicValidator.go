@@ -378,11 +378,32 @@ func dValidateNextCommand(command string, variables [][][]interface{}) (string, 
 }
 
 func dValidateExit(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
-	tail, stat := check(`(?:exit\(.*?\))`, command)
+	tail, stat := check(`(?:exit.*)`, command)
 
 	if status.Yes == stat && `` == tail {
 		tail, _ = check(`(?:exit\()`, command)
 		tail = tail[:len(tail)-1]
+
+		var allVariables [][]interface{}
+
+		for _, v := range variables {
+			allVariables = append(allVariables, v...)
+		}
+		res, _, err := lexer.LexicalAnalyze(tail, allVariables, false, false, nil, false, nil, nil, nil, nil)
+
+		for _, el := range res {
+			if "+" == el[1] || "-" == el[1] || "*" == el[1] || "/" == el[1] || "@" == el[1] || "^" == el[1] {
+				if "(" != res[0][1] || ")" != res[len(res)-1][1] {
+					return ``, status.Err, variables, errors.New("invalid brace format")
+				}
+				break
+			}
+		}
+
+		if nil != err {
+			return ``, status.Err, variables, err
+		}
+
 		t, err := getExprType(tail, variables)
 		if nil != err {
 			return ``, status.Err, variables, err

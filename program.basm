@@ -1,3 +1,4 @@
-int a;
-a = 1;
-exit(((2+7)-a));
+string$ret;
+inta;
+a=5;
+exit((a-3));

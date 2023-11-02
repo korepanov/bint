@@ -1,5 +1,3 @@
-//int a;
-//a = 5;
-string a;
-a = "bla";
-exit(a);
+int a;
+a = 5;
+exit((a-3));
