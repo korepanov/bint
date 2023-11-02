@@ -1,9 +1,11 @@
 $fileprogram.b$;
 $trace1$;
-boolb;
-$trace2$;
 strings;
+$trace2$;
+s="bla";
 $trace3$;
-s="True";
+strings2;
 $trace4$;
-b=bool("s");
+s2=("car"+s);
+$trace5$;
+print((s2+"\n"));
