@@ -4898,20 +4898,15 @@ call __set
  mov %rax, (userData)
  xor %rax, %rax
 call __setVar
-mov $data1, %rax 
- mov %rax, (buf3)
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
  call __set 
  call __getVar 
- mov (userData), %rax 
- mov %rax, (buf4) 
-mov (buf3), %rsi 
- mov (buf4), %rdi 
- call __index 
- call __toStr 
+ mov (userData), %rsi 
+ call __len
+call __toStr  
  mov $lenT0, %rsi 
  mov $t0, %rdx 
  mov $lenBuf2, %rax 
@@ -4948,7 +4943,7 @@ mov $lenVarName, %rsi
  call __getVar
  mov (userData), %rsi 
  call __print
-mov $data2, %rsi
+mov $data1, %rsi
 call __print
 mov $60,  %rax
 xor %rdi, %rdi
