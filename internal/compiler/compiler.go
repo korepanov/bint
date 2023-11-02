@@ -4179,7 +4179,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "int", nil
 		}
 
-		panic("compiler.go: could not compile int() operation")
+		panic("compiler.go: could not compile bool() operation")
 
 	} else if "input" == OP {
 		var s string
