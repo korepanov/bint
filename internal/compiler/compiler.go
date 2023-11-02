@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
-	"strconv"
 	"strings"
 	"unicode"
 
@@ -4189,14 +4188,178 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 	} else if "goto" == OP {
 		return []interface{}{"goto", LO[0]}, systemStack, "", nil
 	} else if "exit" == OP {
-		if "int" != WhatsType(fmt.Sprintf("%v", LO[0])) {
-			err := errors.New("executor: exit: error: data type mismatch")
-			return LO, systemStack, "", err
+		var lenLO string
+		isVarLO := false
+		var computedLO bool
+
+		newVariable := EachVariable(variables)
+
+		for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
+			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
+				isVarLO = true
+				lenLO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+				LO[0] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+			}
 		}
+
 		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
 		}
-		code, err := strconv.Atoi(fmt.Sprintf("%v", LO[0]))
+
+		if 2 == len(LO) && true == LO[0] {
+			computedLO = true
+
+			if len(fmt.Sprintf("%v", LO[1])) > 10 && "$systemVar" == fmt.Sprintf("%v", LO[1])[0:10] {
+				lenLO = "$lenSystemVarName" + string(fmt.Sprintf("%v", LO[1])[len(fmt.Sprintf("%v", LO[1]))-1])
+
+				_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+					", %rax \n mov " + fmt.Sprintf("%v", LO[1]) + ", %rdi\n call __set " +
+					"\n call __getVar \n mov (userData), %rsi \n call __len \n mov $lenBuf3, %rsi \n mov $buf3, %rdx \n " +
+					"mov (userData), %rdi\n call __set "))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+
+			} else {
+				lenLO = "$lenT" + string(fmt.Sprintf("%v", LO[1])[len(fmt.Sprintf("%v", LO[1]))-1])
+
+				t := fmt.Sprintf("%v", LO[1])
+				if "$" == string(t[0]) {
+					t = t[1:]
+				}
+				_, err := progFile.Write([]byte("\nmov $lenBuf3, %rsi \n mov $buf3, %rdx \n mov " + lenLO + ", %rax \n mov $" +
+					t + ", %rdi\n call __set"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+			}
+
+			LO = []interface{}{LO[1]}
+		}
+
+		if !isVarLO && !computedLO {
+			_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			t := fmt.Sprintf("%v", ValueFoldInterface(LO[0]))
+
+			if len(t) > 1 && "\"" == string(t[0]) && "\"" == string(t[len(t)-1]) {
+				t = t[1 : len(t)-1]
+			}
+			_, err = dataFile.Write([]byte("\n.ascii \"" + t + "\"\n.space 1, 0"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = dataFile.Write([]byte("\nlenData" + fmt.Sprintf("%v", DataNumber) + " = . - data" + fmt.Sprintf("%v", DataNumber)))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			LO[0] = "$data" + fmt.Sprintf("%v", DataNumber)
+			lenLO = "$lenData" + fmt.Sprintf("%v", DataNumber)
+
+			DataNumber++
+
+			_, err = progFile.Write([]byte("\n mov $lenBuf, %rsi \n mov $buf, %rdx \n mov " + lenLO + ", %rax \n mov " + fmt.Sprintf("%v", LO[0]) +
+				", %rdi \n call __set \n call __toNumber\n mov %rax, (buf)"))
+
+			_, err = progFile.Write([]byte("\nmov $60,   %rax\n"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = progFile.Write([]byte("mov (buf), %rdi\n"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			_, err = progFile.Write([]byte("syscall\n"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			return []interface{}{0}, systemStack, "", nil
+
+		}
+		if isVarLO && !computedLO {
+			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
+				"\n call __getVar \n mov (userData), %rsi \n call __len \n mov $lenBuf, %rsi \n mov $buf, %rdx \n " +
+				"mov (userData), %rdi\n call __set"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = progFile.Write([]byte("\n call __toNumber\n mov %rax, (buf)"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			_, err = progFile.Write([]byte("\nmov $60,   %rax\n"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = progFile.Write([]byte("mov (buf), %rdi\n"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			_, err = progFile.Write([]byte("syscall\n"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			return []interface{}{0}, systemStack, "", nil
+		}
+
+		if !isVarLO && computedLO {
+
+			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3" +
+				", %rax \n mov $buf3, %rdi\n call __set "))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = progFile.Write([]byte("\n call __toNumber\n mov %rax, (buf)"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			_, err = progFile.Write([]byte("\nmov $60,   %rax\n"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = progFile.Write([]byte("mov (buf), %rdi\n"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			_, err = progFile.Write([]byte("syscall\n"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			return []interface{}{0}, systemStack, "", nil
+		}
+
+		panic("compiler.go: could not compile exit() operation")
+		/*code, err := strconv.Atoi(fmt.Sprintf("%v", LO[0]))
 		if nil != err {
 			panic(err)
 		}
@@ -4216,7 +4379,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		return []interface{}{0}, systemStack, "", nil
+		return []interface{}{0}, systemStack, "", nil*/
 	} else if "is_letter" == OP {
 		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
