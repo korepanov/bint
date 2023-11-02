@@ -1,12 +1,13 @@
 package validator
 
 import (
-	"bint.com/internal/const/status"
-	. "bint.com/pkg/serviceTools"
 	"errors"
 	"os"
 	"regexp"
 	"strings"
+
+	"bint.com/internal/const/status"
+	. "bint.com/pkg/serviceTools"
 )
 
 const (
@@ -145,6 +146,17 @@ func validateStandardFuncCall(command string, funcName string, argNum int,
 }
 
 func validateFuncDefinition(command string) (tail string, stat int, err error) {
+	tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void)(_|[[:digit:]])[[:alnum:]|_]*?\`+
+		`((?:((int|float|bool|string|stack))[[:alnum:]|_]+\,){0,})(int|float|bool|string|stack)[[:alnum:]|_]+\){`, command)
+	if status.Yes == stat {
+		return ``, status.Err, errors.New("invalid function name")
+	}
+	tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void)(_|[[:digit:]])[[:alnum:]|_]*?\`+
+		`(\){)`, command)
+	if status.Yes == stat {
+		return ``, status.Err, errors.New("invalid function name")
+	}
+
 	tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void)[[:alnum:]|_]*?\`+
 		`((?:((int|float|bool|string|stack))[[:alnum:]|_]+\,){0,})(int|float|bool|string|stack)[[:alnum:]|_]+\){`, command)
 	if status.Yes == stat {

@@ -1,7 +1,13 @@
 $fileprogram.b$;
 $trace1$;
-inta;
+voidmain(){if(is_letter("s")){print("YES");
 $trace2$;
-a=5;
+}else{print("NO");
 $trace3$;
-exit((a-3));
+};
+$trace4$;
+print("\n");
+$trace5$;
+};
+$trace6$;
+main();
