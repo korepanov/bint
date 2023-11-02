@@ -1,7 +1,6 @@
-string s;
-s = "25";
-int i;
-i = float(26);
-s = str(i);
-print(s);
-print("\n");
+string$ret;
+print("");
+print("");
+stringa;
+a="bla";
+exit(-1);

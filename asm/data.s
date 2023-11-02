@@ -1146,22 +1146,22 @@ systemVarName127:
 .space 1, 0
 lenSystemVarName127 = . - systemVarName127
 varName0:
-.ascii "s"
+.ascii "$ret"
 .space 1, 0
 lenVarName0 = . - varName0
 data0:
-.ascii "25"
+.ascii ""
 .space 1, 0
 lenData0 = . - data0
-varName1:
-.ascii "i"
-.space 1, 0
-lenVarName1 = . - varName1
 data1:
-.ascii "26"
+.ascii ""
 .space 1, 0
 lenData1 = . - data1
+varName1:
+.ascii "a"
+.space 1, 0
+lenVarName1 = . - varName1
 data2:
-.ascii "\n"
+.ascii "bla"
 .space 1, 0
 lenData2 = . - data2

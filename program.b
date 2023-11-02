@@ -1,5 +1,5 @@
-string s;
-s = "bla";
-string s2;
-s2 = ("car" + s);
-print((s2 + "\n")); 
+//int a;
+//a = 5;
+string a;
+a = "bla";
+exit(-1);

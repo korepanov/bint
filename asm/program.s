@@ -4875,76 +4875,35 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName0, %rax 
- mov $varName0, %rdi 
-call __set
-
- mov $data0, %rax  
- mov %rax, (userData)
- xor %rax, %rax
-call __setVar
-mov $lenVarName, %rsi 
- mov $varName, %rdx
- mov $lenVarName1, %rax 
- mov $varName1, %rdi 
- call __set 
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenIntType, %rax 
- mov $intType, %rdi 
- call __set 
- mov $varName, %rcx 
- mov $varType, %rdx  
- call __defineVar
- mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenData1, %rax 
- mov $data1, %rdi 
- call __set 
- call __userParseFloat
- movss %xmm0, (buf) 
- call __floatToStr 
-  
- mov $lenT0, %rsi 
- mov $t0, %rdx 
- mov $lenUserData, %rax 
- mov $userData, %rdi
- call __set
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi 
- call __set
+mov $data0, %rsi
+call __print
+mov $data1, %rsi
+call __print
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi
  call __set 
- mov $t0, %rax 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
+call __set
+
+ mov $data2, %rax  
  mov %rax, (userData)
- xor %rax, %rax 
- call __setVar
-mov $lenVarName, %rsi 
- mov $varName, %rdx
- mov $lenVarName0, %rax 
- mov $varName0, %rdi
- call __set
-mov $varName1, %rax
-mov %rax, (userData)
- mov $1, %rax
+ xor %rax, %rax
 call __setVar
-mov $lenVarName, %rsi 
- mov $varName, %rdx
- mov $lenVarName0, %rax 
- mov $varName0, %rdi
- call __set
- call __getVar
- mov (userData), %rsi 
- call __print
-mov $data2, %rsi
-call __print
+mov $60,   %rax
+mov $-1, %rdi
+syscall
+
 mov $60,  %rax
 xor %rdi, %rdi
 syscall

@@ -1,11 +1,11 @@
 $fileprogram.b$;
 $trace1$;
-strings;
+print("");
 $trace2$;
-s="bla";
+print("");
 $trace3$;
-strings2;
+stringa;
 $trace4$;
-s2=("car"+s);
+a="bla";
 $trace5$;
-print((s2+"\n"));
+exit(-1);

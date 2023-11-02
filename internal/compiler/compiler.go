@@ -4200,7 +4200,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		if nil != err {
 			panic(err)
 		}
-		_, err = progFile.Write([]byte("mov $60,   %rax\n"))
+		_, err = progFile.Write([]byte("\nmov $60,   %rax\n"))
 		if nil != err {
 			fmt.Println(err)
 			os.Exit(1)
