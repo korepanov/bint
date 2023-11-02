@@ -4871,8 +4871,8 @@ mov $lenVarName, %rsi
  call __set 
  mov $lenVarType, %rsi 
  mov $varType, %rdx 
- mov $lenIntType, %rax 
- mov $intType, %rdi 
+ mov $lenBoolType, %rax 
+ mov $boolType, %rdi 
  call __set 
  mov $varName, %rcx 
  mov $varType, %rdx  
@@ -4905,8 +4905,15 @@ mov $lenVarName, %rsi
  call __set 
  call __getVar 
  mov (userData), %rsi 
- call __len
-call __toStr  
+ call __len 
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov (userData), %rdi
+ call __set
+mov $buf, %rdi 
+ call __exists
+ call __toStr 
+  
  mov $lenT0, %rsi 
  mov $t0, %rdx 
  mov $lenBuf2, %rax 

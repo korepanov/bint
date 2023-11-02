@@ -1146,7 +1146,7 @@ systemVarName127:
 .space 1, 0
 lenSystemVarName127 = . - systemVarName127
 varName0:
-.ascii "i"
+.ascii "b"
 .space 1, 0
 lenVarName0 = . - varName0
 varName1:
@@ -1154,7 +1154,7 @@ varName1:
 .space 1, 0
 lenVarName1 = . - varName1
 data0:
-.ascii "bla"
+.ascii "test.txt"
 .space 1, 0
 lenData0 = . - data0
 data1:

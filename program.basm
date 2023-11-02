@@ -1,7 +1,7 @@
-int i;
+bool b;
 string s;
-s = "bla";
-i = len(s);
-s = str(i);
+s = "test.txt";
+b = exists(s);
+s = str(b);
 print(s);
 print("\n");
