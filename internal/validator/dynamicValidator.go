@@ -1210,6 +1210,7 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 		stat = status.Yes
 	} else {
 		stat = status.No
+		return command, stat, variables, nil
 	}
 
 	return tail, stat, variables, nil

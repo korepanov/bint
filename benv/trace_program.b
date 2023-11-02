@@ -8,4 +8,4 @@ stringa;
 $trace4$;
 a="bla";
 $trace5$;
-exit(-1);
+exit(a);

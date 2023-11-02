@@ -3,4 +3,4 @@ print("");
 print("");
 stringa;
 a="bla";
-exit(-1);
+exit(a);
