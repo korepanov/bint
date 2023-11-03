@@ -4,7 +4,9 @@ void main(){
 	for (int i; i = 0; i < 5; i = (i+1)){
 		string s;
 		s = "nothing";
-		break;
+		if (i < 3){
+			continue;		
+		};
 		print("Hello world!\n");	
 	};
 
