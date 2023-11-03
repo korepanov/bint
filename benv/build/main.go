@@ -7863,7 +7863,7 @@ print("")
 goto _cond10_end
 }
 getVar("$DEST").(*os.File).WriteString(getVar("inc").(string) + ";\n")
-setVar("command",sum(sum("goto(#_for", getVar("snum")), ")"))
+setVar("command",sum(sum("goto(#_undef_for", getVar("snum")), ")"))
 goto _cond10_end
 _cond10_end:
 fmt.Print("")

@@ -7,6 +7,12 @@ void main(){
 		if (i < 3){
 			continue;		
 		};
+
+		for (int j; j = 0; j < 5; j = (j + 1)){
+			string s;
+			s = "slava";
+			break; 		
+		};
 		print("Hello world!\n");	
 	};
 

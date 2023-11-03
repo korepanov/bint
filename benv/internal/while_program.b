@@ -389,7 +389,7 @@ command=(("goto(#_undef_for"+snum)+")");
 print("");
 if(("continue"==command)AND(NOT(was_internal_for))){print("");
 send_command(inc);
-command=(("goto(#_for"+snum)+")");
+command=(("goto(#_undef_for"+snum)+")");
 };
 print("");
 send_command(command);

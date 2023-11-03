@@ -144,7 +144,7 @@ void main(){
 				};
 				if (("continue" == command) AND (NOT(was_internal_for))){
 					send_command(inc);
-					command = (("goto(#_for" + snum) + ")");				
+					command = (("goto(#_undef_for" + snum) + ")");					
 				};
 				send_command(command);
 				goto(#next_internal);			
