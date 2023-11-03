@@ -7677,7 +7677,7 @@ setVar("$s0", "")
 setVar("$s0",getVar("num"))
 setVar("snum", getVar("$s0"))
 undefineVar("$s0")
-setVar("buf",sum(sum("#for", getVar("snum")), ":print(\"\")"))
+setVar("buf",sum(sum("#_for", getVar("snum")), ":print(\"\")"))
 getVar("$DEST").(*os.File).WriteString(getVar("buf").(string) + ";\n")
 setVar("buf",sum(sum("if(", getVar("command")), "){print(\"\")"))
 setVar("condition", getVar("buf"))
@@ -7848,7 +7848,7 @@ print("")
 }else{
 goto _cond9_end
 }
-setVar("command",sum(sum("goto(#for", getVar("snum")), "_end)"))
+setVar("command",sum(sum("goto(#_for", getVar("snum")), "_end)"))
 goto _cond9_end
 _cond9_end:
 fmt.Print("")
@@ -7859,7 +7859,7 @@ print("")
 goto _cond10_end
 }
 getVar("$DEST").(*os.File).WriteString(getVar("inc").(string) + ";\n")
-setVar("command",sum(sum("goto(#for", getVar("snum")), ")"))
+setVar("command",sum(sum("goto(#_for", getVar("snum")), ")"))
 goto _cond10_end
 _cond10_end:
 fmt.Print("")
@@ -7873,11 +7873,11 @@ fmt.Print("")
 getVar("$DEST").(*os.File).WriteString(getVar("inc").(string) + ";\n")
 getVar("$DEST").(*os.File).WriteString(getVar("command").(string) + ";\n")
 getVar("$DEST").(*os.File).WriteString(getVar("condition").(string) + ";\n")
-setVar("buf",sum(sum("goto(#for", getVar("snum")), ")"))
+setVar("buf",sum(sum("goto(#_for", getVar("snum")), ")"))
 getVar("$DEST").(*os.File).WriteString(getVar("buf").(string) + ";\n")
 setVar("buf","}")
 getVar("$DEST").(*os.File).WriteString(getVar("buf").(string) + ";\n")
-setVar("command",sum(sum("#for", getVar("snum")), "_end:print(\"\")"))
+setVar("command",sum(sum("#_for", getVar("snum")), "_end:print(\"\")"))
 getVar("$DEST").(*os.File).WriteString(getVar("command").(string) + ";\n")
 setVar("num",sum(getVar("num"), 1))
 goto _cond_exit0

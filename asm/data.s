@@ -1183,9 +1183,9 @@ data3:
 .space 1, 0
 lenData3 = . - data3
 label1:
- .quad .for0
+ .quad ._for0
 labelName1:
-.ascii ".for0"
+.ascii "._for0"
 .space 1,0
 data4:
 .ascii ""
@@ -1246,9 +1246,9 @@ data13:
 .space 1, 0
 lenData13 = . - data13
 label4:
- .quad .for0_end
+ .quad ._for0_end
 labelName4:
-.ascii ".for0_end"
+.ascii "._for0_end"
 .space 1,0
 data14:
 .ascii ""

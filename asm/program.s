@@ -4937,7 +4937,7 @@ call __set
  mov %rax, (userData)
  xor %rax, %rax
 call __setVar
-.for0:
+._for0:
 
 mov $data4, %rsi
 call __print
@@ -5144,12 +5144,12 @@ jmp __rightEnd1
  __right1:
 jmp ._cond1_end
 __rightEnd1:
-jmp .for0
+jmp ._for0
 ._cond1_end:
 
 mov $data13, %rsi
 call __print
-.for0_end:
+._for0_end:
 
 mov $data14, %rsi
 call __print

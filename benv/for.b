@@ -99,7 +99,9 @@ void main(){
 			send_command(command);
 			switch_command();
 			snum = str(num);
-			buf = (("#for" + snum) + ":print(\"\")");
+			buf = ("bool $for" + snum);
+			send_command(buf);
+			buf = (("#_for" + snum) + ":print(\"\")");
 			send_command(buf);  
 			buf = (("if(" + command) + "){print(\"\")");
 			condition = buf;
@@ -136,11 +138,13 @@ void main(){
 				};
 
 				if (("break" == command) AND (NOT(was_internal_for))){
-					command = (("goto(#for" + snum) + "_end)");				
+					command = (("$for" + snum) + "=True"); 
+					send_command(command);
+					command = (("goto(#_undef_for" + snum) + ")");				
 				};
 				if (("continue" == command) AND (NOT(was_internal_for))){
 					send_command(inc);
-					command = (("goto(#for" + snum) + ")");				
+					command = (("goto(#_for" + snum) + ")");				
 				};
 				send_command(command);
 				goto(#next_internal);			
@@ -148,12 +152,18 @@ void main(){
 			send_command(inc);
 			send_command(command);			
 			send_command(condition);
-			buf = (("goto(#for" + snum) + ")");
+			buf = (("goto(#_for" + snum) + ")");
+			send_command(buf);
+			buf = (("#_undef_for" + snum) + ":print(\"\")");
 			send_command(buf);
 			buf = "}";
 			send_command(buf); 
-			command = (("#for" + snum) + "_end:print(\"\")");
+			buf = (((("if($for" + snum) + "){\ngoto(#_for") + snum) + "_end)\n}");
+			send_command(buf);
+			command = (("#_for" + snum) + "_end:print(\"\")");
 			send_command(command); 
+			command = (("UNDEFINE($for" + snum) + ")");
+			send_command(command);
 			num = (num + 1);
 		}else{
 			send_command(command);
