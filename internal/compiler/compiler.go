@@ -4453,7 +4453,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 		}
 		if isVarLO && !computedLO {
-			panic("compiler.go: is_letter(): vars in LO is not realized")
+			panic("compiler.go: is_letter(): vars in LO are not realized")
 			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
 				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
 				"\n call __getVar \n mov (userData), %rsi \n call __len \n mov $lenBuf, %rsi \n mov $buf, %rdx \n " +

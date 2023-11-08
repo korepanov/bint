@@ -4894,9 +4894,30 @@ call __print
 mov $data1, %rsi
 call __print
 mov $lenVarName, %rsi 
- mov $varName, %rdx
+ mov $varName, %rdx 
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
  mov $lenVarName2, %rax 
  mov $varName2, %rdi 
+call __set
+
+ mov $data2, %rax  
+ mov %rax, (userData)
+ xor %rax, %rax
+call __setVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName3, %rax 
+ mov $varName3, %rdi 
  call __set 
  mov $lenVarType, %rsi 
  mov $varType, %rdx 
@@ -4906,23 +4927,3 @@ mov $lenVarName, %rsi
  mov $varName, %rcx 
  mov $varType, %rdx  
  call __defineVar
-mov $lenBuf3, %rsi 
- mov $buf3, %rdx 
- mov $lenData2, %rax 
- mov $data2, %rdi
- call __set
-mov $lenBuf4, %rsi 
- mov $buf4, %rdx 
- mov $lenData3, %rax 
- mov $data3, %rdi
- call __set
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenSystemVarName0, %rax 
- mov $systemVarName0, %rdi 
- call __set
-mov $data2, %r8
-mov $data3, %r9
- xor %rax, %rax 
- xor %rbx, %rbx 
- call __userConcatinate
