@@ -1,6 +1,6 @@
 $fileprogram.b$;
 $trace1$;
-voidmain(){if(is_letter("1")){print("YES\n");
+voidmain(){if(is_letter("s")){print("YES\n");
 $trace2$;
 }else{print("NO\n");
 $trace3$;
