@@ -4380,7 +4380,6 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		if 2 == len(LO) && true == LO[0] {
-			panic("compiler.go: is_letter(): computed LO is not realized")
 			computedLO = true
 
 			if len(fmt.Sprintf("%v", LO[1])) > 10 && "$systemVar" == fmt.Sprintf("%v", LO[1])[0:10] {
@@ -4453,16 +4452,14 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 		}
 		if isVarLO && !computedLO {
-			panic("compiler.go: is_letter(): vars in LO are not realized")
 			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
 				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
-				"\n call __getVar \n mov (userData), %rsi \n call __len \n mov $lenBuf, %rsi \n mov $buf, %rdx \n " +
-				"mov (userData), %rdi\n call __set"))
+				"\n call __getVar \n mov (userData), %rax \n call __isLetter"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			_, err = progFile.Write([]byte("\n call __userParseBool\n mov %rax, (buf) \n call __boolToStr \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+			_, err = progFile.Write([]byte("\nmov %rbx, (buf) \n call __boolToStr \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
 				", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
 			if nil != err {
 				fmt.Println(err)
@@ -4470,25 +4467,6 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			}
 
 			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "bool", nil
-		}
-
-		if !isVarLO && computedLO {
-
-			_, err := progFile.Write([]byte("\nmov $lenBuf, %rsi \n mov $buf, %rdx \n mov $lenBuf3" +
-				", %rax \n mov $buf3, %rdi\n call __set "))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-			_, err = progFile.Write([]byte("\n call __userParseBool\n mov %rax, (buf) \n call __boolToStr \n  \n mov $lenT" + fmt.Sprintf("%v", tNumber) +
-				", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
-				", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-
-			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "int", nil
 		}
 
 		panic("compiler.go: could not compile is_letter() operation")

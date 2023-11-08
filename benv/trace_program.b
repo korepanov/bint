@@ -1,10 +1,10 @@
 $fileprogram.b$;
 $trace1$;
-voidmain(){stringb;
+voidmain(){strings;
 $trace2$;
-b="s";
+s="something";
 $trace3$;
-if(is_letter(b)){print("YES\n");
+if(is_letter(s[3])){print("YES\n");
 $trace4$;
 }else{print("NO\n");
 $trace5$;
