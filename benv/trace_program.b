@@ -10,7 +10,7 @@ i=0;
 $trace5$;
 i<len(s);
 $trace6$;
-i=(i+1)){if(is_digit(s[i])){print(s[i]);
+i=(i+1)){if(is_letter(s[i])){print(s[i]);
 $trace7$;
 };
 $trace8$;

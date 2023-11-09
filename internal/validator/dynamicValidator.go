@@ -1048,7 +1048,7 @@ func dValidateSliceInternal(command string, variables [][][]interface{}) (string
 	if nil != re.FindIndex([]byte(tail)) {
 		var poses [][]int
 		poses = re.FindAllIndex([]byte(tail), -1)
-		var replacerArgs []string
+
 		for _, pos := range poses {
 			pos[1], err = getSliceEnd(tail, pos[0]+1)
 			if nil != err {
@@ -1078,12 +1078,16 @@ func dValidateSliceInternal(command string, variables [][][]interface{}) (string
 					return tail, variables, errors.New("data type mismatch in slice: int and " + t)
 				}
 			}
-			replacerArgs = append(replacerArgs, tail[pos[0]+1:pos[1]-1])
-			replacerArgs = append(replacerArgs, `$ival`)
+
+			tail = tail[:pos[0]+1] + `$ival` + tail[pos[1]-1:]
+
+			internalLen := len(tail[pos[0]+1 : pos[1]-1])
+			for _, pos := range poses {
+				pos[0] = pos[0] + 5 - internalLen
+				pos[1] = pos[1] + 5 - internalLen
+			}
 		}
 
-		r := strings.NewReplacer(replacerArgs...)
-		tail = r.Replace(tail)
 		return tail, variables, nil
 	}
 	return command, variables, nil
