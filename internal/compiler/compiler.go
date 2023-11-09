@@ -4181,6 +4181,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		panic("compiler.go: could not compile bool() operation")
 
 	} else if "input" == OP {
+		panic("compiler.go: input is not realize in the compiler")
 		var s string
 		_, err := fmt.Scan(&s)
 		return []interface{}{s}, systemStack, "", err
@@ -4863,24 +4864,6 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 		}
 	}
 
-	/*if "input" == OP {
-		newVariable := EachVariable(variables)
-		for v := newVariable(); "end" != v[0]; v = newVariable() {
-			if fmt.Sprintf("%v", v[1]) == fmt.Sprintf("%v", LO[0]) {
-				var err error
-				if "string" != v[0] {
-					err = errors.New("executor: input: ERROR: data type mismatch")
-					panic(err)
-				}
-				v[2], systemStack, err = compile(systemStack, OP, LO, RO, dataFile, progFile, variables)
-				if nil != err {
-					panic(err)
-				}
-				break
-			}
-		}
-	}*/
-
 	if "next_command" == OP || "get_root_source" == OP || "get_root_dest" == OP {
 		newVariable := EachVariable(variables)
 		for v := newVariable(); "end" != v[0]; v = newVariable() {
@@ -5041,7 +5024,7 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 	}*/
 
 	var res []interface{}
-	if "input" != OP && "pop" != OP {
+	if "pop" != OP {
 		var err error
 		var passLO []interface{}
 		var passRO []interface{}
