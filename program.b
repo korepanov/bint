@@ -1,11 +1,14 @@
 void main(){
 	string s;
-	s = "1";
-	if ((NOT(is_digit(s)))AND(NOT(is_letter(s)))){
-		print("YES\n");	
-	}else{
-		print("NO\n");	
+	s = "so1me2thi3ng";
+
+	for (int i; i = 0; i < len(s); i = (i + 1)){
+		if (is_digit(s[i])){
+			print(s[i]);		
+		};	
 	};
+
+	print("\n"); 
 };
 
 main();
