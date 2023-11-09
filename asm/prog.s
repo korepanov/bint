@@ -248,6 +248,9 @@ sliceBoundError:
 isLetterError:
 .ascii "is_letter argument length error\n"
 .space 1, 0 
+isDigitError:
+.ascii "is_digit argument length error\n"
+.space 1, 0 
 
  t0: 
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
@@ -1348,7 +1351,7 @@ data22:
 .space 1, 0
 lenData22 = . - data22
 data23:
-.ascii "g"
+.ascii "1"
 .space 1, 0
 lenData23 = . - data23
 
@@ -5041,6 +5044,37 @@ mov $isLetterError, %rsi
 call __throughUserError
 ret 
 
+__isDigit:
+# input: %rax - address of the string 
+# output: 
+# %rbx = 0 - is not digit 
+# %rbx = 1 - is digit 
+push %rax
+
+mov %rax, %rsi 
+call __len 
+cmp $1, %rax 
+jnz __isDigitException
+
+pop %rax
+mov (%rax), %bl 
+
+cmp $48, %bl 
+jl __isDigitNo  
+cmp $58, %bl 
+jl __isDigitYes
+
+__isDigitNo:
+xor %rbx, %rbx 
+ret 
+__isDigitYes:
+mov $1, %rbx 
+ret 
+__isDigitException:
+mov $isDigitError, %rsi 
+call __throughUserError
+ret 
+
 .globl _start
 _start:
  call __initLabels
@@ -7237,7 +7271,7 @@ jmp .main_end
 .main:
 mov $data23, %rax 
 mov $0, %rbx
-call __isLetter 
+call __isDigit  
 mov %rbx, %rax 
 call __toStr 
 mov $buf2, %rsi 
@@ -7245,6 +7279,8 @@ call __print
 mov $enter, %rsi 
 call __print 
 call __throughError 
+
+
 mov $data6, %rsi
 call __print
 mov $data7, %rsi
