@@ -248,6 +248,9 @@ sliceBoundError:
 isLetterError:
 .ascii "is_letter argument length error\n"
 .space 1, 0 
+isDigitError:
+.ascii "is_digit argument length error\n"
+.space 1, 0 
 
  t0: 
  .quad 0, 0, 0, 0, 0, 0, 0, 0 

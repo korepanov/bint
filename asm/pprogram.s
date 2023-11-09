@@ -3436,6 +3436,36 @@ mov $isLetterError, %rsi
 call __throughUserError
 ret
 
+__isDigit:
+# input: %rax - address of the string 
+# output: 
+# %rbx = 0 - is not digit 
+# %rbx = 1 - is digit 
+push %rax
+
+mov %rax, %rsi 
+call __len 
+cmp $1, %rax 
+jnz __isDigitException
+
+pop %rax
+mov (%rax), %bl 
+
+cmp $48, %bl 
+jl __isDigitNo  
+cmp $58, %bl 
+jl __isDigitYes
+
+__isDigitNo:
+xor %rbx, %rbx 
+ret 
+__isDigitYes:
+mov $1, %rbx 
+ret 
+__isDigitException:
+mov $isDigitError, %rsi 
+call __throughUserError
+ret
 
 .globl _start
 _start:
