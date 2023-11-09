@@ -909,6 +909,24 @@ func dValidateIsDigit(command string, variables [][][]interface{}) (string, [][]
 			if nil != err {
 				return tail, variables, err
 			}
+
+			var allVariables [][]interface{}
+
+			for _, v := range variables {
+				allVariables = append(allVariables, v...)
+			}
+			res, _, err := lexer.LexicalAnalyze(tail[pos[0]+10:exprEnd-1], allVariables, false, false, nil, false, nil, nil, nil, nil)
+
+			if nil != err {
+				return tail, variables, err
+			}
+
+			for _, el := range res {
+				if "+" == el[1] || "-" == el[1] || "*" == el[1] || "/" == el[1] || "@" == el[1] || "^" == el[1] {
+					return ``, variables, errors.New("arithmetic expression in the is_digit() operation is not allowed")
+				}
+			}
+
 			t, err := getExprType(tail[pos[0]+9:exprEnd-1], variables)
 			if nil != err {
 				return tail, variables, err

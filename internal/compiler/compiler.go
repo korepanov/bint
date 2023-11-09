@@ -8,7 +8,6 @@ import (
 	"os/exec"
 	"regexp"
 	"strings"
-	"unicode"
 
 	. "bint.com/internal/compilerVars"
 	"bint.com/internal/lexer"
@@ -4471,20 +4470,115 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 		panic("compiler.go: could not compile is_letter() operation")
 	} else if "is_digit" == OP {
-		if "string" != WhatsType(fmt.Sprintf("%v", LO[0])) {
-			err := errors.New("executor: is_digit : error: data type mismatch")
-			return LO, systemStack, "", err
+		var lenLO string
+		isVarLO := false
+		var computedLO bool
+
+		newVariable := EachVariable(variables)
+
+		for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
+			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
+				isVarLO = true
+				lenLO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+				LO[0] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+			}
 		}
+
 		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
 		}
-		if 1 != len(fmt.Sprintf("%v", LO[0])) {
-			err := errors.New("executor: is_digit : error: length of the argument is more than 1, argument: " +
-				fmt.Sprintf("%v", LO[0]))
 
-			return LO, systemStack, "", err
+		if 2 == len(LO) && true == LO[0] {
+			computedLO = true
+
+			if len(fmt.Sprintf("%v", LO[1])) > 10 && "$systemVar" == fmt.Sprintf("%v", LO[1])[0:10] {
+				lenLO = "$lenSystemVarName" + string(fmt.Sprintf("%v", LO[1])[len(fmt.Sprintf("%v", LO[1]))-1])
+
+				_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+					", %rax \n mov " + fmt.Sprintf("%v", LO[1]) + ", %rdi\n call __set " +
+					"\n call __getVar \n mov (userData), %rsi \n call __len \n mov $lenBuf3, %rsi \n mov $buf3, %rdx \n " +
+					"mov (userData), %rdi\n call __set "))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+
+			} else {
+				lenLO = "$lenT" + string(fmt.Sprintf("%v", LO[1])[len(fmt.Sprintf("%v", LO[1]))-1])
+
+				t := fmt.Sprintf("%v", LO[1])
+				if "$" == string(t[0]) {
+					t = t[1:]
+				}
+				_, err := progFile.Write([]byte("\nmov $lenBuf3, %rsi \n mov $buf3, %rdx \n mov " + lenLO + ", %rax \n mov $" +
+					t + ", %rdi\n call __set"))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+			}
+
+			LO = []interface{}{LO[1]}
 		}
-		return []interface{}{unicode.IsDigit([]rune(fmt.Sprintf("%v", LO[0]))[0])}, systemStack, "", nil
+
+		if !isVarLO && !computedLO {
+			_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			t := fmt.Sprintf("%v", ValueFoldInterface(LO[0]))
+
+			if len(t) > 1 && "\"" == string(t[0]) && "\"" == string(t[len(t)-1]) {
+				t = t[1 : len(t)-1]
+			}
+			_, err = dataFile.Write([]byte("\n.ascii \"" + t + "\"\n.space 1, 0"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = dataFile.Write([]byte("\nlenData" + fmt.Sprintf("%v", DataNumber) + " = . - data" + fmt.Sprintf("%v", DataNumber)))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			LO[0] = "$data" + fmt.Sprintf("%v", DataNumber)
+			lenLO = "$lenData" + fmt.Sprintf("%v", DataNumber)
+
+			DataNumber++
+
+			_, err = progFile.Write([]byte("\n mov " + fmt.Sprintf("%v", LO[0]) +
+				", %rax \n call __isDigit\n mov %rbx, (buf) \n call __boolToStr \n  \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+				", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
+
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "bool", nil
+
+		}
+		if isVarLO && !computedLO {
+			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
+				"\n call __getVar \n mov (userData), %rax \n call __isDigit"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			_, err = progFile.Write([]byte("\nmov %rbx, (buf) \n call __boolToStr \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+				", %rdx \n mov $lenUserData, %rax \n mov $userData, %rdi\n call __set"))
+			if nil != err {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+
+			return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "bool", nil
+		}
+
+		panic("compiler.go: could not compile is_digit() operation")
 	} else if "SET_SOURCE" == OP {
 		if "\"" == string(fmt.Sprintf("%v", LO[0])[0]) {
 			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]

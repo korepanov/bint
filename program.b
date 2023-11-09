@@ -1,7 +1,7 @@
 void main(){
 	string s;
-	s = "som1thing";
-	if (((is_letter(s[3]))AND(is_letter(s[0])))){
+	s = "1";
+	if ((NOT(is_digit(s)))AND(NOT(is_letter(s)))){
 		print("YES\n");	
 	}else{
 		print("NO\n");	
