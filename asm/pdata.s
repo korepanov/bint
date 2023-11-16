@@ -33,6 +33,9 @@ lenBuf3 = . - buf3
 buf4:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenBuf4 = . - buf4
+inputBuf:
+.byte 0
+lenInputBuf = . - inputBuf 
 userMem:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenUserMem = . - userMem 

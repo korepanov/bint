@@ -4181,10 +4181,31 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		panic("compiler.go: could not compile bool() operation")
 
 	} else if "input" == OP {
-		panic("compiler.go: input is not realize in the compiler")
-		var s string
-		_, err := fmt.Scan(&s)
-		return []interface{}{s}, systemStack, "", err
+		var lenLO string
+		isVarLO := false
+
+		newVariable := EachVariable(variables)
+
+		for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
+			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
+				isVarLO = true
+				lenLO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+				LO[0] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+			}
+		}
+
+		if !isVarLO {
+			return []interface{}{1}, systemStack, "", errors.New("no such variable in the input() operation, variable: " + fmt.Sprintf("%v", LO[0]))
+		}
+
+		_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+			", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
+			"\n call __input"))
+		if nil != err {
+			return []interface{}{1}, systemStack, "", err
+		}
+
+		return []interface{}{0}, systemStack, "", nil
 	} else if "goto" == OP {
 		return []interface{}{"goto", LO[0]}, systemStack, "", nil
 	} else if "exit" == OP {

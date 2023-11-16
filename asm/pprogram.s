@@ -3467,6 +3467,36 @@ mov $isDigitError, %rsi
 call __throughUserError
 ret
 
+__input:
+# вход: имя переменной по адресу $varName  
+call __getVar
+mov (userData), %rsi  
+call __clear 
+__inputLoop:
+
+mov $lenInputBuf, %rdx 
+mov $inputBuf, %rsi 
+mov $0, %rdi
+mov $0, %rax
+syscall        
+
+mov $inputBuf, %rsi 
+mov (%rsi), %al 
+cmp $'\n', %al
+jz __inputEnd 
+
+mov $varName, %r8 
+mov $inputBuf, %r9 
+mov $1, %rax 
+mov $0, %rbx 
+call __userConcatinate
+
+
+jmp __inputLoop 
+
+__inputEnd:
+ret  
+
 .globl _start
 _start:
  call __initLabels
