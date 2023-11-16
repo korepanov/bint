@@ -5083,6 +5083,8 @@ __input:
 call __getVar
 mov (userData), %rsi  
 call __clear 
+mov (userData), %rsi 
+movb $0, (%rsi)
 __inputLoop:
 
 mov $lenInputBuf, %rdx 

@@ -3471,7 +3471,9 @@ __input:
 # вход: имя переменной по адресу $varName  
 call __getVar
 mov (userData), %rsi  
-call __clear 
+call __clear
+mov (userData), %rsi 
+movb $0, (%rsi) 
 __inputLoop:
 
 mov $lenInputBuf, %rdx 

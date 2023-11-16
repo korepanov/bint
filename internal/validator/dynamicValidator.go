@@ -654,7 +654,7 @@ func dValidateExists(command string, variables [][][]interface{}) (string, [][][
 				return tail, variables, err
 			}
 
-			reOp := regexp.MustCompile(`[\+|\-|\*|\\|\@|\^]`)
+			reOp := regexp.MustCompile(`[\+|\-|\*|\/|\@|\^]`)
 
 			if nil != reOp.FindIndex([]byte(temp)) {
 				return ``, variables, errors.New("invalid arithmetic syntax")
@@ -1568,7 +1568,8 @@ func dValidateArithmetic(command string, variables [][][]interface{}, isOp bool)
 	var replacerArgs []string
 
 	for _, index := range indexes {
-		reOp := regexp.MustCompile(`[\+|\-|\*|\\|\@|\^]`)
+
+		reOp := regexp.MustCompile(`[\+|\-|\*|\/|\@|\^]`)
 		subCommand := command[index[0]:index[1]]
 		indexOp := reOp.FindIndex([]byte(subCommand))
 
@@ -1576,26 +1577,45 @@ func dValidateArithmetic(command string, variables [][][]interface{}, isOp bool)
 			return command, status.Err, errors.New("invalid syntax for the arithmetic expression")
 		}
 
-		left := subCommand[1:indexOp[0]]
-		right := subCommand[indexOp[1] : len(subCommand)-1]
-
-		Tleft, err := getExprType(left, variables)
+		behindVals, err := LookBehind(`[\-]`, subCommand)
 
 		if nil != err {
-			return command, status.Err, err
+			return tail, status.Err, err
 		}
 
-		Tright, err := getExprType(right, variables)
-
-		if nil != err {
-			return command, status.Err, err
+		if len(behindVals) > 1 {
+			return ``, status.Err, errors.New("unresolved command")
 		}
 
-		if Tleft != Tright {
-			return command, status.Err, errors.New("data type mismatch in " + subCommand[indexOp[0]:indexOp[1]] + " : " +
-				Tleft + " and " + Tright)
-		}
+		var Tleft string
 
+		if len(behindVals) > 0 && behindVals[0] == "(" { // unary minus
+			Tleft, err = getExprType(subCommand, variables)
+			if nil != err {
+				return command, status.Err, err
+			}
+		} else {
+
+			left := subCommand[1:indexOp[0]]
+			right := subCommand[indexOp[1] : len(subCommand)-1]
+
+			Tleft, err = getExprType(left, variables)
+
+			if nil != err {
+				return command, status.Err, err
+			}
+
+			Tright, err := getExprType(right, variables)
+
+			if nil != err {
+				return command, status.Err, err
+			}
+
+			if Tleft != Tright {
+				return command, status.Err, errors.New("data type mismatch in " + subCommand[indexOp[0]:indexOp[1]] + " : " +
+					Tleft + " and " + Tright)
+			}
+		}
 		if "int" == Tleft {
 			replacerArgs = append(replacerArgs, subCommand)
 			replacerArgs = append(replacerArgs, `$ival`)
