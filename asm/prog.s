@@ -18,7 +18,7 @@ typeSize:
 valSize:
 .quad 64 
 labelSize:
-.quad 128 
+.quad 128  
 labelsMax:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 buf:
@@ -33,6 +33,9 @@ lenBuf3 = . - buf3
 buf4:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenBuf4 = . - buf4
+inputBuf:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenInputBuf = . - inputBuf 
 userMem:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenUserMem = . - userMem 
@@ -5075,6 +5078,17 @@ mov $isDigitError, %rsi
 call __throughUserError
 ret 
 
+__input:
+  mov $lenInputBuf, %rdx 
+  mov $inputBuf, %rsi 
+  mov $0, %rdi
+  mov $0, %rax
+  syscall        
+
+  mov $inputBuf, %rsi 
+  call __print 
+ret 
+
 .globl _start
 _start:
  call __initLabels
@@ -7269,15 +7283,7 @@ mov $lenVarName, %rsi
  call __defineVar
 jmp .main_end
 .main:
-mov $data23, %rax 
-mov $0, %rbx
-call __isDigit  
-mov %rbx, %rax 
-call __toStr 
-mov $buf2, %rsi 
-call __print 
-mov $enter, %rsi 
-call __print 
+call __input 
 call __throughError 
 
 
