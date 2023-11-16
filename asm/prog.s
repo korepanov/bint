@@ -34,7 +34,7 @@ buf4:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenBuf4 = . - buf4
 inputBuf:
-.quad 0, 0, 0, 0, 0, 0, 0, 0
+.byte 0
 lenInputBuf = . - inputBuf 
 userMem:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
@@ -5079,14 +5079,28 @@ call __throughUserError
 ret 
 
 __input:
-  mov $lenInputBuf, %rdx 
-  mov $inputBuf, %rsi 
-  mov $0, %rdi
-  mov $0, %rax
-  syscall        
+# вход: имя переменной по адресу $varName  
+call __getVar
+mov (userData), %rsi  
+call __clear 
+__inputLoop:
+mov $lenInputBuf, %rdx 
+mov $inputBuf, %rsi 
+mov $0, %rdi
+mov $0, %rax
+syscall        
 
-  mov $inputBuf, %rsi 
-  call __print 
+mov $varName, %r8 
+mov $inputBuf, %r9 
+mov $1, %rax 
+mov $0, %rbx 
+call __userConcatinate
+
+mov $inputBuf, %rsi 
+mov (%rsi), %al 
+cmp $'\n', %al
+jnz __inputLoop 
+
 ret 
 
 .globl _start
@@ -7283,7 +7297,35 @@ mov $lenVarName, %rsi
  call __defineVar
 jmp .main_end
 .main:
-call __input 
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName4, %rax 
+ mov $varName4, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
+
+mov $lenVarName, %rsi 
+mov $varName, %rdx 
+mov $lenVarName4, %rax 
+mov $varName4, %rdi
+call __set 
+call __input
+
+mov $lenVarName, %rsi 
+mov $varName, %rdx 
+mov $lenVarName4, %rax 
+mov $varName4, %rdi
+call __set 
+call __getVar 
+mov (userData), %rsi 
+call __print 
+
+
 call __throughError 
 
 
