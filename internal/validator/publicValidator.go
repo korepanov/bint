@@ -3,7 +3,8 @@ package validator
 import (
 	"fmt"
 	"os"
-	"path/filepath"
+
+	//"path/filepath"
 
 	"bint.com/internal/const/options"
 	. "bint.com/internal/internalTools"
@@ -36,7 +37,7 @@ func Validate(toTranslate int, filesListToExecute []string, rootSource string,
 		}
 		// динамическая валидация
 
-		if options.UserTranslate == toTranslate || (options.Internal == toTranslate && options.UserTranslate == sysMode) {
+		/*if options.UserTranslate == toTranslate || (options.Internal == toTranslate && options.UserTranslate == sysMode) {
 			Start(options.UserValidate, filesListToExecute, rootSource, rootDest, keyDest, sysMode, benvMode)
 			var number int
 			var file string
@@ -81,7 +82,7 @@ func Validate(toTranslate int, filesListToExecute []string, rootSource string,
 			}
 			validatingFile := "benv/internal/trace_program.b"
 			DynamicValidate(validatingFile, rootSource)
-		}
+		}*/
 
 	}
 }

@@ -147,6 +147,10 @@ lenLabelsEnd = . - labelsEnd
 labelsPointer:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenLabelsPointer = . - labelsPointer 
+varNamePanic:
+.ascii "toPanic"
+.space 1, 0
+lenVarNamePanic = . - varNamePanic 
 varNameError:
 .ascii "error"
 .space 1, 0

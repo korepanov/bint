@@ -1,9 +1,11 @@
 $fileprogram.b$;
 $trace1$;
-voidmain(){boolb;
+voidmain(){if(""==error){boolb;
 $trace2$;
 b=True;
 $trace3$;
 };
 $trace4$;
+};
+$trace5$;
 main();
