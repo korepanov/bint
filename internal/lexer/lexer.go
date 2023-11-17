@@ -1,13 +1,14 @@
 package lexer
 
 import (
-	. "bint.com/internal/compilerVars"
-	"bint.com/internal/const/options"
-	. "bint.com/pkg/serviceTools"
 	"errors"
 	"fmt"
 	"os"
 	"unicode"
+
+	. "bint.com/internal/compilerVars"
+	"bint.com/internal/const/options"
+	. "bint.com/pkg/serviceTools"
 )
 
 func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, toCompile bool,
@@ -365,7 +366,7 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 								", %rdi\n call __set \n mov $lenVarType, %rsi \n mov $varType, %rdx \n mov $lenStringType, %rax" +
 								"\n mov $stringType, %rdi\n call __set \n call __defineVar"))
 
-							CompilerVars[fmt.Sprintf("%v", variables[len(variables)-1][1])] = VarsCounter
+							CompilerVars[fmt.Sprintf("%v", variables[len(variables)-1][1])] = fmt.Sprintf("%v", VarsCounter)
 							VarsCounter++
 						} else if "int" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
 							_, err := dataFile.Write([]byte("\nvarName" + fmt.Sprintf("%v", VarsCounter) + ":" +
@@ -386,7 +387,7 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 								fmt.Println(err)
 								os.Exit(1)
 							}
-							CompilerVars[fmt.Sprintf("%v", variables[len(variables)-1][1])] = VarsCounter
+							CompilerVars[fmt.Sprintf("%v", variables[len(variables)-1][1])] = fmt.Sprintf("%v", VarsCounter)
 							VarsCounter++
 						} else if "float" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
 							_, err := dataFile.Write([]byte("\nvarName" + fmt.Sprintf("%v", VarsCounter) + ":" +
@@ -407,7 +408,7 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 								fmt.Println(err)
 								os.Exit(1)
 							}
-							CompilerVars[fmt.Sprintf("%v", variables[len(variables)-1][1])] = VarsCounter
+							CompilerVars[fmt.Sprintf("%v", variables[len(variables)-1][1])] = fmt.Sprintf("%v", VarsCounter)
 							VarsCounter++
 						} else if "bool" == fmt.Sprintf("%v", variables[len(variables)-1][0]) {
 							_, err := dataFile.Write([]byte("\nvarName" + fmt.Sprintf("%v", VarsCounter) + ":" +
@@ -428,7 +429,7 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 								fmt.Println(err)
 								os.Exit(1)
 							}
-							CompilerVars[fmt.Sprintf("%v", variables[len(variables)-1][1])] = VarsCounter
+							CompilerVars[fmt.Sprintf("%v", variables[len(variables)-1][1])] = fmt.Sprintf("%v", VarsCounter)
 							VarsCounter++
 						}
 					}

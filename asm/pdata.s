@@ -147,6 +147,10 @@ lenLabelsEnd = . - labelsEnd
 labelsPointer:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenLabelsPointer = . - labelsPointer 
+varNameError:
+.ascii "error"
+.space 1, 0
+lenVarNameError = . - varNameError 
 systemVarName:
 .ascii "^systemVar"
 .space 1, 0
@@ -216,41 +220,41 @@ fatalError:
 .ascii "fatal error: internal error\n"
 .space 1, 0 
 divZeroError:
-.ascii "runtime error: dividing by zero\n"
+.ascii "runtime error: dividing by zero"
 .space 1, 0
 divINegError:
-.ascii "runtime error: @ is not defined for negative numbers\n"
+.ascii "runtime error: @ is not defined for negative numbers"
 .space 1, 0
 powNegError:
-.ascii "runtime error: ^ is not defined for negative base and fractional exponent\n"
+.ascii "runtime error: ^ is not defined for negative base and fractional exponent"
 .space 1, 0
 powZeroNegError:
-.ascii "runtime error: ^ is not defined for zero base and negative exponent\n"
+.ascii "runtime error: ^ is not defined for zero base and negative exponent"
 .space 1, 0
 powZeroZeroError:
-.ascii "runtime error: ^ is not defined for zero base and zero exponent\n"
+.ascii "runtime error: ^ is not defined for zero base and zero exponent"
 .space 1, 0
 noSuchMarkError:
 .ascii "runtime error: no such mark: "
 .space 1, 0
 concError:
-.ascii "could not concatinate not string arguments\n"
+.ascii "could not concatinate not string arguments"
 .space 1, 0 
 strError:
-.ascii "the type of the variable to which you want to assign the result of string concatenation is not a string\n"
+.ascii "the type of the variable to which you want to assign the result of string concatenation is not a string"
 .space 1, 0 
 parseNumberError:
-.ascii "could not parse number: invalid number format\n"
+.ascii "could not parse number: invalid number format"
 .space 1, 0  
 parseBoolError:
-.ascii "could not parse bool: invalid bool format\n"
+.ascii "could not parse bool: invalid bool format"
 .space 1, 0 
 sliceBoundError:
-.ascii "slice index is out of bounds\n"
+.ascii "slice index is out of bounds"
 .space 1, 0 
 isLetterError:
-.ascii "is_letter argument length error\n"
+.ascii "is_letter argument length error"
 .space 1, 0 
 isDigitError:
-.ascii "is_digit argument length error\n"
+.ascii "is_digit argument length error"
 .space 1, 0 

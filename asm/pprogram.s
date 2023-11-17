@@ -7,10 +7,17 @@ __throughError:
 
  __throughUserError:
  # %rsi - адрес, по которому лежит сообщение об ошибке 
- call __print 
- mov $60, %rax
- mov $1, %rdi
- syscall
+ # puts error message in the error variable
+ mov %rsi, (userData)
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarNameError, %rax 
+ mov $varNameError, %rdi  
+ call __set
+
+ xor %rax, %rax
+ call __setVar
+ ret
 
 __print:
  mov (%rsi), %al	
@@ -491,6 +498,7 @@ __userConcatinateVarsEnd:
  jnz __userConcatinateErrEnd
  mov $strError, %rsi 
  call __throughUserError
+ ret
 
  __userConcatinateErrEnd:
 
@@ -822,6 +830,7 @@ __toNumber:
  __userToNumberException:
  mov $parseNumberError, %rsi 
  call __throughUserError 
+ ret 
 
 __defineVar:
  # адрес имени переменной в $varName
@@ -2175,6 +2184,7 @@ __div:
  __divIsZero:
  mov $divZeroError, %rsi 
  call __throughUserError
+ ret 
 
 __divI:
  # вход: buf и buf2
@@ -2216,9 +2226,11 @@ __divI:
  __divIsZeroI:
  mov $divZeroError, %rsi 
  call __throughUserError
+ ret
 __divINeg:
  mov $divINegError, %rsi 
  call __throughUserError
+ ret 
 
 __pow:
  # вход: buf и buf2
@@ -2285,6 +2297,7 @@ __pow:
  __powNotInt:
  mov $powNegError, %rsi 
  call __throughUserError
+ ret 
  __powInt:
  __powIsPos: 
 
@@ -2335,6 +2348,7 @@ __pow:
  jz __powZeroExpEnd  
  mov $powZeroZeroError, %rsi 
  call __throughUserError
+ ret 
  __powZeroExpEnd: 
  movss (zero), %xmm2 
  movss %xmm0, %xmm3 
@@ -2344,6 +2358,7 @@ __pow:
  jz __powNegExpEnd
  mov $powZeroNegError, %rsi 
  call __throughUserError
+ ret
  __powNegExpEnd:
  call __floatToStr
  ret 
@@ -2737,7 +2752,7 @@ ret
 __userParseFloatException:
 mov $parseNumberError, %rsi 
 call __throughUserError
-
+ret 
 
 
  __goto:
@@ -3091,6 +3106,7 @@ call __throughUserError
  __userParseBoolException:
  mov $parseBoolError, %rsi 
  call __throughUserError
+ ret 
 
 __boolToStr:
  # вход: buf
@@ -3329,6 +3345,7 @@ ret
 __singleSliceException:
 mov $sliceBoundError, %rsi 
 call __throughUserError 
+ret 
 
 
 __slice:
@@ -3398,7 +3415,7 @@ ret
 __sliceException:  
 mov $sliceBoundError, %rsi 
 call __throughUserError 
-
+ret 
 
 __isLetter:
 # only for English language!
@@ -3504,6 +3521,19 @@ _start:
  call __initLabels
  call __firstMem
  call __firstStrMem
+ 
+ # errorVar 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarNameError, %rax 
+ mov $varNameError, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
 
  # ^systemVar 
  mov $lenVarName, %rsi 

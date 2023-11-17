@@ -2353,6 +2353,12 @@ func DynamicValidate(validatingFile string, rootSource string) {
 		panic(err)
 	}
 
+	_, variables[len(variables)-1], err = lexer.LexicalAnalyze("stringerror",
+		variables[len(variables)-1], false, false, nil, false, nil, nil, nil, nil)
+	if nil != err {
+		panic(err)
+	}
+
 	sourceFile = rootSource
 	COMMAND_COUNTER = 1
 

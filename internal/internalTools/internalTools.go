@@ -908,7 +908,14 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	}
 
 	if options.Compile == sysMod {
-		compilerVars.CompilerVars = map[string]int{}
+		compilerVars.CompilerVars = map[string]string{}
+		compilerVars.CompilerVars["error"] = "Error"
+
+		_, variables, err = LexicalAnalyze("stringerror", variables, false, false, nil, false, nil, nil, nil, nil)
+
+		if nil != err {
+			panic(err)
+		}
 
 		dataFile, err := compiler.InitData()
 		if nil != err {
