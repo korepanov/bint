@@ -147,10 +147,15 @@ lenLabelsEnd = . - labelsEnd
 labelsPointer:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenLabelsPointer = . - labelsPointer 
-errorVarName:
+varNamePanic:
+.ascii "toPanic"
+.space 1, 0
+lenVarNamePanic = . - varNamePanic 
+varNameError:
 .ascii "error"
 .space 1, 0
-lenErrorVarName = . - errorVarName
+lenVarNameError = . - varNameError 
+
 systemVarName:
 .ascii "^systemVar"
 .space 1, 0
@@ -1315,7 +1320,7 @@ varName19:
 .space 1, 0
 lenVarName19 = . - varName19
 data16:
-.ascii "12"
+.ascii "bla"
 .space 1, 0
 lenData16 = . - data16
 data17:
@@ -1627,12 +1632,41 @@ __throughError:
  mov %rsi, (userData)
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenErrorVarName, %rax 
- mov $errorVarName, %rdi  
+ mov $lenVarNameError, %rax 
+ mov $varNameError, %rdi  
  call __set
 
  xor %rax, %rax
  call __setVar
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarNamePanic, %rax 
+ mov $varNamePanic, %rdi
+ call __set
+ call __getVar
+ mov (userData), %rax 
+ mov (%rax), %dl 
+ cmp $'0', %dl 
+ jz __throughUserErrorEnd 
+ 
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarNameError, %rax 
+ mov $varNameError, %rdi
+ call __set
+ call __getVar
+ 
+ mov (userData), %rsi 
+ call __print
+ mov $enter, %rsi 
+ call __print 
+ 
+ mov $60, %rax
+ mov $1, %rdi
+ syscall
+
+ __throughUserErrorEnd:
  ret 
 
 __print:
@@ -5138,18 +5172,41 @@ _start:
  call __firstMem
  call __firstStrMem
 
+# toPanic variable
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarNamePanic, %rax 
+ mov $varNamePanic, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenBoolType, %rax 
+ mov $boolType, %rdi
+ call __set 
+ call __defineVar
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarNamePanic, %rax 
+ mov $varNamePanic, %rdi
+ call __set 
+ mov $oneVal, %rax 
+ mov %rax, (userData)
+ xor %rax, %rax 
+ call __setVar
+
 # errorVar 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenErrorVarName, %rax 
- mov $errorVarName, %rdi
+ mov $lenVarNameError, %rax 
+ mov $varNameError, %rdi
  call __set 
  mov $lenVarType, %rsi 
  mov $varType, %rdx 
  mov $lenStringType, %rax 
  mov $stringType, %rdi
  call __set 
- call __defineVar 
+ call __defineVar
 
  # ^systemVar 
  mov $lenVarName, %rsi 
@@ -6940,19 +6997,15 @@ mov $lenBuf4, %rsi
  mov $lenData4, %rax 
  mov $data4, %rdi
  call __set
-
-
-/*mov $lenVarName, %rsi 
+mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName9, %rax 
- mov $varName9, %rdi
-call __set
-call __getVar 
-mov (userData), %rsi 
-call __print 
-call __throughError*/
-
-
+ mov $lenVarName6, %rax 
+ mov $varName6, %rdi
+ call __set 
+ mov $t0, %rax 
+ mov %rax, (userData)
+ xor %rax, %rax 
+ call __setVar
 
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -7340,6 +7393,16 @@ mov $lenVarName, %rsi
 jmp .main_end
 .main: 
  
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarNamePanic, %rax 
+ mov $varNamePanic, %rdi
+ call __set 
+ mov $zeroVal, %rax 
+ mov %rax, (userData)
+ xor %rax, %rax 
+ call __setVar
+
 mov $lenBuf, %rsi 
 mov $buf, %rdx 
 mov $lenData16, %rax 
@@ -7351,8 +7414,8 @@ push %rax
 
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenErrorVarName, %rax 
- mov $errorVarName, %rdi
+ mov $lenVarNameError, %rax 
+ mov $varNameError, %rdi
  call __set 
  call __getVar
 mov (userData), %rsi 
@@ -7362,7 +7425,11 @@ pop %rax
 call __toStr 
 
 mov $buf2, %rsi 
+call __print
+mov $enter, %rsi 
 call __print 
+
+
 call __throughError 
 
 

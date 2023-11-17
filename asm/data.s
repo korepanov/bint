@@ -1177,34 +1177,31 @@ data1:
 .space 1, 0
 lenData1 = . - data1
 varName2:
-.ascii "s"
+.ascii "b"
 .space 1, 0
 lenVarName2 = . - varName2
-varName3:
-.ascii "a"
-.space 1, 0
-lenVarName3 = . - varName3
 data2:
-.ascii ""
+.ascii "1"
 .space 1, 0
 lenData2 = . - data2
+label1:
+ .quad .main_end
+labelName1:
+.ascii ".main_end"
+.space 1,0
 data3:
 .ascii ""
 .space 1, 0
 lenData3 = . - data3
-varName4:
-.ascii "$for0"
-.space 1, 0
-lenVarName4 = . - varName4
-label1:
- .quad ._for0
-labelName1:
-.ascii "._for0"
-.space 1,0
 data4:
-.ascii ""
+.ascii "#main_res0"
 .space 1, 0
 lenData4 = . - data4
+label2:
+ .quad .main_res0
+labelName2:
+.ascii ".main_res0"
+.space 1,0
 data5:
 .ascii ""
 .space 1, 0
@@ -1213,168 +1210,3 @@ data6:
 .ascii ""
 .space 1, 0
 lenData6 = . - data6
-varName5:
-.ascii "$print_arg0"
-.space 1, 0
-lenVarName5 = . - varName5
-data7:
-.ascii "Задайте число:\n"
-.space 1, 0
-lenData7 = . - data7
-varName6:
-.ascii "$F0"
-.space 1, 0
-lenVarName6 = . - varName6
-data8:
-.ascii ""
-.space 1, 0
-lenData8 = . - data8
-data9:
-.ascii ""
-.space 1, 0
-lenData9 = . - data9
-varName7:
-.ascii "$print_arg0"
-.space 1, 0
-lenVarName7 = . - varName7
-data10:
-.ascii "Неверный формат числа\n"
-.space 1, 0
-lenData10 = . - data10
-label2:
- .quad ._cond1_end
-labelName2:
-.ascii "._cond1_end"
-.space 1,0
-data11:
-.ascii ""
-.space 1, 0
-lenData11 = . - data11
-data12:
-.ascii ""
-.space 1, 0
-lenData12 = . - data12
-data13:
-.ascii ""
-.space 1, 0
-lenData13 = . - data13
-data14:
-.ascii ""
-.space 1, 0
-lenData14 = . - data14
-data15:
-.ascii ""
-.space 1, 0
-lenData15 = . - data15
-data16:
-.ascii "1"
-.space 1, 0
-lenData16 = . - data16
-label3:
- .quad ._cond2_end
-labelName3:
-.ascii "._cond2_end"
-.space 1,0
-data17:
-.ascii ""
-.space 1, 0
-lenData17 = . - data17
-data18:
-.ascii ""
-.space 1, 0
-lenData18 = . - data18
-label4:
- .quad ._undef_for0
-labelName4:
-.ascii "._undef_for0"
-.space 1,0
-data19:
-.ascii ""
-.space 1, 0
-lenData19 = . - data19
-label5:
- .quad ._cond0_end
-labelName5:
-.ascii "._cond0_end"
-.space 1,0
-data20:
-.ascii ""
-.space 1, 0
-lenData20 = . - data20
-data21:
-.ascii ""
-.space 1, 0
-lenData21 = . - data21
-label6:
- .quad ._cond3_end
-labelName6:
-.ascii "._cond3_end"
-.space 1,0
-data22:
-.ascii ""
-.space 1, 0
-lenData22 = . - data22
-data23:
-.ascii ""
-.space 1, 0
-lenData23 = . - data23
-label7:
- .quad ._cond4_end
-labelName7:
-.ascii "._cond4_end"
-.space 1,0
-data24:
-.ascii ""
-.space 1, 0
-lenData24 = . - data24
-label8:
- .quad ._for0_end
-labelName8:
-.ascii "._for0_end"
-.space 1,0
-data25:
-.ascii ""
-.space 1, 0
-lenData25 = . - data25
-data26:
-.ascii ""
-.space 1, 0
-lenData26 = . - data26
-varName8:
-.ascii "$print_arg0"
-.space 1, 0
-lenVarName8 = . - varName8
-varName9:
-.ascii "$print_arg0"
-.space 1, 0
-lenVarName9 = . - varName9
-data27:
-.ascii "\n"
-.space 1, 0
-lenData27 = . - data27
-label9:
- .quad .main_end
-labelName9:
-.ascii ".main_end"
-.space 1,0
-data28:
-.ascii ""
-.space 1, 0
-lenData28 = . - data28
-data29:
-.ascii "#main_res0"
-.space 1, 0
-lenData29 = . - data29
-label10:
- .quad .main_res0
-labelName10:
-.ascii ".main_res0"
-.space 1,0
-data30:
-.ascii ""
-.space 1, 0
-lenData30 = . - data30
-data31:
-.ascii ""
-.space 1, 0
-lenData31 = . - data31
