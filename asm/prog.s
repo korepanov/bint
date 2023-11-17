@@ -147,6 +147,10 @@ lenLabelsEnd = . - labelsEnd
 labelsPointer:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenLabelsPointer = . - labelsPointer 
+errorVarName:
+.ascii "error"
+.space 1, 0
+lenErrorVarName = . - errorVarName
 systemVarName:
 .ascii "^systemVar"
 .space 1, 0
@@ -1311,7 +1315,7 @@ varName19:
 .space 1, 0
 lenVarName19 = . - varName19
 data16:
-.ascii "1952"
+.ascii "12"
 .space 1, 0
 lenData16 = . - data16
 data17:
@@ -1619,10 +1623,17 @@ __throughError:
 
  __throughUserError:
  # %rsi - адрес, по которому лежит сообщение об ошибке 
- call __print 
- mov $60, %rax
- mov $1, %rdi
- syscall
+ # puts error message in the error variable
+ mov %rsi, (userData)
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenErrorVarName, %rax 
+ mov $errorVarName, %rdi  
+ call __set
+
+ xor %rax, %rax
+ call __setVar
+ ret 
 
 __print:
  mov (%rsi), %al	
@@ -2103,6 +2114,7 @@ __userConcatinateVarsEnd:
  jnz __userConcatinateErrEnd
  mov $strError, %rsi 
  call __throughUserError
+ ret 
 
  __userConcatinateErrEnd:
 
@@ -2434,6 +2446,7 @@ __toNumber:
  __userToNumberException:
  mov $parseNumberError, %rsi 
  call __throughUserError 
+ ret 
 
 __defineVar:
  # адрес имени переменной в $varName
@@ -3788,6 +3801,7 @@ __div:
  __divIsZero:
  mov $divZeroError, %rsi 
  call __throughUserError
+ ret 
 
 __divI:
  # вход: buf и buf2
@@ -3829,9 +3843,11 @@ __divI:
  __divIsZeroI:
  mov $divZeroError, %rsi 
  call __throughUserError
+ ret 
 __divINeg:
  mov $divINegError, %rsi 
  call __throughUserError
+ ret 
 
 __pow:
  # вход: buf и buf2
@@ -3898,6 +3914,7 @@ __pow:
  __powNotInt:
  mov $powNegError, %rsi 
  call __throughUserError
+ ret 
  __powInt:
  __powIsPos: 
 
@@ -3948,6 +3965,7 @@ __pow:
  jz __powZeroExpEnd  
  mov $powZeroZeroError, %rsi 
  call __throughUserError
+ ret 
  __powZeroExpEnd: 
  movss (zero), %xmm2 
  movss %xmm0, %xmm3 
@@ -3957,6 +3975,7 @@ __pow:
  jz __powNegExpEnd
  mov $powZeroNegError, %rsi 
  call __throughUserError
+ ret 
  __powNegExpEnd:
  call __floatToStr
  ret 
@@ -4350,7 +4369,7 @@ ret
 __userParseFloatException:
 mov $parseNumberError, %rsi 
 call __throughUserError
-
+ret 
 
 
  __goto:
@@ -4704,6 +4723,7 @@ call __throughUserError
  __userParseBoolException:
  mov $parseBoolError, %rsi 
  call __throughUserError
+ ret 
 
 __boolToStr:
  # вход: buf
@@ -4942,6 +4962,7 @@ ret
 __singleSliceException:
 mov $sliceBoundError, %rsi 
 call __throughUserError 
+ret 
 
 __slice:
 # input: %rax - address of the string 
@@ -5009,7 +5030,8 @@ movb $0, (%rdi)
 ret 
 __sliceException:  
 mov $sliceBoundError, %rsi 
-call __throughUserError 
+call __throughUserError
+ret  
 
 __isLetter:
 # only for English language!
@@ -5115,6 +5137,19 @@ _start:
  call __initLabels
  call __firstMem
  call __firstStrMem
+
+# errorVar 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenErrorVarName, %rax 
+ mov $errorVarName, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar 
 
  # ^systemVar 
  mov $lenVarName, %rsi 
@@ -7303,36 +7338,31 @@ mov $lenVarName, %rsi
  call __set 
  call __defineVar
 jmp .main_end
-.main:
+.main: 
+ 
+mov $lenBuf, %rsi 
+mov $buf, %rdx 
+mov $lenData16, %rax 
+mov $data16, %rdi
+call __set
+
+call __userToNumber
+push %rax 
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName4, %rax 
- mov $varName4, %rdi
+ mov $lenErrorVarName, %rax 
+ mov $errorVarName, %rdi
  call __set 
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenStringType, %rax
- mov $stringType, %rdi
- call __set 
- call __defineVar
-
-mov $lenVarName, %rsi 
-mov $varName, %rdx 
-mov $lenVarName4, %rax 
-mov $varName4, %rdi
-call __set 
-call __input
-
-mov $lenVarName, %rsi 
-mov $varName, %rdx 
-mov $lenVarName4, %rax 
-mov $varName4, %rdi
-call __set 
-call __getVar 
+ call __getVar
 mov (userData), %rsi 
 call __print 
 
+pop %rax 
+call __toStr 
 
+mov $buf2, %rsi 
+call __print 
 call __throughError 
 
 
