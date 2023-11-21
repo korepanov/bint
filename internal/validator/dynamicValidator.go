@@ -887,8 +887,9 @@ func dValidateIsLetter(command string, variables [][][]interface{}) (string, [][
 
 		r := strings.NewReplacer(replacerArgs...)
 		tail = r.Replace(tail)
+		return tail, variables, nil
 	}
-	return tail, variables, nil
+	return command, variables, nil
 }
 
 func dValidateIsDigit(command string, variables [][][]interface{}) (string, [][][]interface{}, error) {
@@ -940,8 +941,9 @@ func dValidateIsDigit(command string, variables [][][]interface{}) (string, [][]
 
 		r := strings.NewReplacer(replacerArgs...)
 		tail = r.Replace(tail)
+		return tail, variables, nil
 	}
-	return tail, variables, nil
+	return command, variables, nil
 }
 
 func dValidateIndex(command string, variables [][][]interface{}) (string, [][][]interface{}, error) {
@@ -1079,9 +1081,10 @@ func dValidateSliceInternal(command string, variables [][][]interface{}) (string
 				}
 			}
 
+			internalTail := tail[pos[0]+1 : pos[1]-1]
 			tail = tail[:pos[0]+1] + `$ival` + tail[pos[1]-1:]
 
-			internalLen := len(tail[pos[0]+1 : pos[1]-1])
+			internalLen := len(internalTail)
 			for _, pos := range poses {
 				pos[0] = pos[0] + 5 - internalLen
 				pos[1] = pos[1] + 5 - internalLen
@@ -1097,6 +1100,13 @@ func dValidateSlice(command string, variables [][][]interface{}) (string, [][][]
 	var tail string
 	var err error
 	var replacerArgs []string
+
+	var stat int
+
+	if len(command) > 6 && command[0:6] == "return" {
+		command = command[6:]
+		stat = status.Yes
+	}
 
 	tail, variables, err = dValidateSliceInternal(command, variables)
 
@@ -1126,6 +1136,9 @@ func dValidateSlice(command string, variables [][][]interface{}) (string, [][][]
 	r := strings.NewReplacer(replacerArgs...)
 	tail = r.Replace(tail)
 
+	if status.Yes == stat {
+		tail = "return" + tail
+	}
 	return tail, variables, nil
 }
 func dValidateRegFind(command string, variables [][][]interface{}) (string, [][][]interface{}, error) {
@@ -1419,10 +1432,11 @@ func dValidateReturn(command string, variables [][][]interface{}) (string, int, 
 					errors.New("data type mismatch in func definition and return statement: " + retVal + " and " + exprType)
 			}
 		}
+		return tail, stat, variables, nil
 	} else {
 		stat = status.No
 	}
-	return "", stat, variables, nil
+	return command, stat, variables, nil
 }
 
 func dValidateFuncCall(command string, variables [][][]interface{}, knownUsage bool) (string, int, [][][]interface{}, error) {
