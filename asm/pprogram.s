@@ -17,6 +17,35 @@ __throughError:
 
  xor %rax, %rax
  call __setVar
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarNamePanic, %rax 
+ mov $varNamePanic, %rdi
+ call __set
+ call __getVar
+ mov (userData), %rax 
+ mov (%rax), %dl 
+ cmp $'0', %dl 
+ jz __throughUserErrorEnd 
+ 
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarNameError, %rax 
+ mov $varNameError, %rdi
+ call __set
+ call __getVar
+ 
+ mov (userData), %rsi 
+ call __print
+ mov $enter, %rsi 
+ call __print 
+ 
+ mov $60, %rax
+ mov $1, %rdi
+ syscall
+
+ __throughUserErrorEnd:
  ret
 
 __print:
@@ -3521,7 +3550,30 @@ _start:
  call __initLabels
  call __firstMem
  call __firstStrMem
- 
+
+ # toPanic variable
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarNamePanic, %rax 
+ mov $varNamePanic, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenBoolType, %rax 
+ mov $boolType, %rdi
+ call __set 
+ call __defineVar
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarNamePanic, %rax 
+ mov $varNamePanic, %rdi
+ call __set 
+ mov $oneVal, %rax 
+ mov %rax, (userData)
+ xor %rax, %rax 
+ call __setVar 
+
  # errorVar 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 

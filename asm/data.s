@@ -147,6 +147,10 @@ lenLabelsEnd = . - labelsEnd
 labelsPointer:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenLabelsPointer = . - labelsPointer 
+varNamePanic:
+.ascii "toPanic"
+.space 1, 0
+lenVarNamePanic = . - varNamePanic 
 varNameError:
 .ascii "error"
 .space 1, 0
@@ -1176,37 +1180,98 @@ data1:
 .ascii ""
 .space 1, 0
 lenData1 = . - data1
-varName2:
-.ascii "b"
-.space 1, 0
-lenVarName2 = . - varName2
 data2:
-.ascii "1"
+.ascii "0"
 .space 1, 0
 lenData2 = . - data2
-label1:
- .quad .main_end
-labelName1:
-.ascii ".main_end"
-.space 1,0
 data3:
 .ascii ""
 .space 1, 0
 lenData3 = . - data3
+varName2:
+.ascii "s"
+.space 1, 0
+lenVarName2 = . - varName2
 data4:
-.ascii "#main_res0"
+.ascii "bla"
 .space 1, 0
 lenData4 = . - data4
-label2:
- .quad .main_res0
-labelName2:
-.ascii ".main_res0"
-.space 1,0
+varName3:
+.ascii "i"
+.space 1, 0
+lenVarName3 = . - varName3
+varName4:
+.ascii "$I0"
+.space 1, 0
+lenVarName4 = . - varName4
 data5:
-.ascii ""
+.ascii "1"
 .space 1, 0
 lenData5 = . - data5
 data6:
 .ascii ""
 .space 1, 0
 lenData6 = . - data6
+data7:
+.ascii ""
+.space 1, 0
+lenData7 = . - data7
+varName5:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName5 = . - varName5
+data8:
+.ascii "Неверный формат числа\n"
+.space 1, 0
+lenData8 = . - data8
+label1:
+ .quad ._cond0_end
+labelName1:
+.ascii "._cond0_end"
+.space 1,0
+data9:
+.ascii ""
+.space 1, 0
+lenData9 = . - data9
+data10:
+.ascii ""
+.space 1, 0
+lenData10 = . - data10
+varName6:
+.ascii "$I0"
+.space 1, 0
+lenVarName6 = . - varName6
+varName7:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName7 = . - varName7
+data11:
+.ascii "Hello world!\n"
+.space 1, 0
+lenData11 = . - data11
+label2:
+ .quad .main_end
+labelName2:
+.ascii ".main_end"
+.space 1,0
+data12:
+.ascii ""
+.space 1, 0
+lenData12 = . - data12
+data13:
+.ascii "#main_res0"
+.space 1, 0
+lenData13 = . - data13
+label3:
+ .quad .main_res0
+labelName3:
+.ascii ".main_res0"
+.space 1,0
+data14:
+.ascii ""
+.space 1, 0
+lenData14 = . - data14
+data15:
+.ascii ""
+.space 1, 0
+lenData15 = . - data15

@@ -910,8 +910,15 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	if options.Compile == sysMod {
 		compilerVars.CompilerVars = map[string]string{}
 		compilerVars.CompilerVars["error"] = "Error"
+		compilerVars.CompilerVars["toPanic"] = "Panic"
 
 		_, variables, err = LexicalAnalyze("stringerror", variables, false, false, nil, false, nil, nil, nil, nil)
+
+		if nil != err {
+			panic(err)
+		}
+
+		_, variables, err = LexicalAnalyze("booltoPanic", variables, false, false, nil, false, nil, nil, nil, nil)
 
 		if nil != err {
 			panic(err)

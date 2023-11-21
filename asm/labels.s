@@ -135,6 +135,43 @@ call __newLabelMem
 
  mov %r10, %rdi 
  mov %rsi, %r9
+mov $labelName3, %rbx
+ __initLabelsName3: 
+ mov (%rbx), %dl 
+ cmp $0, %dl 
+jz __initLabelsNameEx3
+ mov %dl, (%rdi) 
+ inc %rbx 
+ inc %rdi
+ jmp __initLabelsName3
+ __initLabelsNameEx3:
+ movb $0, (%rdi)
+
+ mov (label3), %rax 
+ call __toStr
+ add (valSize), %r9
+ mov %r9, %rdi
+ mov $buf2, %rbx 
+__initLabelsAddr3:
+ mov (%rbx), %dl 
+ cmp $0, %dl 
+ jz __initLabelsAddrEx3
+ mov %dl, (%rdi)
+ inc %rbx
+ inc %rdi 
+ jmp __initLabelsAddr3
+ __initLabelsAddrEx3:
+ movb $0, (%rdi)
+ add (valSize), %r9 
+ mov %r9, %rdi 
+ mov %rdi, %r10 
+ mov %r9, %rsi 
+ mov %r12, %rax
+call __newLabelMem
+ add (labelSize), %r12 
+
+ mov %r10, %rdi 
+ mov %rsi, %r9
  mov %r12, %rax 
  mov %r12, (labelsMax)
  ret 
