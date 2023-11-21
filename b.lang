@@ -240,6 +240,7 @@
       <keyword>reg_find</keyword>
       <keyword>exit</keyword>
       <keyword>exists</keyword>
+	  <keyword>try</keyword>
 	
       
     </context>
