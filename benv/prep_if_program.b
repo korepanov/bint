@@ -1,0 +1,18 @@
+voidmain(){print("");
+try{strings;
+s="bla";
+inti;
+i=int(s);
+floatj;
+j=float(s);
+};
+print("");
+if(NOT(error=="")){print("");
+print("Неверный формат числа\n");
+};
+print("");
+i=int(s);
+print("Hello world!\n");
+};
+print("");
+main();
