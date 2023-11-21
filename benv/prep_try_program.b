@@ -1,5 +1,6 @@
 voidmain(){print("");
-try{strings;
+try{print("");
+strings;
 s="bla";
 inti;
 i=int(s);
