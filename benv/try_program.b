@@ -1,5 +1,6 @@
 voidmain(){print("");
-try{strings;
+try{print("");
+strings;
 s="bla";
 inti;
 i=int(s);
@@ -8,11 +9,13 @@ j=float(s);
 };
 print("");
 if(NOT(error=="")){print("");
-print("Неверный формат числа\n");
+print("Неверный формат числа
+");
 };
 print("");
 i=int(s);
-print("Hello world!\n");
+print("Hello world!
+");
 };
 print("");
 main();

@@ -9,13 +9,11 @@ j=float(s);
 };
 print("");
 if(NOT(error=="")){print("");
-print("Неверный формат числа
-");
+print("Неверный формат числа\n");
 };
 print("");
 i=int(s);
-print("Hello world!
-");
+print("Hello world!\n");
 };
 print("");
 main();

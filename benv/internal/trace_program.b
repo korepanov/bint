@@ -415,7 +415,7 @@ voidfinish(){UNSET_SOURCE();
 $trace7$;
 UNSET_DEST();
 $trace8$;
-print("");
+DEL_DEST(root_source);
 $trace9$;
 };
 $trace10$;
