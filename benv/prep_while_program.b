@@ -1,0 +1,11 @@
+voidmain(){print("");
+inta;
+for(print("");
+print("");
+True;
+print("")){print("");
+intb;
+print("smth\n");
+do{print("");
+print("smth2\n");
+b=(b+1);

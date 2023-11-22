@@ -1,27 +1,14 @@
 void main(){
-	print("Решение квадратных уравнений вида ax^2+bx+c=0\n");	
-	int I;
-	float B;
-
-	try{
-		int i; 
-		i = int("5");
-		I = i;
-		
-		float b;
-		b = float("7.7");
-		B = b;		
-			
-		print("Hello!\n");
-	};
-
-	if (NOT(error == "")){
-		print((error + "\n")); 	
-	};
-
-	print(str(I));
-	print(str(B));
-
+	int a;
+	do{
+		int b;
+		print("smth\n");
+		do{
+			print("smth2\n");
+			b = (b + 1); 
+		}while (b < 5);
+		a = (a + 1);
+	}while(a < 5);
 };
 
 main();
