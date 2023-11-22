@@ -128,8 +128,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 		toTranslate = toTranslateInternal
 
 		if options.Internal == toTranslate {
-			rootSource = "benv/program.b"
-			rootDest = "benv/prog.basm"
+			rootSource = "benv/try.b"
+			rootDest = "benv/try.basm"
 			if execBenv {
 				filesListToExecute = []string{"benv/internal/build/import",
 					"benv/internal/build/prep_func",
@@ -213,8 +213,8 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/print_format.basm"}
 			}
 		} else if options.Transpile == toTranslate {
-			rootSource = "benv/internal/build/while.basm"
-			rootDest = "benv/internal/build/main.go"
+			rootSource = "benv/build/try.basm"
+			rootDest = "benv/build/main.go"
 
 			source, err := os.Open("benv/build/pattern.p")
 			if nil != err {
@@ -914,7 +914,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 	if options.Compile == sysMod {
 		compilerVars.CompilerVars = map[string]string{}
 		compilerVars.CompilerVars["error"] = "Error"
-		compilerVars.CompilerVars["toPanic"] = "Panic"
+		compilerVars.CompilerVars["$toPanic"] = "Panic"
 
 		_, variables, err = LexicalAnalyze("stringerror", variables, false, false, nil, false, nil, nil, nil, nil)
 
@@ -922,7 +922,7 @@ func Start(toTranslate int, filesListToExecute []string, rootSource string, root
 			panic(err)
 		}
 
-		_, variables, err = LexicalAnalyze("booltoPanic", variables, false, false, nil, false, nil, nil, nil, nil)
+		_, variables, err = LexicalAnalyze("bool$toPanic", variables, false, false, nil, false, nil, nil, nil, nil)
 
 		if nil != err {
 			panic(err)

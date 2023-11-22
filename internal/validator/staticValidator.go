@@ -16,6 +16,7 @@ const (
 	elseIfCond     = iota
 	elseCond       = iota
 	loop           = iota
+	try            = iota
 )
 
 type brace struct {
@@ -644,6 +645,24 @@ func validateIf(command string) (tail string, stat int, err error) {
 	return command, status.No, nil
 }
 
+func validateTry(command string) (tail string, stat int, err error) {
+	tail, stat = check(`(?:^try{)`, command)
+
+	if status.Yes == stat {
+		closureHistory = append(closureHistory, brace{ifCond, LineCounter, CommandToExecute})
+
+		return tail, status.Yes, nil
+	}
+
+	tail, stat = check(`(?:^try)`, command)
+
+	if status.Yes == stat && `` == tail {
+		return ``, status.Err, errors.New(`missing '{' in try`)
+	}
+
+	return command, status.No, nil
+}
+
 func validateSimpleClause(command string) (tail string, stat int, err error) {
 	tail, stat = check(`(?:\((False|True)\))`, command)
 	if status.Yes == stat && `` == tail {
@@ -928,6 +947,16 @@ func validateCommand(command string) error {
 		if `` == tail {
 			return nil
 		}
+	}
+
+	tail, stat, err = validateTry(command)
+
+	if nil != err {
+		return err
+	}
+
+	if status.Yes == stat {
+		return validateCommand(tail)
 	}
 
 	tail, stat, err = validateIf(command)

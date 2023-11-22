@@ -1316,6 +1316,16 @@ func dValidateVarDef(command string, variables [][][]interface{}) (string, int, 
 	return tail, stat, variables, nil
 }
 
+func dValidateTry(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
+	tail, stat := check(`(?:^try{)`, command)
+
+	if status.Yes == stat {
+		closureHistory = append(closureHistory, brace{try, LineCounter, CommandToExecute})
+		variables = append(variables, [][]interface{}{})
+	}
+	return tail, stat, variables, nil
+}
+
 func dValidateIf(command string, variables [][][]interface{}) (string, int, [][][]interface{}, error) {
 	tail, stat := check(`(?:^if\([^{]+\){)`, command)
 
@@ -2266,6 +2276,16 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 		return variables, nil
 	}
 
+	tail, stat, variables, err = dValidateTry(command, variables)
+
+	if nil != err {
+		return variables, err
+	}
+
+	if status.Yes == stat {
+		return dynamicValidateCommand(tail, variables)
+	}
+
 	tail, stat, variables, err = dValidateIf(command, variables)
 
 	if nil != err {
@@ -2376,6 +2396,12 @@ func DynamicValidate(validatingFile string, rootSource string) {
 	variables[0][3][2] = "1.5"
 
 	_, variables[len(variables)-1], err = lexer.LexicalAnalyze("stack$stackVal",
+		variables[len(variables)-1], false, false, nil, false, nil, nil, nil, nil)
+	if nil != err {
+		panic(err)
+	}
+
+	_, variables[len(variables)-1], err = lexer.LexicalAnalyze("stringerror",
 		variables[len(variables)-1], false, false, nil, false, nil, nil, nil, nil)
 	if nil != err {
 		panic(err)

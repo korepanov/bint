@@ -5,7 +5,7 @@ void main(){
 	float b;
 	float c;
 	string s;
-
+	
 	do{
 		try{
 			print("Введите a:\n");

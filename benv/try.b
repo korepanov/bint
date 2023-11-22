@@ -48,7 +48,7 @@ void modify_block(){
 	buf = "error=\"\"";
 	send_command(buf);
 
-	buf = "toPanic=False";
+	buf = "$toPanic=False";
 	send_command(buf); 
 	
 	
@@ -72,7 +72,7 @@ void modify_block(){
 	send_command(buf);
 	num = (num + 1);
 
-	buf = "toPanic=True";
+	buf = "$toPanic=True";
 	send_command(buf);  
 
 };
