@@ -1,11 +1,14 @@
 voidmain(){print("");
-try{print("");
+error="";
+toPanic=False;
+if(True){print("");
 strings;
 s="bla";
 inti;
 i=int(s);
 floatj;
 j=float(s);
+toPanic=True;
 };
 print("");
 if(NOT(error=="")){print("");

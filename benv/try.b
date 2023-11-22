@@ -14,16 +14,66 @@ void finish(){
 	//DEL_DEST(root_source);
 }; 
 
+bool is_try(string command){ 
+	stack st;
+	string op; 
+	op = "try{";
+ 	
+	st = ops(command, op);
+	string buf; 
+	st.pop(buf); 
+	if (buf == "end"){
+		return False;	
+	};
+
+	int pos;
+	pos = int(buf);
+	
+	if (NOT(pos == 0)){
+		print("try.b: error in the try format\n");
+		exit(1); 	
+	};
+	
+	return True; 
+};
+
+void modify_block(){
+	int e;
+	e = block_end();
+	
+	string buf;
+	buf = "error=\"\"";
+	send_command(buf);
+
+	buf = "toPanic=False";
+	send_command(buf); 
+	
+	
+	buf = "if(True){print(\"\")";
+	send_command(buf); 
+
+	switch_command();
+	while (COMMAND_COUNTER < e){
+		send_command(command);
+		switch_command();			
+	};
+	
+	buf = "toPanic=True";
+	send_command(buf); 
+ 
+};
 
 void main(){
 	init();
 	
-	string command;
-	next_command(command);
+	switch_command();
 
 	while (NOT(command == "end")){
+		if (is_try(command)){
+			modify_block();		
+		}; 
 		send_command(command); 
-		next_command(command);	
+		switch_command(); 	
 	};
 	
 

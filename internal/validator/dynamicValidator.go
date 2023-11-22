@@ -28,6 +28,7 @@ var retVal string
 var isFunc bool
 var wasRet bool
 var toBlock bool
+var stdlibVarsEnd bool
 
 var funcTable map[string][]string
 var forCounter int
@@ -293,6 +294,7 @@ func filter(command string) bool {
 			if "stdlib/core.b" == command[5:len(command)-1] ||
 				("benv/trace/" == fileToValidate[0:11] && lastFile != command[5:len(command)-1]) {
 				toBlock = true
+
 			} else {
 				if toBlock {
 					toBlock = false
@@ -1963,7 +1965,18 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 	var stat int
 
 	if toBlock {
+		if !stdlibVarsEnd {
+			tail, stat, variables, err = dValidateVarDef(command, variables)
+
+			if nil != err {
+				return variables, err
+			}
+		}
 		tail, stat, variables, err = dValidateFuncDefinition(command, variables)
+
+		if stat == status.Yes {
+			stdlibVarsEnd = true
+		}
 
 		return variables, err
 	}
@@ -2323,6 +2336,7 @@ func dynamicValidateCommand(command string, variables [][][]interface{}) ([][][]
 }
 
 func DynamicValidate(validatingFile string, rootSource string) {
+	stdlibVarsEnd = false
 	fileToValidate = validatingFile
 	lastFile = getLastFile()
 
