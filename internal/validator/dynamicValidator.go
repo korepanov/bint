@@ -1320,6 +1320,12 @@ func dValidateTry(command string, variables [][][]interface{}) (string, int, [][
 	tail, stat := check(`(?:^try{)`, command)
 
 	if status.Yes == stat {
+		for _, closure := range closureHistory {
+			if closure.T == try {
+				return tail, status.Err, variables, errors.New("try inside try is not allowed")
+			}
+		}
+
 		closureHistory = append(closureHistory, brace{try, LineCounter, CommandToExecute})
 		variables = append(variables, [][]interface{}{})
 	}

@@ -241,6 +241,7 @@
       <keyword>exit</keyword>
       <keyword>exists</keyword>
 	  <keyword>try</keyword>
+	  <keyword>error</keyword>
 	
       
     </context>
