@@ -1,6 +1,7 @@
 #import "stdlib/core.b"
 
 string root_source;
+int num;
 
 void init(){
 	root_source = "benv/prep_try_program.b";
@@ -11,7 +12,7 @@ void init(){
 void finish(){
 	UNSET_SOURCE();
 	UNSET_DEST();
-	//DEL_DEST(root_source);
+	DEL_DEST(root_source);
 }; 
 
 bool is_try(string command){ 
@@ -38,6 +39,8 @@ bool is_try(string command){
 };
 
 void modify_block(){
+	string snum;
+	snum = str(num);		
 	int e;
 	e = block_end();
 	
@@ -54,13 +57,24 @@ void modify_block(){
 
 	switch_command();
 	while (COMMAND_COUNTER < e){
+		buf = "if(NOT(error==\"\")){print(\"\")";
+		send_command(buf);
+		buf = (("goto(#_attempt" + snum) + ")");
+		send_command(buf);
+		buf = "}";
+		send_command(buf);
 		send_command(command);
 		switch_command();			
 	};
+
 	
+	buf = (("#_attempt" + snum) + ":\nprint(\"\")"); 
+	send_command(buf);
+	num = (num + 1);
+
 	buf = "toPanic=True";
-	send_command(buf); 
- 
+	send_command(buf);  
+
 };
 
 void main(){

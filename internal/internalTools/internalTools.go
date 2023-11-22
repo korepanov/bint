@@ -180,6 +180,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/build/prep_while",
 					"benv/build/prep_if",
 					"benv/build/prep_try",
+					"benv/build/try",
 					"benv/build/while",
 					"benv/build/for",
 					"benv/build/if",
@@ -210,7 +211,7 @@ func SetConf(toTranslate int, rootSource string, rootDest string, keyDest string
 					"benv/print_format.basm"}
 			}
 		} else if options.Transpile == toTranslate {
-			rootSource = "benv/build/while.basm"
+			rootSource = "benv/build/try.basm"
 			rootDest = "benv/build/main.go"
 
 			source, err := os.Open("benv/build/pattern.p")
