@@ -1486,7 +1486,13 @@ FUNCNAMES:
 				return tail, status.Err, variables, err
 			}
 			f := tail[loc[0]:loc[1]]
-			argsStr := f[strings.Index(f, "(")+1 : strings.Index(f, ")")]
+
+			endPos, err := getExprEnd(f, strings.Index(f, "("))
+			if nil != err {
+				return tail, status.Err, variables, err
+			}
+
+			argsStr := f[strings.Index(f, "(")+1 : endPos-1]
 			args := strings.Split(argsStr, ",")
 
 			if "" != args[0] { // для функции, не принимающей параметров
@@ -1502,7 +1508,7 @@ FUNCNAMES:
 				}
 
 				for key, arg := range args {
-					_, st, _, err := dValidateFuncCall(arg, variables, false)
+					_, st, _, err := dValidateFuncCall(arg, variables, true)
 					if nil != err {
 						return tail, status.Err, variables, err
 					}

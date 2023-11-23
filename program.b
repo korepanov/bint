@@ -1,14 +1,20 @@
 void main(){
-	int a;
+	
+	int c;
+
 	do{
-		int b;
-		print("smth\n");
+		int a;
 		do{
-			print("smth2\n");
-			b = (b + 1); 
-		}while (b < 5);
-		a = (a + 1);
-	}while(a < 5);
+			int b;
+			print("smth\n");
+			do{
+				print("smth2\n");
+				b = (b + 1); 
+			}while (b < 5);
+			a = (a + 1);
+		}while(a < 5);
+		c = (c + 1);
+	}while(c < 5);
 };
 
 main();

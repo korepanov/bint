@@ -748,35 +748,26 @@ goto finish
 if "#finish_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
 goto finish_end
 }
-if "#is_try" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
-goto is_try
+if "#switch_files" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto switch_files
 }
-if "#ops_res4" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
-goto ops_res4
+if "#finish_res0" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto finish_res0
 }
 if "#_cond0_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
 goto _cond0_end
 }
-if "#_cond1_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
-goto _cond1_end
+if "#_cond_exit0" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto _cond_exit0
 }
-if "#is_try_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
-goto is_try_end
+if "#switch_files_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto switch_files_end
 }
-if "#modify_block" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
-goto modify_block
-}
-if "#block_end_res0" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
-goto block_end_res0
-}
-if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
-goto switch_command_res0
+if "#clear_files" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto clear_files
 }
 if "#_for0" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
 goto _for0
-}
-if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
-goto switch_command_res1
 }
 if "#_undef_for0" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
 goto _undef_for0
@@ -793,8 +784,35 @@ goto _cond4_end
 if "#_for0_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
 goto _for0_end
 }
-if "#modify_block_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
-goto modify_block_end
+if "#_cond1_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto _cond1_end
+}
+if "#finish_res1" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto finish_res1
+}
+if "#clear_files_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto clear_files_end
+}
+if "#is_do" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto is_do
+}
+if "#ops_res4" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto ops_res4
+}
+if "#is_do_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto is_do_end
+}
+if "#get_cond" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto get_cond
+}
+if "#ops_res5" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto ops_res5
+}
+if "#func_end_res0" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto func_end_res0
+}
+if "#get_cond_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto get_cond_end
 }
 if "#main" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
 goto main
@@ -802,23 +820,77 @@ goto main
 if "#init_res0" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
 goto init_res0
 }
-if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
-goto switch_command_res2
-}
 if "#_for1" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
 goto _for1
 }
-if "#is_try_res0" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
-goto is_try_res0
+if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto switch_command_res0
 }
-if "#modify_block_res0" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
-goto modify_block_res0
+if "#_for2" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto _for2
+}
+if "#is_do_res0" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto is_do_res0
+}
+if "#block_end_res0" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto block_end_res0
+}
+if "#get_command_res0" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto get_command_res0
+}
+if "#get_cond_res0" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto get_cond_res0
+}
+if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto switch_command_res1
+}
+if "#_for3" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto _for3
+}
+if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto switch_command_res2
+}
+if "#_undef_for3" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto _undef_for3
+}
+if "#_cond8_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto _cond8_end
+}
+if "#_cond9_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto _cond9_end
+}
+if "#_cond10_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto _cond10_end
+}
+if "#_for3_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto _for3_end
+}
+if "#_cond7_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto _cond7_end
+}
+if "#_cond_exit1" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto _cond_exit1
+}
+if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto switch_command_res3
+}
+if "#_undef_for2" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto _undef_for2
 }
 if "#_cond6_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
 goto _cond6_end
 }
-if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
-goto switch_command_res3
+if "#_cond11_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto _cond11_end
+}
+if "#_cond12_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto _cond12_end
+}
+if "#_for2_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto _for2_end
+}
+if "#switch_files_res0" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto switch_files_res0
 }
 if "#_undef_for1" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
 goto _undef_for1
@@ -826,17 +898,17 @@ goto _undef_for1
 if "#_cond5_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
 goto _cond5_end
 }
-if "#_cond7_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
-goto _cond7_end
+if "#_cond13_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto _cond13_end
 }
-if "#_cond8_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
-goto _cond8_end
+if "#_cond14_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto _cond14_end
 }
 if "#_for1_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
 goto _for1_end
 }
-if "#finish_res0" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
-goto finish_res0
+if "#clear_files_res0" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
+goto clear_files_res0
 }
 if "#main_end" == fmt.Sprintf("%v", getVar("$reverse_return_var")){
 goto main_end
@@ -1161,35 +1233,26 @@ goto finish
 if "#finish_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
 goto finish_end
 }
-if "#is_try" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
-goto is_try
+if "#switch_files" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto switch_files
 }
-if "#ops_res4" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
-goto ops_res4
+if "#finish_res0" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto finish_res0
 }
 if "#_cond0_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
 goto _cond0_end
 }
-if "#_cond1_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
-goto _cond1_end
+if "#_cond_exit0" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto _cond_exit0
 }
-if "#is_try_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
-goto is_try_end
+if "#switch_files_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto switch_files_end
 }
-if "#modify_block" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
-goto modify_block
-}
-if "#block_end_res0" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
-goto block_end_res0
-}
-if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
-goto switch_command_res0
+if "#clear_files" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto clear_files
 }
 if "#_for0" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
 goto _for0
-}
-if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
-goto switch_command_res1
 }
 if "#_undef_for0" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
 goto _undef_for0
@@ -1206,8 +1269,35 @@ goto _cond4_end
 if "#_for0_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
 goto _for0_end
 }
-if "#modify_block_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
-goto modify_block_end
+if "#_cond1_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto _cond1_end
+}
+if "#finish_res1" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto finish_res1
+}
+if "#clear_files_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto clear_files_end
+}
+if "#is_do" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto is_do
+}
+if "#ops_res4" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto ops_res4
+}
+if "#is_do_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto is_do_end
+}
+if "#get_cond" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto get_cond
+}
+if "#ops_res5" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto ops_res5
+}
+if "#func_end_res0" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto func_end_res0
+}
+if "#get_cond_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto get_cond_end
 }
 if "#main" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
 goto main
@@ -1215,23 +1305,77 @@ goto main
 if "#init_res0" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
 goto init_res0
 }
-if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
-goto switch_command_res2
-}
 if "#_for1" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
 goto _for1
 }
-if "#is_try_res0" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
-goto is_try_res0
+if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto switch_command_res0
 }
-if "#modify_block_res0" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
-goto modify_block_res0
+if "#_for2" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto _for2
+}
+if "#is_do_res0" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto is_do_res0
+}
+if "#block_end_res0" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto block_end_res0
+}
+if "#get_command_res0" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto get_command_res0
+}
+if "#get_cond_res0" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto get_cond_res0
+}
+if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto switch_command_res1
+}
+if "#_for3" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto _for3
+}
+if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto switch_command_res2
+}
+if "#_undef_for3" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto _undef_for3
+}
+if "#_cond8_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto _cond8_end
+}
+if "#_cond9_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto _cond9_end
+}
+if "#_cond10_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto _cond10_end
+}
+if "#_for3_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto _for3_end
+}
+if "#_cond7_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto _cond7_end
+}
+if "#_cond_exit1" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto _cond_exit1
+}
+if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto switch_command_res3
+}
+if "#_undef_for2" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto _undef_for2
 }
 if "#_cond6_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
 goto _cond6_end
 }
-if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
-goto switch_command_res3
+if "#_cond11_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto _cond11_end
+}
+if "#_cond12_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto _cond12_end
+}
+if "#_for2_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto _for2_end
+}
+if "#switch_files_res0" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto switch_files_res0
 }
 if "#_undef_for1" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
 goto _undef_for1
@@ -1239,17 +1383,17 @@ goto _undef_for1
 if "#_cond5_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
 goto _cond5_end
 }
-if "#_cond7_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
-goto _cond7_end
+if "#_cond13_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto _cond13_end
 }
-if "#_cond8_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
-goto _cond8_end
+if "#_cond14_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto _cond14_end
 }
 if "#_for1_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
 goto _for1_end
 }
-if "#finish_res0" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
-goto finish_res0
+if "#clear_files_res0" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
+goto clear_files_res0
 }
 if "#main_end" == fmt.Sprintf("%v", getVar("$indexes_return_var")){
 goto main_end
@@ -1500,35 +1644,26 @@ goto finish
 if "#finish_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
 goto finish_end
 }
-if "#is_try" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
-goto is_try
+if "#switch_files" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto switch_files
 }
-if "#ops_res4" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
-goto ops_res4
+if "#finish_res0" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto finish_res0
 }
 if "#_cond0_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
 goto _cond0_end
 }
-if "#_cond1_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
-goto _cond1_end
+if "#_cond_exit0" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto _cond_exit0
 }
-if "#is_try_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
-goto is_try_end
+if "#switch_files_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto switch_files_end
 }
-if "#modify_block" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
-goto modify_block
-}
-if "#block_end_res0" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
-goto block_end_res0
-}
-if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
-goto switch_command_res0
+if "#clear_files" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto clear_files
 }
 if "#_for0" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
 goto _for0
-}
-if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
-goto switch_command_res1
 }
 if "#_undef_for0" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
 goto _undef_for0
@@ -1545,8 +1680,35 @@ goto _cond4_end
 if "#_for0_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
 goto _for0_end
 }
-if "#modify_block_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
-goto modify_block_end
+if "#_cond1_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto _cond1_end
+}
+if "#finish_res1" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto finish_res1
+}
+if "#clear_files_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto clear_files_end
+}
+if "#is_do" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto is_do
+}
+if "#ops_res4" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto ops_res4
+}
+if "#is_do_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto is_do_end
+}
+if "#get_cond" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto get_cond
+}
+if "#ops_res5" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto ops_res5
+}
+if "#func_end_res0" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto func_end_res0
+}
+if "#get_cond_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto get_cond_end
 }
 if "#main" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
 goto main
@@ -1554,23 +1716,77 @@ goto main
 if "#init_res0" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
 goto init_res0
 }
-if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
-goto switch_command_res2
-}
 if "#_for1" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
 goto _for1
 }
-if "#is_try_res0" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
-goto is_try_res0
+if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto switch_command_res0
 }
-if "#modify_block_res0" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
-goto modify_block_res0
+if "#_for2" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto _for2
+}
+if "#is_do_res0" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto is_do_res0
+}
+if "#block_end_res0" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto block_end_res0
+}
+if "#get_command_res0" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto get_command_res0
+}
+if "#get_cond_res0" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto get_cond_res0
+}
+if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto switch_command_res1
+}
+if "#_for3" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto _for3
+}
+if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto switch_command_res2
+}
+if "#_undef_for3" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto _undef_for3
+}
+if "#_cond8_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto _cond8_end
+}
+if "#_cond9_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto _cond9_end
+}
+if "#_cond10_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto _cond10_end
+}
+if "#_for3_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto _for3_end
+}
+if "#_cond7_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto _cond7_end
+}
+if "#_cond_exit1" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto _cond_exit1
+}
+if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto switch_command_res3
+}
+if "#_undef_for2" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto _undef_for2
 }
 if "#_cond6_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
 goto _cond6_end
 }
-if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
-goto switch_command_res3
+if "#_cond11_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto _cond11_end
+}
+if "#_cond12_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto _cond12_end
+}
+if "#_for2_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto _for2_end
+}
+if "#switch_files_res0" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto switch_files_res0
 }
 if "#_undef_for1" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
 goto _undef_for1
@@ -1578,17 +1794,17 @@ goto _undef_for1
 if "#_cond5_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
 goto _cond5_end
 }
-if "#_cond7_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
-goto _cond7_end
+if "#_cond13_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto _cond13_end
 }
-if "#_cond8_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
-goto _cond8_end
+if "#_cond14_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto _cond14_end
 }
 if "#_for1_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
 goto _for1_end
 }
-if "#finish_res0" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
-goto finish_res0
+if "#clear_files_res0" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
+goto clear_files_res0
 }
 if "#main_end" == fmt.Sprintf("%v", getVar("$SET_COMMAND_COUNTER_return_var")){
 goto main_end
@@ -1850,35 +2066,26 @@ goto finish
 if "#finish_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
 goto finish_end
 }
-if "#is_try" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
-goto is_try
+if "#switch_files" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto switch_files
 }
-if "#ops_res4" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
-goto ops_res4
+if "#finish_res0" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto finish_res0
 }
 if "#_cond0_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
 goto _cond0_end
 }
-if "#_cond1_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
-goto _cond1_end
+if "#_cond_exit0" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto _cond_exit0
 }
-if "#is_try_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
-goto is_try_end
+if "#switch_files_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto switch_files_end
 }
-if "#modify_block" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
-goto modify_block
-}
-if "#block_end_res0" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
-goto block_end_res0
-}
-if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
-goto switch_command_res0
+if "#clear_files" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto clear_files
 }
 if "#_for0" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
 goto _for0
-}
-if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
-goto switch_command_res1
 }
 if "#_undef_for0" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
 goto _undef_for0
@@ -1895,8 +2102,35 @@ goto _cond4_end
 if "#_for0_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
 goto _for0_end
 }
-if "#modify_block_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
-goto modify_block_end
+if "#_cond1_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto _cond1_end
+}
+if "#finish_res1" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto finish_res1
+}
+if "#clear_files_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto clear_files_end
+}
+if "#is_do" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto is_do
+}
+if "#ops_res4" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto ops_res4
+}
+if "#is_do_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto is_do_end
+}
+if "#get_cond" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto get_cond
+}
+if "#ops_res5" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto ops_res5
+}
+if "#func_end_res0" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto func_end_res0
+}
+if "#get_cond_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto get_cond_end
 }
 if "#main" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
 goto main
@@ -1904,23 +2138,77 @@ goto main
 if "#init_res0" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
 goto init_res0
 }
-if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
-goto switch_command_res2
-}
 if "#_for1" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
 goto _for1
 }
-if "#is_try_res0" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
-goto is_try_res0
+if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto switch_command_res0
 }
-if "#modify_block_res0" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
-goto modify_block_res0
+if "#_for2" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto _for2
+}
+if "#is_do_res0" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto is_do_res0
+}
+if "#block_end_res0" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto block_end_res0
+}
+if "#get_command_res0" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto get_command_res0
+}
+if "#get_cond_res0" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto get_cond_res0
+}
+if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto switch_command_res1
+}
+if "#_for3" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto _for3
+}
+if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto switch_command_res2
+}
+if "#_undef_for3" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto _undef_for3
+}
+if "#_cond8_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto _cond8_end
+}
+if "#_cond9_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto _cond9_end
+}
+if "#_cond10_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto _cond10_end
+}
+if "#_for3_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto _for3_end
+}
+if "#_cond7_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto _cond7_end
+}
+if "#_cond_exit1" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto _cond_exit1
+}
+if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto switch_command_res3
+}
+if "#_undef_for2" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto _undef_for2
 }
 if "#_cond6_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
 goto _cond6_end
 }
-if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
-goto switch_command_res3
+if "#_cond11_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto _cond11_end
+}
+if "#_cond12_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto _cond12_end
+}
+if "#_for2_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto _for2_end
+}
+if "#switch_files_res0" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto switch_files_res0
 }
 if "#_undef_for1" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
 goto _undef_for1
@@ -1928,17 +2216,17 @@ goto _undef_for1
 if "#_cond5_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
 goto _cond5_end
 }
-if "#_cond7_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
-goto _cond7_end
+if "#_cond13_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto _cond13_end
 }
-if "#_cond8_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
-goto _cond8_end
+if "#_cond14_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto _cond14_end
 }
 if "#_for1_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
 goto _for1_end
 }
-if "#finish_res0" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
-goto finish_res0
+if "#clear_files_res0" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
+goto clear_files_res0
 }
 if "#main_end" == fmt.Sprintf("%v", getVar("$get_command_return_var")){
 goto main_end
@@ -2158,35 +2446,26 @@ goto finish
 if "#finish_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
 goto finish_end
 }
-if "#is_try" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
-goto is_try
+if "#switch_files" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto switch_files
 }
-if "#ops_res4" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
-goto ops_res4
+if "#finish_res0" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto finish_res0
 }
 if "#_cond0_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
 goto _cond0_end
 }
-if "#_cond1_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
-goto _cond1_end
+if "#_cond_exit0" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto _cond_exit0
 }
-if "#is_try_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
-goto is_try_end
+if "#switch_files_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto switch_files_end
 }
-if "#modify_block" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
-goto modify_block
-}
-if "#block_end_res0" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
-goto block_end_res0
-}
-if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
-goto switch_command_res0
+if "#clear_files" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto clear_files
 }
 if "#_for0" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
 goto _for0
-}
-if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
-goto switch_command_res1
 }
 if "#_undef_for0" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
 goto _undef_for0
@@ -2203,8 +2482,35 @@ goto _cond4_end
 if "#_for0_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
 goto _for0_end
 }
-if "#modify_block_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
-goto modify_block_end
+if "#_cond1_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto _cond1_end
+}
+if "#finish_res1" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto finish_res1
+}
+if "#clear_files_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto clear_files_end
+}
+if "#is_do" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto is_do
+}
+if "#ops_res4" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto ops_res4
+}
+if "#is_do_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto is_do_end
+}
+if "#get_cond" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto get_cond
+}
+if "#ops_res5" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto ops_res5
+}
+if "#func_end_res0" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto func_end_res0
+}
+if "#get_cond_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto get_cond_end
 }
 if "#main" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
 goto main
@@ -2212,23 +2518,77 @@ goto main
 if "#init_res0" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
 goto init_res0
 }
-if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
-goto switch_command_res2
-}
 if "#_for1" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
 goto _for1
 }
-if "#is_try_res0" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
-goto is_try_res0
+if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto switch_command_res0
 }
-if "#modify_block_res0" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
-goto modify_block_res0
+if "#_for2" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto _for2
+}
+if "#is_do_res0" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto is_do_res0
+}
+if "#block_end_res0" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto block_end_res0
+}
+if "#get_command_res0" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto get_command_res0
+}
+if "#get_cond_res0" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto get_cond_res0
+}
+if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto switch_command_res1
+}
+if "#_for3" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto _for3
+}
+if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto switch_command_res2
+}
+if "#_undef_for3" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto _undef_for3
+}
+if "#_cond8_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto _cond8_end
+}
+if "#_cond9_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto _cond9_end
+}
+if "#_cond10_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto _cond10_end
+}
+if "#_for3_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto _for3_end
+}
+if "#_cond7_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto _cond7_end
+}
+if "#_cond_exit1" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto _cond_exit1
+}
+if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto switch_command_res3
+}
+if "#_undef_for2" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto _undef_for2
 }
 if "#_cond6_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
 goto _cond6_end
 }
-if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
-goto switch_command_res3
+if "#_cond11_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto _cond11_end
+}
+if "#_cond12_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto _cond12_end
+}
+if "#_for2_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto _for2_end
+}
+if "#switch_files_res0" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto switch_files_res0
 }
 if "#_undef_for1" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
 goto _undef_for1
@@ -2236,17 +2596,17 @@ goto _undef_for1
 if "#_cond5_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
 goto _cond5_end
 }
-if "#_cond7_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
-goto _cond7_end
+if "#_cond13_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto _cond13_end
 }
-if "#_cond8_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
-goto _cond8_end
+if "#_cond14_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto _cond14_end
 }
 if "#_for1_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
 goto _for1_end
 }
-if "#finish_res0" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
-goto finish_res0
+if "#clear_files_res0" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
+goto clear_files_res0
 }
 if "#main_end" == fmt.Sprintf("%v", getVar("$switch_command_return_var")){
 goto main_end
@@ -2513,35 +2873,26 @@ goto finish
 if "#finish_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
 goto finish_end
 }
-if "#is_try" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
-goto is_try
+if "#switch_files" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto switch_files
 }
-if "#ops_res4" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
-goto ops_res4
+if "#finish_res0" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto finish_res0
 }
 if "#_cond0_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
 goto _cond0_end
 }
-if "#_cond1_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
-goto _cond1_end
+if "#_cond_exit0" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto _cond_exit0
 }
-if "#is_try_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
-goto is_try_end
+if "#switch_files_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto switch_files_end
 }
-if "#modify_block" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
-goto modify_block
-}
-if "#block_end_res0" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
-goto block_end_res0
-}
-if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
-goto switch_command_res0
+if "#clear_files" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto clear_files
 }
 if "#_for0" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
 goto _for0
-}
-if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
-goto switch_command_res1
 }
 if "#_undef_for0" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
 goto _undef_for0
@@ -2558,8 +2909,35 @@ goto _cond4_end
 if "#_for0_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
 goto _for0_end
 }
-if "#modify_block_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
-goto modify_block_end
+if "#_cond1_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto _cond1_end
+}
+if "#finish_res1" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto finish_res1
+}
+if "#clear_files_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto clear_files_end
+}
+if "#is_do" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto is_do
+}
+if "#ops_res4" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto ops_res4
+}
+if "#is_do_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto is_do_end
+}
+if "#get_cond" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto get_cond
+}
+if "#ops_res5" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto ops_res5
+}
+if "#func_end_res0" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto func_end_res0
+}
+if "#get_cond_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto get_cond_end
 }
 if "#main" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
 goto main
@@ -2567,23 +2945,77 @@ goto main
 if "#init_res0" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
 goto init_res0
 }
-if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
-goto switch_command_res2
-}
 if "#_for1" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
 goto _for1
 }
-if "#is_try_res0" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
-goto is_try_res0
+if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto switch_command_res0
 }
-if "#modify_block_res0" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
-goto modify_block_res0
+if "#_for2" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto _for2
+}
+if "#is_do_res0" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto is_do_res0
+}
+if "#block_end_res0" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto block_end_res0
+}
+if "#get_command_res0" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto get_command_res0
+}
+if "#get_cond_res0" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto get_cond_res0
+}
+if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto switch_command_res1
+}
+if "#_for3" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto _for3
+}
+if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto switch_command_res2
+}
+if "#_undef_for3" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto _undef_for3
+}
+if "#_cond8_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto _cond8_end
+}
+if "#_cond9_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto _cond9_end
+}
+if "#_cond10_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto _cond10_end
+}
+if "#_for3_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto _for3_end
+}
+if "#_cond7_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto _cond7_end
+}
+if "#_cond_exit1" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto _cond_exit1
+}
+if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto switch_command_res3
+}
+if "#_undef_for2" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto _undef_for2
 }
 if "#_cond6_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
 goto _cond6_end
 }
-if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
-goto switch_command_res3
+if "#_cond11_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto _cond11_end
+}
+if "#_cond12_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto _cond12_end
+}
+if "#_for2_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto _for2_end
+}
+if "#switch_files_res0" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto switch_files_res0
 }
 if "#_undef_for1" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
 goto _undef_for1
@@ -2591,17 +3023,17 @@ goto _undef_for1
 if "#_cond5_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
 goto _cond5_end
 }
-if "#_cond7_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
-goto _cond7_end
+if "#_cond13_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto _cond13_end
 }
-if "#_cond8_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
-goto _cond8_end
+if "#_cond14_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto _cond14_end
 }
 if "#_for1_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
 goto _for1_end
 }
-if "#finish_res0" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
-goto finish_res0
+if "#clear_files_res0" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
+goto clear_files_res0
 }
 if "#main_end" == fmt.Sprintf("%v", getVar("$stack_len_return_var")){
 goto main_end
@@ -3048,35 +3480,26 @@ goto finish
 if "#finish_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
 goto finish_end
 }
-if "#is_try" == fmt.Sprintf("%v", getVar("$ops_return_var")){
-goto is_try
+if "#switch_files" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto switch_files
 }
-if "#ops_res4" == fmt.Sprintf("%v", getVar("$ops_return_var")){
-goto ops_res4
+if "#finish_res0" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto finish_res0
 }
 if "#_cond0_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
 goto _cond0_end
 }
-if "#_cond1_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
-goto _cond1_end
+if "#_cond_exit0" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto _cond_exit0
 }
-if "#is_try_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
-goto is_try_end
+if "#switch_files_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto switch_files_end
 }
-if "#modify_block" == fmt.Sprintf("%v", getVar("$ops_return_var")){
-goto modify_block
-}
-if "#block_end_res0" == fmt.Sprintf("%v", getVar("$ops_return_var")){
-goto block_end_res0
-}
-if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$ops_return_var")){
-goto switch_command_res0
+if "#clear_files" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto clear_files
 }
 if "#_for0" == fmt.Sprintf("%v", getVar("$ops_return_var")){
 goto _for0
-}
-if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$ops_return_var")){
-goto switch_command_res1
 }
 if "#_undef_for0" == fmt.Sprintf("%v", getVar("$ops_return_var")){
 goto _undef_for0
@@ -3093,8 +3516,35 @@ goto _cond4_end
 if "#_for0_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
 goto _for0_end
 }
-if "#modify_block_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
-goto modify_block_end
+if "#_cond1_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto _cond1_end
+}
+if "#finish_res1" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto finish_res1
+}
+if "#clear_files_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto clear_files_end
+}
+if "#is_do" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto is_do
+}
+if "#ops_res4" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto ops_res4
+}
+if "#is_do_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto is_do_end
+}
+if "#get_cond" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto get_cond
+}
+if "#ops_res5" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto ops_res5
+}
+if "#func_end_res0" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto func_end_res0
+}
+if "#get_cond_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto get_cond_end
 }
 if "#main" == fmt.Sprintf("%v", getVar("$ops_return_var")){
 goto main
@@ -3102,23 +3552,77 @@ goto main
 if "#init_res0" == fmt.Sprintf("%v", getVar("$ops_return_var")){
 goto init_res0
 }
-if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$ops_return_var")){
-goto switch_command_res2
-}
 if "#_for1" == fmt.Sprintf("%v", getVar("$ops_return_var")){
 goto _for1
 }
-if "#is_try_res0" == fmt.Sprintf("%v", getVar("$ops_return_var")){
-goto is_try_res0
+if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto switch_command_res0
 }
-if "#modify_block_res0" == fmt.Sprintf("%v", getVar("$ops_return_var")){
-goto modify_block_res0
+if "#_for2" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto _for2
+}
+if "#is_do_res0" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto is_do_res0
+}
+if "#block_end_res0" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto block_end_res0
+}
+if "#get_command_res0" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto get_command_res0
+}
+if "#get_cond_res0" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto get_cond_res0
+}
+if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto switch_command_res1
+}
+if "#_for3" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto _for3
+}
+if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto switch_command_res2
+}
+if "#_undef_for3" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto _undef_for3
+}
+if "#_cond8_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto _cond8_end
+}
+if "#_cond9_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto _cond9_end
+}
+if "#_cond10_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto _cond10_end
+}
+if "#_for3_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto _for3_end
+}
+if "#_cond7_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto _cond7_end
+}
+if "#_cond_exit1" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto _cond_exit1
+}
+if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto switch_command_res3
+}
+if "#_undef_for2" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto _undef_for2
 }
 if "#_cond6_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
 goto _cond6_end
 }
-if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$ops_return_var")){
-goto switch_command_res3
+if "#_cond11_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto _cond11_end
+}
+if "#_cond12_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto _cond12_end
+}
+if "#_for2_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto _for2_end
+}
+if "#switch_files_res0" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto switch_files_res0
 }
 if "#_undef_for1" == fmt.Sprintf("%v", getVar("$ops_return_var")){
 goto _undef_for1
@@ -3126,17 +3630,17 @@ goto _undef_for1
 if "#_cond5_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
 goto _cond5_end
 }
-if "#_cond7_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
-goto _cond7_end
+if "#_cond13_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto _cond13_end
 }
-if "#_cond8_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
-goto _cond8_end
+if "#_cond14_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto _cond14_end
 }
 if "#_for1_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
 goto _for1_end
 }
-if "#finish_res0" == fmt.Sprintf("%v", getVar("$ops_return_var")){
-goto finish_res0
+if "#clear_files_res0" == fmt.Sprintf("%v", getVar("$ops_return_var")){
+goto clear_files_res0
 }
 if "#main_end" == fmt.Sprintf("%v", getVar("$ops_return_var")){
 goto main_end
@@ -3565,35 +4069,26 @@ goto finish
 if "#finish_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
 goto finish_end
 }
-if "#is_try" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
-goto is_try
+if "#switch_files" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto switch_files
 }
-if "#ops_res4" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
-goto ops_res4
+if "#finish_res0" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto finish_res0
 }
 if "#_cond0_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
 goto _cond0_end
 }
-if "#_cond1_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
-goto _cond1_end
+if "#_cond_exit0" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto _cond_exit0
 }
-if "#is_try_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
-goto is_try_end
+if "#switch_files_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto switch_files_end
 }
-if "#modify_block" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
-goto modify_block
-}
-if "#block_end_res0" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
-goto block_end_res0
-}
-if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
-goto switch_command_res0
+if "#clear_files" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto clear_files
 }
 if "#_for0" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
 goto _for0
-}
-if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
-goto switch_command_res1
 }
 if "#_undef_for0" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
 goto _undef_for0
@@ -3610,8 +4105,35 @@ goto _cond4_end
 if "#_for0_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
 goto _for0_end
 }
-if "#modify_block_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
-goto modify_block_end
+if "#_cond1_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto _cond1_end
+}
+if "#finish_res1" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto finish_res1
+}
+if "#clear_files_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto clear_files_end
+}
+if "#is_do" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto is_do
+}
+if "#ops_res4" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto ops_res4
+}
+if "#is_do_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto is_do_end
+}
+if "#get_cond" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto get_cond
+}
+if "#ops_res5" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto ops_res5
+}
+if "#func_end_res0" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto func_end_res0
+}
+if "#get_cond_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto get_cond_end
 }
 if "#main" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
 goto main
@@ -3619,23 +4141,77 @@ goto main
 if "#init_res0" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
 goto init_res0
 }
-if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
-goto switch_command_res2
-}
 if "#_for1" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
 goto _for1
 }
-if "#is_try_res0" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
-goto is_try_res0
+if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto switch_command_res0
 }
-if "#modify_block_res0" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
-goto modify_block_res0
+if "#_for2" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto _for2
+}
+if "#is_do_res0" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto is_do_res0
+}
+if "#block_end_res0" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto block_end_res0
+}
+if "#get_command_res0" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto get_command_res0
+}
+if "#get_cond_res0" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto get_cond_res0
+}
+if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto switch_command_res1
+}
+if "#_for3" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto _for3
+}
+if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto switch_command_res2
+}
+if "#_undef_for3" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto _undef_for3
+}
+if "#_cond8_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto _cond8_end
+}
+if "#_cond9_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto _cond9_end
+}
+if "#_cond10_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto _cond10_end
+}
+if "#_for3_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto _for3_end
+}
+if "#_cond7_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto _cond7_end
+}
+if "#_cond_exit1" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto _cond_exit1
+}
+if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto switch_command_res3
+}
+if "#_undef_for2" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto _undef_for2
 }
 if "#_cond6_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
 goto _cond6_end
 }
-if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
-goto switch_command_res3
+if "#_cond11_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto _cond11_end
+}
+if "#_cond12_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto _cond12_end
+}
+if "#_for2_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto _for2_end
+}
+if "#switch_files_res0" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto switch_files_res0
 }
 if "#_undef_for1" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
 goto _undef_for1
@@ -3643,17 +4219,17 @@ goto _undef_for1
 if "#_cond5_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
 goto _cond5_end
 }
-if "#_cond7_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
-goto _cond7_end
+if "#_cond13_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto _cond13_end
 }
-if "#_cond8_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
-goto _cond8_end
+if "#_cond14_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto _cond14_end
 }
 if "#_for1_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
 goto _for1_end
 }
-if "#finish_res0" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
-goto finish_res0
+if "#clear_files_res0" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
+goto clear_files_res0
 }
 if "#main_end" == fmt.Sprintf("%v", getVar("$block_end_return_var")){
 goto main_end
@@ -3887,35 +4463,26 @@ goto finish
 if "#finish_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
 goto finish_end
 }
-if "#is_try" == fmt.Sprintf("%v", getVar("$println_return_var")){
-goto is_try
+if "#switch_files" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto switch_files
 }
-if "#ops_res4" == fmt.Sprintf("%v", getVar("$println_return_var")){
-goto ops_res4
+if "#finish_res0" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto finish_res0
 }
 if "#_cond0_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
 goto _cond0_end
 }
-if "#_cond1_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
-goto _cond1_end
+if "#_cond_exit0" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto _cond_exit0
 }
-if "#is_try_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
-goto is_try_end
+if "#switch_files_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto switch_files_end
 }
-if "#modify_block" == fmt.Sprintf("%v", getVar("$println_return_var")){
-goto modify_block
-}
-if "#block_end_res0" == fmt.Sprintf("%v", getVar("$println_return_var")){
-goto block_end_res0
-}
-if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$println_return_var")){
-goto switch_command_res0
+if "#clear_files" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto clear_files
 }
 if "#_for0" == fmt.Sprintf("%v", getVar("$println_return_var")){
 goto _for0
-}
-if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$println_return_var")){
-goto switch_command_res1
 }
 if "#_undef_for0" == fmt.Sprintf("%v", getVar("$println_return_var")){
 goto _undef_for0
@@ -3932,8 +4499,35 @@ goto _cond4_end
 if "#_for0_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
 goto _for0_end
 }
-if "#modify_block_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
-goto modify_block_end
+if "#_cond1_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto _cond1_end
+}
+if "#finish_res1" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto finish_res1
+}
+if "#clear_files_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto clear_files_end
+}
+if "#is_do" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto is_do
+}
+if "#ops_res4" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto ops_res4
+}
+if "#is_do_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto is_do_end
+}
+if "#get_cond" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto get_cond
+}
+if "#ops_res5" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto ops_res5
+}
+if "#func_end_res0" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto func_end_res0
+}
+if "#get_cond_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto get_cond_end
 }
 if "#main" == fmt.Sprintf("%v", getVar("$println_return_var")){
 goto main
@@ -3941,23 +4535,77 @@ goto main
 if "#init_res0" == fmt.Sprintf("%v", getVar("$println_return_var")){
 goto init_res0
 }
-if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$println_return_var")){
-goto switch_command_res2
-}
 if "#_for1" == fmt.Sprintf("%v", getVar("$println_return_var")){
 goto _for1
 }
-if "#is_try_res0" == fmt.Sprintf("%v", getVar("$println_return_var")){
-goto is_try_res0
+if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto switch_command_res0
 }
-if "#modify_block_res0" == fmt.Sprintf("%v", getVar("$println_return_var")){
-goto modify_block_res0
+if "#_for2" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto _for2
+}
+if "#is_do_res0" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto is_do_res0
+}
+if "#block_end_res0" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto block_end_res0
+}
+if "#get_command_res0" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto get_command_res0
+}
+if "#get_cond_res0" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto get_cond_res0
+}
+if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto switch_command_res1
+}
+if "#_for3" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto _for3
+}
+if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto switch_command_res2
+}
+if "#_undef_for3" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto _undef_for3
+}
+if "#_cond8_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto _cond8_end
+}
+if "#_cond9_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto _cond9_end
+}
+if "#_cond10_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto _cond10_end
+}
+if "#_for3_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto _for3_end
+}
+if "#_cond7_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto _cond7_end
+}
+if "#_cond_exit1" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto _cond_exit1
+}
+if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto switch_command_res3
+}
+if "#_undef_for2" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto _undef_for2
 }
 if "#_cond6_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
 goto _cond6_end
 }
-if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$println_return_var")){
-goto switch_command_res3
+if "#_cond11_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto _cond11_end
+}
+if "#_cond12_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto _cond12_end
+}
+if "#_for2_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto _for2_end
+}
+if "#switch_files_res0" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto switch_files_res0
 }
 if "#_undef_for1" == fmt.Sprintf("%v", getVar("$println_return_var")){
 goto _undef_for1
@@ -3965,17 +4613,17 @@ goto _undef_for1
 if "#_cond5_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
 goto _cond5_end
 }
-if "#_cond7_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
-goto _cond7_end
+if "#_cond13_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto _cond13_end
 }
-if "#_cond8_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
-goto _cond8_end
+if "#_cond14_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto _cond14_end
 }
 if "#_for1_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
 goto _for1_end
 }
-if "#finish_res0" == fmt.Sprintf("%v", getVar("$println_return_var")){
-goto finish_res0
+if "#clear_files_res0" == fmt.Sprintf("%v", getVar("$println_return_var")){
+goto clear_files_res0
 }
 if "#main_end" == fmt.Sprintf("%v", getVar("$println_return_var")){
 goto main_end
@@ -4258,35 +4906,26 @@ goto finish
 if "#finish_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
 goto finish_end
 }
-if "#is_try" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
-goto is_try
+if "#switch_files" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto switch_files
 }
-if "#ops_res4" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
-goto ops_res4
+if "#finish_res0" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto finish_res0
 }
 if "#_cond0_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
 goto _cond0_end
 }
-if "#_cond1_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
-goto _cond1_end
+if "#_cond_exit0" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto _cond_exit0
 }
-if "#is_try_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
-goto is_try_end
+if "#switch_files_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto switch_files_end
 }
-if "#modify_block" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
-goto modify_block
-}
-if "#block_end_res0" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
-goto block_end_res0
-}
-if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
-goto switch_command_res0
+if "#clear_files" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto clear_files
 }
 if "#_for0" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
 goto _for0
-}
-if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
-goto switch_command_res1
 }
 if "#_undef_for0" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
 goto _undef_for0
@@ -4303,8 +4942,35 @@ goto _cond4_end
 if "#_for0_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
 goto _for0_end
 }
-if "#modify_block_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
-goto modify_block_end
+if "#_cond1_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto _cond1_end
+}
+if "#finish_res1" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto finish_res1
+}
+if "#clear_files_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto clear_files_end
+}
+if "#is_do" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto is_do
+}
+if "#ops_res4" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto ops_res4
+}
+if "#is_do_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto is_do_end
+}
+if "#get_cond" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto get_cond
+}
+if "#ops_res5" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto ops_res5
+}
+if "#func_end_res0" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto func_end_res0
+}
+if "#get_cond_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto get_cond_end
 }
 if "#main" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
 goto main
@@ -4312,23 +4978,77 @@ goto main
 if "#init_res0" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
 goto init_res0
 }
-if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
-goto switch_command_res2
-}
 if "#_for1" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
 goto _for1
 }
-if "#is_try_res0" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
-goto is_try_res0
+if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto switch_command_res0
 }
-if "#modify_block_res0" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
-goto modify_block_res0
+if "#_for2" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto _for2
+}
+if "#is_do_res0" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto is_do_res0
+}
+if "#block_end_res0" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto block_end_res0
+}
+if "#get_command_res0" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto get_command_res0
+}
+if "#get_cond_res0" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto get_cond_res0
+}
+if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto switch_command_res1
+}
+if "#_for3" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto _for3
+}
+if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto switch_command_res2
+}
+if "#_undef_for3" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto _undef_for3
+}
+if "#_cond8_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto _cond8_end
+}
+if "#_cond9_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto _cond9_end
+}
+if "#_cond10_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto _cond10_end
+}
+if "#_for3_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto _for3_end
+}
+if "#_cond7_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto _cond7_end
+}
+if "#_cond_exit1" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto _cond_exit1
+}
+if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto switch_command_res3
+}
+if "#_undef_for2" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto _undef_for2
 }
 if "#_cond6_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
 goto _cond6_end
 }
-if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
-goto switch_command_res3
+if "#_cond11_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto _cond11_end
+}
+if "#_cond12_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto _cond12_end
+}
+if "#_for2_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto _for2_end
+}
+if "#switch_files_res0" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto switch_files_res0
 }
 if "#_undef_for1" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
 goto _undef_for1
@@ -4336,17 +5056,17 @@ goto _undef_for1
 if "#_cond5_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
 goto _cond5_end
 }
-if "#_cond7_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
-goto _cond7_end
+if "#_cond13_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto _cond13_end
 }
-if "#_cond8_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
-goto _cond8_end
+if "#_cond14_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto _cond14_end
 }
 if "#_for1_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
 goto _for1_end
 }
-if "#finish_res0" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
-goto finish_res0
+if "#clear_files_res0" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
+goto clear_files_res0
 }
 if "#main_end" == fmt.Sprintf("%v", getVar("$in_stack_return_var")){
 goto main_end
@@ -4719,35 +5439,26 @@ goto finish
 if "#finish_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
 goto finish_end
 }
-if "#is_try" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
-goto is_try
+if "#switch_files" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto switch_files
 }
-if "#ops_res4" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
-goto ops_res4
+if "#finish_res0" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto finish_res0
 }
 if "#_cond0_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
 goto _cond0_end
 }
-if "#_cond1_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
-goto _cond1_end
+if "#_cond_exit0" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto _cond_exit0
 }
-if "#is_try_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
-goto is_try_end
+if "#switch_files_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto switch_files_end
 }
-if "#modify_block" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
-goto modify_block
-}
-if "#block_end_res0" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
-goto block_end_res0
-}
-if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
-goto switch_command_res0
+if "#clear_files" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto clear_files
 }
 if "#_for0" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
 goto _for0
-}
-if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
-goto switch_command_res1
 }
 if "#_undef_for0" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
 goto _undef_for0
@@ -4764,8 +5475,35 @@ goto _cond4_end
 if "#_for0_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
 goto _for0_end
 }
-if "#modify_block_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
-goto modify_block_end
+if "#_cond1_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto _cond1_end
+}
+if "#finish_res1" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto finish_res1
+}
+if "#clear_files_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto clear_files_end
+}
+if "#is_do" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto is_do
+}
+if "#ops_res4" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto ops_res4
+}
+if "#is_do_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto is_do_end
+}
+if "#get_cond" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto get_cond
+}
+if "#ops_res5" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto ops_res5
+}
+if "#func_end_res0" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto func_end_res0
+}
+if "#get_cond_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto get_cond_end
 }
 if "#main" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
 goto main
@@ -4773,23 +5511,77 @@ goto main
 if "#init_res0" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
 goto init_res0
 }
-if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
-goto switch_command_res2
-}
 if "#_for1" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
 goto _for1
 }
-if "#is_try_res0" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
-goto is_try_res0
+if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto switch_command_res0
 }
-if "#modify_block_res0" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
-goto modify_block_res0
+if "#_for2" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto _for2
+}
+if "#is_do_res0" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto is_do_res0
+}
+if "#block_end_res0" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto block_end_res0
+}
+if "#get_command_res0" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto get_command_res0
+}
+if "#get_cond_res0" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto get_cond_res0
+}
+if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto switch_command_res1
+}
+if "#_for3" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto _for3
+}
+if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto switch_command_res2
+}
+if "#_undef_for3" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto _undef_for3
+}
+if "#_cond8_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto _cond8_end
+}
+if "#_cond9_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto _cond9_end
+}
+if "#_cond10_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto _cond10_end
+}
+if "#_for3_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto _for3_end
+}
+if "#_cond7_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto _cond7_end
+}
+if "#_cond_exit1" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto _cond_exit1
+}
+if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto switch_command_res3
+}
+if "#_undef_for2" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto _undef_for2
 }
 if "#_cond6_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
 goto _cond6_end
 }
-if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
-goto switch_command_res3
+if "#_cond11_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto _cond11_end
+}
+if "#_cond12_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto _cond12_end
+}
+if "#_for2_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto _for2_end
+}
+if "#switch_files_res0" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto switch_files_res0
 }
 if "#_undef_for1" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
 goto _undef_for1
@@ -4797,17 +5589,17 @@ goto _undef_for1
 if "#_cond5_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
 goto _cond5_end
 }
-if "#_cond7_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
-goto _cond7_end
+if "#_cond13_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto _cond13_end
 }
-if "#_cond8_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
-goto _cond8_end
+if "#_cond14_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto _cond14_end
 }
 if "#_for1_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
 goto _for1_end
 }
-if "#finish_res0" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
-goto finish_res0
+if "#clear_files_res0" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
+goto clear_files_res0
 }
 if "#main_end" == fmt.Sprintf("%v", getVar("$func_end_return_var")){
 goto main_end
@@ -4820,8 +5612,8 @@ func_end_end:
 fmt.Print("")
 defineVar("root_source")
 setVar("root_source", "")
-defineVar("num")
-setVar("num", 0)
+defineVar("first_file")
+setVar("first_file", false)
 defineVar("$init_return_var")
 setVar("$init_return_var", "")
 goto init_end
@@ -4829,13 +5621,14 @@ goto init
 init:
 fmt.Print("")
 fmt.Print("")
-setVar("root_source","benv/prep_try_program.b")
+setVar("first_file","True")
+setVar("root_source","benv/prep_dowhile_program.b")
 defineVar("$SOURCE")
 setVar("$SOURCE", openFile(getRootSource(fmt.Sprintf("%v", getVar("root_source")))))
 defineVar("$sourceNewChunk")
 setVar("$sourceNewChunk", EachChunk(getVar("$SOURCE").(*os.File)))
 defineVar("$DEST")
-setVar("$DEST", createFile(getRootSource(fmt.Sprintf("%v", "benv/try_program.b"))))
+setVar("$DEST", createFile(getRootSource(fmt.Sprintf("%v", "benv/dowhile_program.b"))))
 if "#reverse" == fmt.Sprintf("%v", getVar("$init_return_var")){
 goto reverse
 }
@@ -5034,35 +5827,26 @@ goto finish
 if "#finish_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
 goto finish_end
 }
-if "#is_try" == fmt.Sprintf("%v", getVar("$init_return_var")){
-goto is_try
+if "#switch_files" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto switch_files
 }
-if "#ops_res4" == fmt.Sprintf("%v", getVar("$init_return_var")){
-goto ops_res4
+if "#finish_res0" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto finish_res0
 }
 if "#_cond0_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
 goto _cond0_end
 }
-if "#_cond1_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
-goto _cond1_end
+if "#_cond_exit0" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto _cond_exit0
 }
-if "#is_try_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
-goto is_try_end
+if "#switch_files_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto switch_files_end
 }
-if "#modify_block" == fmt.Sprintf("%v", getVar("$init_return_var")){
-goto modify_block
-}
-if "#block_end_res0" == fmt.Sprintf("%v", getVar("$init_return_var")){
-goto block_end_res0
-}
-if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$init_return_var")){
-goto switch_command_res0
+if "#clear_files" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto clear_files
 }
 if "#_for0" == fmt.Sprintf("%v", getVar("$init_return_var")){
 goto _for0
-}
-if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$init_return_var")){
-goto switch_command_res1
 }
 if "#_undef_for0" == fmt.Sprintf("%v", getVar("$init_return_var")){
 goto _undef_for0
@@ -5079,8 +5863,35 @@ goto _cond4_end
 if "#_for0_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
 goto _for0_end
 }
-if "#modify_block_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
-goto modify_block_end
+if "#_cond1_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto _cond1_end
+}
+if "#finish_res1" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto finish_res1
+}
+if "#clear_files_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto clear_files_end
+}
+if "#is_do" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto is_do
+}
+if "#ops_res4" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto ops_res4
+}
+if "#is_do_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto is_do_end
+}
+if "#get_cond" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto get_cond
+}
+if "#ops_res5" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto ops_res5
+}
+if "#func_end_res0" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto func_end_res0
+}
+if "#get_cond_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto get_cond_end
 }
 if "#main" == fmt.Sprintf("%v", getVar("$init_return_var")){
 goto main
@@ -5088,23 +5899,77 @@ goto main
 if "#init_res0" == fmt.Sprintf("%v", getVar("$init_return_var")){
 goto init_res0
 }
-if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$init_return_var")){
-goto switch_command_res2
-}
 if "#_for1" == fmt.Sprintf("%v", getVar("$init_return_var")){
 goto _for1
 }
-if "#is_try_res0" == fmt.Sprintf("%v", getVar("$init_return_var")){
-goto is_try_res0
+if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto switch_command_res0
 }
-if "#modify_block_res0" == fmt.Sprintf("%v", getVar("$init_return_var")){
-goto modify_block_res0
+if "#_for2" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto _for2
+}
+if "#is_do_res0" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto is_do_res0
+}
+if "#block_end_res0" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto block_end_res0
+}
+if "#get_command_res0" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto get_command_res0
+}
+if "#get_cond_res0" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto get_cond_res0
+}
+if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto switch_command_res1
+}
+if "#_for3" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto _for3
+}
+if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto switch_command_res2
+}
+if "#_undef_for3" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto _undef_for3
+}
+if "#_cond8_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto _cond8_end
+}
+if "#_cond9_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto _cond9_end
+}
+if "#_cond10_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto _cond10_end
+}
+if "#_for3_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto _for3_end
+}
+if "#_cond7_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto _cond7_end
+}
+if "#_cond_exit1" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto _cond_exit1
+}
+if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto switch_command_res3
+}
+if "#_undef_for2" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto _undef_for2
 }
 if "#_cond6_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
 goto _cond6_end
 }
-if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$init_return_var")){
-goto switch_command_res3
+if "#_cond11_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto _cond11_end
+}
+if "#_cond12_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto _cond12_end
+}
+if "#_for2_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto _for2_end
+}
+if "#switch_files_res0" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto switch_files_res0
 }
 if "#_undef_for1" == fmt.Sprintf("%v", getVar("$init_return_var")){
 goto _undef_for1
@@ -5112,17 +5977,17 @@ goto _undef_for1
 if "#_cond5_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
 goto _cond5_end
 }
-if "#_cond7_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
-goto _cond7_end
+if "#_cond13_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto _cond13_end
 }
-if "#_cond8_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
-goto _cond8_end
+if "#_cond14_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto _cond14_end
 }
 if "#_for1_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
 goto _for1_end
 }
-if "#finish_res0" == fmt.Sprintf("%v", getVar("$init_return_var")){
-goto finish_res0
+if "#clear_files_res0" == fmt.Sprintf("%v", getVar("$init_return_var")){
+goto clear_files_res0
 }
 if "#main_end" == fmt.Sprintf("%v", getVar("$init_return_var")){
 goto main_end
@@ -5142,7 +6007,6 @@ fmt.Print("")
 fmt.Print("")
 getVar("$SOURCE").(*os.File).Close()
 getVar("$DEST").(*os.File).Close()
-os.Remove(getRootSource(fmt.Sprintf("%v", getVar("root_source"))))
 if "#reverse" == fmt.Sprintf("%v", getVar("$finish_return_var")){
 goto reverse
 }
@@ -5341,35 +6205,26 @@ goto finish
 if "#finish_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
 goto finish_end
 }
-if "#is_try" == fmt.Sprintf("%v", getVar("$finish_return_var")){
-goto is_try
+if "#switch_files" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto switch_files
 }
-if "#ops_res4" == fmt.Sprintf("%v", getVar("$finish_return_var")){
-goto ops_res4
+if "#finish_res0" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto finish_res0
 }
 if "#_cond0_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
 goto _cond0_end
 }
-if "#_cond1_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
-goto _cond1_end
+if "#_cond_exit0" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto _cond_exit0
 }
-if "#is_try_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
-goto is_try_end
+if "#switch_files_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto switch_files_end
 }
-if "#modify_block" == fmt.Sprintf("%v", getVar("$finish_return_var")){
-goto modify_block
-}
-if "#block_end_res0" == fmt.Sprintf("%v", getVar("$finish_return_var")){
-goto block_end_res0
-}
-if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$finish_return_var")){
-goto switch_command_res0
+if "#clear_files" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto clear_files
 }
 if "#_for0" == fmt.Sprintf("%v", getVar("$finish_return_var")){
 goto _for0
-}
-if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$finish_return_var")){
-goto switch_command_res1
 }
 if "#_undef_for0" == fmt.Sprintf("%v", getVar("$finish_return_var")){
 goto _undef_for0
@@ -5386,8 +6241,35 @@ goto _cond4_end
 if "#_for0_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
 goto _for0_end
 }
-if "#modify_block_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
-goto modify_block_end
+if "#_cond1_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto _cond1_end
+}
+if "#finish_res1" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto finish_res1
+}
+if "#clear_files_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto clear_files_end
+}
+if "#is_do" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto is_do
+}
+if "#ops_res4" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto ops_res4
+}
+if "#is_do_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto is_do_end
+}
+if "#get_cond" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto get_cond
+}
+if "#ops_res5" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto ops_res5
+}
+if "#func_end_res0" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto func_end_res0
+}
+if "#get_cond_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto get_cond_end
 }
 if "#main" == fmt.Sprintf("%v", getVar("$finish_return_var")){
 goto main
@@ -5395,23 +6277,77 @@ goto main
 if "#init_res0" == fmt.Sprintf("%v", getVar("$finish_return_var")){
 goto init_res0
 }
-if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$finish_return_var")){
-goto switch_command_res2
-}
 if "#_for1" == fmt.Sprintf("%v", getVar("$finish_return_var")){
 goto _for1
 }
-if "#is_try_res0" == fmt.Sprintf("%v", getVar("$finish_return_var")){
-goto is_try_res0
+if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto switch_command_res0
 }
-if "#modify_block_res0" == fmt.Sprintf("%v", getVar("$finish_return_var")){
-goto modify_block_res0
+if "#_for2" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto _for2
+}
+if "#is_do_res0" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto is_do_res0
+}
+if "#block_end_res0" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto block_end_res0
+}
+if "#get_command_res0" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto get_command_res0
+}
+if "#get_cond_res0" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto get_cond_res0
+}
+if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto switch_command_res1
+}
+if "#_for3" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto _for3
+}
+if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto switch_command_res2
+}
+if "#_undef_for3" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto _undef_for3
+}
+if "#_cond8_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto _cond8_end
+}
+if "#_cond9_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto _cond9_end
+}
+if "#_cond10_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto _cond10_end
+}
+if "#_for3_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto _for3_end
+}
+if "#_cond7_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto _cond7_end
+}
+if "#_cond_exit1" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto _cond_exit1
+}
+if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto switch_command_res3
+}
+if "#_undef_for2" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto _undef_for2
 }
 if "#_cond6_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
 goto _cond6_end
 }
-if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$finish_return_var")){
-goto switch_command_res3
+if "#_cond11_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto _cond11_end
+}
+if "#_cond12_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto _cond12_end
+}
+if "#_for2_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto _for2_end
+}
+if "#switch_files_res0" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto switch_files_res0
 }
 if "#_undef_for1" == fmt.Sprintf("%v", getVar("$finish_return_var")){
 goto _undef_for1
@@ -5419,17 +6355,17 @@ goto _undef_for1
 if "#_cond5_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
 goto _cond5_end
 }
-if "#_cond7_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
-goto _cond7_end
+if "#_cond13_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto _cond13_end
 }
-if "#_cond8_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
-goto _cond8_end
+if "#_cond14_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto _cond14_end
 }
 if "#_for1_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
 goto _for1_end
 }
-if "#finish_res0" == fmt.Sprintf("%v", getVar("$finish_return_var")){
-goto finish_res0
+if "#clear_files_res0" == fmt.Sprintf("%v", getVar("$finish_return_var")){
+goto clear_files_res0
 }
 if "#main_end" == fmt.Sprintf("%v", getVar("$finish_return_var")){
 goto main_end
@@ -5440,730 +6376,431 @@ goto main_res0
 goto finish_end
 finish_end:
 fmt.Print("")
-defineVar("$is_try_return_var")
-setVar("$is_try_return_var", "")
-defineVar("$is_try_res")
-setVar("$is_try_res", false)
-goto is_try_end
-goto is_try
-is_try:
+defineVar("$switch_files_return_var")
+setVar("$switch_files_return_var", "")
+goto switch_files_end
+goto switch_files
+switch_files:
 fmt.Print("")
-defineVar("command")
-setVar("command", "")
 fmt.Print("")
-setVar("command", systemStack[len(systemStack)-1])
-if "end" != systemStack[len(systemStack)-1] {
-systemStack = systemStack[:len(systemStack)-1]
-}
+setVar("$finish_return_var","#finish_res0")
+goto finish
+goto finish_res0
+finish_res0:
 fmt.Print("")
-defineVar("st")
-setVar("st", []interface{}{"end"})
-defineVar("op")
-setVar("op", "")
-setVar("op","try{")
-defineVar("$ops_res4")
-setVar("$ops_res4", []interface{}{"end"})
-systemStack = append(systemStack, getVar("command"))
-systemStack = append(systemStack, getVar("op"))
-setVar("$ops_return_var","#ops_res4")
-goto ops
-goto ops_res4
-ops_res4:
-setVar("$ops_res", systemStack[len(systemStack)-1])
-if "end" != systemStack[len(systemStack)-1] {
-systemStack = systemStack[:len(systemStack)-1]
-}
-setVar("$ops_res4", getVar("$ops_res"))
-setVar("st", getVar("$ops_res4"))
-defineVar("buf")
-setVar("buf", "")
-if "[]interface {}" == fmt.Sprintf("%T", getVar("st")) && len(getVar("st").([]interface{})) > 1{
-setVar("buf", getVar("st").([]interface{})[len(getVar("st").([]interface{})) - 1])
-}else if fmt.Sprintf("%T", getVar("buf")) == "[]interface {}"{
-setVar("buf", []interface{}{[]interface{}{"end"}})
-}else{
-setVar("buf", "end")
-}
-if "[]interface {}" == fmt.Sprintf("%T", getVar("st")) && !isEqual("end", getVar("st").([]interface{})[len(getVar("st").([]interface{})) - 1]) && !isEqual("[end]", getVar("st").([]interface{})[len(getVar("st").([]interface{})) - 1]){
-setVar("st", getVar("st").([]interface{})[:len(getVar("st").([]interface{})) - 1])
-}
-if isEqual(ValueFoldInterface(getVar("buf")), ValueFoldInterface("end")){
+fmt.Print("")
+if toBool(getVar("first_file")){
 print("")
 }else{
 goto _cond0_end
 }
-systemStack = append(systemStack, "False")
-undefineVar("buf")
-undefineVar("$ops_res4")
-undefineVar("op")
-undefineVar("st")
-undefineVar("command")
-if "#reverse" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto reverse
-}
-if "#_reverse_s" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _reverse_s
-}
-if "#_reverse_e" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _reverse_e
-}
-if "#reverse_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto reverse_end
-}
-if "#indexes" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto indexes
-}
-if "#_indexes_s" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _indexes_s
-}
-if "#_indexes_e" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _indexes_e
-}
-if "#reverse_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto reverse_res0
-}
-if "#indexes_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto indexes_end
-}
-if "#SET_COMMAND_COUNTER" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto SET_COMMAND_COUNTER
-}
-if "#_set_start" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _set_start
-}
-if "#_set_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _set_end
-}
-if "#SET_COMMAND_COUNTER_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto SET_COMMAND_COUNTER_end
-}
-if "#get_command" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto get_command
-}
-if "#_get_command_s" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _get_command_s
-}
-if "#_get_command_e" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _get_command_e
-}
-if "#SET_COMMAND_COUNTER_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto SET_COMMAND_COUNTER_res0
-}
-if "#get_command_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto get_command_end
-}
-if "#switch_command" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto switch_command
-}
-if "#switch_command_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto switch_command_end
-}
-if "#stack_len" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto stack_len
-}
-if "#_stack_len_s" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _stack_len_s
-}
-if "#_stack_len_e" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _stack_len_e
-}
-if "#stack_len_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto stack_len_end
-}
-if "#ops" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto ops
-}
-if "#indexes_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto indexes_res0
-}
-if "#_op_nums_s" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _op_nums_s
-}
-if "#_quotes_s" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _quotes_s
-}
-if "#_these_quotes_s" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _these_quotes_s
-}
-if "#_these_quotes_e" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _these_quotes_e
-}
-if "#_is_op_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _is_op_end
-}
-if "#_quotes_e" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _quotes_e
-}
-if "#_push_op_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _push_op_end
-}
-if "#_op_nums_e" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _op_nums_e
-}
-if "#reverse_res1" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto reverse_res1
-}
-if "#ops_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto ops_end
-}
-if "#block_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto block_end
-}
-if "#_block_s" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _block_s
-}
-if "#ops_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto ops_res0
-}
-if "#ops_res1" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto ops_res1
-}
-if "#stack_len_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto stack_len_res0
-}
-if "#stack_len_res1" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto stack_len_res1
-}
-if "#_block_e" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _block_e
-}
-if "#SET_COMMAND_COUNTER_res1" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto SET_COMMAND_COUNTER_res1
-}
-if "#block_end_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto block_end_end
-}
-if "#println" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto println
-}
-if "#println_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto println_end
-}
-if "#in_stack" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto in_stack
-}
-if "#_in_stack_s" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _in_stack_s
-}
-if "#_no" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _no
-}
-if "#_in_stack_e" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _in_stack_e
-}
-if "#in_stack_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto in_stack_end
-}
-if "#func_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto func_end
-}
-if "#ops_res2" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto ops_res2
-}
-if "#ops_res3" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto ops_res3
-}
-if "#_braces_s" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _braces_s
-}
-if "#in_stack_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto in_stack_res0
-}
-if "#_o_plus_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _o_plus_end
-}
-if "#in_stack_res1" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto in_stack_res1
-}
-if "#_c_plus_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _c_plus_end
-}
-if "#_braces_e" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _braces_e
-}
-if "#func_end_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto func_end_end
-}
-if "#init" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto init
-}
-if "#init_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto init_end
-}
-if "#finish" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto finish
-}
-if "#finish_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto finish_end
-}
-if "#is_try" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto is_try
-}
-if "#ops_res4" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto ops_res4
-}
-if "#_cond0_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _cond0_end
-}
-if "#_cond1_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _cond1_end
-}
-if "#is_try_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto is_try_end
-}
-if "#modify_block" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto modify_block
-}
-if "#block_end_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto block_end_res0
-}
-if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto switch_command_res0
-}
-if "#_for0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _for0
-}
-if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto switch_command_res1
-}
-if "#_undef_for0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _undef_for0
-}
-if "#_cond2_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _cond2_end
-}
-if "#_cond3_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _cond3_end
-}
-if "#_cond4_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _cond4_end
-}
-if "#_for0_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _for0_end
-}
-if "#modify_block_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto modify_block_end
-}
-if "#main" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto main
-}
-if "#init_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto init_res0
-}
-if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto switch_command_res2
-}
-if "#_for1" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _for1
-}
-if "#is_try_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto is_try_res0
-}
-if "#modify_block_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto modify_block_res0
-}
-if "#_cond6_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _cond6_end
-}
-if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto switch_command_res3
-}
-if "#_undef_for1" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _undef_for1
-}
-if "#_cond5_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _cond5_end
-}
-if "#_cond7_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _cond7_end
-}
-if "#_cond8_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _cond8_end
-}
-if "#_for1_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _for1_end
-}
-if "#finish_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto finish_res0
-}
-if "#main_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto main_end
-}
-if "#main_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto main_res0
-}
+defineVar("$SOURCE")
+setVar("$SOURCE", openFile(getRootSource(fmt.Sprintf("%v", "benv/dowhile_program.b"))))
+defineVar("$sourceNewChunk")
+setVar("$sourceNewChunk", EachChunk(getVar("$SOURCE").(*os.File)))
+defineVar("$DEST")
+setVar("$DEST", createFile(getRootSource(fmt.Sprintf("%v", "benv/dowhile_program2.b"))))
+setVar("first_file","False")
+goto _cond_exit0
 goto _cond0_end
 _cond0_end:
 fmt.Print("")
+defineVar("$SOURCE")
+setVar("$SOURCE", openFile(getRootSource(fmt.Sprintf("%v", "benv/dowhile_program2.b"))))
+defineVar("$sourceNewChunk")
+setVar("$sourceNewChunk", EachChunk(getVar("$SOURCE").(*os.File)))
 fmt.Print("")
-defineVar("pos")
-setVar("pos", 0)
-defineVar("$I0")
-setVar("$I0", 0)
-setVar("$I0",toInt(getVar("buf")))
-setVar("pos", getVar("$I0"))
-undefineVar("$I0")
-if !toBool(isEqual(ValueFoldInterface(getVar("pos")), ValueFoldInterface(0))){
+defineVar("$DEST")
+setVar("$DEST", createFile(getRootSource(fmt.Sprintf("%v", "benv/dowhile_program.b"))))
+setVar("first_file","True")
+goto _cond_exit0
+_cond_exit0:
+fmt.Print("")
+fmt.Print("")
+if "#reverse" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto reverse
+}
+if "#_reverse_s" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _reverse_s
+}
+if "#_reverse_e" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _reverse_e
+}
+if "#reverse_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto reverse_end
+}
+if "#indexes" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto indexes
+}
+if "#_indexes_s" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _indexes_s
+}
+if "#_indexes_e" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _indexes_e
+}
+if "#reverse_res0" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto reverse_res0
+}
+if "#indexes_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto indexes_end
+}
+if "#SET_COMMAND_COUNTER" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto SET_COMMAND_COUNTER
+}
+if "#_set_start" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _set_start
+}
+if "#_set_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _set_end
+}
+if "#SET_COMMAND_COUNTER_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto SET_COMMAND_COUNTER_end
+}
+if "#get_command" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto get_command
+}
+if "#_get_command_s" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _get_command_s
+}
+if "#_get_command_e" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _get_command_e
+}
+if "#SET_COMMAND_COUNTER_res0" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto SET_COMMAND_COUNTER_res0
+}
+if "#get_command_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto get_command_end
+}
+if "#switch_command" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto switch_command
+}
+if "#switch_command_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto switch_command_end
+}
+if "#stack_len" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto stack_len
+}
+if "#_stack_len_s" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _stack_len_s
+}
+if "#_stack_len_e" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _stack_len_e
+}
+if "#stack_len_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto stack_len_end
+}
+if "#ops" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto ops
+}
+if "#indexes_res0" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto indexes_res0
+}
+if "#_op_nums_s" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _op_nums_s
+}
+if "#_quotes_s" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _quotes_s
+}
+if "#_these_quotes_s" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _these_quotes_s
+}
+if "#_these_quotes_e" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _these_quotes_e
+}
+if "#_is_op_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _is_op_end
+}
+if "#_quotes_e" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _quotes_e
+}
+if "#_push_op_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _push_op_end
+}
+if "#_op_nums_e" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _op_nums_e
+}
+if "#reverse_res1" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto reverse_res1
+}
+if "#ops_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto ops_end
+}
+if "#block_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto block_end
+}
+if "#_block_s" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _block_s
+}
+if "#ops_res0" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto ops_res0
+}
+if "#ops_res1" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto ops_res1
+}
+if "#stack_len_res0" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto stack_len_res0
+}
+if "#stack_len_res1" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto stack_len_res1
+}
+if "#_block_e" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _block_e
+}
+if "#SET_COMMAND_COUNTER_res1" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto SET_COMMAND_COUNTER_res1
+}
+if "#block_end_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto block_end_end
+}
+if "#println" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto println
+}
+if "#println_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto println_end
+}
+if "#in_stack" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto in_stack
+}
+if "#_in_stack_s" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _in_stack_s
+}
+if "#_no" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _no
+}
+if "#_in_stack_e" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _in_stack_e
+}
+if "#in_stack_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto in_stack_end
+}
+if "#func_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto func_end
+}
+if "#ops_res2" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto ops_res2
+}
+if "#ops_res3" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto ops_res3
+}
+if "#_braces_s" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _braces_s
+}
+if "#in_stack_res0" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto in_stack_res0
+}
+if "#_o_plus_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _o_plus_end
+}
+if "#in_stack_res1" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto in_stack_res1
+}
+if "#_c_plus_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _c_plus_end
+}
+if "#_braces_e" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _braces_e
+}
+if "#func_end_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto func_end_end
+}
+if "#init" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto init
+}
+if "#init_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto init_end
+}
+if "#finish" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto finish
+}
+if "#finish_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto finish_end
+}
+if "#switch_files" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto switch_files
+}
+if "#finish_res0" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto finish_res0
+}
+if "#_cond0_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _cond0_end
+}
+if "#_cond_exit0" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _cond_exit0
+}
+if "#switch_files_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto switch_files_end
+}
+if "#clear_files" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto clear_files
+}
+if "#_for0" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _for0
+}
+if "#_undef_for0" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _undef_for0
+}
+if "#_cond2_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _cond2_end
+}
+if "#_cond3_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _cond3_end
+}
+if "#_cond4_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _cond4_end
+}
+if "#_for0_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _for0_end
+}
+if "#_cond1_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _cond1_end
+}
+if "#finish_res1" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto finish_res1
+}
+if "#clear_files_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto clear_files_end
+}
+if "#is_do" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto is_do
+}
+if "#ops_res4" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto ops_res4
+}
+if "#is_do_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto is_do_end
+}
+if "#get_cond" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto get_cond
+}
+if "#ops_res5" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto ops_res5
+}
+if "#func_end_res0" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto func_end_res0
+}
+if "#get_cond_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto get_cond_end
+}
+if "#main" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto main
+}
+if "#init_res0" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto init_res0
+}
+if "#_for1" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _for1
+}
+if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto switch_command_res0
+}
+if "#_for2" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _for2
+}
+if "#is_do_res0" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto is_do_res0
+}
+if "#block_end_res0" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto block_end_res0
+}
+if "#get_command_res0" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto get_command_res0
+}
+if "#get_cond_res0" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto get_cond_res0
+}
+if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto switch_command_res1
+}
+if "#_for3" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _for3
+}
+if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto switch_command_res2
+}
+if "#_undef_for3" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _undef_for3
+}
+if "#_cond8_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _cond8_end
+}
+if "#_cond9_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _cond9_end
+}
+if "#_cond10_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _cond10_end
+}
+if "#_for3_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _for3_end
+}
+if "#_cond7_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _cond7_end
+}
+if "#_cond_exit1" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _cond_exit1
+}
+if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto switch_command_res3
+}
+if "#_undef_for2" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _undef_for2
+}
+if "#_cond6_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _cond6_end
+}
+if "#_cond11_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _cond11_end
+}
+if "#_cond12_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _cond12_end
+}
+if "#_for2_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _for2_end
+}
+if "#switch_files_res0" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto switch_files_res0
+}
+if "#_undef_for1" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _undef_for1
+}
+if "#_cond5_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _cond5_end
+}
+if "#_cond13_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _cond13_end
+}
+if "#_cond14_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _cond14_end
+}
+if "#_for1_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto _for1_end
+}
+if "#clear_files_res0" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto clear_files_res0
+}
+if "#main_end" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto main_end
+}
+if "#main_res0" == fmt.Sprintf("%v", getVar("$switch_files_return_var")){
+goto main_res0
+}
+goto switch_files_end
+switch_files_end:
+fmt.Print("")
+defineVar("$clear_files_return_var")
+setVar("$clear_files_return_var", "")
+goto clear_files_end
+goto clear_files
+clear_files:
+fmt.Print("")
+fmt.Print("")
+if toBool(getVar("first_file")){
 print("")
 }else{
 goto _cond1_end
 }
-defineVar("$print_arg0")
-setVar("$print_arg0", "")
-setVar("$print_arg0","try.b: error in the try format\n")
-fmt.Print(getVar("$print_arg0"))
-undefineVar("$print_arg0")
-os.Exit(1)
-goto _cond1_end
-_cond1_end:
-fmt.Print("")
-fmt.Print("")
-systemStack = append(systemStack, "True")
-undefineVar("pos")
-undefineVar("st")
-undefineVar("op")
-undefineVar("$ops_res4")
-undefineVar("buf")
-undefineVar("command")
-if "#reverse" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto reverse
-}
-if "#_reverse_s" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _reverse_s
-}
-if "#_reverse_e" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _reverse_e
-}
-if "#reverse_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto reverse_end
-}
-if "#indexes" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto indexes
-}
-if "#_indexes_s" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _indexes_s
-}
-if "#_indexes_e" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _indexes_e
-}
-if "#reverse_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto reverse_res0
-}
-if "#indexes_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto indexes_end
-}
-if "#SET_COMMAND_COUNTER" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto SET_COMMAND_COUNTER
-}
-if "#_set_start" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _set_start
-}
-if "#_set_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _set_end
-}
-if "#SET_COMMAND_COUNTER_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto SET_COMMAND_COUNTER_end
-}
-if "#get_command" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto get_command
-}
-if "#_get_command_s" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _get_command_s
-}
-if "#_get_command_e" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _get_command_e
-}
-if "#SET_COMMAND_COUNTER_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto SET_COMMAND_COUNTER_res0
-}
-if "#get_command_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto get_command_end
-}
-if "#switch_command" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto switch_command
-}
-if "#switch_command_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto switch_command_end
-}
-if "#stack_len" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto stack_len
-}
-if "#_stack_len_s" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _stack_len_s
-}
-if "#_stack_len_e" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _stack_len_e
-}
-if "#stack_len_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto stack_len_end
-}
-if "#ops" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto ops
-}
-if "#indexes_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto indexes_res0
-}
-if "#_op_nums_s" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _op_nums_s
-}
-if "#_quotes_s" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _quotes_s
-}
-if "#_these_quotes_s" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _these_quotes_s
-}
-if "#_these_quotes_e" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _these_quotes_e
-}
-if "#_is_op_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _is_op_end
-}
-if "#_quotes_e" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _quotes_e
-}
-if "#_push_op_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _push_op_end
-}
-if "#_op_nums_e" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _op_nums_e
-}
-if "#reverse_res1" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto reverse_res1
-}
-if "#ops_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto ops_end
-}
-if "#block_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto block_end
-}
-if "#_block_s" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _block_s
-}
-if "#ops_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto ops_res0
-}
-if "#ops_res1" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto ops_res1
-}
-if "#stack_len_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto stack_len_res0
-}
-if "#stack_len_res1" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto stack_len_res1
-}
-if "#_block_e" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _block_e
-}
-if "#SET_COMMAND_COUNTER_res1" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto SET_COMMAND_COUNTER_res1
-}
-if "#block_end_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto block_end_end
-}
-if "#println" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto println
-}
-if "#println_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto println_end
-}
-if "#in_stack" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto in_stack
-}
-if "#_in_stack_s" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _in_stack_s
-}
-if "#_no" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _no
-}
-if "#_in_stack_e" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _in_stack_e
-}
-if "#in_stack_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto in_stack_end
-}
-if "#func_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto func_end
-}
-if "#ops_res2" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto ops_res2
-}
-if "#ops_res3" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto ops_res3
-}
-if "#_braces_s" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _braces_s
-}
-if "#in_stack_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto in_stack_res0
-}
-if "#_o_plus_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _o_plus_end
-}
-if "#in_stack_res1" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto in_stack_res1
-}
-if "#_c_plus_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _c_plus_end
-}
-if "#_braces_e" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _braces_e
-}
-if "#func_end_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto func_end_end
-}
-if "#init" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto init
-}
-if "#init_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto init_end
-}
-if "#finish" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto finish
-}
-if "#finish_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto finish_end
-}
-if "#is_try" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto is_try
-}
-if "#ops_res4" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto ops_res4
-}
-if "#_cond0_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _cond0_end
-}
-if "#_cond1_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _cond1_end
-}
-if "#is_try_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto is_try_end
-}
-if "#modify_block" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto modify_block
-}
-if "#block_end_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto block_end_res0
-}
-if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto switch_command_res0
-}
-if "#_for0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _for0
-}
-if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto switch_command_res1
-}
-if "#_undef_for0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _undef_for0
-}
-if "#_cond2_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _cond2_end
-}
-if "#_cond3_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _cond3_end
-}
-if "#_cond4_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _cond4_end
-}
-if "#_for0_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _for0_end
-}
-if "#modify_block_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto modify_block_end
-}
-if "#main" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto main
-}
-if "#init_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto init_res0
-}
-if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto switch_command_res2
-}
-if "#_for1" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _for1
-}
-if "#is_try_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto is_try_res0
-}
-if "#modify_block_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto modify_block_res0
-}
-if "#_cond6_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _cond6_end
-}
-if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto switch_command_res3
-}
-if "#_undef_for1" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _undef_for1
-}
-if "#_cond5_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _cond5_end
-}
-if "#_cond7_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _cond7_end
-}
-if "#_cond8_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _cond8_end
-}
-if "#_for1_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto _for1_end
-}
-if "#finish_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto finish_res0
-}
-if "#main_end" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto main_end
-}
-if "#main_res0" == fmt.Sprintf("%v", getVar("$is_try_return_var")){
-goto main_res0
-}
-goto is_try_end
-is_try_end:
-fmt.Print("")
-defineVar("$modify_block_return_var")
-setVar("$modify_block_return_var", "")
-goto modify_block_end
-goto modify_block
-modify_block:
-fmt.Print("")
-fmt.Print("")
-defineVar("snum")
-setVar("snum", "")
-defineVar("$s0")
-setVar("$s0", "")
-setVar("$s0",getVar("num"))
-setVar("snum", getVar("$s0"))
-undefineVar("$s0")
-defineVar("e")
-setVar("e", 0)
-defineVar("$block_end_res0")
-setVar("$block_end_res0", 0)
-setVar("$block_end_return_var","#block_end_res0")
-goto block_end
-goto block_end_res0
-block_end_res0:
-setVar("$block_end_res", systemStack[len(systemStack)-1])
-if "end" != systemStack[len(systemStack)-1] {
-systemStack = systemStack[:len(systemStack)-1]
-}
-setVar("$block_end_res0", getVar("$block_end_res"))
-setVar("e", getVar("$block_end_res0"))
-defineVar("buf")
-setVar("buf", "")
-setVar("buf","error=\"\"")
-getVar("$DEST").(*os.File).WriteString(getVar("buf").(string) + ";\n")
-setVar("buf","$toPanic=False")
-getVar("$DEST").(*os.File).WriteString(getVar("buf").(string) + ";\n")
-setVar("buf","if(True){print(\"\")")
-getVar("$DEST").(*os.File).WriteString(getVar("buf").(string) + ";\n")
-setVar("$switch_command_return_var","#switch_command_res0")
-goto switch_command
-goto switch_command_res0
-switch_command_res0:
-fmt.Print("")
-fmt.Print("")
+defineVar("$CODE")
+setVar("$CODE", CodeInput(fmt.Sprintf("%v", getVar("$sourceNewChunk").(func () string)()), false))
+setVar("command", getVar("$CODE"))
 fmt.Print("")
 fmt.Print("")
 defineVar("$for0")
@@ -6171,24 +6808,15 @@ setVar("$for0", false)
 goto _for0
 _for0:
 fmt.Print("")
-if toFloat(getVar("COMMAND_COUNTER"))<toFloat(getVar("e")){
+if !toBool(isEqual(ValueFoldInterface(getVar("command")), ValueFoldInterface("end"))){
 print("")
 }else{
 goto _cond2_end
 }
-setVar("buf","if(NOT(error==\"\")){print(\"\")")
-getVar("$DEST").(*os.File).WriteString(getVar("buf").(string) + ";\n")
-setVar("buf",sum(sum("goto(#_attempt", getVar("snum")), ")"))
-getVar("$DEST").(*os.File).WriteString(getVar("buf").(string) + ";\n")
-setVar("buf","}")
-getVar("$DEST").(*os.File).WriteString(getVar("buf").(string) + ";\n")
 getVar("$DEST").(*os.File).WriteString(getVar("command").(string) + ";\n")
-setVar("$switch_command_return_var","#switch_command_res1")
-goto switch_command
-goto switch_command_res1
-switch_command_res1:
-fmt.Print("")
-fmt.Print("")
+defineVar("$CODE")
+setVar("$CODE", CodeInput(fmt.Sprintf("%v", getVar("$sourceNewChunk").(func () string)()), false))
+setVar("command", getVar("$CODE"))
 fmt.Print("")
 goto _undef_for0
 _undef_for0:
@@ -6205,7 +6833,7 @@ goto _for0_end
 goto _cond3_end
 _cond3_end:
 fmt.Print("")
-if toFloat(getVar("COMMAND_COUNTER"))<toFloat(getVar("e")){
+if !toBool(isEqual(ValueFoldInterface(getVar("command")), ValueFoldInterface("end"))){
 print("")
 }else{
 goto _cond4_end
@@ -6219,311 +6847,1272 @@ _for0_end:
 fmt.Print("")
 undefineVar("$for0")
 fmt.Print("")
-setVar("buf",sum(sum("#_attempt", getVar("snum")), ":\nprint(\"\")"))
-getVar("$DEST").(*os.File).WriteString(getVar("buf").(string) + ";\n")
-setVar("num",sum(getVar("num"), 1))
-setVar("buf","$toPanic=True")
-getVar("$DEST").(*os.File).WriteString(getVar("buf").(string) + ";\n")
-undefineVar("buf")
-undefineVar("$block_end_res0")
-undefineVar("e")
-undefineVar("snum")
-if "#reverse" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+undefineVar("$for0")
+goto _cond1_end
+_cond1_end:
+fmt.Print("")
+fmt.Print("")
+setVar("$finish_return_var","#finish_res1")
+goto finish
+goto finish_res1
+finish_res1:
+fmt.Print("")
+fmt.Print("")
+os.Remove(getRootSource("benv/dowhile_program2.b"))
+os.Remove(getRootSource(fmt.Sprintf("%v", getVar("root_source"))))
+if "#reverse" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto reverse
 }
-if "#_reverse_s" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_reverse_s" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _reverse_s
 }
-if "#_reverse_e" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_reverse_e" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _reverse_e
 }
-if "#reverse_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#reverse_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto reverse_end
 }
-if "#indexes" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#indexes" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto indexes
 }
-if "#_indexes_s" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_indexes_s" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _indexes_s
 }
-if "#_indexes_e" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_indexes_e" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _indexes_e
 }
-if "#reverse_res0" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#reverse_res0" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto reverse_res0
 }
-if "#indexes_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#indexes_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto indexes_end
 }
-if "#SET_COMMAND_COUNTER" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#SET_COMMAND_COUNTER" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto SET_COMMAND_COUNTER
 }
-if "#_set_start" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_set_start" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _set_start
 }
-if "#_set_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_set_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _set_end
 }
-if "#SET_COMMAND_COUNTER_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#SET_COMMAND_COUNTER_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto SET_COMMAND_COUNTER_end
 }
-if "#get_command" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#get_command" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto get_command
 }
-if "#_get_command_s" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_get_command_s" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _get_command_s
 }
-if "#_get_command_e" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_get_command_e" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _get_command_e
 }
-if "#SET_COMMAND_COUNTER_res0" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#SET_COMMAND_COUNTER_res0" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto SET_COMMAND_COUNTER_res0
 }
-if "#get_command_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#get_command_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto get_command_end
 }
-if "#switch_command" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#switch_command" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto switch_command
 }
-if "#switch_command_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#switch_command_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto switch_command_end
 }
-if "#stack_len" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#stack_len" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto stack_len
 }
-if "#_stack_len_s" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_stack_len_s" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _stack_len_s
 }
-if "#_stack_len_e" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_stack_len_e" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _stack_len_e
 }
-if "#stack_len_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#stack_len_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto stack_len_end
 }
-if "#ops" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#ops" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto ops
 }
-if "#indexes_res0" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#indexes_res0" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto indexes_res0
 }
-if "#_op_nums_s" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_op_nums_s" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _op_nums_s
 }
-if "#_quotes_s" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_quotes_s" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _quotes_s
 }
-if "#_these_quotes_s" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_these_quotes_s" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _these_quotes_s
 }
-if "#_these_quotes_e" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_these_quotes_e" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _these_quotes_e
 }
-if "#_is_op_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_is_op_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _is_op_end
 }
-if "#_quotes_e" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_quotes_e" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _quotes_e
 }
-if "#_push_op_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_push_op_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _push_op_end
 }
-if "#_op_nums_e" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_op_nums_e" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _op_nums_e
 }
-if "#reverse_res1" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#reverse_res1" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto reverse_res1
 }
-if "#ops_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#ops_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto ops_end
 }
-if "#block_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#block_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto block_end
 }
-if "#_block_s" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_block_s" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _block_s
 }
-if "#ops_res0" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#ops_res0" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto ops_res0
 }
-if "#ops_res1" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#ops_res1" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto ops_res1
 }
-if "#stack_len_res0" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#stack_len_res0" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto stack_len_res0
 }
-if "#stack_len_res1" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#stack_len_res1" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto stack_len_res1
 }
-if "#_block_e" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_block_e" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _block_e
 }
-if "#SET_COMMAND_COUNTER_res1" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#SET_COMMAND_COUNTER_res1" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto SET_COMMAND_COUNTER_res1
 }
-if "#block_end_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#block_end_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto block_end_end
 }
-if "#println" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#println" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto println
 }
-if "#println_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#println_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto println_end
 }
-if "#in_stack" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#in_stack" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto in_stack
 }
-if "#_in_stack_s" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_in_stack_s" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _in_stack_s
 }
-if "#_no" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_no" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _no
 }
-if "#_in_stack_e" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_in_stack_e" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _in_stack_e
 }
-if "#in_stack_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#in_stack_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto in_stack_end
 }
-if "#func_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#func_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto func_end
 }
-if "#ops_res2" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#ops_res2" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto ops_res2
 }
-if "#ops_res3" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#ops_res3" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto ops_res3
 }
-if "#_braces_s" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_braces_s" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _braces_s
 }
-if "#in_stack_res0" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#in_stack_res0" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto in_stack_res0
 }
-if "#_o_plus_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_o_plus_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _o_plus_end
 }
-if "#in_stack_res1" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#in_stack_res1" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto in_stack_res1
 }
-if "#_c_plus_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_c_plus_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _c_plus_end
 }
-if "#_braces_e" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_braces_e" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto _braces_e
 }
-if "#func_end_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#func_end_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto func_end_end
 }
-if "#init" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#init" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto init
 }
-if "#init_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#init_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto init_end
 }
-if "#finish" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#finish" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto finish
 }
-if "#finish_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#finish_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto finish_end
 }
-if "#is_try" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto is_try
+if "#switch_files" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto switch_files
 }
-if "#ops_res4" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto ops_res4
-}
-if "#_cond0_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto _cond0_end
-}
-if "#_cond1_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto _cond1_end
-}
-if "#is_try_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto is_try_end
-}
-if "#modify_block" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto modify_block
-}
-if "#block_end_res0" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto block_end_res0
-}
-if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto switch_command_res0
-}
-if "#_for0" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto _for0
-}
-if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto switch_command_res1
-}
-if "#_undef_for0" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto _undef_for0
-}
-if "#_cond2_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto _cond2_end
-}
-if "#_cond3_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto _cond3_end
-}
-if "#_cond4_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto _cond4_end
-}
-if "#_for0_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto _for0_end
-}
-if "#modify_block_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto modify_block_end
-}
-if "#main" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto main
-}
-if "#init_res0" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto init_res0
-}
-if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto switch_command_res2
-}
-if "#_for1" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto _for1
-}
-if "#is_try_res0" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto is_try_res0
-}
-if "#modify_block_res0" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto modify_block_res0
-}
-if "#_cond6_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto _cond6_end
-}
-if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto switch_command_res3
-}
-if "#_undef_for1" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto _undef_for1
-}
-if "#_cond5_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto _cond5_end
-}
-if "#_cond7_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto _cond7_end
-}
-if "#_cond8_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto _cond8_end
-}
-if "#_for1_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
-goto _for1_end
-}
-if "#finish_res0" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#finish_res0" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto finish_res0
 }
-if "#main_end" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#_cond0_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _cond0_end
+}
+if "#_cond_exit0" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _cond_exit0
+}
+if "#switch_files_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto switch_files_end
+}
+if "#clear_files" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto clear_files
+}
+if "#_for0" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _for0
+}
+if "#_undef_for0" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _undef_for0
+}
+if "#_cond2_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _cond2_end
+}
+if "#_cond3_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _cond3_end
+}
+if "#_cond4_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _cond4_end
+}
+if "#_for0_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _for0_end
+}
+if "#_cond1_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _cond1_end
+}
+if "#finish_res1" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto finish_res1
+}
+if "#clear_files_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto clear_files_end
+}
+if "#is_do" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto is_do
+}
+if "#ops_res4" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto ops_res4
+}
+if "#is_do_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto is_do_end
+}
+if "#get_cond" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto get_cond
+}
+if "#ops_res5" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto ops_res5
+}
+if "#func_end_res0" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto func_end_res0
+}
+if "#get_cond_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto get_cond_end
+}
+if "#main" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto main
+}
+if "#init_res0" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto init_res0
+}
+if "#_for1" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _for1
+}
+if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto switch_command_res0
+}
+if "#_for2" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _for2
+}
+if "#is_do_res0" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto is_do_res0
+}
+if "#block_end_res0" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto block_end_res0
+}
+if "#get_command_res0" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto get_command_res0
+}
+if "#get_cond_res0" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto get_cond_res0
+}
+if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto switch_command_res1
+}
+if "#_for3" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _for3
+}
+if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto switch_command_res2
+}
+if "#_undef_for3" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _undef_for3
+}
+if "#_cond8_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _cond8_end
+}
+if "#_cond9_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _cond9_end
+}
+if "#_cond10_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _cond10_end
+}
+if "#_for3_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _for3_end
+}
+if "#_cond7_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _cond7_end
+}
+if "#_cond_exit1" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _cond_exit1
+}
+if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto switch_command_res3
+}
+if "#_undef_for2" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _undef_for2
+}
+if "#_cond6_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _cond6_end
+}
+if "#_cond11_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _cond11_end
+}
+if "#_cond12_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _cond12_end
+}
+if "#_for2_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _for2_end
+}
+if "#switch_files_res0" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto switch_files_res0
+}
+if "#_undef_for1" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _undef_for1
+}
+if "#_cond5_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _cond5_end
+}
+if "#_cond13_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _cond13_end
+}
+if "#_cond14_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _cond14_end
+}
+if "#_for1_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto _for1_end
+}
+if "#clear_files_res0" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
+goto clear_files_res0
+}
+if "#main_end" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto main_end
 }
-if "#main_res0" == fmt.Sprintf("%v", getVar("$modify_block_return_var")){
+if "#main_res0" == fmt.Sprintf("%v", getVar("$clear_files_return_var")){
 goto main_res0
 }
-goto modify_block_end
-modify_block_end:
+goto clear_files_end
+clear_files_end:
+fmt.Print("")
+defineVar("$is_do_return_var")
+setVar("$is_do_return_var", "")
+defineVar("$is_do_res")
+setVar("$is_do_res", false)
+goto is_do_end
+goto is_do
+is_do:
+fmt.Print("")
+defineVar("command")
+setVar("command", "")
+fmt.Print("")
+setVar("command", systemStack[len(systemStack)-1])
+if "end" != systemStack[len(systemStack)-1] {
+systemStack = systemStack[:len(systemStack)-1]
+}
+fmt.Print("")
+defineVar("s")
+setVar("s", []interface{}{"end"})
+defineVar("buf")
+setVar("buf", "")
+setVar("buf","do{")
+defineVar("$ops_res4")
+setVar("$ops_res4", []interface{}{"end"})
+systemStack = append(systemStack, getVar("command"))
+systemStack = append(systemStack, getVar("buf"))
+setVar("$ops_return_var","#ops_res4")
+goto ops
+goto ops_res4
+ops_res4:
+setVar("$ops_res", systemStack[len(systemStack)-1])
+if "end" != systemStack[len(systemStack)-1] {
+systemStack = systemStack[:len(systemStack)-1]
+}
+setVar("$ops_res4", getVar("$ops_res"))
+setVar("s", getVar("$ops_res4"))
+if "[]interface {}" == fmt.Sprintf("%T", getVar("s")) && len(getVar("s").([]interface{})) > 1{
+setVar("buf", getVar("s").([]interface{})[len(getVar("s").([]interface{})) - 1])
+}else if fmt.Sprintf("%T", getVar("buf")) == "[]interface {}"{
+setVar("buf", []interface{}{[]interface{}{"end"}})
+}else{
+setVar("buf", "end")
+}
+if "[]interface {}" == fmt.Sprintf("%T", getVar("s")) && !isEqual("end", getVar("s").([]interface{})[len(getVar("s").([]interface{})) - 1]) && !isEqual("[end]", getVar("s").([]interface{})[len(getVar("s").([]interface{})) - 1]){
+setVar("s", getVar("s").([]interface{})[:len(getVar("s").([]interface{})) - 1])
+}
+systemStack = append(systemStack, !toBool(isEqual(ValueFoldInterface("end"), ValueFoldInterface(getVar("buf")))))
+undefineVar("$ops_res4")
+undefineVar("buf")
+undefineVar("s")
+undefineVar("command")
+if "#reverse" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto reverse
+}
+if "#_reverse_s" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _reverse_s
+}
+if "#_reverse_e" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _reverse_e
+}
+if "#reverse_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto reverse_end
+}
+if "#indexes" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto indexes
+}
+if "#_indexes_s" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _indexes_s
+}
+if "#_indexes_e" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _indexes_e
+}
+if "#reverse_res0" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto reverse_res0
+}
+if "#indexes_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto indexes_end
+}
+if "#SET_COMMAND_COUNTER" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto SET_COMMAND_COUNTER
+}
+if "#_set_start" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _set_start
+}
+if "#_set_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _set_end
+}
+if "#SET_COMMAND_COUNTER_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto SET_COMMAND_COUNTER_end
+}
+if "#get_command" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto get_command
+}
+if "#_get_command_s" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _get_command_s
+}
+if "#_get_command_e" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _get_command_e
+}
+if "#SET_COMMAND_COUNTER_res0" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto SET_COMMAND_COUNTER_res0
+}
+if "#get_command_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto get_command_end
+}
+if "#switch_command" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto switch_command
+}
+if "#switch_command_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto switch_command_end
+}
+if "#stack_len" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto stack_len
+}
+if "#_stack_len_s" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _stack_len_s
+}
+if "#_stack_len_e" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _stack_len_e
+}
+if "#stack_len_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto stack_len_end
+}
+if "#ops" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto ops
+}
+if "#indexes_res0" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto indexes_res0
+}
+if "#_op_nums_s" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _op_nums_s
+}
+if "#_quotes_s" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _quotes_s
+}
+if "#_these_quotes_s" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _these_quotes_s
+}
+if "#_these_quotes_e" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _these_quotes_e
+}
+if "#_is_op_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _is_op_end
+}
+if "#_quotes_e" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _quotes_e
+}
+if "#_push_op_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _push_op_end
+}
+if "#_op_nums_e" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _op_nums_e
+}
+if "#reverse_res1" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto reverse_res1
+}
+if "#ops_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto ops_end
+}
+if "#block_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto block_end
+}
+if "#_block_s" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _block_s
+}
+if "#ops_res0" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto ops_res0
+}
+if "#ops_res1" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto ops_res1
+}
+if "#stack_len_res0" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto stack_len_res0
+}
+if "#stack_len_res1" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto stack_len_res1
+}
+if "#_block_e" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _block_e
+}
+if "#SET_COMMAND_COUNTER_res1" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto SET_COMMAND_COUNTER_res1
+}
+if "#block_end_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto block_end_end
+}
+if "#println" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto println
+}
+if "#println_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto println_end
+}
+if "#in_stack" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto in_stack
+}
+if "#_in_stack_s" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _in_stack_s
+}
+if "#_no" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _no
+}
+if "#_in_stack_e" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _in_stack_e
+}
+if "#in_stack_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto in_stack_end
+}
+if "#func_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto func_end
+}
+if "#ops_res2" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto ops_res2
+}
+if "#ops_res3" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto ops_res3
+}
+if "#_braces_s" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _braces_s
+}
+if "#in_stack_res0" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto in_stack_res0
+}
+if "#_o_plus_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _o_plus_end
+}
+if "#in_stack_res1" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto in_stack_res1
+}
+if "#_c_plus_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _c_plus_end
+}
+if "#_braces_e" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _braces_e
+}
+if "#func_end_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto func_end_end
+}
+if "#init" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto init
+}
+if "#init_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto init_end
+}
+if "#finish" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto finish
+}
+if "#finish_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto finish_end
+}
+if "#switch_files" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto switch_files
+}
+if "#finish_res0" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto finish_res0
+}
+if "#_cond0_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _cond0_end
+}
+if "#_cond_exit0" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _cond_exit0
+}
+if "#switch_files_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto switch_files_end
+}
+if "#clear_files" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto clear_files
+}
+if "#_for0" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _for0
+}
+if "#_undef_for0" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _undef_for0
+}
+if "#_cond2_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _cond2_end
+}
+if "#_cond3_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _cond3_end
+}
+if "#_cond4_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _cond4_end
+}
+if "#_for0_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _for0_end
+}
+if "#_cond1_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _cond1_end
+}
+if "#finish_res1" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto finish_res1
+}
+if "#clear_files_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto clear_files_end
+}
+if "#is_do" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto is_do
+}
+if "#ops_res4" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto ops_res4
+}
+if "#is_do_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto is_do_end
+}
+if "#get_cond" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto get_cond
+}
+if "#ops_res5" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto ops_res5
+}
+if "#func_end_res0" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto func_end_res0
+}
+if "#get_cond_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto get_cond_end
+}
+if "#main" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto main
+}
+if "#init_res0" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto init_res0
+}
+if "#_for1" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _for1
+}
+if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto switch_command_res0
+}
+if "#_for2" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _for2
+}
+if "#is_do_res0" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto is_do_res0
+}
+if "#block_end_res0" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto block_end_res0
+}
+if "#get_command_res0" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto get_command_res0
+}
+if "#get_cond_res0" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto get_cond_res0
+}
+if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto switch_command_res1
+}
+if "#_for3" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _for3
+}
+if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto switch_command_res2
+}
+if "#_undef_for3" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _undef_for3
+}
+if "#_cond8_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _cond8_end
+}
+if "#_cond9_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _cond9_end
+}
+if "#_cond10_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _cond10_end
+}
+if "#_for3_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _for3_end
+}
+if "#_cond7_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _cond7_end
+}
+if "#_cond_exit1" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _cond_exit1
+}
+if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto switch_command_res3
+}
+if "#_undef_for2" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _undef_for2
+}
+if "#_cond6_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _cond6_end
+}
+if "#_cond11_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _cond11_end
+}
+if "#_cond12_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _cond12_end
+}
+if "#_for2_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _for2_end
+}
+if "#switch_files_res0" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto switch_files_res0
+}
+if "#_undef_for1" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _undef_for1
+}
+if "#_cond5_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _cond5_end
+}
+if "#_cond13_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _cond13_end
+}
+if "#_cond14_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _cond14_end
+}
+if "#_for1_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto _for1_end
+}
+if "#clear_files_res0" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto clear_files_res0
+}
+if "#main_end" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto main_end
+}
+if "#main_res0" == fmt.Sprintf("%v", getVar("$is_do_return_var")){
+goto main_res0
+}
+goto is_do_end
+is_do_end:
+fmt.Print("")
+defineVar("$get_cond_return_var")
+setVar("$get_cond_return_var", "")
+defineVar("$get_cond_res")
+setVar("$get_cond_res", "")
+goto get_cond_end
+goto get_cond
+get_cond:
+fmt.Print("")
+defineVar("command")
+setVar("command", "")
+fmt.Print("")
+setVar("command", systemStack[len(systemStack)-1])
+if "end" != systemStack[len(systemStack)-1] {
+systemStack = systemStack[:len(systemStack)-1]
+}
+fmt.Print("")
+defineVar("op")
+setVar("op", "")
+defineVar("s")
+setVar("s", []interface{}{"end"})
+defineVar("buf")
+setVar("buf", "")
+defineVar("start_pos")
+setVar("start_pos", 0)
+defineVar("end_pos")
+setVar("end_pos", 0)
+setVar("op","while(")
+defineVar("$ops_res5")
+setVar("$ops_res5", []interface{}{"end"})
+systemStack = append(systemStack, getVar("command"))
+systemStack = append(systemStack, getVar("op"))
+setVar("$ops_return_var","#ops_res5")
+goto ops
+goto ops_res5
+ops_res5:
+setVar("$ops_res", systemStack[len(systemStack)-1])
+if "end" != systemStack[len(systemStack)-1] {
+systemStack = systemStack[:len(systemStack)-1]
+}
+setVar("$ops_res5", getVar("$ops_res"))
+setVar("s", getVar("$ops_res5"))
+if "[]interface {}" == fmt.Sprintf("%T", getVar("s")) && len(getVar("s").([]interface{})) > 1{
+setVar("buf", getVar("s").([]interface{})[len(getVar("s").([]interface{})) - 1])
+}else if fmt.Sprintf("%T", getVar("buf")) == "[]interface {}"{
+setVar("buf", []interface{}{[]interface{}{"end"}})
+}else{
+setVar("buf", "end")
+}
+if "[]interface {}" == fmt.Sprintf("%T", getVar("s")) && !isEqual("end", getVar("s").([]interface{})[len(getVar("s").([]interface{})) - 1]) && !isEqual("[end]", getVar("s").([]interface{})[len(getVar("s").([]interface{})) - 1]){
+setVar("s", getVar("s").([]interface{})[:len(getVar("s").([]interface{})) - 1])
+}
+defineVar("$I0")
+setVar("$I0", 0)
+setVar("$I0",toInt(getVar("buf")))
+setVar("start_pos", getVar("$I0"))
+undefineVar("$I0")
+setVar("start_pos",sum(getVar("start_pos"), 5))
+defineVar("$func_end_res0")
+setVar("$func_end_res0", 0)
+systemStack = append(systemStack, getVar("command"))
+systemStack = append(systemStack, getVar("start_pos"))
+setVar("$func_end_return_var","#func_end_res0")
+goto func_end
+goto func_end_res0
+func_end_res0:
+setVar("$func_end_res", systemStack[len(systemStack)-1])
+if "end" != systemStack[len(systemStack)-1] {
+systemStack = systemStack[:len(systemStack)-1]
+}
+setVar("$func_end_res0", getVar("$func_end_res"))
+setVar("end_pos", getVar("$func_end_res0"))
+setVar("start_pos",sum(getVar("start_pos"), 1))
+defineVar("$sl_internal0")
+setVar("$sl_internal0", 0)
+defineVar("$sl_left0")
+setVar("$sl_left0", 0)
+defineVar("$sl_right0")
+setVar("$sl_right0", 0)
+setVar("$sl_left0", getVar("start_pos"))
+setVar("$sl_right0", getVar("end_pos"))
+defineVar("$sl0")
+setVar("$sl0", "")
+setVar("$sl0",getVar("command").(string)[toInt(getVar("$sl_left0")):toInt(getVar("$sl_right0"))])
+setVar("buf", getVar("$sl0"))
+undefineVar("$sl_internal0")
+undefineVar("$sl0")
+undefineVar("$sl_left0")
+undefineVar("$sl_right0")
+systemStack = append(systemStack, getVar("buf"))
+undefineVar("$func_end_res0")
+undefineVar("$ops_res5")
+undefineVar("end_pos")
+undefineVar("start_pos")
+undefineVar("buf")
+undefineVar("s")
+undefineVar("op")
+undefineVar("command")
+if "#reverse" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto reverse
+}
+if "#_reverse_s" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _reverse_s
+}
+if "#_reverse_e" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _reverse_e
+}
+if "#reverse_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto reverse_end
+}
+if "#indexes" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto indexes
+}
+if "#_indexes_s" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _indexes_s
+}
+if "#_indexes_e" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _indexes_e
+}
+if "#reverse_res0" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto reverse_res0
+}
+if "#indexes_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto indexes_end
+}
+if "#SET_COMMAND_COUNTER" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto SET_COMMAND_COUNTER
+}
+if "#_set_start" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _set_start
+}
+if "#_set_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _set_end
+}
+if "#SET_COMMAND_COUNTER_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto SET_COMMAND_COUNTER_end
+}
+if "#get_command" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto get_command
+}
+if "#_get_command_s" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _get_command_s
+}
+if "#_get_command_e" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _get_command_e
+}
+if "#SET_COMMAND_COUNTER_res0" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto SET_COMMAND_COUNTER_res0
+}
+if "#get_command_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto get_command_end
+}
+if "#switch_command" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto switch_command
+}
+if "#switch_command_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto switch_command_end
+}
+if "#stack_len" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto stack_len
+}
+if "#_stack_len_s" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _stack_len_s
+}
+if "#_stack_len_e" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _stack_len_e
+}
+if "#stack_len_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto stack_len_end
+}
+if "#ops" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto ops
+}
+if "#indexes_res0" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto indexes_res0
+}
+if "#_op_nums_s" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _op_nums_s
+}
+if "#_quotes_s" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _quotes_s
+}
+if "#_these_quotes_s" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _these_quotes_s
+}
+if "#_these_quotes_e" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _these_quotes_e
+}
+if "#_is_op_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _is_op_end
+}
+if "#_quotes_e" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _quotes_e
+}
+if "#_push_op_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _push_op_end
+}
+if "#_op_nums_e" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _op_nums_e
+}
+if "#reverse_res1" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto reverse_res1
+}
+if "#ops_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto ops_end
+}
+if "#block_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto block_end
+}
+if "#_block_s" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _block_s
+}
+if "#ops_res0" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto ops_res0
+}
+if "#ops_res1" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto ops_res1
+}
+if "#stack_len_res0" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto stack_len_res0
+}
+if "#stack_len_res1" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto stack_len_res1
+}
+if "#_block_e" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _block_e
+}
+if "#SET_COMMAND_COUNTER_res1" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto SET_COMMAND_COUNTER_res1
+}
+if "#block_end_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto block_end_end
+}
+if "#println" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto println
+}
+if "#println_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto println_end
+}
+if "#in_stack" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto in_stack
+}
+if "#_in_stack_s" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _in_stack_s
+}
+if "#_no" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _no
+}
+if "#_in_stack_e" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _in_stack_e
+}
+if "#in_stack_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto in_stack_end
+}
+if "#func_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto func_end
+}
+if "#ops_res2" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto ops_res2
+}
+if "#ops_res3" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto ops_res3
+}
+if "#_braces_s" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _braces_s
+}
+if "#in_stack_res0" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto in_stack_res0
+}
+if "#_o_plus_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _o_plus_end
+}
+if "#in_stack_res1" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto in_stack_res1
+}
+if "#_c_plus_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _c_plus_end
+}
+if "#_braces_e" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _braces_e
+}
+if "#func_end_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto func_end_end
+}
+if "#init" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto init
+}
+if "#init_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto init_end
+}
+if "#finish" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto finish
+}
+if "#finish_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto finish_end
+}
+if "#switch_files" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto switch_files
+}
+if "#finish_res0" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto finish_res0
+}
+if "#_cond0_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _cond0_end
+}
+if "#_cond_exit0" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _cond_exit0
+}
+if "#switch_files_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto switch_files_end
+}
+if "#clear_files" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto clear_files
+}
+if "#_for0" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _for0
+}
+if "#_undef_for0" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _undef_for0
+}
+if "#_cond2_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _cond2_end
+}
+if "#_cond3_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _cond3_end
+}
+if "#_cond4_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _cond4_end
+}
+if "#_for0_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _for0_end
+}
+if "#_cond1_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _cond1_end
+}
+if "#finish_res1" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto finish_res1
+}
+if "#clear_files_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto clear_files_end
+}
+if "#is_do" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto is_do
+}
+if "#ops_res4" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto ops_res4
+}
+if "#is_do_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto is_do_end
+}
+if "#get_cond" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto get_cond
+}
+if "#ops_res5" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto ops_res5
+}
+if "#func_end_res0" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto func_end_res0
+}
+if "#get_cond_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto get_cond_end
+}
+if "#main" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto main
+}
+if "#init_res0" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto init_res0
+}
+if "#_for1" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _for1
+}
+if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto switch_command_res0
+}
+if "#_for2" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _for2
+}
+if "#is_do_res0" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto is_do_res0
+}
+if "#block_end_res0" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto block_end_res0
+}
+if "#get_command_res0" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto get_command_res0
+}
+if "#get_cond_res0" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto get_cond_res0
+}
+if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto switch_command_res1
+}
+if "#_for3" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _for3
+}
+if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto switch_command_res2
+}
+if "#_undef_for3" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _undef_for3
+}
+if "#_cond8_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _cond8_end
+}
+if "#_cond9_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _cond9_end
+}
+if "#_cond10_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _cond10_end
+}
+if "#_for3_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _for3_end
+}
+if "#_cond7_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _cond7_end
+}
+if "#_cond_exit1" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _cond_exit1
+}
+if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto switch_command_res3
+}
+if "#_undef_for2" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _undef_for2
+}
+if "#_cond6_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _cond6_end
+}
+if "#_cond11_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _cond11_end
+}
+if "#_cond12_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _cond12_end
+}
+if "#_for2_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _for2_end
+}
+if "#switch_files_res0" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto switch_files_res0
+}
+if "#_undef_for1" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _undef_for1
+}
+if "#_cond5_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _cond5_end
+}
+if "#_cond13_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _cond13_end
+}
+if "#_cond14_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _cond14_end
+}
+if "#_for1_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto _for1_end
+}
+if "#clear_files_res0" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto clear_files_res0
+}
+if "#main_end" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto main_end
+}
+if "#main_res0" == fmt.Sprintf("%v", getVar("$get_cond_return_var")){
+goto main_res0
+}
+goto get_cond_end
+get_cond_end:
 fmt.Print("")
 defineVar("$main_return_var")
 setVar("$main_return_var", "")
@@ -6532,16 +8121,19 @@ goto main
 main:
 fmt.Print("")
 fmt.Print("")
+defineVar("buf")
+setVar("buf", "")
+defineVar("cond")
+setVar("cond", "")
+defineVar("counter")
+setVar("counter", 0)
+defineVar("was_here")
+setVar("was_here", false)
+setVar("was_here","True")
 setVar("$init_return_var","#init_res0")
 goto init
 goto init_res0
 init_res0:
-fmt.Print("")
-fmt.Print("")
-setVar("$switch_command_return_var","#switch_command_res2")
-goto switch_command
-goto switch_command_res2
-switch_command_res2:
 fmt.Print("")
 fmt.Print("")
 fmt.Print("")
@@ -6551,82 +8143,252 @@ setVar("$for1", false)
 goto _for1
 _for1:
 fmt.Print("")
-if !toBool(isEqual(ValueFoldInterface(getVar("command")), ValueFoldInterface("end"))){
+if toBool(getVar("was_here")){
 print("")
 }else{
 goto _cond5_end
 }
-defineVar("$is_try_res0")
-setVar("$is_try_res0", false)
-systemStack = append(systemStack, getVar("command"))
-setVar("$is_try_return_var","#is_try_res0")
-goto is_try
-goto is_try_res0
-is_try_res0:
-setVar("$is_try_res", systemStack[len(systemStack)-1])
-if "end" != systemStack[len(systemStack)-1] {
-systemStack = systemStack[:len(systemStack)-1]
-}
-setVar("$is_try_res0", getVar("$is_try_res"))
-if toBool(getVar("$is_try_res0")){
+setVar("was_here","False")
+setVar("$switch_command_return_var","#switch_command_res0")
+goto switch_command
+goto switch_command_res0
+switch_command_res0:
+fmt.Print("")
+fmt.Print("")
+fmt.Print("")
+fmt.Print("")
+defineVar("$for2")
+setVar("$for2", false)
+goto _for2
+_for2:
+fmt.Print("")
+if !toBool(isEqual(ValueFoldInterface(getVar("command")), ValueFoldInterface("end"))){
 print("")
 }else{
 goto _cond6_end
 }
-setVar("$modify_block_return_var","#modify_block_res0")
-goto modify_block
-goto modify_block_res0
-modify_block_res0:
+defineVar("$is_do_res0")
+setVar("$is_do_res0", false)
+systemStack = append(systemStack, getVar("command"))
+setVar("$is_do_return_var","#is_do_res0")
+goto is_do
+goto is_do_res0
+is_do_res0:
+setVar("$is_do_res", systemStack[len(systemStack)-1])
+if "end" != systemStack[len(systemStack)-1] {
+systemStack = systemStack[:len(systemStack)-1]
+}
+setVar("$is_do_res0", getVar("$is_do_res"))
+if toBool(getVar("$is_do_res0")){
+print("")
+}else{
+goto _cond7_end
+}
+setVar("was_here","True")
+defineVar("$block_end_res0")
+setVar("$block_end_res0", 0)
+setVar("$block_end_return_var","#block_end_res0")
+goto block_end
+goto block_end_res0
+block_end_res0:
+setVar("$block_end_res", systemStack[len(systemStack)-1])
+if "end" != systemStack[len(systemStack)-1] {
+systemStack = systemStack[:len(systemStack)-1]
+}
+setVar("$block_end_res0", getVar("$block_end_res"))
+setVar("counter", getVar("$block_end_res0"))
+defineVar("$get_cond_res0")
+setVar("$get_cond_res0", "")
+defineVar("$get_command_res0")
+setVar("$get_command_res0", "")
+systemStack = append(systemStack, getVar("counter"))
+setVar("$get_command_return_var","#get_command_res0")
+goto get_command
+goto get_command_res0
+get_command_res0:
+setVar("$get_command_res", systemStack[len(systemStack)-1])
+if "end" != systemStack[len(systemStack)-1] {
+systemStack = systemStack[:len(systemStack)-1]
+}
+setVar("$get_command_res0", getVar("$get_command_res"))
+systemStack = append(systemStack, getVar("$get_command_res0"))
+setVar("$get_cond_return_var","#get_cond_res0")
+goto get_cond
+goto get_cond_res0
+get_cond_res0:
+setVar("$get_cond_res", systemStack[len(systemStack)-1])
+if "end" != systemStack[len(systemStack)-1] {
+systemStack = systemStack[:len(systemStack)-1]
+}
+setVar("$get_cond_res0", getVar("$get_cond_res"))
+setVar("cond", getVar("$get_cond_res0"))
+setVar("buf","for (print(\"\")")
+getVar("$DEST").(*os.File).WriteString(getVar("buf").(string) + ";\n")
+setVar("buf","print(\"\")")
+getVar("$DEST").(*os.File).WriteString(getVar("buf").(string) + ";\n")
+setVar("buf","True")
+getVar("$DEST").(*os.File).WriteString(getVar("buf").(string) + ";\n")
+setVar("buf","print(\"\")){print(\"\")")
+getVar("$DEST").(*os.File).WriteString(getVar("buf").(string) + ";\n")
+setVar("$switch_command_return_var","#switch_command_res1")
+goto switch_command
+goto switch_command_res1
+switch_command_res1:
 fmt.Print("")
 fmt.Print("")
-goto _cond6_end
-_cond6_end:
 fmt.Print("")
+fmt.Print("")
+defineVar("$for3")
+setVar("$for3", false)
+goto _for3
+_for3:
+fmt.Print("")
+if toFloat(getVar("COMMAND_COUNTER"))<toFloat(getVar("counter")){
+print("")
+}else{
+goto _cond8_end
+}
+getVar("$DEST").(*os.File).WriteString(getVar("command").(string) + ";\n")
+setVar("$switch_command_return_var","#switch_command_res2")
+goto switch_command
+goto switch_command_res2
+switch_command_res2:
+fmt.Print("")
+fmt.Print("")
+fmt.Print("")
+goto _undef_for3
+_undef_for3:
+fmt.Print("")
+goto _cond8_end
+_cond8_end:
+fmt.Print("")
+if toBool(getVar("$for3")){
+print("")
+}else{
+goto _cond9_end
+}
+goto _for3_end
+goto _cond9_end
+_cond9_end:
+fmt.Print("")
+if toFloat(getVar("COMMAND_COUNTER"))<toFloat(getVar("counter")){
+print("")
+}else{
+goto _cond10_end
+}
+goto _for3
+goto _cond10_end
+_cond10_end:
+fmt.Print("")
+goto _for3_end
+_for3_end:
+fmt.Print("")
+undefineVar("$for3")
+fmt.Print("")
+setVar("buf",sum(sum("if (NOT(", getVar("cond")), ")){print(\"\")"))
+getVar("$DEST").(*os.File).WriteString(getVar("buf").(string) + ";\n")
+getVar("$DEST").(*os.File).WriteString("break" + ";\n")
+setVar("buf","}")
+getVar("$DEST").(*os.File).WriteString(getVar("buf").(string) + ";\n")
+getVar("$DEST").(*os.File).WriteString(getVar("buf").(string) + ";\n")
+undefineVar("$for3")
+goto _cond_exit1
+goto _cond7_end
+_cond7_end:
 fmt.Print("")
 getVar("$DEST").(*os.File).WriteString(getVar("command").(string) + ";\n")
+fmt.Print("")
+goto _cond_exit1
+_cond_exit1:
+fmt.Print("")
+fmt.Print("")
 setVar("$switch_command_return_var","#switch_command_res3")
 goto switch_command
 goto switch_command_res3
 switch_command_res3:
 fmt.Print("")
 fmt.Print("")
+goto _undef_for2
+_undef_for2:
+fmt.Print("")
+goto _cond6_end
+_cond6_end:
+fmt.Print("")
+if toBool(getVar("$for2")){
+print("")
+}else{
+goto _cond11_end
+}
+goto _for2_end
+goto _cond11_end
+_cond11_end:
+fmt.Print("")
+if !toBool(isEqual(ValueFoldInterface(getVar("command")), ValueFoldInterface("end"))){
+print("")
+}else{
+goto _cond12_end
+}
+goto _for2
+goto _cond12_end
+_cond12_end:
+fmt.Print("")
+goto _for2_end
+_for2_end:
+fmt.Print("")
+undefineVar("$for2")
+fmt.Print("")
+setVar("$switch_files_return_var","#switch_files_res0")
+goto switch_files
+goto switch_files_res0
+switch_files_res0:
+fmt.Print("")
+fmt.Print("")
+setVar("COMMAND_COUNTER","0")
 fmt.Print("")
 goto _undef_for1
 _undef_for1:
 fmt.Print("")
+undefineVar("$for2")
 goto _cond5_end
 _cond5_end:
 fmt.Print("")
 if toBool(getVar("$for1")){
 print("")
 }else{
-goto _cond7_end
+goto _cond13_end
 }
 goto _for1_end
-goto _cond7_end
-_cond7_end:
+goto _cond13_end
+_cond13_end:
 fmt.Print("")
-if !toBool(isEqual(ValueFoldInterface(getVar("command")), ValueFoldInterface("end"))){
+if toBool(getVar("was_here")){
 print("")
 }else{
-goto _cond8_end
+goto _cond14_end
 }
 goto _for1
-goto _cond8_end
-_cond8_end:
+goto _cond14_end
+_cond14_end:
 fmt.Print("")
 goto _for1_end
 _for1_end:
 fmt.Print("")
 undefineVar("$for1")
 fmt.Print("")
-setVar("$finish_return_var","#finish_res0")
-goto finish
-goto finish_res0
-finish_res0:
+setVar("$clear_files_return_var","#clear_files_res0")
+goto clear_files
+goto clear_files_res0
+clear_files_res0:
 fmt.Print("")
 fmt.Print("")
-undefineVar("$is_try_res0")
+undefineVar("$get_command_res0")
+undefineVar("$get_cond_res0")
+undefineVar("$block_end_res0")
+undefineVar("$is_do_res0")
+undefineVar("was_here")
+undefineVar("counter")
+undefineVar("cond")
+undefineVar("buf")
 if "#reverse" == fmt.Sprintf("%v", getVar("$main_return_var")){
 goto reverse
 }
@@ -6825,35 +8587,26 @@ goto finish
 if "#finish_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
 goto finish_end
 }
-if "#is_try" == fmt.Sprintf("%v", getVar("$main_return_var")){
-goto is_try
+if "#switch_files" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto switch_files
 }
-if "#ops_res4" == fmt.Sprintf("%v", getVar("$main_return_var")){
-goto ops_res4
+if "#finish_res0" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto finish_res0
 }
 if "#_cond0_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
 goto _cond0_end
 }
-if "#_cond1_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
-goto _cond1_end
+if "#_cond_exit0" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto _cond_exit0
 }
-if "#is_try_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
-goto is_try_end
+if "#switch_files_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto switch_files_end
 }
-if "#modify_block" == fmt.Sprintf("%v", getVar("$main_return_var")){
-goto modify_block
-}
-if "#block_end_res0" == fmt.Sprintf("%v", getVar("$main_return_var")){
-goto block_end_res0
-}
-if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$main_return_var")){
-goto switch_command_res0
+if "#clear_files" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto clear_files
 }
 if "#_for0" == fmt.Sprintf("%v", getVar("$main_return_var")){
 goto _for0
-}
-if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$main_return_var")){
-goto switch_command_res1
 }
 if "#_undef_for0" == fmt.Sprintf("%v", getVar("$main_return_var")){
 goto _undef_for0
@@ -6870,8 +8623,35 @@ goto _cond4_end
 if "#_for0_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
 goto _for0_end
 }
-if "#modify_block_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
-goto modify_block_end
+if "#_cond1_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto _cond1_end
+}
+if "#finish_res1" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto finish_res1
+}
+if "#clear_files_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto clear_files_end
+}
+if "#is_do" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto is_do
+}
+if "#ops_res4" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto ops_res4
+}
+if "#is_do_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto is_do_end
+}
+if "#get_cond" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto get_cond
+}
+if "#ops_res5" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto ops_res5
+}
+if "#func_end_res0" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto func_end_res0
+}
+if "#get_cond_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto get_cond_end
 }
 if "#main" == fmt.Sprintf("%v", getVar("$main_return_var")){
 goto main
@@ -6879,23 +8659,77 @@ goto main
 if "#init_res0" == fmt.Sprintf("%v", getVar("$main_return_var")){
 goto init_res0
 }
-if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$main_return_var")){
-goto switch_command_res2
-}
 if "#_for1" == fmt.Sprintf("%v", getVar("$main_return_var")){
 goto _for1
 }
-if "#is_try_res0" == fmt.Sprintf("%v", getVar("$main_return_var")){
-goto is_try_res0
+if "#switch_command_res0" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto switch_command_res0
 }
-if "#modify_block_res0" == fmt.Sprintf("%v", getVar("$main_return_var")){
-goto modify_block_res0
+if "#_for2" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto _for2
+}
+if "#is_do_res0" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto is_do_res0
+}
+if "#block_end_res0" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto block_end_res0
+}
+if "#get_command_res0" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto get_command_res0
+}
+if "#get_cond_res0" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto get_cond_res0
+}
+if "#switch_command_res1" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto switch_command_res1
+}
+if "#_for3" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto _for3
+}
+if "#switch_command_res2" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto switch_command_res2
+}
+if "#_undef_for3" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto _undef_for3
+}
+if "#_cond8_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto _cond8_end
+}
+if "#_cond9_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto _cond9_end
+}
+if "#_cond10_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto _cond10_end
+}
+if "#_for3_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto _for3_end
+}
+if "#_cond7_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto _cond7_end
+}
+if "#_cond_exit1" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto _cond_exit1
+}
+if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto switch_command_res3
+}
+if "#_undef_for2" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto _undef_for2
 }
 if "#_cond6_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
 goto _cond6_end
 }
-if "#switch_command_res3" == fmt.Sprintf("%v", getVar("$main_return_var")){
-goto switch_command_res3
+if "#_cond11_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto _cond11_end
+}
+if "#_cond12_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto _cond12_end
+}
+if "#_for2_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto _for2_end
+}
+if "#switch_files_res0" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto switch_files_res0
 }
 if "#_undef_for1" == fmt.Sprintf("%v", getVar("$main_return_var")){
 goto _undef_for1
@@ -6903,17 +8737,17 @@ goto _undef_for1
 if "#_cond5_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
 goto _cond5_end
 }
-if "#_cond7_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
-goto _cond7_end
+if "#_cond13_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto _cond13_end
 }
-if "#_cond8_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
-goto _cond8_end
+if "#_cond14_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto _cond14_end
 }
 if "#_for1_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
 goto _for1_end
 }
-if "#finish_res0" == fmt.Sprintf("%v", getVar("$main_return_var")){
-goto finish_res0
+if "#clear_files_res0" == fmt.Sprintf("%v", getVar("$main_return_var")){
+goto clear_files_res0
 }
 if "#main_end" == fmt.Sprintf("%v", getVar("$main_return_var")){
 goto main_end
