@@ -14,6 +14,7 @@ import (
 	"bint.com/internal/executor"
 	"bint.com/internal/lexer"
 	"bint.com/internal/parser"
+	"bint.com/pkg/serviceTools"
 	. "bint.com/pkg/serviceTools"
 )
 
@@ -1312,6 +1313,12 @@ func dValidateVarDef(command string, variables [][][]interface{}) (string, int, 
 		if "float" == variables[len(variables)-1][len(variables[len(variables)-1])-1][0] {
 			variables[len(variables)-1][len(variables[len(variables)-1])-1][2] = "0.1"
 		}
+
+		if serviceTools.IsKeyWord(fmt.Sprintf("%v", variables[len(variables)-1][len(variables[len(variables)-1])-1][1])) {
+			return ``, status.Err, variables, errors.New(fmt.Sprintf("%v", variables[len(variables)-1][len(variables[len(variables)-1])-1][1]) +
+				" is a keyword")
+		}
+
 	}
 	return tail, stat, variables, nil
 }

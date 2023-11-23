@@ -1164,18 +1164,124 @@ varName0:
 .space 1, 0
 lenVarName0 = . - varName0
 varName1:
-.ascii "if"
+.ascii "$sum_return_var"
 .space 1, 0
 lenVarName1 = . - varName1
-data0:
-.ascii "5"
-.space 1, 0
-lenData0 = . - data0
 varName2:
-.ascii "$s0"
+.ascii "$sum_res"
 .space 1, 0
 lenVarName2 = . - varName2
+label0:
+ .quad .sum
+labelName0:
+.ascii ".sum"
+.space 1,0
+data0:
+.ascii ""
+.space 1, 0
+lenData0 = . - data0
 varName3:
-.ascii "$print_arg0"
+.ascii "b"
 .space 1, 0
 lenVarName3 = . - varName3
+varName4:
+.ascii "a"
+.space 1, 0
+lenVarName4 = . - varName4
+data1:
+.ascii ""
+.space 1, 0
+lenData1 = . - data1
+data2:
+.ascii ""
+.space 1, 0
+lenData2 = . - data2
+label1:
+ .quad .sum_end
+labelName1:
+.ascii ".sum_end"
+.space 1,0
+data3:
+.ascii ""
+.space 1, 0
+lenData3 = . - data3
+varName5:
+.ascii "$main_return_var"
+.space 1, 0
+lenVarName5 = . - varName5
+label2:
+ .quad .main
+labelName2:
+.ascii ".main"
+.space 1,0
+data4:
+.ascii ""
+.space 1, 0
+lenData4 = . - data4
+data5:
+.ascii ""
+.space 1, 0
+lenData5 = . - data5
+varName6:
+.ascii "$sum_res0"
+.space 1, 0
+lenVarName6 = . - varName6
+data6:
+.ascii "5.0"
+.space 1, 0
+lenData6 = . - data6
+data7:
+.ascii "5.0"
+.space 1, 0
+lenData7 = . - data7
+data8:
+.ascii "4.0"
+.space 1, 0
+lenData8 = . - data8
+data9:
+.ascii "4.0"
+.space 1, 0
+lenData9 = . - data9
+data10:
+.ascii "#sum_res0"
+.space 1, 0
+lenData10 = . - data10
+label3:
+ .quad .sum_res0
+labelName3:
+.ascii ".sum_res0"
+.space 1,0
+varName7:
+.ascii "$s0"
+.space 1, 0
+lenVarName7 = . - varName7
+varName8:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName8 = . - varName8
+label4:
+ .quad .main_end
+labelName4:
+.ascii ".main_end"
+.space 1,0
+data11:
+.ascii ""
+.space 1, 0
+lenData11 = . - data11
+data12:
+.ascii "#main_res0"
+.space 1, 0
+lenData12 = . - data12
+label5:
+ .quad .main_res0
+labelName5:
+.ascii ".main_res0"
+.space 1,0
+data13:
+.ascii ""
+.space 1, 0
+lenData13 = . - data13
+data14:
+.ascii ""
+.space 1, 0
+lenData14 = . - data14

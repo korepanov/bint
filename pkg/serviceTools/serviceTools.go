@@ -462,6 +462,18 @@ func IsKeyWordWithAssignment(word string) bool {
 	return false
 }
 
+func IsKeyWord(word string) bool {
+	words := []string{"AND", "OR", "NOT", "XOR", "print", "len", "exists", "index", "is_letter", "is_digit", "reg_find",
+		"pop", "push", "input", "next_command", "get_root_source", "get_root_dest", "send_command", "goto", "exit",
+		"SET_SOURCE", "SET_DEST", "SEND_DEST", "DEL_DEST", "UNDEFINE", "UNSET_SOURCE", "REROUTE", "UNSET_DEST",
+		"RESET_SOURCE", "str", "int", "float", "bool", "string", "stack", "do", "while", "for", "void",
+		"if", "index", "try", "error"}
+	if StringInSlice(word, words) {
+		return true
+	}
+	return false
+}
+
 func IsNumber(s string) bool {
 	_, err := strconv.ParseFloat(s, 64)
 	if nil == err {

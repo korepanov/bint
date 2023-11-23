@@ -1,7 +1,11 @@
 $fileprogram.b$;
 $trace1$;
-intif;
+floatsum(floata,floatb){return(a+b);
 $trace2$;
-if=5;
+};
 $trace3$;
-print(str(if));
+voidmain(){print(str(sum((5.0+5.0),(4.0+4.0))));
+$trace4$;
+};
+$trace5$;
+main();

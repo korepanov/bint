@@ -1,9 +1,6 @@
 package executor
 
 import (
-	"bint.com/internal/const/options"
-	. "bint.com/internal/transpiler"
-	. "bint.com/pkg/serviceTools"
 	"errors"
 	"fmt"
 	"io"
@@ -13,6 +10,10 @@ import (
 	"strconv"
 	"strings"
 	"unicode"
+
+	"bint.com/internal/const/options"
+	. "bint.com/internal/transpiler"
+	. "bint.com/pkg/serviceTools"
 )
 
 func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interface{}) ([]interface{}, []interface{}, error) {

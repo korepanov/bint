@@ -5043,7 +5043,7 @@ jle __sliceException
 cmp %rcx, %rsi 
 jl __sliceException 
 cmp %rbx, %rcx 
-jle __sliceException
+jl __sliceException
 
 # make slice 
 mov (userData), %rdi 
