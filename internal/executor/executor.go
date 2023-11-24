@@ -282,7 +282,7 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 					return RO, systemStack, err
 				}
 
-				return []interface{}{floatLO + floatRO}, systemStack, nil
+				return []interface{}{fmt.Sprintf("%.6f", floatLO+floatRO)}, systemStack, nil
 			}
 
 		}
@@ -300,7 +300,7 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 					return LO, systemStack, err
 				}
 
-				return []interface{}{floatLO + floatRO}, systemStack, nil
+				return []interface{}{fmt.Sprintf("%.6f", floatLO+floatRO)}, systemStack, nil
 			}
 		}
 
@@ -345,7 +345,7 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 					return LO, systemStack, err
 				}
 
-				return []interface{}{floatLO - floatRO}, systemStack, nil
+				return []interface{}{fmt.Sprintf("%.6f", floatLO-floatRO)}, systemStack, nil
 			}
 			err = errors.New("executor: - : error: data type mismatch")
 			return LO, systemStack, err
@@ -365,7 +365,7 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 					return LO, systemStack, err
 				}
 
-				return []interface{}{floatLO - floatRO}, systemStack, nil
+				return []interface{}{fmt.Sprintf("%.6f", floatLO-floatRO)}, systemStack, nil
 			}
 
 			err = errors.New("executor: - : error: data type mismatch")
@@ -403,7 +403,7 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 					return LO, systemStack, err
 				}
 
-				return []interface{}{floatLO * floatRO}, systemStack, nil
+				return []interface{}{fmt.Sprintf("%.6f", floatLO*floatRO)}, systemStack, nil
 			}
 
 			err = errors.New("executor: * : error: data type mismatch")
@@ -424,7 +424,7 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 					return LO, systemStack, err
 				}
 
-				return []interface{}{floatLO * floatRO}, systemStack, nil
+				return []interface{}{fmt.Sprintf("%.6f", floatLO*floatRO)}, systemStack, nil
 			}
 
 			err = errors.New("executor: * : error: data type mismatch")
@@ -445,10 +445,8 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		if nil != err {
 			return RO, systemStack, err
 		}
-		res := fmt.Sprintf("%v", floatLO/floatRO)
-		if "int" == WhatsType(res) {
-			res = res + ".0"
-		}
+		res := fmt.Sprintf("%.6f", floatLO/floatRO)
+
 		return []interface{}{res}, systemStack, nil
 
 	} else if "@" == OP {
@@ -481,11 +479,8 @@ func execute(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		if nil != err {
 			return LO, systemStack, err
 		}
-		res := fmt.Sprintf("%v", math.Pow(floatLO, floatRO))
 
-		if "int" == WhatsType(res) {
-			res = res + ".0"
-		}
+		res := fmt.Sprintf("%.6f", math.Pow(floatLO, floatRO))
 
 		return []interface{}{res}, systemStack, nil
 	} else if "str" == OP {
