@@ -1590,86 +1590,169 @@ data3:
 .space 1, 0
 lenData3 = . - data3
 varName5:
-.ascii "$main_return_var"
+.ascii "$sub_return_var"
 .space 1, 0
 lenVarName5 = . - varName5
+varName6:
+.ascii "$sub_res"
+.space 1, 0
+lenVarName6 = . - varName6
 label2:
- .quad .main
+ .quad .sub
 labelName2:
-.ascii ".main"
+.ascii ".sub"
 .space 1,0
 data4:
 .ascii ""
 .space 1, 0
 lenData4 = . - data4
+varName7:
+.ascii "b"
+.space 1, 0
+lenVarName7 = . - varName7
+varName8:
+.ascii "a"
+.space 1, 0
+lenVarName8 = . - varName8
 data5:
 .ascii ""
 .space 1, 0
 lenData5 = . - data5
-varName6:
-.ascii "$sum_res0"
-.space 1, 0
-lenVarName6 = . - varName6
 data6:
-.ascii "1.0"
+.ascii ""
 .space 1, 0
 lenData6 = . - data6
+label3:
+ .quad .sub_end
+labelName3:
+.ascii ".sub_end"
+.space 1,0
 data7:
-.ascii "2.0"
+.ascii ""
 .space 1, 0
 lenData7 = . - data7
+varName9:
+.ascii "$main_return_var"
+.space 1, 0
+lenVarName9 = . - varName9
+label4:
+ .quad .main
+labelName4:
+.ascii ".main"
+.space 1,0
 data8:
-.ascii "3.0"
+.ascii ""
 .space 1, 0
 lenData8 = . - data8
 data9:
-.ascii "4.0"
+.ascii ""
 .space 1, 0
 lenData9 = . - data9
+varName10:
+.ascii "$sum_res0"
+.space 1, 0
+lenVarName10 = . - varName10
 data10:
-.ascii "#sum_res0"
+.ascii "1.0"
 .space 1, 0
 lenData10 = . - data10
-label3:
- .quad .sum_res0
-labelName3:
-.ascii ".sum_res0"
-.space 1,0
-varName7:
-.ascii "$s0"
-.space 1, 0
-lenVarName7 = . - varName7
-varName8:
-.ascii "$print_arg0"
-.space 1, 0
-lenVarName8 = . - varName8
 data11:
-.ascii "\n"
+.ascii "2.0"
 .space 1, 0
 lenData11 = . - data11
-label4:
- .quad .main_end
-labelName4:
-.ascii ".main_end"
-.space 1,0
 data12:
-.ascii ""
+.ascii "3.0"
 .space 1, 0
 lenData12 = . - data12
 data13:
-.ascii "#main_res0"
+.ascii "4.0"
 .space 1, 0
 lenData13 = . - data13
-label5:
- .quad .main_res0
-labelName5:
-.ascii ".main_res0"
-.space 1,0
 data14:
-.ascii ""
+.ascii "#sum_res0"
 .space 1, 0
 lenData14 = . - data14
+label5:
+ .quad .sum_res0
+labelName5:
+.ascii ".sum_res0"
+.space 1,0
+varName11:
+.ascii "$s0"
+.space 1, 0
+lenVarName11 = . - varName11
+varName12:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName12 = . - varName12
 data15:
-.ascii ""
+.ascii "\n"
 .space 1, 0
 lenData15 = . - data15
+varName13:
+.ascii "$sub_res0"
+.space 1, 0
+lenVarName13 = . - varName13
+data16:
+.ascii "1.0"
+.space 1, 0
+lenData16 = . - data16
+data17:
+.ascii "2.0"
+.space 1, 0
+lenData17 = . - data17
+data18:
+.ascii "3.0"
+.space 1, 0
+lenData18 = . - data18
+data19:
+.ascii "4.0"
+.space 1, 0
+lenData19 = . - data19
+data20:
+.ascii "#sub_res0"
+.space 1, 0
+lenData20 = . - data20
+label6:
+ .quad .sub_res0
+labelName6:
+.ascii ".sub_res0"
+.space 1,0
+varName14:
+.ascii "$s0"
+.space 1, 0
+lenVarName14 = . - varName14
+varName15:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName15 = . - varName15
+data21:
+.ascii "\n"
+.space 1, 0
+lenData21 = . - data21
+label7:
+ .quad .main_end
+labelName7:
+.ascii ".main_end"
+.space 1,0
+data22:
+.ascii ""
+.space 1, 0
+lenData22 = . - data22
+data23:
+.ascii "#main_res0"
+.space 1, 0
+lenData23 = . - data23
+label8:
+ .quad .main_res0
+labelName8:
+.ascii ".main_res0"
+.space 1,0
+data24:
+.ascii ""
+.space 1, 0
+lenData24 = . - data24
+data25:
+.ascii ""
+.space 1, 0
+lenData25 = . - data25
