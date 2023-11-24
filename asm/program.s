@@ -5192,7 +5192,12 @@ mov $lenBuf, %rsi
  mov $lenUserData, %rax 
  mov $userData, %rdi
  call __set
-push $t0
+mov $lenSt0, %rsi
+mov $st0, %rdx
+mov $lenSt0, %rsi
+mov $t0, %rdi
+call __set 
+push $st0
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName3, %rax 
@@ -5277,7 +5282,12 @@ mov $lenBuf, %rsi
  mov $lenUserData, %rax 
  mov $userData, %rdi
  call __set
-push $t0
+mov $lenSt1, %rsi
+mov $st1, %rdx
+mov $lenSt1, %rsi
+mov $t0, %rdi
+call __set 
+push $st1
 mov $lenBuf3, %rsi 
  mov $buf3, %rdx 
  mov $lenData8, %rax 
@@ -5306,7 +5316,12 @@ mov $lenBuf, %rsi
  mov $lenUserData, %rax 
  mov $userData, %rdi
  call __set
-push $t0
+mov $lenSt2, %rsi
+mov $st2, %rdx
+mov $lenSt2, %rsi
+mov $t0, %rdi
+call __set 
+push $st2
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName1, %rax 
@@ -5396,15 +5411,35 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+mov $lenBuf4, %rsi 
+ mov $buf4, %rdx 
+ mov $lenData11, %rax 
+ mov $data11, %rdi
+ call __set
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenSystemVarName0, %rax 
+ mov $systemVarName0, %rdi 
+ call __set
+ mov $varName7, %r8 
+ mov $data11, %r9 
+ mov $1, %rax 
+ xor %rbx, %rbx 
+ call __userConcatinate
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName8, %rax 
+ mov $varName8, %rdi 
+ call __set
 mov $lenVarName, %rsi 
  mov $varName, %rdx
  mov $lenVarName8, %rax 
  mov $varName8, %rdi
- call __set
-mov $varName7, %rax
-mov %rax, (userData)
- mov $1, %rax
-call __setVar
+ call __set 
+mov $systemVarName0, %rax 
+ mov %rax, (userData) 
+mov $1, %rax 
+ call __setVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx
  mov $lenVarName8, %rax 
@@ -5442,7 +5477,7 @@ mov (userData), %rdi
  jmp __goto
 .main_end:
 
-mov $data11, %rsi
+mov $data12, %rsi
 call __print
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -5450,16 +5485,16 @@ call __print
  mov $varName5, %rdi 
 call __set
 
- mov $data12, %rax  
+ mov $data13, %rax  
  mov %rax, (userData)
  xor %rax, %rax
 call __setVar
 jmp .main
 .main_res0:
 
-mov $data13, %rsi
-call __print
 mov $data14, %rsi
+call __print
+mov $data15, %rsi
 call __print
 mov $60,  %rax
 xor %rdi, %rdi

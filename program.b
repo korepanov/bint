@@ -3,7 +3,7 @@ float sum(float a, float b){
 };
 
 void main(){
-	print(str(sum((5.0+5.0), (4.0+4.0))));
+	print((str(sum(1.0 + 2.0, 3.0 + 4.0)) + "\n"));
 };
 
-main(); 
+main();

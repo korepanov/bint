@@ -16,6 +16,7 @@ import (
 )
 
 var typeHist []string
+var systemStackNumber int
 
 func CompileAsm(rootDest string) error {
 	cmd := exec.Command("as", "--64", "asm/data.s", "asm/labels.s", "asm/program.s", "-o", "asm/program.o")
@@ -69,6 +70,16 @@ func InitData() (*os.File, error) {
 			"\n.ascii \"^systemVar" + fmt.Sprintf("%v", i) + "\"" +
 			"\n.space 1, 0" +
 			"\nlenSystemVarName" + fmt.Sprintf("%v", i) + " = . - systemVarName" + fmt.Sprintf("%v", i)))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+	}
+
+	// множество переменных стека
+	for i := 0; i < SystemStackSize; i++ {
+		_, err = f.Write([]byte("\n st" + fmt.Sprintf("%v", i) + ": \n .quad 0, 0, 0, 0, 0, 0, 0, 0 \n lenSt" + fmt.Sprintf("%v", i) +
+			" = . - st" + fmt.Sprintf("%v", i)))
 		if nil != err {
 			fmt.Println(err)
 			os.Exit(1)
@@ -4681,6 +4692,10 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 	} else if "send_command" == OP {
 		return []interface{}{"send_command", LO}, systemStack, "", nil
 	} else if "push" == OP {
+		if systemStackNumber >= SystemStackSize {
+			fmt.Println("ERROR: system stack overflow")
+			os.Exit(1)
+		}
 		systemStack = append(systemStack, LO)
 		var isVarLO bool
 		var lenLO string
@@ -4707,12 +4722,24 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		} else {
 			// вычисляемая временная переменная
 			if 2 == len(LO) && true == LO[0] {
-				_, err := progFile.Write([]byte("\npush $" + fmt.Sprintf("%v", LO[1])))
+				_, err := progFile.Write([]byte("\nmov $lenSt" + fmt.Sprintf("%v", systemStackNumber) + ", %rsi" +
+					"\nmov $st" + fmt.Sprintf("%v", systemStackNumber) + ", %rdx" +
+					"\nmov $lenSt" + fmt.Sprintf("%v", systemStackNumber) + ", %rsi" +
+					"\nmov $" + fmt.Sprintf("%v", LO[1]) + ", %rdi" +
+					"\ncall __set "))
+
 				if nil != err {
 					fmt.Println(err)
 					os.Exit(1)
 				}
 
+				_, err = progFile.Write([]byte("\npush $st" + fmt.Sprintf("%v", systemStackNumber)))
+				if nil != err {
+					fmt.Println(err)
+					os.Exit(1)
+				}
+
+				systemStackNumber++
 				return []interface{}{0}, systemStack, "", nil
 			}
 			_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
@@ -4755,8 +4782,12 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 		}
 
+		systemStackNumber++
 		return []interface{}{0}, systemStack, "", nil
 	} else if "pop" == OP {
+		if systemStackNumber > 0 {
+			systemStackNumber--
+		}
 
 		res := systemStack[len(systemStack)-1]
 		if "end" != res {

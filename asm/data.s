@@ -1159,6 +1159,390 @@ systemVarName127:
 .ascii "^systemVar127"
 .space 1, 0
 lenSystemVarName127 = . - systemVarName127
+ st0: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt0 = . - st0
+ st1: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt1 = . - st1
+ st2: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt2 = . - st2
+ st3: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt3 = . - st3
+ st4: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt4 = . - st4
+ st5: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt5 = . - st5
+ st6: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt6 = . - st6
+ st7: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt7 = . - st7
+ st8: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt8 = . - st8
+ st9: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt9 = . - st9
+ st10: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt10 = . - st10
+ st11: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt11 = . - st11
+ st12: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt12 = . - st12
+ st13: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt13 = . - st13
+ st14: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt14 = . - st14
+ st15: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt15 = . - st15
+ st16: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt16 = . - st16
+ st17: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt17 = . - st17
+ st18: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt18 = . - st18
+ st19: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt19 = . - st19
+ st20: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt20 = . - st20
+ st21: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt21 = . - st21
+ st22: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt22 = . - st22
+ st23: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt23 = . - st23
+ st24: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt24 = . - st24
+ st25: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt25 = . - st25
+ st26: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt26 = . - st26
+ st27: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt27 = . - st27
+ st28: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt28 = . - st28
+ st29: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt29 = . - st29
+ st30: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt30 = . - st30
+ st31: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt31 = . - st31
+ st32: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt32 = . - st32
+ st33: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt33 = . - st33
+ st34: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt34 = . - st34
+ st35: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt35 = . - st35
+ st36: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt36 = . - st36
+ st37: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt37 = . - st37
+ st38: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt38 = . - st38
+ st39: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt39 = . - st39
+ st40: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt40 = . - st40
+ st41: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt41 = . - st41
+ st42: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt42 = . - st42
+ st43: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt43 = . - st43
+ st44: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt44 = . - st44
+ st45: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt45 = . - st45
+ st46: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt46 = . - st46
+ st47: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt47 = . - st47
+ st48: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt48 = . - st48
+ st49: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt49 = . - st49
+ st50: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt50 = . - st50
+ st51: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt51 = . - st51
+ st52: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt52 = . - st52
+ st53: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt53 = . - st53
+ st54: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt54 = . - st54
+ st55: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt55 = . - st55
+ st56: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt56 = . - st56
+ st57: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt57 = . - st57
+ st58: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt58 = . - st58
+ st59: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt59 = . - st59
+ st60: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt60 = . - st60
+ st61: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt61 = . - st61
+ st62: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt62 = . - st62
+ st63: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt63 = . - st63
+ st64: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt64 = . - st64
+ st65: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt65 = . - st65
+ st66: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt66 = . - st66
+ st67: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt67 = . - st67
+ st68: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt68 = . - st68
+ st69: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt69 = . - st69
+ st70: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt70 = . - st70
+ st71: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt71 = . - st71
+ st72: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt72 = . - st72
+ st73: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt73 = . - st73
+ st74: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt74 = . - st74
+ st75: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt75 = . - st75
+ st76: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt76 = . - st76
+ st77: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt77 = . - st77
+ st78: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt78 = . - st78
+ st79: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt79 = . - st79
+ st80: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt80 = . - st80
+ st81: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt81 = . - st81
+ st82: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt82 = . - st82
+ st83: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt83 = . - st83
+ st84: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt84 = . - st84
+ st85: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt85 = . - st85
+ st86: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt86 = . - st86
+ st87: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt87 = . - st87
+ st88: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt88 = . - st88
+ st89: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt89 = . - st89
+ st90: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt90 = . - st90
+ st91: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt91 = . - st91
+ st92: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt92 = . - st92
+ st93: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt93 = . - st93
+ st94: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt94 = . - st94
+ st95: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt95 = . - st95
+ st96: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt96 = . - st96
+ st97: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt97 = . - st97
+ st98: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt98 = . - st98
+ st99: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt99 = . - st99
+ st100: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt100 = . - st100
+ st101: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt101 = . - st101
+ st102: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt102 = . - st102
+ st103: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt103 = . - st103
+ st104: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt104 = . - st104
+ st105: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt105 = . - st105
+ st106: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt106 = . - st106
+ st107: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt107 = . - st107
+ st108: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt108 = . - st108
+ st109: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt109 = . - st109
+ st110: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt110 = . - st110
+ st111: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt111 = . - st111
+ st112: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt112 = . - st112
+ st113: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt113 = . - st113
+ st114: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt114 = . - st114
+ st115: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt115 = . - st115
+ st116: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt116 = . - st116
+ st117: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt117 = . - st117
+ st118: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt118 = . - st118
+ st119: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt119 = . - st119
+ st120: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt120 = . - st120
+ st121: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt121 = . - st121
+ st122: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt122 = . - st122
+ st123: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt123 = . - st123
+ st124: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt124 = . - st124
+ st125: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt125 = . - st125
+ st126: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt126 = . - st126
+ st127: 
+ .quad 0, 0, 0, 0, 0, 0, 0, 0 
+ lenSt127 = . - st127
 varName0:
 .ascii "$ret"
 .space 1, 0
@@ -1227,15 +1611,15 @@ varName6:
 .space 1, 0
 lenVarName6 = . - varName6
 data6:
-.ascii "5.0"
+.ascii "1.0"
 .space 1, 0
 lenData6 = . - data6
 data7:
-.ascii "5.0"
+.ascii "2.0"
 .space 1, 0
 lenData7 = . - data7
 data8:
-.ascii "4.0"
+.ascii "3.0"
 .space 1, 0
 lenData8 = . - data8
 data9:
@@ -1259,29 +1643,33 @@ varName8:
 .ascii "$print_arg0"
 .space 1, 0
 lenVarName8 = . - varName8
+data11:
+.ascii "\n"
+.space 1, 0
+lenData11 = . - data11
 label4:
  .quad .main_end
 labelName4:
 .ascii ".main_end"
 .space 1,0
-data11:
+data12:
 .ascii ""
 .space 1, 0
-lenData11 = . - data11
-data12:
+lenData12 = . - data12
+data13:
 .ascii "#main_res0"
 .space 1, 0
-lenData12 = . - data12
+lenData13 = . - data13
 label5:
  .quad .main_res0
 labelName5:
 .ascii ".main_res0"
 .space 1,0
-data13:
-.ascii ""
-.space 1, 0
-lenData13 = . - data13
 data14:
 .ascii ""
 .space 1, 0
 lenData14 = . - data14
+data15:
+.ascii ""
+.space 1, 0
+lenData15 = . - data15
