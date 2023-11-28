@@ -1,10 +1,10 @@
 $fileprogram.b$;
 $trace1$;
-floatsum(floata,floata){return(a+a);
+floatsum(floata,intd,strings,floatb){return(a+a);
 $trace2$;
 };
 $trace3$;
-voidmain(){print((str(sum(1.0,2.0))+"\n"));
+voidmain(){print((str(sum(1.0,1,"la",2.0))+"\n"));
 $trace4$;
 };
 $trace5$;

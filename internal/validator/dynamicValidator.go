@@ -1232,7 +1232,9 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 			args = append(args, fmt.Sprintf("%v", variables[len(variables)-1][len(variables[len(variables)-1])-1][0]))
 		}
 
-		fmt.Println(argNames)
+		if len(argNames) != len(Unique(argNames)) {
+			return "", status.Err, variables, errors.New("non-unique variable names in the function definition")
+		}
 		tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void)[[:alnum:]|_]*?\`+
 			`((?:((int|float|bool|string|stack))[[:alnum:]|_]+\,){0,})(int|float|bool|string|stack)[[:alnum:]|_]+\){`, command)
 	}
