@@ -1216,6 +1216,7 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 		tail = tail[:strings.Index(tail, "{")]
 		locs := reg.FindAllIndex([]byte(tail), -1)
 		variables = append(variables, [][]interface{}{})
+		var argNames []string
 
 		for _, loc := range locs {
 			_, variables[len(variables)-1], err = lexer.LexicalAnalyze(tail[loc[0]:loc[1]],
@@ -1227,9 +1228,11 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 				variables[len(variables)-1][len(variables[len(variables)-1])-1][2] = "0.1"
 			}
 
+			argNames = append(argNames, fmt.Sprintf("%v", variables[len(variables)-1][len(variables[len(variables)-1])-1][1]))
 			args = append(args, fmt.Sprintf("%v", variables[len(variables)-1][len(variables[len(variables)-1])-1][0]))
 		}
 
+		fmt.Println(argNames)
 		tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void)[[:alnum:]|_]*?\`+
 			`((?:((int|float|bool|string|stack))[[:alnum:]|_]+\,){0,})(int|float|bool|string|stack)[[:alnum:]|_]+\){`, command)
 	}
