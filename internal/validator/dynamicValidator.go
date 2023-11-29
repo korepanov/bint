@@ -1232,8 +1232,16 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 			args = append(args, fmt.Sprintf("%v", variables[len(variables)-1][len(variables[len(variables)-1])-1][0]))
 		}
 
-		if len(argNames) != len(Unique(argNames)) {
+		uniqArgNames := Unique(argNames)
+
+		if len(argNames) != len(uniqArgNames) {
 			return "", status.Err, variables, errors.New("non-unique variable names in the function definition")
+		}
+
+		for _, arg := range uniqArgNames {
+			if serviceTools.IsKeyWord(arg) {
+				return "", status.Err, variables, errors.New(arg + " is a keyword")
+			}
 		}
 		tail, stat = check(`(?m)(?:(int|float|bool|string|stack|void)[[:alnum:]|_]*?\`+
 			`((?:((int|float|bool|string|stack))[[:alnum:]|_]+\,){0,})(int|float|bool|string|stack)[[:alnum:]|_]+\){`, command)
@@ -1265,6 +1273,9 @@ func dValidateFuncDefinition(command string, variables [][][]interface{}) (strin
 
 		funcName = funcName[0:strings.Index(funcName, "(")]
 
+		if serviceTools.IsKeyWord(funcName) {
+			return "", status.Err, variables, errors.New(funcName + " is a keyword")
+		}
 		if 0 != len(funcTable[funcName]) {
 			return tail, status.Err, variables, errors.New("function polymorphism is not allowed")
 		} else {

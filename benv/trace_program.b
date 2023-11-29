@@ -1,11 +1,7 @@
 $fileprogram.b$;
 $trace1$;
-floatsum(floata,intd,strings,floatb){return(a+a);
+voidmain(){print("Hello world!\n");
 $trace2$;
 };
 $trace3$;
-voidmain(){print((str(sum(1.0,1,"la",2.0))+"\n"));
-$trace4$;
-};
-$trace5$;
 main();
