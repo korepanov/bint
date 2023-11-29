@@ -36,6 +36,9 @@ lenBuf4 = . - buf4
 inputBuf:
 .byte 0
 lenInputBuf = . - inputBuf 
+readBuf:
+.byte 0, 0, 0, 0, 0, 0, 0, 0
+lenReadBuf = . - readBuf
 userMem:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenUserMem = . - userMem 
@@ -263,6 +266,9 @@ isLetterError:
 isDigitError:
 .ascii "is_digit argument length error"
 .space 1, 0 
+openFileError:
+.ascii "could not open file"
+.space 1, 0
 
  t0: 
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
@@ -1366,6 +1372,10 @@ data23:
 .ascii "1"
 .space 1, 0
 lenData23 = . - data23
+data24:
+.ascii "/home/slava/Go/bint/myfile.txt"
+.space 1, 0
+lenData24 = . - data24 
 
 .text
 __initLabels:
@@ -1670,6 +1680,12 @@ mov $lenVarName, %rsi
  ret 
 
 __print:
+ push %rsi 
+ push %rdi 
+ push %rdx 
+ push %rax 
+
+__printBegin:
  mov (%rsi), %al	
  cmp $0, %al	
  jz  __printEx			
@@ -1678,8 +1694,13 @@ __print:
  mov $1, %rax	
  syscall		    
  inc %rsi		  		    
- jnz __print
+ jnz __printBegin 
 __printEx:
+
+ pop %rax 
+ pop %rdx 
+ pop %rdi 
+ pop %rsi 
  ret
 
 # посчитать количество символов до 0
@@ -3615,6 +3636,8 @@ ret
 
 __clear:
 # %rsi - adress from witch to clear everything until 0 byte  
+push %rsi 
+push %rax 
 __clearLocal: 
 mov (%rsi), %al
 cmp $0, %al  
@@ -3624,6 +3647,8 @@ inc %rsi
 jmp __clearLocal
 
 __clearEnd:
+pop %rax 
+pop %rsi 
 ret
 
 __add:
@@ -5164,6 +5189,117 @@ call __userConcatinate
 jmp __inputLoop 
 
 __inputEnd:
+ret 
+
+__openFile:
+# input:
+# %rax - address of the string with file name
+# %rbx - file opening mode
+# 0 - read
+# 1 - write 
+# 2 - append
+# output:
+# %rax - file descriptor number 
+# открыть файл
+cmp $0, %rbx 
+jz __readFile 
+cmp $1, %rbx 
+jz __writeFile 
+cmp $2, %rbx 
+jz __appendFile  
+jmp __openFileException
+
+__readFile:
+  mov %rax, %rdi   # адрес строки с именем файла
+  mov $0,  %rsi   # открываем для чтения
+  mov $2,  %rax   # номер системного вызова
+  syscall         # вызов функции "открыть файл"
+  cmp $0, %rax    # нет ли ошибки при открытии
+  jl  __openFileException          # перейти к концу программы
+  ret  
+__writeFile:
+ret
+__appendFile:
+ret 
+__openFileException:
+mov $openFileError, %rsi 
+call __throughUserError
+ret 
+
+
+__readFromFile:
+# input:
+# %r10 - file descriptor number 
+# %rbx - size to read 
+# %r8 - variable name address
+# output:
+# %rax - number of bytes was read 
+push %r10 
+push %rbx 
+push %r8 
+
+mov $lenVarName, %rsi 
+mov $varName, %rdx 
+mov $lenVarName, %rax 
+mov %r8, %rdi
+call __set 
+call __getVar
+mov (userData), %rsi 
+call __clear 
+
+pop %r8 
+pop %rbx 
+pop %r10 
+
+# читать из файла
+  mov $readBuf,  %rsi  # адрес буфера
+  mov $lenReadBuf, %rdx  # длина буфера
+  dec %rdx 
+
+lo:
+  mov %r10,  %rdi  # номер дескриптора
+  mov $0,   %rax  # номер системной функции чтения
+  syscall         # системный вызов
+  inc %rax 
+
+  mov $readBuf, %rbx 
+  add %rax, %rbx
+  dec %rbx  
+  movb $0, (%rbx)
+
+  mov  %rax, %rdi
+  
+  push %r8
+  mov $lenVarName, %rsi 
+  mov $varName, %rdx 
+  mov $lenVarName, %rax 
+  mov %r8, %rdi
+  call __set 
+
+  mov $readBuf, %r9
+  mov $1, %rax 
+  mov $0, %rbx  
+  call __userConcatinate 
+
+  pop %r8
+  mov $lenVarName, %rsi 
+  mov $varName, %rdx 
+  mov $lenVarName, %rax 
+  mov %r8, %rdi
+  call __set 
+  call __getVar 
+  mov (userData), %rsi 
+  call __print  
+  call __throughError
+
+
+  cmp  $lenReadBuf, %rdi
+  je   lo         # перейдем, если rax = 100, длине буфера
+                  # иначе процесс чтения и вывода файла завершен
+
+
+
+__readFromFileEnd:
 ret 
 
 .globl _start
@@ -7393,6 +7529,23 @@ mov $lenVarName, %rsi
 jmp .main_end
 .main: 
  
+ mov $data24, %rax 
+ mov $0, %rbx 
+ call __openFile
+ mov %rax, %r8 
+
+ mov %r8, %r10 
+ mov $varName18, %r8 
+ call __readFromFile
+
+ # закрыть файл
+  mov  %r8, %rdi  # дескриптор файла
+  mov  $3, %rax   # номер системного вызова
+  syscall
+
+
+
+call __throughError 
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarNamePanic, %rax 
