@@ -5234,6 +5234,7 @@ __readFromFile:
 # %r8 - variable name address
 # output:
 # %rax - number of bytes was read 
+xor %r9, %r9 
 cmp $0, %rbx 
 jle __readFromFileEnd
 
