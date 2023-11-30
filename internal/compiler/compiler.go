@@ -173,7 +173,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 	variables [][]interface{}, tNumber int) ([]interface{}, []interface{}, string, error) {
 	if "print" == OP {
 		return []interface{}{"print", LO}, systemStack, "", nil
-	} else if "open_file" == OP {
+	} else if "open_f" == OP {
 		var lenLO string
 		var lenRO string
 		isVarLO := false
@@ -242,7 +242,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		if isVarLO {
-			panic("variables in the open_file are not realized")
+			panic("variables in the open_f are not realized")
 			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
 				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
 				"\n call __getVar \n mov (userData), %rax \n mov %rax, (buf3) "))
@@ -252,7 +252,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			}
 		}
 		if isVarRO {
-			panic("variables in the open_file are not realized")
+			panic("variables in the open_f are not realized")
 			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenRO +
 				", %rax \n mov " + fmt.Sprintf("%v", RO[0]) + ", %rdi\n call __set " +
 				"\n call __getVar \n mov (userData), %rax \n mov %rax, (buf4) "))

@@ -1,5 +1,5 @@
 int f;
-f = open_file("home/slava/Go/bint/myfile.txt", 0); 
+f = open_f("home/slava/Go/bint/myfile.txt", 0); 
 string s;
 s = str(f);
 print(s);

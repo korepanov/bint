@@ -890,7 +890,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 				wasIsDigit = true
 				i += 7
 			}
-			if "open_file" == exprInside[0][1] {
+			if "open_f" == exprInside[0][1] {
 				exprInside = toStandardBinaryOperation(exprInside)
 				exprInside = Insert(exprInside, 0, []interface{}{"BR", "("})
 				exprInside = append(exprInside, []interface{}{"BR", ")"})
