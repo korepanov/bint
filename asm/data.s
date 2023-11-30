@@ -1557,7 +1557,7 @@ varName0:
 .space 1, 0
 lenVarName0 = . - varName0
 data0:
-.ascii "home/slava/Go/bint/myfile.txt"
+.ascii "/home/slava/Go/bint/myfile.txt"
 .space 1, 0
 lenData0 = . - data0
 varName1:

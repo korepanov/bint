@@ -5164,7 +5164,7 @@ mov $lenVarName, %rsi
  call __defineVar
 mov $data0, %rax 
  mov %rax, (buf3)
-mov 0, %rax
+mov $0, %rax
  mov %rax, (buf4)
 mov (buf3), %rax 
  mov (buf4), %rbx 

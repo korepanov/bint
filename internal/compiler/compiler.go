@@ -233,7 +233,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 		if !isVarRO {
 
-			_, err := progFile.Write([]byte("\nmov " + fmt.Sprintf("%v", ValueFoldInterface(RO[0])) + ", %rax\n mov %rax, (buf4)"))
+			_, err := progFile.Write([]byte("\nmov $" + fmt.Sprintf("%v", ValueFoldInterface(RO[0])) + ", %rax\n mov %rax, (buf4)"))
 
 			if nil != err {
 				fmt.Println(err)
