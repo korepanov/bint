@@ -37,7 +37,7 @@ inputBuf:
 .byte 0
 lenInputBuf = . - inputBuf 
 readBuf:
-.byte 0, 0, 0, 0, 0, 0, 0, 0
+.byte 0, 0
 lenReadBuf = . - readBuf
 userMem:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
@@ -5234,6 +5234,9 @@ __readFromFile:
 # %r8 - variable name address
 # output:
 # %rax - number of bytes was read 
+cmp $0, %rbx 
+jle __readFromFileEnd
+
 push %r10 
 push %rbx 
 push %r8 
@@ -5246,12 +5249,15 @@ call __set
 call __getVar
 mov (userData), %rsi 
 call __clear 
+mov $readBuf, %rsi 
+call __clear
 
 pop %r8 
 pop %rbx 
 pop %r10 
 
 # читать из файла
+xor %r9, %r9 # sum of the read bytes 
 mov $readBuf,  %rsi  # адрес буфера
 mov $lenReadBuf, %rdx  # длина буфера
 dec %rdx 
@@ -5260,8 +5266,12 @@ __readFromFileLo:
 mov %r10,  %rdi  # номер дескриптора
 mov $0,   %rax  # номер системной функции чтения
 syscall         # системный вызов
+add %rax, %r9
+
 inc %rax 
 mov %rax, %rdi 
+
+push %rbx 
 
 mov $readBuf, %rbx 
 add %rax, %rbx
@@ -5270,6 +5280,7 @@ movb $0, (%rbx)
 
 mov  %rax, %rdi
 
+push %r9 
 push %rsi 
 push %rdi 
 push %rdx 
@@ -5294,13 +5305,17 @@ pop %r8
 pop %rdx 
 pop %rdi 
 pop %rsi 
+pop %r9 
+pop %rbx 
+
+cmp %r9, %rbx 
+jz __readFromFileEnd
 
 cmp  $lenReadBuf, %rdi
 jz   __readFromFileLo         
 
-
-
 __readFromFileEnd:
+mov %r9, %rax 
 ret 
 
 .globl _start
@@ -7550,18 +7565,13 @@ jmp .main_end
  call __openFile
  mov %rax, %r8 
 
+ push %r8 
  mov %r8, %r10 
+ mov $3, %rbx 
  mov $varName18, %r8 
  call __readFromFile
 
-
- # закрыть файл
-  mov  %r8, %rdi  # дескриптор файла
-  mov  $3, %rax   # номер системного вызова
-  syscall
-
-
-  mov $lenVarName, %rsi 
+mov $lenVarName, %rsi 
   mov $varName, %rdx 
   mov $lenVarName18, %rax 
   mov $varName18, %rdi
@@ -7569,6 +7579,29 @@ jmp .main_end
   call __getVar
   mov (userData), %rsi 
   call __print
+
+ pop %r8 
+ mov %r8, %r10 
+ mov $3, %rbx 
+ mov $varName18, %r8 
+ call __readFromFile
+
+mov $lenVarName, %rsi 
+  mov $varName, %rdx 
+  mov $lenVarName18, %rax 
+  mov $varName18, %rdi
+  call __set 
+  call __getVar
+  mov (userData), %rsi 
+  call __print
+
+ # закрыть файл
+  mov  %r8, %rdi  # дескриптор файла
+  mov  $3, %rax   # номер системного вызова
+  syscall
+
+
+  
 
 
 call __throughError 
