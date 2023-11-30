@@ -5279,7 +5279,7 @@ lo:
   mov $readBuf, %r9
   mov $1, %rax 
   mov $0, %rbx  
-  call __userConcatinate 
+  call __userConcatinate  
 
   pop %r8
   mov $lenVarName, %rsi 
@@ -7528,7 +7528,22 @@ mov $lenVarName, %rsi
  call __defineVar
 jmp .main_end
 .main: 
- 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName4, %rax 
+ mov $varName4, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
+
+
+
+
+
  mov $data24, %rax 
  mov $0, %rbx 
  call __openFile
