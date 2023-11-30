@@ -5162,16 +5162,63 @@ mov $lenVarName, %rsi
  mov $varName, %rcx 
  mov $varType, %rdx  
  call __defineVar
+mov $data0, %rax 
+ mov %rax, (buf3)
+mov 0, %rax
+ mov %rax, (buf4)
+mov (buf3), %rax 
+ mov (buf4), %rbx 
+ call __openFile 
+ call __toStr 
+ mov $lenT0, %rsi 
+ mov $t0, %rdx 
+ mov $lenBuf2, %rax 
+ mov $buf2, %rdi
+ call __set
 mov $lenVarName, %rsi 
- mov $varName, %rdx
+ mov $varName, %rdx 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi 
+ call __set
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi
+ call __set 
+ mov $t0, %rax 
+ mov %rax, (userData)
+ xor %rax, %rax 
+ call __setVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
  mov $lenVarName1, %rax 
- mov $varName1, %rdi 
+ mov $varName1, %rdi
  call __set 
  mov $lenVarType, %rsi 
  mov $varType, %rdx 
- mov $lenIntType, %rax 
- mov $intType, %rdi 
+ mov $lenStringType, %rax
+ mov $stringType, %rdi
  call __set 
- mov $varName, %rcx 
- mov $varType, %rdx  
  call __defineVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
+ call __set
+mov $varName0, %rax
+mov %rax, (userData)
+ mov $1, %rax
+call __setVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
+ call __set
+ call __getVar
+ mov (userData), %rsi 
+ call __print
+mov $data1, %rsi
+call __print
+mov $60,  %rax
+xor %rdi, %rdi
+syscall

@@ -1,6 +1,7 @@
 int f;
+int bytes; 
+
 f = open_file("home/slava/Go/bint/myfile.txt", 0); 
-string s;
-s = str(f);
-print(s);
-print("\n"); 
+bytes = read_file(f, 10, s); 
+close_f(f);
+

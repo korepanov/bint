@@ -203,12 +203,6 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			RO[0] = RO[0].(string)[1 : len(RO[0].(string))-1]
 		}
 
-		if 2 == len(LO) && true == LO[0] {
-			lenLO = "$lenT" + string(fmt.Sprintf("%v", LO[1])[len(fmt.Sprintf("%v", LO[1]))-1])
-		}
-		if 2 == len(RO) && true == RO[0] {
-			lenRO = "$lenT" + string(fmt.Sprintf("%v", RO[1])[len(fmt.Sprintf("%v", RO[1]))-1])
-		}
 		if !isVarLO {
 			_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
 			if nil != err {
@@ -238,33 +232,8 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			DataNumber++
 		}
 		if !isVarRO {
-			_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-			_, err = dataFile.Write([]byte("\n.ascii \"" + fmt.Sprintf("%v", ValueFoldInterface(RO[0])) + "\"\n.space 1, 0"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-			_, err = dataFile.Write([]byte("\nlenData" + fmt.Sprintf("%v", DataNumber) + " = . - data" + fmt.Sprintf("%v", DataNumber)))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-			RO[0] = "$data" + fmt.Sprintf("%v", DataNumber)
-			lenRO = "$lenData" + fmt.Sprintf("%v", DataNumber)
 
-			DataNumber++
-
-			_, err = progFile.Write([]byte("\nmov $lenVarName, %rsi" 
-				"\nmov $varName, %rdx" 
-				"\nmov $lenVarName, %rax" 
-				"\nmov %r8, %rdi" 
-				"\ncall __set"))
-
-			_, err = progFile.Write([]byte("\nmov " + fmt.Sprintf("%v", RO[0]) + ", %rax\n mov %rax, (buf4)"))
+			_, err := progFile.Write([]byte("\nmov " + fmt.Sprintf("%v", ValueFoldInterface(RO[0])) + ", %rax\n mov %rax, (buf4)"))
 
 			if nil != err {
 				fmt.Println(err)
@@ -274,27 +243,27 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 		if isVarLO {
 			panic("variables in the open_file are not realized")
-			/*_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
 				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
 				"\n call __getVar \n mov (userData), %rax \n mov %rax, (buf3) "))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
-			}*/
+			}
 		}
 		if isVarRO {
 			panic("variables in the open_file are not realized")
-			/*_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenRO +
+			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenRO +
 				", %rax \n mov " + fmt.Sprintf("%v", RO[0]) + ", %rdi\n call __set " +
 				"\n call __getVar \n mov (userData), %rax \n mov %rax, (buf4) "))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
-			}*/
+			}
 		}
 
 		_, err := progFile.Write([]byte(
-			"\nmov (buf3), %rsi \n mov (buf4), %rdi \n call __index \n call __toStr \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+			"\nmov (buf3), %rax \n mov (buf4), %rbx \n call __openFile \n call __toStr \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
 				", %rdx \n mov $lenBuf2, %rax \n mov $buf2, %rdi\n call __set"))
 		if nil != err {
 			fmt.Println(err)
