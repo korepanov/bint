@@ -1,15 +1,7 @@
-string$ret;
-string$main_return_var;
-goto(#main_end);
-#main:print("");
-print("");
-string $print_arg0;
-$print_arg0="Hello world!\n";
-print($print_arg0);
-UNDEFINE($print_arg0);
-goto($main_return_var);
-#main_end:print("");
-$main_return_var="#main_res0";
-goto(#main);
-#main_res0:print("");
-print("");
+int f;
+int bytes; 
+
+f = open_file("home/slava/Go/bint/myfile.txt", 0); 
+bytes = read_file(f, 10, s); 
+close_f(f);
+

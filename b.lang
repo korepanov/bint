@@ -242,6 +242,9 @@
       <keyword>exists</keyword>
 	  <keyword>try</keyword>
 	  <keyword>error</keyword>
+	  <keyword>open_file</keyword>
+	  <keyword>read_file</keyword>
+	  <keyword>close_file</keyword>
 	
       
     </context>

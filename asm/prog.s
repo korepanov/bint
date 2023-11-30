@@ -5205,14 +5205,14 @@ __openFile:
 # %rax - file descriptor number 
 # открыть файл
 cmp $0, %rbx 
-jz __readFile 
+jz __openFileRead 
 cmp $1, %rbx 
-jz __writeFile 
+jz __openFileWrite
 cmp $2, %rbx 
-jz __appendFile  
+jz __openFileAppend 
 jmp __openFileException
 
-__readFile:
+__openFileRead:
   mov %rax, %rdi   # адрес строки с именем файла
   mov $0,  %rsi   # открываем для чтения
   mov $2,  %rax   # номер системного вызова
@@ -5220,9 +5220,9 @@ __readFile:
   cmp $0, %rax    # нет ли ошибки при открытии
   jl  __openFileException          # перейти к концу программы
   ret  
-__writeFile:
+__openFileWrite:
 ret
-__appendFile:
+__openFileAppend:
 ret 
 __openFileException:
 mov $openFileError, %rsi 

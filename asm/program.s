@@ -3545,6 +3545,147 @@ jmp __inputLoop
 __inputEnd:
 ret  
 
+__openFile:
+# input:
+# %rax - address of the string with file name
+# %rbx - file opening mode
+# 0 - read
+# 1 - write 
+# 2 - append
+# output:
+# %rax - file descriptor number 
+# открыть файл
+cmp $0, %rbx 
+jz __openFileRead 
+cmp $1, %rbx 
+jz __openFileWrite
+cmp $2, %rbx 
+jz __openFileAppend 
+jmp __openFileException
+
+__openFileRead:
+  mov %rax, %rdi   # адрес строки с именем файла
+  mov $0,  %rsi   # открываем для чтения
+  mov $2,  %rax   # номер системного вызова
+  syscall         # вызов функции "открыть файл"
+  cmp $0, %rax    # нет ли ошибки при открытии
+  jl  __openFileException          # перейти к концу программы
+  ret  
+__openFileWrite:
+ret
+__openFileAppend:
+ret 
+__openFileException:
+mov $openFileError, %rsi 
+call __throughUserError
+ret 
+
+__closeFile:
+# закрыть файл
+# %rdi - descriptor file number 
+mov  $3, %rax   # номер системного вызова
+syscall
+ret 
+
+__readFromFile:
+# input:
+# %r10 - file descriptor number 
+# %rbx - size to read 
+# %r8 - variable name address
+# output:
+# %rax - number of bytes was read 
+xor %r9, %r9 
+cmp $0, %rbx 
+jle __readFromFileEnd
+
+push %r10 
+push %rbx 
+push %r8 
+
+mov $lenVarName, %rsi 
+mov $varName, %rdx 
+mov $lenVarName, %rax 
+mov %r8, %rdi
+call __set 
+call __getVar
+mov (userData), %rsi 
+call __clear 
+mov $readBuf, %rsi 
+call __clear
+
+pop %r8 
+pop %rbx 
+pop %r10 
+
+# читать из файла
+xor %r9, %r9 # sum of the read bytes 
+mov $readBuf,  %rsi  # адрес буфера
+mov $lenReadBuf, %rdx  # длина буфера
+dec %rdx 
+
+__readFromFileLo:
+mov %r10,  %rdi  # номер дескриптора
+mov $0,   %rax  # номер системной функции чтения
+syscall         # системный вызов
+add %rax, %r9
+
+inc %rax 
+mov %rax, %rdi 
+
+push %rbx 
+
+mov $readBuf, %rbx 
+add %rax, %rbx
+dec %rbx  
+movb $0, (%rbx)
+
+mov  %rax, %rdi
+
+push %r9 
+push %rsi 
+push %rdi 
+push %rdx 
+push %r8
+push %rbx 
+push %r10 
+
+mov $lenVarName, %rsi 
+mov $varName, %rdx 
+mov $lenVarName, %rax 
+mov %r8, %rdi
+call __set 
+
+mov $readBuf, %r9
+mov $1, %rax 
+mov $0, %rbx  
+call __userConcatinate  
+
+pop %r10 
+pop %rbx 
+pop %r8
+pop %rdx 
+pop %rdi 
+pop %rsi 
+pop %r9 
+pop %rbx 
+
+cmp %r9, %rbx 
+jz __readFromFileEnd
+
+cmp  $lenReadBuf, %rdi
+jz   __readFromFileLo         
+
+__readFromFileEnd:
+mov %r9, %rax 
+cmp $0, %rax 
+jl __readFromFileException 
+ret 
+__readFromFileException:
+mov $readFromFileError, %rsi 
+call __throughUserError
+ret 
+ 
+
 .globl _start
 _start:
  call __initLabels
@@ -5009,99 +5150,28 @@ mov $lenVarName, %rsi
  call __set 
  call __defineVar
 mov $lenVarName, %rsi 
- mov $varName, %rdx 
+ mov $varName, %rdx
  mov $lenVarName0, %rax 
- mov $varName0, %rdi
+ mov $varName0, %rdi 
  call __set 
  mov $lenVarType, %rsi 
  mov $varType, %rdx 
- mov $lenStringType, %rax
- mov $stringType, %rdi
+ mov $lenIntType, %rax 
+ mov $intType, %rdi 
  call __set 
+ mov $varName, %rcx 
+ mov $varType, %rdx  
  call __defineVar
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi
- call __set 
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenStringType, %rax
- mov $stringType, %rdi
- call __set 
- call __defineVar
-jmp .main_end
-.main:
-
-mov $data0, %rsi
-call __print
-mov $data1, %rsi
-call __print
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName2, %rax 
- mov $varName2, %rdi
- call __set 
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenStringType, %rax
- mov $stringType, %rdi
- call __set 
- call __defineVar
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName2, %rax 
- mov $varName2, %rdi 
-call __set
-
- mov $data2, %rax  
- mov %rax, (userData)
- xor %rax, %rax
-call __setVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx
- mov $lenVarName2, %rax 
- mov $varName2, %rdi
- call __set
- call __getVar
- mov (userData), %rsi 
- call __print
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName2, %rax 
-mov $varName2, %rdi 
- call __set 
-call __undefineVar
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
  mov $lenVarName1, %rax 
  mov $varName1, %rdi 
  call __set 
- call __getVar
-mov (userData), %rdi 
- movb $'.', (%rdi) 
- jmp __goto
-.main_end:
-
-mov $data3, %rsi
-call __print
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName1, %rax 
- mov $varName1, %rdi 
-call __set
-
- mov $data4, %rax  
- mov %rax, (userData)
- xor %rax, %rax
-call __setVar
-jmp .main
-.main_res0:
-
-mov $data5, %rsi
-call __print
-mov $data6, %rsi
-call __print
-mov $60,  %rax
-xor %rdi, %rdi
-syscall
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenIntType, %rax 
+ mov $intType, %rdi 
+ call __set 
+ mov $varName, %rcx 
+ mov $varType, %rdx  
+ call __defineVar

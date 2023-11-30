@@ -36,6 +36,9 @@ lenBuf4 = . - buf4
 inputBuf:
 .byte 0
 lenInputBuf = . - inputBuf 
+readBuf:
+.byte 0, 0
+lenReadBuf = . - readBuf
 userMem:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenUserMem = . - userMem 
@@ -262,3 +265,9 @@ isLetterError:
 isDigitError:
 .ascii "is_digit argument length error"
 .space 1, 0 
+openFileError:
+.ascii "could not open file"
+.space 1, 0
+readFromFileError:
+.ascii "could not read file"
+.space 1, 0

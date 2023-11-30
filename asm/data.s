@@ -36,6 +36,9 @@ lenBuf4 = . - buf4
 inputBuf:
 .byte 0
 lenInputBuf = . - inputBuf 
+readBuf:
+.byte 0, 0
+lenReadBuf = . - readBuf
 userMem:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenUserMem = . - userMem 
@@ -262,6 +265,12 @@ isLetterError:
 isDigitError:
 .ascii "is_digit argument length error"
 .space 1, 0 
+openFileError:
+.ascii "could not open file"
+.space 1, 0
+readFromFileError:
+.ascii "could not read file"
+.space 1, 0
 
  t0: 
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
@@ -1544,57 +1553,10 @@ lenSystemVarName127 = . - systemVarName127
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
  lenSt127 = . - st127
 varName0:
-.ascii "$ret"
+.ascii "f"
 .space 1, 0
 lenVarName0 = . - varName0
 varName1:
-.ascii "$main_return_var"
+.ascii "bytes"
 .space 1, 0
 lenVarName1 = . - varName1
-label0:
- .quad .main
-labelName0:
-.ascii ".main"
-.space 1,0
-data0:
-.ascii ""
-.space 1, 0
-lenData0 = . - data0
-data1:
-.ascii ""
-.space 1, 0
-lenData1 = . - data1
-varName2:
-.ascii "$print_arg0"
-.space 1, 0
-lenVarName2 = . - varName2
-data2:
-.ascii "Hello world!\n"
-.space 1, 0
-lenData2 = . - data2
-label1:
- .quad .main_end
-labelName1:
-.ascii ".main_end"
-.space 1,0
-data3:
-.ascii ""
-.space 1, 0
-lenData3 = . - data3
-data4:
-.ascii "#main_res0"
-.space 1, 0
-lenData4 = . - data4
-label2:
- .quad .main_res0
-labelName2:
-.ascii ".main_res0"
-.space 1,0
-data5:
-.ascii ""
-.space 1, 0
-lenData5 = . - data5
-data6:
-.ascii ""
-.space 1, 0
-lenData6 = . - data6

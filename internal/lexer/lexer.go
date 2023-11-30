@@ -103,6 +103,9 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 		} else if len(expr) > i+5 && "input" == expr[i:i+5] {
 			res = append(res, []interface{}{"OP", "input"})
 			i += 4
+		} else if len(expr) > i+10 && "open_file(" == expr[i:i+10] {
+			res = append(res, []interface{}{"OP", "open_file"})
+			i += 8
 		} else if len(expr) > i+12 && "next_command" == expr[i:i+12] {
 			res = append(res, []interface{}{"OP", "next_command"})
 			i += 11
