@@ -7567,24 +7567,14 @@ jmp .main_end
 
  push %r8 
  mov %r8, %r10 
- mov $3, %rbx 
+ mov $100, %rbx 
  mov $varName18, %r8 
  call __readFromFile
-
-mov $lenVarName, %rsi 
-  mov $varName, %rdx 
-  mov $lenVarName18, %rax 
-  mov $varName18, %rdi
-  call __set 
-  call __getVar
-  mov (userData), %rsi 
-  call __print
-
- pop %r8 
- mov %r8, %r10 
- mov $3, %rbx 
- mov $varName18, %r8 
- call __readFromFile
+ call __toStr 
+ mov $buf2, %rsi 
+ call __print 
+ mov $enter, %rsi 
+ call __print 
 
 mov $lenVarName, %rsi 
   mov $varName, %rdx 
