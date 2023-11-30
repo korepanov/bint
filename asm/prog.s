@@ -269,6 +269,9 @@ isDigitError:
 openFileError:
 .ascii "could not open file"
 .space 1, 0
+readFromFileError:
+.ascii "could not read file"
+.space 1, 0
 
  t0: 
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
@@ -5226,6 +5229,12 @@ mov $openFileError, %rsi
 call __throughUserError
 ret 
 
+__closeFile:
+# закрыть файл
+# %rdi - descriptor file number 
+mov  $3, %rax   # номер системного вызова
+syscall
+ret 
 
 __readFromFile:
 # input:
@@ -5317,6 +5326,12 @@ jz   __readFromFileLo
 
 __readFromFileEnd:
 mov %r9, %rax 
+cmp $0, %rax 
+jl __readFromFileException 
+ret 
+__readFromFileException:
+mov $readFromFileError, %rsi 
+call __throughUserError
 ret 
 
 .globl _start
@@ -7565,7 +7580,7 @@ jmp .main_end
  mov $0, %rbx 
  call __openFile
  mov %rax, %r8 
-
+ 
  push %r8 
  mov %r8, %r10 
  mov $100, %rbx 
@@ -7586,11 +7601,8 @@ mov $lenVarName, %rsi
   mov (userData), %rsi 
   call __print
 
- # закрыть файл
-  mov  %r8, %rdi  # дескриптор файла
-  mov  $3, %rax   # номер системного вызова
-  syscall
-
+ mov %r8, %rdi 
+ call __closeFile
 
   
 
