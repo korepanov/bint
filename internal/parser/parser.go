@@ -280,7 +280,8 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 	wasIsDigit := false
 	wasExit := false
 	wasExists := false
-	wasOpenFile := false
+	wasOpenF := false
+	wasReadF := false
 
 	if "goto" == fmt.Sprintf("%v", exprList[0][1]) {
 		exprList = makeOperationBinary(exprList)
@@ -894,7 +895,19 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 				exprInside = toStandardBinaryOperation(exprInside)
 				exprInside = Insert(exprInside, 0, []interface{}{"BR", "("})
 				exprInside = append(exprInside, []interface{}{"BR", ")"})
-				wasOpenFile = true
+				wasOpenF = true
+			}
+			if "read_f" == exprInside[0][1] {
+				exprInside = append(exprInside[:3], exprInside[4:]...)
+				newEl := []interface{}{"VAL", []interface{}{exprInside[2], exprInside[3]}}
+				var newElI interface{}
+				newElI = newEl
+				exprInside = append(append(exprInside[:2], newElI.([]interface{})), exprInside[4:]...)
+
+				exprInside = toStandardBinaryOperation(exprInside)
+				exprInside = Insert(exprInside, 0, []interface{}{"BR", "("})
+				exprInside = append(exprInside, []interface{}{"BR", ")"})
+				wasReadF = true
 			}
 			if "reg_find" == exprInside[0][1] {
 				exprInside = toStandardBinaryOperation(exprInside)
@@ -1099,7 +1112,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 	if maxNbraces > 0 || wasCd || wasAssignment || wasNOT || wasGoto || wasSetSource ||
 		wasNextCommand || wasSendCommand || wasUndefine || wasPop || wasPush || wasSetDest || wasDelDest ||
 		wasSendDest || wasPoint || wasLen || wasIndex || wasGetRootSource || wasGetRootDest ||
-		wasIsLetter || wasIsDigit || wasExit || wasExists || wasOpenFile {
+		wasIsLetter || wasIsDigit || wasExit || wasExists || wasOpenF || wasReadF {
 		if !wasCd {
 			if !wasAssignment {
 				//if not was_NOT:

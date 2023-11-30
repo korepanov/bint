@@ -1556,15 +1556,15 @@ varName0:
 .ascii "f"
 .space 1, 0
 lenVarName0 = . - varName0
+varName1:
+.ascii "bytes"
+.space 1, 0
+lenVarName1 = . - varName1
+varName2:
+.ascii "s"
+.space 1, 0
+lenVarName2 = . - varName2
 data0:
 .ascii "/home/slava/Go/bint/myfile.txt"
 .space 1, 0
 lenData0 = . - data0
-varName1:
-.ascii "s"
-.space 1, 0
-lenVarName1 = . - varName1
-data1:
-.ascii "\n"
-.space 1, 0
-lenData1 = . - data1
