@@ -5252,50 +5252,51 @@ pop %rbx
 pop %r10 
 
 # читать из файла
-  mov $readBuf,  %rsi  # адрес буфера
-  mov $lenReadBuf, %rdx  # длина буфера
-  dec %rdx 
+mov $readBuf,  %rsi  # адрес буфера
+mov $lenReadBuf, %rdx  # длина буфера
+dec %rdx 
 
-lo:
-  mov %r10,  %rdi  # номер дескриптора
-  mov $0,   %rax  # номер системной функции чтения
-  syscall         # системный вызов
-  inc %rax 
+__readFromFileLo:
+mov %r10,  %rdi  # номер дескриптора
+mov $0,   %rax  # номер системной функции чтения
+syscall         # системный вызов
+inc %rax 
+mov %rax, %rdi 
 
-  mov $readBuf, %rbx 
-  add %rax, %rbx
-  dec %rbx  
-  movb $0, (%rbx)
+mov $readBuf, %rbx 
+add %rax, %rbx
+dec %rbx  
+movb $0, (%rbx)
 
-  mov  %rax, %rdi
-  
-  push %r8
-  mov $lenVarName, %rsi 
-  mov $varName, %rdx 
-  mov $lenVarName, %rax 
-  mov %r8, %rdi
-  call __set 
+mov  %rax, %rdi
 
-  mov $readBuf, %r9
-  mov $1, %rax 
-  mov $0, %rbx  
-  call __userConcatinate  
+push %rsi 
+push %rdi 
+push %rdx 
+push %r8
+push %rbx 
+push %r10 
 
-  pop %r8
-  mov $lenVarName, %rsi 
-  mov $varName, %rdx 
-  mov $lenVarName, %rax 
-  mov %r8, %rdi
-  call __set 
-  call __getVar 
-  mov (userData), %rsi 
-  call __print  
-  call __throughError
+mov $lenVarName, %rsi 
+mov $varName, %rdx 
+mov $lenVarName, %rax 
+mov %r8, %rdi
+call __set 
 
+mov $readBuf, %r9
+mov $1, %rax 
+mov $0, %rbx  
+call __userConcatinate  
 
-  cmp  $lenReadBuf, %rdi
-  je   lo         # перейдем, если rax = 100, длине буфера
-                  # иначе процесс чтения и вывода файла завершен
+pop %r10 
+pop %rbx 
+pop %r8
+pop %rdx 
+pop %rdi 
+pop %rsi 
+
+cmp  $lenReadBuf, %rdi
+jz   __readFromFileLo         
 
 
 
@@ -7553,11 +7554,21 @@ jmp .main_end
  mov $varName18, %r8 
  call __readFromFile
 
+
  # закрыть файл
   mov  %r8, %rdi  # дескриптор файла
   mov  $3, %rax   # номер системного вызова
   syscall
 
+
+  mov $lenVarName, %rsi 
+  mov $varName, %rdx 
+  mov $lenVarName18, %rax 
+  mov $varName18, %rdi
+  call __set 
+  call __getVar
+  mov (userData), %rsi 
+  call __print
 
 
 call __throughError 
