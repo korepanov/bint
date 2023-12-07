@@ -103,12 +103,12 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 		} else if len(expr) > i+5 && "input" == expr[i:i+5] {
 			res = append(res, []interface{}{"OP", "input"})
 			i += 4
-		} else if len(expr) > i+10 && "$open_f(" == expr[i:i+7] {
+		} else if len(expr) > i+8 && "$open_f(" == expr[i:i+8] {
 			res = append(res, []interface{}{"OP", "$open_f"})
-			i += 5
-		} else if len(expr) > i+10 && "$read_f(" == expr[i:i+7] {
+			i += 6
+		} else if len(expr) > i+8 && "$read_f(" == expr[i:i+8] {
 			res = append(res, []interface{}{"OP", "$read_f"})
-			i += 5
+			i += 6
 		} else if len(expr) > i+12 && "next_command" == expr[i:i+12] {
 			res = append(res, []interface{}{"OP", "next_command"})
 			i += 11
