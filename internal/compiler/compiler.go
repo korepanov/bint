@@ -275,20 +275,29 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 	} else if "$read_f" == OP {
 		var lenLO string
+		var lenLO2 string
 		var lenRO string
 		isVarLO := false
+		isVarLO2 := false
 		isVarRO := false
 
-		fmt.Println(LO[0])
-		fmt.Println(RO[0])
-		panic("$read_f not realized")
+		//fmt.Println(LO[0])
+		//fmt.Println(RO[0])
+		//panic("$read_f not realized")
 		newVariable := EachVariable(variables)
 
+		// LO[0][0] - descriptor
+		// LO[0][1] - size to read
 		for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
-			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
+			if fmt.Sprintf("%v", LO[0].([]interface{})[0]) == fmt.Sprintf("%v", v[1]) {
 				isVarLO = true
-				lenLO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
-				LO[0] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+				lenLO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0].([]interface{})[0])])
+				LO[0].([]interface{})[0] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0].([]interface{})[0])])
+			}
+			if fmt.Sprintf("%v", LO[0].([]interface{})[1]) == fmt.Sprintf("%v", v[1]) {
+				isVarLO2 = true
+				lenLO2 = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0].([]interface{})[1])])
+				LO[0].([]interface{})[1] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0].([]interface{})[1])])
 			}
 			if fmt.Sprintf("%v", RO[0]) == fmt.Sprintf("%v", v[1]) {
 				isVarRO = true
@@ -297,9 +306,13 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			}
 		}
 
-		if len(fmt.Sprintf("%v", LO[0])) >= 2 && `"` == string(fmt.Sprintf("%v", LO[0])[0]) &&
-			`"` == string(fmt.Sprintf("%v", LO[0])[len(fmt.Sprintf("%v", LO[0]))-1]) {
-			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
+		if len(fmt.Sprintf("%v", LO[0].([]interface{})[0])) >= 2 && `"` == string(fmt.Sprintf("%v", LO[0].([]interface{})[0])[0]) &&
+			`"` == string(fmt.Sprintf("%v", LO[0].([]interface{})[0])[len(fmt.Sprintf("%v", LO[0].([]interface{})[0]))-1]) {
+			LO[0].([]interface{})[0] = LO[0].([]interface{})[0].(string)[1 : len(LO[0].([]interface{})[0].(string))-1]
+		}
+		if len(fmt.Sprintf("%v", LO[0].([]interface{})[1])) >= 2 && `"` == string(fmt.Sprintf("%v", LO[0].([]interface{})[1])[0]) &&
+			`"` == string(fmt.Sprintf("%v", LO[0].([]interface{})[1])[len(fmt.Sprintf("%v", LO[0].([]interface{})[1]))-1]) {
+			LO[0].([]interface{})[1] = LO[0].([]interface{})[1].(string)[1 : len(LO[0].([]interface{})[1].(string))-1]
 		}
 		if len(fmt.Sprintf("%v", RO[0])) >= 2 && `"` == string(fmt.Sprintf("%v", RO[0])[0]) &&
 			`"` == string(fmt.Sprintf("%v", RO[0])[len(fmt.Sprintf("%v", RO[0]))-1]) {
@@ -307,65 +320,37 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		if !isVarLO {
-			_, err := dataFile.Write([]byte("\ndata" + fmt.Sprintf("%v", DataNumber) + ":"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-			_, err = dataFile.Write([]byte("\n.ascii \"" + fmt.Sprintf("%v", ValueFoldInterface(LO[0])) + "\"\n.space 1, 0"))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-			_, err = dataFile.Write([]byte("\nlenData" + fmt.Sprintf("%v", DataNumber) + " = . - data" + fmt.Sprintf("%v", DataNumber)))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
+			return []interface{}{-1}, systemStack, "", errors.New("all the arguments of $read_f must be variables")
+		}
 
-			LO[0] = "$data" + fmt.Sprintf("%v", DataNumber)
-			lenLO = "$lenData" + fmt.Sprintf("%v", DataNumber)
-
-			_, err = progFile.Write([]byte("\nmov " + fmt.Sprintf("%v", LO[0]) + ", %rax \n mov %rax, (buf3)"))
-
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-			DataNumber++
+		if !isVarLO2 {
+			return []interface{}{-1}, systemStack, "", errors.New("all the arguments of $read_f must be variables")
 		}
 		if !isVarRO {
-
-			_, err := progFile.Write([]byte("\nmov $" + fmt.Sprintf("%v", ValueFoldInterface(RO[0])) + ", %rax\n mov %rax, (buf4)"))
-
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
+			return []interface{}{-1}, systemStack, "", errors.New("all the arguments of $read_f must be variables")
 		}
 
-		if isVarLO {
-			panic("variables in the open_f are not realized")
-			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
-				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
-				"\n call __getVar \n mov (userData), %rax \n mov %rax, (buf3) "))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-		}
-		if isVarRO {
-			panic("variables in the open_f are not realized")
-			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenRO +
-				", %rax \n mov " + fmt.Sprintf("%v", RO[0]) + ", %rdi\n call __set " +
-				"\n call __getVar \n mov (userData), %rax \n mov %rax, (buf4) "))
-			if nil != err {
-				fmt.Println(err)
-				os.Exit(1)
-			}
+		//varLO
+		_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+			", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
+			"\n call __getVar \n mov (userData), %rax \n mov %rax, (buf3) "))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
 		}
 
-		_, err := progFile.Write([]byte(
+		//varLO2
+
+		//varRO
+		_, err = progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenRO +
+			", %rax \n mov " + fmt.Sprintf("%v", RO[0]) + ", %rdi\n call __set " +
+			"\n call __getVar \n mov (userData), %rax \n mov %rax, (buf4) "))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		_, err = progFile.Write([]byte(
 			"\nmov (buf3), %rax \n mov (buf4), %rbx \n call __openFile \n call __toStr \n mov $lenT" + fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
 				", %rdx \n mov $lenBuf2, %rax \n mov $buf2, %rdi\n call __set"))
 		if nil != err {
