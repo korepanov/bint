@@ -173,7 +173,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 	variables [][]interface{}, tNumber int) ([]interface{}, []interface{}, string, error) {
 	if "print" == OP {
 		return []interface{}{"print", LO}, systemStack, "", nil
-	} else if "open_f" == OP {
+	} else if "$open_f" == OP {
 		var lenLO string
 		var lenRO string
 		isVarLO := false

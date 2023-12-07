@@ -2,7 +2,7 @@ int f;
 int bytes;
 string s; 
 
-f = open_f("/home/slava/Go/bint/myfile.txt", 0); 
-bytes = read_f(f, 10, s);
+f = $open_f("/home/slava/Go/bint/myfile.txt", 0); 
+bytes = $read_f(f, 10, s);
 print(s);
 print("\n");  

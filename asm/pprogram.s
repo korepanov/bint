@@ -49,6 +49,12 @@ mov $lenVarName, %rsi
  ret
 
 __print:
+ push %rsi 
+ push %rdi 
+ push %rdx 
+ push %rax
+ 
+ __printBegin:
  mov (%rsi), %al	
  cmp $0, %al	
  jz  __printEx			
@@ -57,8 +63,13 @@ __print:
  mov $1, %rax	
  syscall		    
  inc %rsi		  		    
- jnz __print
+ jnz __printBegin
 __printEx:
+
+ pop %rax 
+ pop %rdx 
+ pop %rdi 
+ pop %rsi 
  ret
 
 # посчитать количество символов до 0
