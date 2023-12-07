@@ -899,7 +899,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 			}
 			if "$read_f" == exprInside[0][1] {
 				exprInside = append(exprInside[:3], exprInside[4:]...)
-				newEl := []interface{}{"VAL", []interface{}{exprInside[2], exprInside[3]}}
+				newEl := []interface{}{"VAL", []interface{}{exprInside[2][1], exprInside[3][1]}}
 				var newElI interface{}
 				newElI = newEl
 				exprInside = append(append(exprInside[:2], newElI.([]interface{})), exprInside[4:]...)
