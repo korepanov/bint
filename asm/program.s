@@ -5247,3 +5247,45 @@ mov $lenVarName, %rsi
  mov %rax, (userData)
  xor %rax, %rax 
  call __setVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName0, %rax 
+ mov $varName0, %rdi
+ call __set 
+ call __getVar 
+ mov (userData), %rsi
+ call __len 
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx
+  
+ mov (userData), %rdi 
+ call __set
+ call __toNumber 
+ mov %rax, (buf2)
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
+ call __set
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi
+ call __set 
+ mov $t0, %rax 
+ mov %rax, (userData)
+ xor %rax, %rax 
+ call __setVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName2, %rax 
+ mov $varName2, %rdi
+ call __set
+ call __getVar
+ mov (userData), %rsi 
+ call __print
+mov $data2, %rsi
+call __print
+mov $60,  %rax
+xor %rdi, %rdi
+syscall

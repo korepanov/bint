@@ -275,7 +275,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 	} else if "$read_f" == OP {
 		var lenLO string
-		var lenLO2 string
+		//var lenLO2 string
 		var lenRO string
 		isVarLO := false
 		isVarLO2 := false
@@ -296,7 +296,7 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			}
 			if fmt.Sprintf("%v", LO[0].([]interface{})[1]) == fmt.Sprintf("%v", v[1]) {
 				isVarLO2 = true
-				lenLO2 = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0].([]interface{})[1])])
+				//lenLO2 = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0].([]interface{})[1])])
 				LO[0].([]interface{})[1] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0].([]interface{})[1])])
 			}
 			if fmt.Sprintf("%v", RO[0]) == fmt.Sprintf("%v", v[1]) {
@@ -332,13 +332,14 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 		//varLO
 		_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
-			", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
-			"\n call __getVar \n mov (userData), %rax \n mov %rax, (buf3) "))
+			", %rax \n mov " + fmt.Sprintf("%v", LO[0].([]interface{})[0]) + ", %rdi\n call __set " +
+			"\n call __getVar \n mov (userData), %rsi\n call __len \n mov $lenBuf, %rsi \n mov $buf, %rdx\n  \n mov (userData), %rdi \n call __set" +
+			"\n call __toNumber \n mov %rax, (buf2)"))
 		if nil != err {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-
+		return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "int", nil
 		//varLO2
 
 		//varRO

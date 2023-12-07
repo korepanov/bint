@@ -1576,3 +1576,7 @@ data1:
 .ascii "/home/slava/Go/bint/myfile.txt"
 .space 1, 0
 lenData1 = . - data1
+data2:
+.ascii "\n"
+.space 1, 0
+lenData2 = . - data2
