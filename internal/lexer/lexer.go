@@ -109,6 +109,9 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 		} else if len(expr) > i+8 && "$read_f(" == expr[i:i+8] {
 			res = append(res, []interface{}{"OP", "$read_f"})
 			i += 6
+		} else if len(expr) > i+9 && "$close_f(" == expr[i:i+9] {
+			res = append(res, []interface{}{"OP", "$close_f"})
+			i += 7
 		} else if len(expr) > i+12 && "next_command" == expr[i:i+12] {
 			res = append(res, []interface{}{"OP", "next_command"})
 			i += 11

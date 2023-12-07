@@ -282,6 +282,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 	wasExists := false
 	wasOpenF := false
 	wasReadF := false
+	wasCloseF := false
 
 	if "goto" == fmt.Sprintf("%v", exprList[0][1]) {
 		exprList = makeOperationBinary(exprList)
@@ -312,8 +313,6 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 		wasUndefine = true
 	}
 	if "push" == fmt.Sprintf("%v", exprList[0][1]) {
-		//exprList = Insert(exprList, 1, []interface{}{"BR", "("})
-		//exprList = append(exprList, []interface{}{"BR", ")"})
 		exprList = makeOperationBinary(exprList)
 		wasPush = true
 	}
@@ -336,6 +335,10 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 	if "send_command" == fmt.Sprintf("%v", exprList[0][1]) {
 		exprList = makeOperationBinary(exprList)
 		wasSendCommand = true
+	}
+	if "$close_f" == fmt.Sprintf("%v", exprList[0][1]) {
+		exprList = makeOperationBinary(exprList)
+		wasCloseF = true
 	}
 	if len(exprList) > 1 && "." == fmt.Sprintf("%v", exprList[1][1]) {
 		exprList[2] = []interface{}{"VAL", []string{exprList[2][1].(string), exprList[4][1].(string)}}
@@ -1112,7 +1115,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 	if maxNbraces > 0 || wasCd || wasAssignment || wasNOT || wasGoto || wasSetSource ||
 		wasNextCommand || wasSendCommand || wasUndefine || wasPop || wasPush || wasSetDest || wasDelDest ||
 		wasSendDest || wasPoint || wasLen || wasIndex || wasGetRootSource || wasGetRootDest ||
-		wasIsLetter || wasIsDigit || wasExit || wasExists || wasOpenF || wasReadF {
+		wasIsLetter || wasIsDigit || wasExit || wasExists || wasOpenF || wasReadF || wasCloseF {
 		if !wasCd {
 			if !wasAssignment {
 				//if not was_NOT:
