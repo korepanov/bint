@@ -1569,10 +1569,26 @@ varName3:
 .space 1, 0
 lenVarName3 = . - varName3
 data0:
-.ascii "100"
+.ascii "10"
 .space 1, 0
 lenData0 = . - data0
+varName4:
+.ascii "file_path"
+.space 1, 0
+lenVarName4 = . - varName4
+varName5:
+.ascii "file_mode"
+.space 1, 0
+lenVarName5 = . - varName5
 data1:
 .ascii "/home/slava/Go/bint/myfile.txt"
 .space 1, 0
 lenData1 = . - data1
+data2:
+.ascii "0"
+.space 1, 0
+lenData2 = . - data2
+data3:
+.ascii "\n"
+.space 1, 0
+lenData3 = . - data3

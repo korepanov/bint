@@ -242,7 +242,6 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		}
 
 		if isVarLO {
-			panic("variables in the open_f are not realized")
 			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
 				", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
 				"\n call __getVar \n mov (userData), %rax \n mov %rax, (buf3) "))
@@ -252,10 +251,10 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			}
 		}
 		if isVarRO {
-			panic("variables in the open_f are not realized")
 			_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenRO +
 				", %rax \n mov " + fmt.Sprintf("%v", RO[0]) + ", %rdi\n call __set " +
-				"\n call __getVar \n mov (userData), %rax \n mov %rax, (buf4) "))
+				"\n call __getVar \n mov (userData), %rsi\n call __len \n mov $lenBuf, %rsi \n mov $buf, %rdx\n  \n mov (userData), %rdi \n call __set" +
+				"\n call __toNumber \n mov %rax, (buf4)"))
 			if nil != err {
 				fmt.Println(err)
 				os.Exit(1)
@@ -280,9 +279,6 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 		isVarLO2 := false
 		isVarRO := false
 
-		//fmt.Println(LO[0])
-		//fmt.Println(RO[0])
-		//panic("$read_f not realized")
 		newVariable := EachVariable(variables)
 
 		// LO[0][0] - descriptor

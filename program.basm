@@ -2,8 +2,17 @@ int f;
 int bytes;
 string s; 
 int size;
-size = 100;
+size = 10;
+string file_path; 
+int file_mode;
 
-f = $open_f("/home/slava/Go/bint/myfile.txt", 0); 
+file_path = "/home/slava/Go/bint/myfile.txt";
+file_mode = 0; 
+
+f = $open_f(file_path, file_mode); 
 bytes = $read_f(f, size, s);
+
 print(s);
+s = str(bytes);
+print(s);
+print("\n");
