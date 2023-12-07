@@ -11,6 +11,7 @@ file_mode = 0;
 
 f = $open_f(file_path, file_mode); 
 bytes = $read_f(f, size, s);
+$close_f(f); 
 
 print(s);
 s = str(bytes);

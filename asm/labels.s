@@ -23,7 +23,3 @@ __initLabels:
  mov %r10, %rdi # восстанавливаем  
  mov %rsi, %r9 
  
-
- mov %r12, %rax 
- mov %r12, (labelsMax)
- ret 

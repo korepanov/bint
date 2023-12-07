@@ -1588,7 +1588,3 @@ data2:
 .ascii "0"
 .space 1, 0
 lenData2 = . - data2
-data3:
-.ascii "\n"
-.space 1, 0
-lenData3 = . - data3

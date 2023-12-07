@@ -5364,33 +5364,3 @@ mov $lenVarName, %rsi
  mov %rax, (userData)
  xor %rax, %rax 
  call __setVar
-mov $lenVarName, %rsi 
- mov $varName, %rdx
- mov $lenVarName2, %rax 
- mov $varName2, %rdi
- call __set
- call __getVar
- mov (userData), %rsi 
- call __print
-mov $lenVarName, %rsi 
- mov $varName, %rdx
- mov $lenVarName2, %rax 
- mov $varName2, %rdi
- call __set
-mov $varName1, %rax
-mov %rax, (userData)
- mov $1, %rax
-call __setVar
-mov $lenVarName, %rsi 
- mov $varName, %rdx
- mov $lenVarName2, %rax 
- mov $varName2, %rdi
- call __set
- call __getVar
- mov (userData), %rsi 
- call __print
-mov $data3, %rsi
-call __print
-mov $60,  %rax
-xor %rdi, %rdi
-syscall
