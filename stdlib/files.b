@@ -5,7 +5,6 @@
  mode = write
  mode = append 
 
- sets error if failed
  return file descriptor number  
 */
 
@@ -21,7 +20,11 @@ int open_file(string file_path, string mode){
 		m = 2;	
 	}else{
 		error = "no such mode for opening file";
-		return -1;
+		if ($toPanic){
+			print((error + "\n"));
+			exit(1);		
+		};
+		return res; 
 	};
 
 	res = $open_f(file_path, m); 
@@ -31,7 +34,6 @@ int open_file(string file_path, string mode){
 /*
  reads size bytes from file with descriptor_number into variable s
 
- sets error if failed 
  returns number of read bytes 
 */
 int read_file(int descriptor_number, int size; string s){
@@ -42,21 +44,24 @@ int read_file(int descriptor_number, int size; string s){
 
 /*
  closes file with descriptor_number 
-
- sets error if failed
 */
 void close_file(int descriptor_number){
+	bool $toPanicOld;
+	$toPanicOld = $toPanic;
+	
 	$close_f(f); 
+	
 	try{
 		string s; 
 		read_file(f, 1, s);	
 	};
-	if (NOT("" == error)){
+	if (error == ""){
 		error = ("could not close file with file descriptor number " + str(descriptor_number));	
 		
-		if ($toPanic){
+		if ($toPanicOld){
 			print((error + "\n"));
 			exit(1);		
 		};	
 	};
+	error = "";
 };

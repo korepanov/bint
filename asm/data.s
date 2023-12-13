@@ -1552,7 +1552,298 @@ lenSystemVarName127 = . - systemVarName127
  st127: 
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
  lenSt127 = . - st127
+varName0:
+.ascii "$ret"
+.space 1, 0
+lenVarName0 = . - varName0
+varName1:
+.ascii "$div_return_var"
+.space 1, 0
+lenVarName1 = . - varName1
+varName2:
+.ascii "$div_res"
+.space 1, 0
+lenVarName2 = . - varName2
+label0:
+ .quad .div
+labelName0:
+.ascii ".div"
+.space 1,0
 data0:
-.ascii "smth"
+.ascii ""
 .space 1, 0
 lenData0 = . - data0
+varName3:
+.ascii "b"
+.space 1, 0
+lenVarName3 = . - varName3
+varName4:
+.ascii "a"
+.space 1, 0
+lenVarName4 = . - varName4
+data1:
+.ascii ""
+.space 1, 0
+lenData1 = . - data1
+data2:
+.ascii ""
+.space 1, 0
+lenData2 = . - data2
+varName5:
+.ascii "c"
+.space 1, 0
+lenVarName5 = . - varName5
+data3:
+.ascii ""
+.space 1, 0
+lenData3 = . - data3
+data4:
+.ascii "0"
+.space 1, 0
+lenData4 = . - data4
+data5:
+.ascii ""
+.space 1, 0
+lenData5 = . - data5
+data6:
+.ascii ""
+.space 1, 0
+lenData6 = . - data6
+data7:
+.ascii ""
+.space 1, 0
+lenData7 = . - data7
+label1:
+ .quad ._cond1_end
+labelName1:
+.ascii "._cond1_end"
+.space 1,0
+data8:
+.ascii ""
+.space 1, 0
+lenData8 = . - data8
+label2:
+ .quad ._attempt0
+labelName2:
+.ascii "._attempt0"
+.space 1,0
+data9:
+.ascii ""
+.space 1, 0
+lenData9 = . - data9
+data10:
+.ascii "1"
+.space 1, 0
+lenData10 = . - data10
+label3:
+ .quad ._cond0_end
+labelName3:
+.ascii "._cond0_end"
+.space 1,0
+data11:
+.ascii ""
+.space 1, 0
+lenData11 = . - data11
+data12:
+.ascii ""
+.space 1, 0
+lenData12 = . - data12
+label4:
+ .quad .div_end
+labelName4:
+.ascii ".div_end"
+.space 1,0
+data13:
+.ascii ""
+.space 1, 0
+lenData13 = . - data13
+varName6:
+.ascii "$main_return_var"
+.space 1, 0
+lenVarName6 = . - varName6
+label5:
+ .quad .main
+labelName5:
+.ascii ".main"
+.space 1,0
+data14:
+.ascii ""
+.space 1, 0
+lenData14 = . - data14
+data15:
+.ascii ""
+.space 1, 0
+lenData15 = . - data15
+data16:
+.ascii ""
+.space 1, 0
+lenData16 = . - data16
+data17:
+.ascii "0"
+.space 1, 0
+lenData17 = . - data17
+data18:
+.ascii ""
+.space 1, 0
+lenData18 = . - data18
+data19:
+.ascii ""
+.space 1, 0
+lenData19 = . - data19
+data20:
+.ascii ""
+.space 1, 0
+lenData20 = . - data20
+label6:
+ .quad ._cond3_end
+labelName6:
+.ascii "._cond3_end"
+.space 1,0
+data21:
+.ascii ""
+.space 1, 0
+lenData21 = . - data21
+varName7:
+.ascii "res"
+.space 1, 0
+lenVarName7 = . - varName7
+data22:
+.ascii ""
+.space 1, 0
+lenData22 = . - data22
+data23:
+.ascii ""
+.space 1, 0
+lenData23 = . - data23
+label7:
+ .quad ._cond4_end
+labelName7:
+.ascii "._cond4_end"
+.space 1,0
+data24:
+.ascii ""
+.space 1, 0
+lenData24 = . - data24
+varName8:
+.ascii "$div_res0"
+.space 1, 0
+lenVarName8 = . - varName8
+data25:
+.ascii "5"
+.space 1, 0
+lenData25 = . - data25
+data26:
+.ascii "0"
+.space 1, 0
+lenData26 = . - data26
+data27:
+.ascii "#div_res0"
+.space 1, 0
+lenData27 = . - data27
+label8:
+ .quad .div_res0
+labelName8:
+.ascii ".div_res0"
+.space 1,0
+data28:
+.ascii ""
+.space 1, 0
+lenData28 = . - data28
+data29:
+.ascii ""
+.space 1, 0
+lenData29 = . - data29
+label9:
+ .quad ._cond5_end
+labelName9:
+.ascii "._cond5_end"
+.space 1,0
+data30:
+.ascii ""
+.space 1, 0
+lenData30 = . - data30
+data31:
+.ascii "5"
+.space 1, 0
+lenData31 = . - data31
+data32:
+.ascii "0"
+.space 1, 0
+lenData32 = . - data32
+data33:
+.ascii ""
+.space 1, 0
+lenData33 = . - data33
+data34:
+.ascii ""
+.space 1, 0
+lenData34 = . - data34
+label10:
+ .quad ._cond6_end
+labelName10:
+.ascii "._cond6_end"
+.space 1,0
+data35:
+.ascii ""
+.space 1, 0
+lenData35 = . - data35
+varName9:
+.ascii "$s0"
+.space 1, 0
+lenVarName9 = . - varName9
+varName10:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName10 = . - varName10
+label11:
+ .quad ._attempt1
+labelName11:
+.ascii "._attempt1"
+.space 1,0
+data36:
+.ascii ""
+.space 1, 0
+lenData36 = . - data36
+data37:
+.ascii "1"
+.space 1, 0
+lenData37 = . - data37
+label12:
+ .quad ._cond2_end
+labelName12:
+.ascii "._cond2_end"
+.space 1,0
+data38:
+.ascii ""
+.space 1, 0
+lenData38 = . - data38
+data39:
+.ascii ""
+.space 1, 0
+lenData39 = . - data39
+label13:
+ .quad .main_end
+labelName13:
+.ascii ".main_end"
+.space 1,0
+data40:
+.ascii ""
+.space 1, 0
+lenData40 = . - data40
+data41:
+.ascii "#main_res0"
+.space 1, 0
+lenData41 = . - data41
+label14:
+ .quad .main_res0
+labelName14:
+.ascii ".main_res0"
+.space 1,0
+data42:
+.ascii ""
+.space 1, 0
+lenData42 = . - data42
+data43:
+.ascii ""
+.space 1, 0
+lenData43 = . - data43
