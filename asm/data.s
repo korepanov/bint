@@ -1745,17 +1745,13 @@ data27:
 .space 1, 0
 lenData27 = . - data27
 varName10:
-.ascii "s"
+.ascii "size"
 .space 1, 0
 lenVarName10 = . - varName10
 varName11:
-.ascii "size"
-.space 1, 0
-lenVarName11 = . - varName11
-varName12:
 .ascii "descriptor_number"
 .space 1, 0
-lenVarName12 = . - varName12
+lenVarName11 = . - varName11
 data28:
 .ascii ""
 .space 1, 0
@@ -1764,8 +1760,12 @@ data29:
 .ascii ""
 .space 1, 0
 lenData29 = . - data29
-varName13:
+varName12:
 .ascii "bytes"
+.space 1, 0
+lenVarName12 = . - varName12
+varName13:
+.ascii "s"
 .space 1, 0
 lenVarName13 = . - varName13
 label8:
@@ -2038,13 +2038,9 @@ varName25:
 .space 1, 0
 lenVarName25 = . - varName25
 varName26:
-.ascii "bytes"
-.space 1, 0
-lenVarName26 = . - varName26
-varName27:
 .ascii "$read_file_res1"
 .space 1, 0
-lenVarName27 = . - varName27
+lenVarName26 = . - varName26
 data69:
 .ascii "10"
 .space 1, 0
@@ -2075,10 +2071,10 @@ data73:
 .ascii ""
 .space 1, 0
 lenData73 = . - data73
-varName28:
+varName27:
 .ascii "$print_arg0"
 .space 1, 0
-lenVarName28 = . - varName28
+lenVarName27 = . - varName27
 data74:
 .ascii "\n"
 .space 1, 0

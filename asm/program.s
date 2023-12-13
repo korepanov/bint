@@ -5709,27 +5709,9 @@ mov $lenVarName, %rsi
  call __set 
  call __defineVar
 mov $lenVarName, %rsi 
- mov $varName, %rdx
- mov $lenVarName9, %rax 
- mov $varName9, %rdi 
- call __set 
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenIntType, %rax 
- mov $intType, %rdi 
- call __set 
- mov $varName, %rcx 
- mov $varType, %rdx  
- call __defineVar
-jmp .read_file_end
-.read_file:
-
-mov $data27, %rsi
-call __print
-mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName10, %rax 
- mov $varName10, %rdi
+ mov $lenVarName9, %rax 
+ mov $varName9, %rdi
  call __set 
  mov $lenVarType, %rsi 
  mov $varType, %rdx 
@@ -5737,10 +5719,15 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+jmp .read_file_end
+.read_file:
+
+mov $data27, %rsi
+call __print
 mov $lenVarName, %rsi 
  mov $varName, %rdx
- mov $lenVarName11, %rax 
- mov $varName11, %rdi 
+ mov $lenVarName10, %rax 
+ mov $varName10, %rdi 
  call __set 
  mov $lenVarType, %rsi 
  mov $varType, %rdx 
@@ -5752,8 +5739,8 @@ mov $lenVarName, %rsi
  call __defineVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx
- mov $lenVarName12, %rax 
- mov $varName12, %rdi 
+ mov $lenVarName11, %rax 
+ mov $varName11, %rdi 
  call __set 
  mov $lenVarType, %rsi 
  mov $varType, %rdx 
@@ -5837,48 +5824,12 @@ mov $lenPopVarName, %rax
 mov $popVarName, %rdi
 call __set
 call __undefineVar
-mov $lenVarName, %rsi
-mov $varName, %rdx
-mov $lenPopVarName, %rax
-mov $popVarName, %rdi
-call __set
-mov $lenVarType, %rsi
-mov $varType, %rdx
-mov $lenStringType, %rax
-mov $stringType, %rdi
-call __set
-mov $varName, %rcx
-mov $varType, %rdx
-call __defineVar
-pop (userData)
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenPopVarName, %rax 
- mov $popVarName, %rdi
- call __set 
- xor %rax, %rax 
- call __setVar
-mov $popVarName, %rax 
-mov %rax, (userData)
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName12, %rax 
- mov $varName12, %rdi
- call __set 
- mov $1, %rax 
- call __setVar
-mov $lenVarName, %rsi
-mov $varName, %rdx
-mov $lenPopVarName, %rax
-mov $popVarName, %rdi
-call __set
-call __undefineVar
 mov $data29, %rsi
 call __print
 mov $lenVarName, %rsi 
  mov $varName, %rdx
- mov $lenVarName13, %rax 
- mov $varName13, %rdi 
+ mov $lenVarName12, %rax 
+ mov $varName12, %rdi 
  call __set 
  mov $lenVarType, %rsi 
  mov $varType, %rdx 
@@ -5890,19 +5841,15 @@ mov $lenVarName, %rsi
  call __defineVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName12, %rax 
- mov $varName12, %rdi
+ mov $lenVarName13, %rax 
+ mov $varName13, %rdi
  call __set 
- call __getVar 
- mov (userData), %rsi
- call __len 
- mov $lenBuf, %rsi 
- mov $buf, %rdx
-  
- mov (userData), %rdi 
- call __set
- call __toNumber 
- mov %rax, (buf3)
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName11, %rax 
@@ -5917,10 +5864,25 @@ mov $lenVarName, %rsi
  mov (userData), %rdi 
  call __set
  call __toNumber 
+ mov %rax, (buf3)
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName10, %rax 
+ mov $varName10, %rdi
+ call __set 
+ call __getVar 
+ mov (userData), %rsi
+ call __len 
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx
+  
+ mov (userData), %rdi 
+ call __set
+ call __toNumber 
  mov %rax, (buf4)
 mov (buf3), %r10 
  mov (buf4), %rbx 
- mov $varName10, %r8 
+ mov $varName13, %r8 
  call __readFromFile 
  call __toStr 
  mov $lenT0, %rsi 
@@ -5930,13 +5892,13 @@ mov (buf3), %r10
  call __set
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName13, %rax 
- mov $varName13, %rdi 
+ mov $lenVarName12, %rax 
+ mov $varName12, %rdi 
  call __set
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName13, %rax 
- mov $varName13, %rdi
+ mov $lenVarName12, %rax 
+ mov $varName12, %rdi
  call __set 
  mov $t0, %rax 
  mov %rax, (userData)
@@ -5957,6 +5919,12 @@ mov $varName13, %rdi
 call __undefineVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
+ mov $lenVarName12, %rax 
+mov $varName12, %rdi 
+ call __set 
+call __undefineVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
  mov $lenVarName10, %rax 
 mov $varName10, %rdi 
  call __set 
@@ -5965,12 +5933,6 @@ mov $lenVarName, %rsi
  mov $varName, %rdx 
  mov $lenVarName11, %rax 
 mov $varName11, %rdi 
- call __set 
-call __undefineVar
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName12, %rax 
-mov $varName12, %rdi 
  call __set 
 call __undefineVar
 mov $lenVarName, %rsi 
@@ -6274,17 +6236,15 @@ jmp ._attempt0
 mov $data45, %rsi
 call __print
 mov $lenVarName, %rsi 
- mov $varName, %rdx
+ mov $varName, %rdx 
  mov $lenVarName19, %rax 
- mov $varName19, %rdi 
+ mov $varName19, %rdi
  call __set 
  mov $lenVarType, %rsi 
  mov $varType, %rdx 
- mov $lenIntType, %rax 
- mov $intType, %rdi 
+ mov $lenStringType, %rax
+ mov $stringType, %rdi
  call __set 
- mov $varName, %rcx 
- mov $varType, %rdx  
  call __defineVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -6754,30 +6714,15 @@ mov $lenVarName, %rsi
  call __set 
  call __defineVar
 mov $lenVarName, %rsi 
- mov $varName, %rdx
+ mov $varName, %rdx 
  mov $lenVarName26, %rax 
- mov $varName26, %rdi 
+ mov $varName26, %rdi
  call __set 
  mov $lenVarType, %rsi 
  mov $varType, %rdx 
- mov $lenIntType, %rax 
- mov $intType, %rdi 
+ mov $lenStringType, %rax
+ mov $stringType, %rdi
  call __set 
- mov $varName, %rcx 
- mov $varType, %rdx  
- call __defineVar
-mov $lenVarName, %rsi 
- mov $varName, %rdx
- mov $lenVarName27, %rax 
- mov $varName27, %rdi 
- call __set 
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenIntType, %rax 
- mov $intType, %rdi 
- call __set 
- mov $varName, %rcx 
- mov $varType, %rdx  
  call __defineVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -6787,13 +6732,6 @@ mov $lenVarName, %rsi
  call __getVar 
  push (userData)
 push $data69
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName, %rax 
- mov $varName25, %rdi
- call __set 
- call __getVar 
- push (userData)
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName8, %rax 
@@ -6845,8 +6783,8 @@ call __set
 call __undefineVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx
- mov $lenVarName27, %rax 
- mov $varName27, %rdi
+ mov $lenVarName26, %rax 
+ mov $varName26, %rdi
  call __set
 mov $varName9, %rax
 mov %rax, (userData)
@@ -6854,10 +6792,10 @@ mov %rax, (userData)
 call __setVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx
- mov $lenVarName26, %rax 
- mov $varName26, %rdi
+ mov $lenVarName25, %rax 
+ mov $varName25, %rdi
  call __set
-mov $varName27, %rax
+mov $varName26, %rax
 mov %rax, (userData)
  mov $1, %rax
 call __setVar
@@ -6887,8 +6825,8 @@ mov $data73, %rsi
 call __print
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName28, %rax 
- mov $varName28, %rdi
+ mov $lenVarName27, %rax 
+ mov $varName27, %rdi
  call __set 
  mov $lenVarType, %rsi 
  mov $varType, %rdx 
@@ -6913,13 +6851,13 @@ mov $lenVarName, %rsi
  call __userConcatinate
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName28, %rax 
- mov $varName28, %rdi 
+ mov $lenVarName27, %rax 
+ mov $varName27, %rdi 
  call __set
 mov $lenVarName, %rsi 
  mov $varName, %rdx
- mov $lenVarName28, %rax 
- mov $varName28, %rdi
+ mov $lenVarName27, %rax 
+ mov $varName27, %rdi
  call __set 
 mov $systemVarName0, %rax 
  mov %rax, (userData) 
@@ -6927,22 +6865,22 @@ mov $1, %rax
  call __setVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx
- mov $lenVarName28, %rax 
- mov $varName28, %rdi
+ mov $lenVarName27, %rax 
+ mov $varName27, %rdi
  call __set
  call __getVar
  mov (userData), %rsi 
  call __print
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName28, %rax 
-mov $varName28, %rdi 
+ mov $lenVarName27, %rax 
+mov $varName27, %rdi 
  call __set 
 call __undefineVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName27, %rax 
-mov $varName27, %rdi 
+ mov $lenVarName26, %rax 
+mov $varName26, %rdi 
  call __set 
 call __undefineVar
 mov $lenVarName, %rsi 

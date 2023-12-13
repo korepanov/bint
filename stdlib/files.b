@@ -36,10 +36,12 @@ int open_file(string file_path, string mode){
 
  returns number of read bytes 
 */
-int read_file(int descriptor_number, int size, string s){
+string read_file(int descriptor_number, int size){
 	int bytes; 
+	string s; 
+
 	bytes = $read_f(descriptor_number, size, s);
-	return bytes;
+	return s;
 };
 
 /*
@@ -56,6 +58,8 @@ void close_file(int descriptor_number){
 		int bytes; 
 		bytes = read_file(descriptor_number, 1, s);	
 	};
+
+	
 	if (error == ""){
 		error = ("could not close file with file descriptor number " + str(descriptor_number));	
 		
