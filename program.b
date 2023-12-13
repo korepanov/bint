@@ -1,13 +1,13 @@
 #import "stdlib/files.b"
 
 void main(){
-	try{
-		int res;
-		res = div(5, 0);
-
-		res = (5@0); 
-		print(str(res));	
-	};
+	int f;
+	f = open_file("home/slava/a1.txt", "read");
+	string s;
+	int bytes;
+	bytes = read_file(f, 10, s);
+	close_file(f);
+	print((s + "\n")); 
 };
 
 main();

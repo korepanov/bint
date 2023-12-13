@@ -292,7 +292,7 @@ func getLastFile() string {
 func filter(command string) bool {
 	if "$" == string(command[0]) && "$" == string(command[len(command)-1]) {
 		if len(command) > 5 && "$file" == command[0:5] {
-			if "stdlib/core.b" == command[5:len(command)-1] ||
+			if "stdlib/core.b" == command[5:len(command)-1] || "stdlib/files.b" == command[5:len(command)-1] ||
 				("benv/trace/" == fileToValidate[0:11] && lastFile != command[5:len(command)-1]) {
 				toBlock = true
 

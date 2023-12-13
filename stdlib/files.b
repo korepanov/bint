@@ -16,7 +16,7 @@ int open_file(string file_path, string mode){
 		m = 0;
 	}else if (mode == "write"){
 		m = 1;	
-	}else if (mode = "append"){
+	}else if (mode == "append"){
 		m = 2;	
 	}else{
 		error = "no such mode for opening file";
@@ -36,7 +36,7 @@ int open_file(string file_path, string mode){
 
  returns number of read bytes 
 */
-int read_file(int descriptor_number, int size; string s){
+int read_file(int descriptor_number, int size, string s){
 	int bytes; 
 	bytes = $read_f(descriptor_number, size, s);
 	return bytes;
@@ -52,8 +52,9 @@ void close_file(int descriptor_number){
 	$close_f(descriptor_number); 
 	
 	try{
-		string s; 
-		read_file(descriptor_number, 1, s);	
+		string s;
+		int bytes; 
+		bytes = read_file(descriptor_number, 1, s);	
 	};
 	if (error == ""){
 		error = ("could not close file with file descriptor number " + str(descriptor_number));	

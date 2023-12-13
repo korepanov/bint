@@ -1412,9 +1412,11 @@ func StaticValidate(rootSource string) (string, error) {
 			}
 			closureHistory = nil
 			name := inputedCode[8 : strings.Index(inputedCode[8:], "\"")+8]
-			name, err = StaticValidate(name)
-			if nil != err {
-				return name, err
+			if name != "stdlib/files.b" {
+				name, err = StaticValidate(name)
+				if nil != err {
+					return name, err
+				}
 			}
 			LineCounter = bufLineCounter
 			CommandToExecute = bufCommandToExecute
