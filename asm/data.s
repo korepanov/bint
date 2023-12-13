@@ -1718,23 +1718,15 @@ data25:
 .ascii ""
 .space 1, 0
 lenData25 = . - data25
-data26:
-.ascii "file_path"
-.space 1, 0
-lenData26 = . - data26
-data27:
-.ascii "res"
-.space 1, 0
-lenData27 = . - data27
 label6:
  .quad .open_file_end
 labelName6:
 .ascii ".open_file_end"
 .space 1,0
-data28:
+data26:
 .ascii ""
 .space 1, 0
-lenData28 = . - data28
+lenData26 = . - data26
 varName8:
 .ascii "$read_file_return_var"
 .space 1, 0
@@ -1748,10 +1740,10 @@ label7:
 labelName7:
 .ascii ".read_file"
 .space 1,0
-data29:
+data27:
 .ascii ""
 .space 1, 0
-lenData29 = . - data29
+lenData27 = . - data27
 varName10:
 .ascii "s"
 .space 1, 0
@@ -1764,14 +1756,14 @@ varName12:
 .ascii "descriptor_number"
 .space 1, 0
 lenVarName12 = . - varName12
-data30:
+data28:
 .ascii ""
 .space 1, 0
-lenData30 = . - data30
-data31:
+lenData28 = . - data28
+data29:
 .ascii ""
 .space 1, 0
-lenData31 = . - data31
+lenData29 = . - data29
 varName13:
 .ascii "bytes"
 .space 1, 0
@@ -1781,10 +1773,10 @@ label8:
 labelName8:
 .ascii ".read_file_end"
 .space 1,0
-data32:
+data30:
 .ascii ""
 .space 1, 0
-lenData32 = . - data32
+lenData30 = . - data30
 varName14:
 .ascii "$close_file_return_var"
 .space 1, 0
@@ -1794,109 +1786,109 @@ label9:
 labelName9:
 .ascii ".close_file"
 .space 1,0
-data33:
+data31:
 .ascii ""
 .space 1, 0
-lenData33 = . - data33
+lenData31 = . - data31
 varName15:
 .ascii "descriptor_number"
 .space 1, 0
 lenVarName15 = . - varName15
+data32:
+.ascii ""
+.space 1, 0
+lenData32 = . - data32
+data33:
+.ascii ""
+.space 1, 0
+lenData33 = . - data33
+varName16:
+.ascii "$toPanicOld"
+.space 1, 0
+lenVarName16 = . - varName16
 data34:
 .ascii ""
 .space 1, 0
 lenData34 = . - data34
 data35:
-.ascii ""
+.ascii "0"
 .space 1, 0
 lenData35 = . - data35
-varName16:
-.ascii "$toPanicOld"
-.space 1, 0
-lenVarName16 = . - varName16
 data36:
 .ascii ""
 .space 1, 0
 lenData36 = . - data36
 data37:
-.ascii "0"
+.ascii ""
 .space 1, 0
 lenData37 = . - data37
 data38:
 .ascii ""
 .space 1, 0
 lenData38 = . - data38
-data39:
-.ascii ""
-.space 1, 0
-lenData39 = . - data39
-data40:
-.ascii ""
-.space 1, 0
-lenData40 = . - data40
 label10:
  .quad ._cond5_end
 labelName10:
 .ascii "._cond5_end"
 .space 1,0
-data41:
+data39:
 .ascii ""
 .space 1, 0
-lenData41 = . - data41
+lenData39 = . - data39
 varName17:
 .ascii "s"
 .space 1, 0
 lenVarName17 = . - varName17
-data42:
+data40:
 .ascii ""
 .space 1, 0
-lenData42 = . - data42
-data43:
+lenData40 = . - data40
+data41:
 .ascii ""
 .space 1, 0
-lenData43 = . - data43
+lenData41 = . - data41
 label11:
  .quad ._cond6_end
 labelName11:
 .ascii "._cond6_end"
 .space 1,0
-data44:
+data42:
 .ascii ""
 .space 1, 0
-lenData44 = . - data44
+lenData42 = . - data42
 varName18:
 .ascii "bytes"
 .space 1, 0
 lenVarName18 = . - varName18
-data45:
+data43:
 .ascii ""
 .space 1, 0
-lenData45 = . - data45
-data46:
+lenData43 = . - data43
+data44:
 .ascii ""
 .space 1, 0
-lenData46 = . - data46
+lenData44 = . - data44
 label12:
  .quad ._cond7_end
 labelName12:
 .ascii "._cond7_end"
 .space 1,0
-data47:
+data45:
 .ascii ""
 .space 1, 0
-lenData47 = . - data47
+lenData45 = . - data45
 varName19:
 .ascii "$read_file_res0"
 .space 1, 0
 lenVarName19 = . - varName19
-data48:
+data46:
 .ascii "1"
 .space 1, 0
-lenData48 = . - data48
-data49:
+lenData46 = . - data46
+data47:
 .ascii "#read_file_res0"
 .space 1, 0
-lenData49 = . - data49
+lenData47 = . - data47
 label13:
  .quad .read_file_res0
 labelName13:
@@ -1907,19 +1899,27 @@ label14:
 labelName14:
 .ascii "._attempt0"
 .space 1,0
-data50:
+data48:
 .ascii ""
 .space 1, 0
-lenData50 = . - data50
-data51:
+lenData48 = . - data48
+data49:
 .ascii "1"
 .space 1, 0
-lenData51 = . - data51
+lenData49 = . - data49
 label15:
  .quad ._cond4_end
 labelName15:
 .ascii "._cond4_end"
 .space 1,0
+data50:
+.ascii ""
+.space 1, 0
+lenData50 = . - data50
+data51:
+.ascii ""
+.space 1, 0
+lenData51 = . - data51
 data52:
 .ascii ""
 .space 1, 0
@@ -1928,42 +1928,47 @@ data53:
 .ascii ""
 .space 1, 0
 lenData53 = . - data53
+varName20:
+.ascii "$s0"
+.space 1, 0
+lenVarName20 = . - varName20
 data54:
-.ascii ""
+.ascii "could not close file with file descriptor number "
 .space 1, 0
 lenData54 = . - data54
 data55:
 .ascii ""
 .space 1, 0
 lenData55 = . - data55
-varName20:
-.ascii "$s0"
-.space 1, 0
-lenVarName20 = . - varName20
-data56:
-.ascii "could not close file with file descriptor number "
-.space 1, 0
-lenData56 = . - data56
-data57:
-.ascii ""
-.space 1, 0
-lenData57 = . - data57
 varName21:
 .ascii "$print_arg0"
 .space 1, 0
 lenVarName21 = . - varName21
-data58:
+data56:
 .ascii "\n"
 .space 1, 0
-lenData58 = . - data58
-data59:
+lenData56 = . - data56
+data57:
 .ascii "1"
 .space 1, 0
-lenData59 = . - data59
+lenData57 = . - data57
 label16:
  .quad ._cond9_end
 labelName16:
 .ascii "._cond9_end"
+.space 1,0
+data58:
+.ascii ""
+.space 1, 0
+lenData58 = . - data58
+data59:
+.ascii ""
+.space 1, 0
+lenData59 = . - data59
+label17:
+ .quad ._cond8_end
+labelName17:
+.ascii "._cond8_end"
 .space 1,0
 data60:
 .ascii ""
@@ -1973,32 +1978,19 @@ data61:
 .ascii ""
 .space 1, 0
 lenData61 = . - data61
-label17:
- .quad ._cond8_end
-labelName17:
-.ascii "._cond8_end"
-.space 1,0
 data62:
 .ascii ""
 .space 1, 0
 lenData62 = . - data62
-data63:
-.ascii ""
-.space 1, 0
-lenData63 = . - data63
-data64:
-.ascii ""
-.space 1, 0
-lenData64 = . - data64
 label18:
  .quad .close_file_end
 labelName18:
 .ascii ".close_file_end"
 .space 1,0
-data65:
+data63:
 .ascii ""
 .space 1, 0
-lenData65 = . - data65
+lenData63 = . - data63
 varName22:
 .ascii "$main_return_var"
 .space 1, 0
@@ -2008,14 +2000,14 @@ label19:
 labelName19:
 .ascii ".main"
 .space 1,0
-data66:
+data64:
 .ascii ""
 .space 1, 0
-lenData66 = . - data66
-data67:
+lenData64 = . - data64
+data65:
 .ascii ""
 .space 1, 0
-lenData67 = . - data67
+lenData65 = . - data65
 varName23:
 .ascii "f"
 .space 1, 0
@@ -2024,18 +2016,18 @@ varName24:
 .ascii "$open_file_res0"
 .space 1, 0
 lenVarName24 = . - varName24
-data68:
-.ascii "home/slava/a1.txt"
+data66:
+.ascii "/home/slava/a1.txt"
 .space 1, 0
-lenData68 = . - data68
-data69:
+lenData66 = . - data66
+data67:
 .ascii "read"
 .space 1, 0
-lenData69 = . - data69
-data70:
+lenData67 = . - data67
+data68:
 .ascii "#open_file_res0"
 .space 1, 0
-lenData70 = . - data70
+lenData68 = . - data68
 label20:
  .quad .open_file_res0
 labelName20:
@@ -2053,67 +2045,67 @@ varName27:
 .ascii "$read_file_res1"
 .space 1, 0
 lenVarName27 = . - varName27
-data71:
+data69:
 .ascii "10"
 .space 1, 0
-lenData71 = . - data71
-data72:
+lenData69 = . - data69
+data70:
 .ascii "#read_file_res1"
 .space 1, 0
-lenData72 = . - data72
+lenData70 = . - data70
 label21:
  .quad .read_file_res1
 labelName21:
 .ascii ".read_file_res1"
 .space 1,0
-data73:
+data71:
 .ascii "#close_file_res0"
 .space 1, 0
-lenData73 = . - data73
+lenData71 = . - data71
 label22:
  .quad .close_file_res0
 labelName22:
 .ascii ".close_file_res0"
 .space 1,0
-data74:
+data72:
 .ascii ""
 .space 1, 0
-lenData74 = . - data74
-data75:
+lenData72 = . - data72
+data73:
 .ascii ""
 .space 1, 0
-lenData75 = . - data75
+lenData73 = . - data73
 varName28:
 .ascii "$print_arg0"
 .space 1, 0
 lenVarName28 = . - varName28
-data76:
+data74:
 .ascii "\n"
 .space 1, 0
-lenData76 = . - data76
+lenData74 = . - data74
 label23:
  .quad .main_end
 labelName23:
 .ascii ".main_end"
+.space 1,0
+data75:
+.ascii ""
+.space 1, 0
+lenData75 = . - data75
+data76:
+.ascii "#main_res0"
+.space 1, 0
+lenData76 = . - data76
+label24:
+ .quad .main_res0
+labelName24:
+.ascii ".main_res0"
 .space 1,0
 data77:
 .ascii ""
 .space 1, 0
 lenData77 = . - data77
 data78:
-.ascii "#main_res0"
+.ascii ""
 .space 1, 0
 lenData78 = . - data78
-label24:
- .quad .main_res0
-labelName24:
-.ascii ".main_res0"
-.space 1,0
-data79:
-.ascii ""
-.space 1, 0
-lenData79 = . - data79
-data80:
-.ascii ""
-.space 1, 0
-lenData80 = . - data80

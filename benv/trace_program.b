@@ -67,7 +67,7 @@ $fileprogram.b$;
 $trace1$;
 voidmain(){intf;
 $trace2$;
-f=open_file("home/slava/a1.txt","read");
+f=open_file("/home/slava/a1.txt","read");
 $trace3$;
 strings;
 $trace4$;

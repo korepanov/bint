@@ -5119,7 +5119,7 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 		RO, variables, _, OPPointer, tNumber = sysCompileTree(infoList, variables, systemStack, OPPointer, dataFile, progFile, tNumber)
 	}
 
-	if "UNDEFINE" == OP {
+	/*if "UNDEFINE" == OP {
 		i := len(variables) - 1
 		newVariable := EachVariable(variables)
 		for v := newVariable(); "end" != v[0]; v = newVariable() {
@@ -5130,7 +5130,7 @@ func sysCompileTree(infoList []interface{}, variables [][]interface{}, systemSta
 			}
 			i -= 1
 		}
-	}
+	}*/
 
 	if "next_command" == OP || "get_root_source" == OP || "get_root_dest" == OP {
 		newVariable := EachVariable(variables)

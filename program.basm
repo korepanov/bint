@@ -138,7 +138,7 @@ goto(#main_end);
 print("");
 intf;
 int$open_file_res0;
-push("home/slava/a1.txt");
+push("/home/slava/a1.txt");
 push("read");
 $open_file_return_var="#open_file_res0";
 goto(#open_file);
