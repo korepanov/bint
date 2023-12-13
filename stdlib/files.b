@@ -49,11 +49,11 @@ void close_file(int descriptor_number){
 	bool $toPanicOld;
 	$toPanicOld = $toPanic;
 	
-	$close_f(f); 
+	$close_f(descriptor_number); 
 	
 	try{
 		string s; 
-		read_file(f, 1, s);	
+		read_file(descriptor_number, 1, s);	
 	};
 	if (error == ""){
 		error = ("could not close file with file descriptor number " + str(descriptor_number));	
