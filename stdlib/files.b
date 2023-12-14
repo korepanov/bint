@@ -56,7 +56,9 @@ void close_file(int descriptor_number){
 	try{
 		string s;
 		int bytes; 
-		bytes = read_file(descriptor_number, 1, s);	
+		int size;
+		size = 1;
+		bytes = $read_f(descriptor_number, size, s); 
 	};
 
 	
@@ -68,5 +70,6 @@ void close_file(int descriptor_number){
 			exit(1);		
 		};	
 	};
+	
 	error = "";
 };

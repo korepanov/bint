@@ -39,6 +39,9 @@ lenInputBuf = . - inputBuf
 readBuf:
 .byte 0, 0
 lenReadBuf = . - readBuf
+readBufSum:
+.space 10 # 65536
+lenReadBufSum = . - readBufSum
 userMem:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenUserMem = . - userMem 
@@ -1376,7 +1379,7 @@ data23:
 .space 1, 0
 lenData23 = . - data23
 data24:
-.ascii "/home/slava/Go/bint/myfile.txt"
+.ascii "/home/slava/a1.txt"
 .space 1, 0
 lenData24 = . - data24 
 
@@ -5272,6 +5275,7 @@ mov $readBuf,  %rsi  # адрес буфера
 mov $lenReadBuf, %rdx  # длина буфера
 dec %rdx 
 
+mov $readBufSum, %r12 
 __readFromFileLo:
 mov %r10,  %rdi  # номер дескриптора
 mov $0,   %rax  # номер системной функции чтения
@@ -5290,37 +5294,22 @@ movb $0, (%rbx)
 
 mov  %rax, %rdi
 
-push %r9 
-push %rsi 
-push %rdi 
-push %rdx 
-push %r8
-push %rbx 
-push %r10 
+ 
 
-mov $lenVarName, %rsi 
-mov $varName, %rdx 
-mov $lenVarName, %rax 
-mov %r8, %rdi
-call __set 
+mov (readBuf), %rax 
+mov %rax, (%r12)
+inc %r12  
 
-mov $readBuf, %r9
-mov $1, %rax 
-mov $0, %rbx  
-call __userConcatinate  
-
-pop %r10 
-pop %rbx 
-pop %r8
-pop %rdx 
-pop %rdi 
-pop %rsi 
-pop %r9 
 pop %rbx 
 
 cmp %r9, %rbx 
 jz __readFromFileEnd
 
+inc %r9 # 0 byte at the end  
+cmp $lenReadBufSum, %r9 
+jge __readFromFileUnion 
+
+dec %r9 
 cmp  $lenReadBuf, %rdi
 jz   __readFromFileLo         
 
@@ -5329,6 +5318,43 @@ mov %r9, %rax
 cmp $0, %rax 
 jl __readFromFileException 
 ret 
+
+__readFromFileUnion:
+
+push %rsi 
+push %rdi 
+push %rdx 
+push %r8
+push %rbx 
+push %r10
+
+movb $0, (%r12)
+
+mov $lenVarName, %rsi 
+mov $varName, %rdx 
+mov $lenVarName, %rax 
+mov %r8, %rdi
+call __set 
+
+mov $readBufSum, %r9
+mov $1, %rax 
+mov $0, %rbx  
+call __userConcatinate
+
+mov $readBufSum, %r12 
+call __clear 
+mov $readBufSum, %r12 
+
+xor %r9, %r9 
+pop %r10 
+pop %rbx 
+pop %r8
+pop %rdx 
+pop %rdi 
+pop %rsi 
+
+jmp __readFromFileLo
+
 __readFromFileException:
 mov $readFromFileError, %rsi 
 call __throughUserError
@@ -7581,16 +7607,18 @@ jmp .main_end
  call __openFile
  mov %rax, %r8 
  
+
  push %r8 
+
+ loop:
+ pop %r8 
  mov %r8, %r10 
- mov $100, %rbx 
+ mov $10, %rbx 
+ push %r8 
  mov $varName18, %r8 
  call __readFromFile
- call __toStr 
- mov $buf2, %rsi 
- call __print 
- mov $enter, %rsi 
- call __print 
+ 
+ push %rax 
 
 mov $lenVarName, %rsi 
   mov $varName, %rdx 
@@ -7600,7 +7628,11 @@ mov $lenVarName, %rsi
   call __getVar
   mov (userData), %rsi 
   call __print
+ pop %rax 
+ cmp $0, %rax 
+ jnz loop 
 
+ pop %r8 
  mov %r8, %rdi 
  call __closeFile
 

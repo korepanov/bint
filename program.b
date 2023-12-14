@@ -2,11 +2,19 @@
 
 void main(){
 	int f;
-	f = open_file("/home/slava/a1.txt", "read");
-	string s;
-	s = read_file(f, 10);
+	string s;	
+	
+	f = open_file("/home/slava/a1.txt", "read");	
+	
+	do{
+		s = read_file(f, 10);
+		print(s);	
+	}while(NOT(s == ""));
+	
+	
 	close_file(f);
-	print((s + "\n")); 
+	
+
 };
 
 main();
