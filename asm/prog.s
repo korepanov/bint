@@ -42,6 +42,8 @@ lenReadBuf = . - readBuf
 readBufSum:
 .space 10 # 65536
 lenReadBufSum = . - readBufSum
+numberOfReadBytes:
+.quad 0
 userMem:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenUserMem = . - userMem 
@@ -1379,7 +1381,7 @@ data23:
 .space 1, 0
 lenData23 = . - data23
 data24:
-.ascii "/home/slava/a1.txt"
+.ascii "/home/slava/Go/bint/myfile.txt"
 .space 1, 0
 lenData24 = . - data24 
 
@@ -5245,7 +5247,8 @@ __readFromFile:
 # %rbx - size to read 
 # %r8 - variable name address
 # output:
-# %rax - number of bytes was read 
+# %rax - number of bytes was read
+movq $0, (numberOfReadBytes) 
 xor %r9, %r9 
 cmp $0, %rbx 
 jle __readFromFileEnd
@@ -5280,7 +5283,35 @@ __readFromFileLo:
 mov %r10,  %rdi  # номер дескриптора
 mov $0,   %rax  # номер системной функции чтения
 syscall         # системный вызов
+cmp $0, %rax 
+jl __readFromFileException
+
 add %rax, %r9
+
+mov (numberOfReadBytes), %rcx 
+add %rax, %rcx
+mov %rcx, (numberOfReadBytes) 
+
+push %rsi 
+push %rdi 
+push %rdx 
+push %r8
+push %rbx 
+push %r10
+push %rax 
+mov (numberOfReadBytes), %rax 
+call __toStr 
+mov $buf2, %rsi 
+call __print 
+mov $enter, %rsi 
+call __print
+pop %rax  
+pop %r10 
+pop %rbx 
+pop %r8
+pop %rdx 
+pop %rdi 
+pop %rsi 
 
 inc %rax 
 mov %rax, %rdi 
@@ -5302,10 +5333,13 @@ inc %r12
 
 pop %rbx 
 
-cmp %r9, %rbx 
+mov (numberOfReadBytes),%rcx 
+cmp %rcx, %rbx 
 jz __readFromFileEnd
 
 inc %r9 # 0 byte at the end  
+
+
 cmp $lenReadBufSum, %r9 
 jge __readFromFileUnion 
 
@@ -5316,7 +5350,29 @@ jz   __readFromFileLo
 __readFromFileEnd:
 mov %r9, %rax 
 cmp $0, %rax 
+
 jl __readFromFileException 
+
+push %r8 
+movb $0, (%r12)
+
+mov $lenVarName, %rsi 
+mov $varName, %rdx 
+mov $lenVarName, %rax 
+mov %r8, %rdi
+call __set 
+
+pop %r8 
+mov $readBufSum, %r9
+mov $1, %rax 
+mov $0, %rbx  
+call __userConcatinate
+
+mov $readBufSum, %rsi 
+call __clear 
+mov $readBufSum, %r12 
+
+mov (numberOfReadBytes), %rax 
 ret 
 
 __readFromFileUnion:
@@ -5328,6 +5384,7 @@ push %r8
 push %rbx 
 push %r10
 
+push %r8 
 movb $0, (%r12)
 
 mov $lenVarName, %rsi 
@@ -5336,12 +5393,13 @@ mov $lenVarName, %rax
 mov %r8, %rdi
 call __set 
 
+pop %r8 
 mov $readBufSum, %r9
 mov $1, %rax 
 mov $0, %rbx  
 call __userConcatinate
 
-mov $readBufSum, %r12 
+mov $readBufSum, %rsi 
 call __clear 
 mov $readBufSum, %r12 
 
@@ -7629,8 +7687,15 @@ mov $lenVarName, %rsi
   mov (userData), %rsi 
   call __print
  pop %rax 
- cmp $0, %rax 
- jnz loop 
+ push %rax 
+call __toStr 
+mov $buf2, %rsi 
+call __print
+mov $enter, %rsi 
+call __print  
+pop %rax 
+ //cmp $0, %rax 
+ //jnz loop 
 
  pop %r8 
  mov %r8, %rdi 
