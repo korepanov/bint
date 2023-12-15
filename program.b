@@ -3,15 +3,16 @@
 void main(){
 	int f;
 	string s;	
+	string buf; 
 	
-	f = open_file("/home/slava/a1.txt", "read");	
+	f = open_file("/home/slava/books/cookbook.txt", "read");	
 	
 	do{
-		s = read_file(f, 10);
-		print(s);	
-	}while(NOT(s == ""));
+		buf = read_file(f, 4096);
+		print(buf);	
+	}while(True);
 	
-	
+	print(s);
 	close_file(f);
 	
 

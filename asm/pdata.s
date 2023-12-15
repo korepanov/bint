@@ -39,6 +39,11 @@ lenInputBuf = . - inputBuf
 readBuf:
 .byte 0, 0
 lenReadBuf = . - readBuf
+readBufSum:
+.space 65536
+lenReadBufSum = . - readBufSum
+numberOfReadBytes:
+.quad 0
 userMem:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenUserMem = . - userMem 

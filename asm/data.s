@@ -39,6 +39,11 @@ lenInputBuf = . - inputBuf
 readBuf:
 .byte 0, 0
 lenReadBuf = . - readBuf
+readBufSum:
+.space 65536
+lenReadBufSum = . - readBufSum
+numberOfReadBytes:
+.quad 0
 userMem:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenUserMem = . - userMem 
@@ -2042,7 +2047,7 @@ varName24:
 .space 1, 0
 lenVarName24 = . - varName24
 varName25:
-.ascii "s2"
+.ascii "buf"
 .space 1, 0
 lenVarName25 = . - varName25
 varName26:
@@ -2050,7 +2055,7 @@ varName26:
 .space 1, 0
 lenVarName26 = . - varName26
 data71:
-.ascii "/home/slava/a1.txt"
+.ascii "/home/slava/books/cookbook.txt"
 .space 1, 0
 lenData71 = . - data71
 data72:
@@ -2066,96 +2071,182 @@ label21:
 labelName21:
 .ascii ".open_file_res0"
 .space 1,0
-varName27:
-.ascii "$read_file_res0"
-.space 1, 0
-lenVarName27 = . - varName27
 data74:
-.ascii "1000"
+.ascii ""
 .space 1, 0
 lenData74 = . - data74
 data75:
-.ascii "#read_file_res0"
+.ascii ""
 .space 1, 0
 lenData75 = . - data75
-label22:
- .quad .read_file_res0
-labelName22:
-.ascii ".read_file_res0"
-.space 1,0
-varName28:
-.ascii "$read_file_res1"
+varName27:
+.ascii "$for0"
 .space 1, 0
-lenVarName28 = . - varName28
+lenVarName27 = . - varName27
+label22:
+ .quad ._for0
+labelName22:
+.ascii "._for0"
+.space 1,0
 data76:
-.ascii "1000"
+.ascii ""
 .space 1, 0
 lenData76 = . - data76
 data77:
-.ascii "#read_file_res1"
+.ascii ""
 .space 1, 0
 lenData77 = . - data77
+varName28:
+.ascii "$read_file_res0"
+.space 1, 0
+lenVarName28 = . - varName28
+data78:
+.ascii "4096"
+.space 1, 0
+lenData78 = . - data78
+data79:
+.ascii "#read_file_res0"
+.space 1, 0
+lenData79 = . - data79
 label23:
- .quad .read_file_res1
+ .quad .read_file_res0
 labelName23:
-.ascii ".read_file_res1"
+.ascii ".read_file_res0"
 .space 1,0
 varName29:
 .ascii "$print_arg0"
 .space 1, 0
 lenVarName29 = . - varName29
-data78:
-.ascii ""
-.space 1, 0
-lenData78 = . - data78
-data79:
-.ascii ""
-.space 1, 0
-lenData79 = . - data79
 data80:
-.ascii ""
+.ascii "1"
 .space 1, 0
 lenData80 = . - data80
 data81:
-.ascii "#close_file_res0"
+.ascii ""
 .space 1, 0
 lenData81 = . - data81
-label24:
- .quad .close_file_res0
-labelName24:
-.ascii ".close_file_res0"
-.space 1,0
 data82:
 .ascii ""
 .space 1, 0
 lenData82 = . - data82
 data83:
-.ascii ""
+.ascii "1"
 .space 1, 0
 lenData83 = . - data83
-label25:
- .quad .main_end
-labelName25:
-.ascii ".main_end"
+label24:
+ .quad ._cond13_end
+labelName24:
+.ascii "._cond13_end"
 .space 1,0
 data84:
 .ascii ""
 .space 1, 0
 lenData84 = . - data84
 data85:
-.ascii "#main_res0"
+.ascii ""
 .space 1, 0
 lenData85 = . - data85
-label26:
- .quad .main_res0
-labelName26:
-.ascii ".main_res0"
+label25:
+ .quad ._undef_for0
+labelName25:
+.ascii "._undef_for0"
 .space 1,0
 data86:
 .ascii ""
 .space 1, 0
 lenData86 = . - data86
+label26:
+ .quad ._cond12_end
+labelName26:
+.ascii "._cond12_end"
+.space 1,0
 data87:
 .ascii ""
 .space 1, 0
 lenData87 = . - data87
+data88:
+.ascii ""
+.space 1, 0
+lenData88 = . - data88
+label27:
+ .quad ._cond14_end
+labelName27:
+.ascii "._cond14_end"
+.space 1,0
+data89:
+.ascii ""
+.space 1, 0
+lenData89 = . - data89
+data90:
+.ascii ""
+.space 1, 0
+lenData90 = . - data90
+label28:
+ .quad ._cond15_end
+labelName28:
+.ascii "._cond15_end"
+.space 1,0
+data91:
+.ascii ""
+.space 1, 0
+lenData91 = . - data91
+label29:
+ .quad ._for0_end
+labelName29:
+.ascii "._for0_end"
+.space 1,0
+data92:
+.ascii ""
+.space 1, 0
+lenData92 = . - data92
+data93:
+.ascii ""
+.space 1, 0
+lenData93 = . - data93
+varName30:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName30 = . - varName30
+data94:
+.ascii "#close_file_res0"
+.space 1, 0
+lenData94 = . - data94
+label30:
+ .quad .close_file_res0
+labelName30:
+.ascii ".close_file_res0"
+.space 1,0
+data95:
+.ascii ""
+.space 1, 0
+lenData95 = . - data95
+data96:
+.ascii ""
+.space 1, 0
+lenData96 = . - data96
+label31:
+ .quad .main_end
+labelName31:
+.ascii ".main_end"
+.space 1,0
+data97:
+.ascii ""
+.space 1, 0
+lenData97 = . - data97
+data98:
+.ascii "#main_res0"
+.space 1, 0
+lenData98 = . - data98
+label32:
+ .quad .main_res0
+labelName32:
+.ascii ".main_res0"
+.space 1,0
+data99:
+.ascii ""
+.space 1, 0
+lenData99 = . - data99
+data100:
+.ascii ""
+.space 1, 0
+lenData100 = . - data100

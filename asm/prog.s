@@ -1381,7 +1381,7 @@ data23:
 .space 1, 0
 lenData23 = . - data23
 data24:
-.ascii "/home/slava/a1.txt"
+.ascii "/home/slava/books/cookbook.txt"
 .space 1, 0
 lenData24 = . - data24 
 

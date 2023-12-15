@@ -3604,7 +3604,8 @@ __readFromFile:
 # %rbx - size to read 
 # %r8 - variable name address
 # output:
-# %rax - number of bytes was read 
+# %rax - number of bytes was read
+movq $0, (numberOfReadBytes) 
 xor %r9, %r9 
 cmp $0, %rbx 
 jle __readFromFileEnd
@@ -3634,11 +3635,19 @@ mov $readBuf,  %rsi  # адрес буфера
 mov $lenReadBuf, %rdx  # длина буфера
 dec %rdx 
 
+mov $readBufSum, %r12 
 __readFromFileLo:
 mov %r10,  %rdi  # номер дескриптора
 mov $0,   %rax  # номер системной функции чтения
 syscall         # системный вызов
+cmp $0, %rax 
+jl __readFromFileException
+
 add %rax, %r9
+
+mov (numberOfReadBytes), %rcx 
+add %rax, %rcx
+mov %rcx, (numberOfReadBytes) 
 
 inc %rax 
 mov %rax, %rdi 
@@ -3652,13 +3661,37 @@ movb $0, (%rbx)
 
 mov  %rax, %rdi
 
-push %r9 
-push %rsi 
-push %rdi 
-push %rdx 
-push %r8
-push %rbx 
-push %r10 
+ 
+
+mov (readBuf), %al 
+mov %al, (%r12)
+inc %r12  
+
+pop %rbx 
+
+
+mov (numberOfReadBytes),%rcx 
+cmp %rcx, %rbx 
+jz __readFromFileEnd
+
+inc %r9 # 0 byte at the end  
+
+
+cmp $lenReadBufSum, %r9 
+jge __readFromFileUnion 
+
+dec %r9 
+cmp  $lenReadBuf, %rdi
+jz   __readFromFileLo         
+
+__readFromFileEnd:
+mov %r9, %rax 
+cmp $0, %rax 
+
+jl __readFromFileException 
+
+push %r8 
+movb $0, (%r12)
 
 mov $lenVarName, %rsi 
 mov $varName, %rdx 
@@ -3666,31 +3699,57 @@ mov $lenVarName, %rax
 mov %r8, %rdi
 call __set 
 
-mov $readBuf, %r9
+pop %r8 
+mov $readBufSum, %r9
 mov $1, %rax 
 mov $0, %rbx  
-call __userConcatinate  
+call __userConcatinate
 
+mov $readBufSum, %rsi 
+call __clear 
+mov $readBufSum, %r12 
+
+mov (numberOfReadBytes), %rax 
+ret 
+
+__readFromFileUnion:
+
+push %rsi 
+push %rdi 
+push %rdx 
+push %r8
+push %rbx 
+push %r10
+
+push %r8 
+movb $0, (%r12)
+
+mov $lenVarName, %rsi 
+mov $varName, %rdx 
+mov $lenVarName, %rax 
+mov %r8, %rdi
+call __set 
+
+pop %r8 
+mov $readBufSum, %r9
+mov $1, %rax 
+mov $0, %rbx  
+call __userConcatinate
+
+mov $readBufSum, %rsi 
+call __clear 
+mov $readBufSum, %r12 
+
+xor %r9, %r9 
 pop %r10 
 pop %rbx 
 pop %r8
 pop %rdx 
 pop %rdi 
 pop %rsi 
-pop %r9 
-pop %rbx 
 
-cmp %r9, %rbx 
-jz __readFromFileEnd
+jmp __readFromFileLo
 
-cmp  $lenReadBuf, %rdi
-jz   __readFromFileLo         
-
-__readFromFileEnd:
-mov %r9, %rax 
-cmp $0, %rax 
-jl __readFromFileException 
-ret 
 __readFromFileException:
 mov $readFromFileError, %rsi 
 call __throughUserError
