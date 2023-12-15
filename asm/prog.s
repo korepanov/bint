@@ -40,7 +40,7 @@ readBuf:
 .byte 0, 0
 lenReadBuf = . - readBuf
 readBufSum:
-.space 10 # 65536
+.space 65536
 lenReadBufSum = . - readBufSum
 numberOfReadBytes:
 .quad 0
@@ -1381,7 +1381,7 @@ data23:
 .space 1, 0
 lenData23 = . - data23
 data24:
-.ascii "/home/slava/Go/bint/myfile.txt"
+.ascii "/home/slava/a1.txt"
 .space 1, 0
 lenData24 = . - data24 
 
@@ -7651,7 +7651,7 @@ jmp .main_end
  loop:
  pop %r8 
  mov %r8, %r10 
- mov $10, %rbx 
+ mov $4096, %rbx 
  push %r8 
  mov $varName18, %r8 
  call __readFromFile
