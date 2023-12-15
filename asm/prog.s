@@ -5292,27 +5292,6 @@ mov (numberOfReadBytes), %rcx
 add %rax, %rcx
 mov %rcx, (numberOfReadBytes) 
 
-push %rsi 
-push %rdi 
-push %rdx 
-push %r8
-push %rbx 
-push %r10
-push %rax 
-mov (numberOfReadBytes), %rax 
-call __toStr 
-mov $buf2, %rsi 
-call __print 
-mov $enter, %rsi 
-call __print
-pop %rax  
-pop %r10 
-pop %rbx 
-pop %r8
-pop %rdx 
-pop %rdi 
-pop %rsi 
-
 inc %rax 
 mov %rax, %rdi 
 
@@ -5327,11 +5306,12 @@ mov  %rax, %rdi
 
  
 
-mov (readBuf), %rax 
-mov %rax, (%r12)
+mov (readBuf), %al 
+mov %al, (%r12)
 inc %r12  
 
 pop %rbx 
+
 
 mov (numberOfReadBytes),%rcx 
 cmp %rcx, %rbx 
@@ -7686,16 +7666,17 @@ mov $lenVarName, %rsi
   call __getVar
   mov (userData), %rsi 
   call __print
- pop %rax 
+   
+ /*pop %rax 
  push %rax 
 call __toStr 
 mov $buf2, %rsi 
 call __print
 mov $enter, %rsi 
-call __print  
+call __print*/  
 pop %rax 
- //cmp $0, %rax 
- //jnz loop 
+ cmp $0, %rax 
+ jnz loop 
 
  pop %r8 
  mov %r8, %rdi 
