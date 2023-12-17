@@ -3622,6 +3622,8 @@ call __set
 call __getVar
 mov (userData), %rsi 
 call __clear 
+mov (userData), %rsi 
+movb $0, (%rsi)
 mov $readBuf, %rsi 
 call __clear
 
