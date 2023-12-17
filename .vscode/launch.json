@@ -12,7 +12,7 @@
             "program": "${workspaceFolder}/cmd",
             "args":"-s",
             "output":"${workspaceFolder}/build/bint",
-            "cwd":"${workspaceFolder}"
+            "cwd":"${workspaceFolder}",
         }
     ]
 }
