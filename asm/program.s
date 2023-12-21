@@ -5462,7 +5462,9 @@ mov $systemVarName0, %rax
  mov %rax, (userData) 
 mov $1, %rax 
  call __setVar
- mov $data3, %rax 
+mov $data3, %rsi
+call __print
+ mov $data4, %rax 
  mov %rax, (buf4)
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -5488,7 +5490,7 @@ mov (userData), %al
 jmp .end
 jmp __rightEnd0
  __right0:
-mov $data4, %rsi
+mov $data5, %rsi
 call __print
 __rightEnd0:
 jmp .again
@@ -5502,7 +5504,7 @@ mov $lenVarName, %rsi
  call __getVar
  mov (userData), %rsi 
  call __print
-mov $data5, %rsi
+mov $data6, %rsi
 call __print
 mov $60,  %rax
 xor %rdi, %rdi

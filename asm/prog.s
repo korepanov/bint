@@ -2108,6 +2108,34 @@ __userConcatinateVarsEnd:
  mov $mem17, %r8  
  mov %r8, (userData)
  // сохраним в системной переменной значение, которое сейчас хранится в приемнике
+ mov (mem15), %rax 
+ cmp $1, %rax 
+ jnz __userConcatinateCheckTheSameLeftEnd 
+ __userConcatinateCheckTheSameLeft: 
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf, %rax 
+ mov (mem13), %rdi 
+ call __set
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
+ call __compare 
+
+ cmp $1, %rax 
+ // if left variable is the same as input variable then not set systemVar 
+ jz __notSetSystemVar 
+
+ /*__jmpNotSetSystemVar:
+ mov $trueVal, %rsi 
+ call __print 
+ jmp __notSetSystemVar
+ __jmpNotSetSystemVarEnd:*/
+
+ __userConcatinateCheckTheSameLeftEnd: 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName, %rax 
@@ -2117,6 +2145,8 @@ __userConcatinateVarsEnd:
  mov $1, %rax 
  call __setVar 
 
+ __notSetSystemVar:
+ 
  # восстановили приемник
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -7638,6 +7668,18 @@ jmp .main_end
  call __set 
  call __defineVar
 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName3, %rax 
+ mov $varName3, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
+
 
 
 
@@ -7655,20 +7697,31 @@ jmp .main_end
  mov %r8, %r10 
  mov $4096, %rbx 
  push %r8 
- mov $varName18, %r8 
+ mov $varName3, %r8 
  call __readFromFile
  
  push %rax 
 
-mov $lenVarName, %rsi 
-  mov $varName, %rdx 
-  mov $lenVarName18, %rax 
-  mov $varName18, %rdi
-  call __set 
-  call __getVar
-  mov (userData), %rsi 
-  call __print
-   
+//mov $lenVarName, %rsi 
+  //mov $varName, %rdx 
+  //mov $lenVarName3, %rax 
+  //mov $varName3, %rdi
+  //call __set 
+  //call __getVar
+ // mov (userData), %rsi 
+  //call __print
+  mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName18, %rax 
+ mov $varName18, %rdi
+ call __set 
+
+  mov $varName18, %r8 
+  mov $varName3, %r9 
+  mov $1, %rax 
+  mov $1, %rbx 
+  call __userConcatinate 
+
  /*pop %rax 
  push %rax 
 call __toStr 
@@ -7680,12 +7733,20 @@ pop %rax
  cmp $0, %rax 
  jnz loop 
 
+ 
  pop %r8 
  mov %r8, %rdi 
  call __closeFile
 
-  
-
+  mov $lenVarName, %rsi 
+  mov $varName, %rdx 
+  mov $lenVarName18, %rax 
+  mov $varName18, %rdi
+  call __set 
+  call __getVar
+  mov (userData), %rsi 
+  call __print
+  call __printHeap
 
 call __throughError 
 mov $lenVarName, %rsi 

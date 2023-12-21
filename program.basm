@@ -13,6 +13,7 @@ f = $open_f(file, mode);
 #again:
 bytes = $read_f(f, size, s);
 res = (res + s);
+print("*"); 
 [goto(#end),(s==""),print("")];
 goto(#again);
 #end:

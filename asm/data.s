@@ -1586,7 +1586,7 @@ varName6:
 .space 1, 0
 lenVarName6 = . - varName6
 data0:
-.ascii "128"
+.ascii "4096"
 .space 1, 0
 lenData0 = . - data0
 data1:
@@ -1603,19 +1603,23 @@ labelName0:
 .ascii ".again"
 .space 1,0
 data3:
-.ascii ""
+.ascii "*"
 .space 1, 0
 lenData3 = . - data3
 data4:
 .ascii ""
 .space 1, 0
 lenData4 = . - data4
+data5:
+.ascii ""
+.space 1, 0
+lenData5 = . - data5
 label1:
  .quad .end
 labelName1:
 .ascii ".end"
 .space 1,0
-data5:
+data6:
 .ascii ""
 .space 1, 0
-lenData5 = . - data5
+lenData6 = . - data6
