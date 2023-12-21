@@ -4,9 +4,9 @@ starSymbol:
 endSymbol:
 .ascii ";"
 deltaSize:
-.quad 1024
+.quad 0
 pageSize:
-.quad 2048
+.quad 4096
 shiftSize:
 .quad 4096
 varNameSize:
@@ -40,7 +40,7 @@ readBuf:
 .byte 0, 0
 lenReadBuf = . - readBuf
 readBufSum:
-.space 65536
+.space 4096
 lenReadBufSum = . - readBufSum
 numberOfReadBytes:
 .quad 0
