@@ -17,6 +17,8 @@ typeSize:
 .quad 32 
 valSize:
 .quad 64 
+strValSize:
+.quad 1024
 labelSize:
 .quad 128  
 labelsMax:
@@ -3216,7 +3218,7 @@ __internalMakeShiftStr:
  mov %rax, (mem11)
  # формируем адрес нового конца 
  mov (strPointer), %r10 
- add (valSize), %r10
+ add (strValSize), %r10
  mov %r10, (mem12)
  cmp (strMax), %r10 
  jl __internalMakeShiftStrOk
@@ -3248,7 +3250,7 @@ __internalMakeShiftStr:
 
 __internalShiftStr:
 # %r12 - место внутри таблицы переменных, после которого нужно сделать сдвиг  
-mov (valSize), %rsi 
+mov (strValSize), %rsi 
 add %rsi, (strPointer) 
 
 mov %r12, (mem9)
@@ -3302,7 +3304,7 @@ mov %rsi, %r12
 call __read 
 call __toNumber
 mov %rax, (mem8)
-add (valSize), %rax 
+add (strValSize), %rax 
 
 call __toStr 
 mov (mem6), %rdi
@@ -5516,6 +5518,7 @@ _start:
  call __firstMem
  call __firstStrMem
 
+ 
 # toPanic variable
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -5686,6 +5689,7 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName11, %rax 
@@ -7006,6 +7010,7 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+
 jmp .cut_end
 .cut:
 
@@ -7736,6 +7741,7 @@ mov $lenVarName, %rsi
  call __defineVar
 jmp .main_end
 .main: 
+
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName4, %rax 
@@ -7802,7 +7808,8 @@ jmp .main_end
   mov $1, %rax 
   mov $1, %rbx 
   call __userConcatinate 
-  
+  //mov $trueVal, %rsi 
+ // call __print 
  /*pop %rax 
  push %rax 
 call __toStr 
