@@ -1986,9 +1986,26 @@ __concatinate:
  jmp __userConcatinateVarsNo 
  __userConcatinateVarsLeft:
  # та же переменная только слева 
- mov $systemVarName, %r8 
- mov %r8, (mem13)
- jmp __userConcatinateVarsNo  
+ # set systemVar with rightVar 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenSystemVarName, %rax 
+ mov $systemVarName, %rdi 
+ call __set
+ mov (mem14), %rax 
+ mov %rax, (userData)
+ mov $1, %rax 
+ call __setVar 
+
+ mov (mem13), %rsi 
+ call __len 
+ mov (mem13), %rsi 
+ add %rax, %rsi 
+ mov %rsi, (mem16) # length of the first operand 
+
+ mov $systemVarName, %r9 
+ mov %r9, (mem14)
+ jmp __userConcatinateVarsSpecial 
  __userConcatinateVarsNotLeft:
  cmp $1, %r9
  jnz __userConcatinateVarsNo
@@ -2004,7 +2021,7 @@ __concatinate:
  mov %rax, (userData)
  mov $1, %rax 
  call __setVar 
- 
+
  # выделим дополнительное место для приемника, если требуется
  call __getVar 
  mov (userData), %rbx 
@@ -2012,7 +2029,7 @@ __concatinate:
  call __len 
  add %rax, %rbx # смещаемся на длину первого операнда 
  mov %rbx, (mem16) # сохраним %rbx 
-
+  __userConcatinateVarsSpecial:
  # сохранили приемник
  mov $lenMem15, %rsi 
  mov $mem15, %rdx 
@@ -2042,8 +2059,27 @@ __concatinate:
  mov (mem20), %r12 
  mov (userData), %rsi 
  mov %rsi, (mem20)
+
  __userConcatinateVarsPrepare:
  mov (%rbx), %dil 
+ 
+ push %rax 
+ push %rbx 
+ push %r12
+
+ xor %rax, %rax 
+ mov %dil, %al   
+ call __toStr 
+ mov $buf2, %rsi 
+ call  __print 
+ mov $enter, %rsi 
+ call __print
+ 
+ pop %r12 
+ pop %rbx 
+ pop %rax 
+ mov (%rbx), %dil 
+
  cmp $2, %dil 
  jnz __userConcatinateVarsMoreMemEnd0
  mov %rax, (mem4)
@@ -2060,7 +2096,7 @@ __concatinate:
  dec %rax 
  jmp __userConcatinateVarsPrepare
  __userConcatinateVarsPrepareEnd:
- 
+
  # получаем значение второй переменной по новому адресу 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -2072,6 +2108,7 @@ __concatinate:
 
  mov (userData), %rax 
  mov (mem16), %rbx 
+ 
  __userConcatinateVarsNow: 
  mov (%rax), %dl 
  cmp $0, %dl  
@@ -2278,7 +2315,7 @@ __userConcatinateVarsEnd:
 
  mov $1, %rax 
 
- call __setVar 
+ call __setVar
  jmp __userConcatinateTheSameLeft
 
  __userConcatinateNotTheSameLeft:
@@ -7725,14 +7762,15 @@ jmp .main_end
  
  push %rax 
 
-//mov $lenVarName, %rsi 
-  //mov $varName, %rdx 
-  //mov $lenVarName3, %rax 
-  //mov $varName3, %rdi
-  //call __set 
-  //call __getVar
- // mov (userData), %rsi 
-  //call __print
+  /*mov $lenVarName, %rsi 
+  mov $varName, %rdx 
+  mov $lenVarName3, %rax 
+  mov $varName3, %rdi
+  call __set 
+  call __getVar
+  mov (userData), %rsi 
+  call __print*/
+
   mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName18, %rax 
@@ -7744,7 +7782,7 @@ jmp .main_end
   mov $1, %rax 
   mov $1, %rbx 
   call __userConcatinate 
-
+  
  /*pop %rax 
  push %rax 
 call __toStr 
@@ -7769,9 +7807,10 @@ pop %rax
   call __getVar
   mov (userData), %rsi 
   call __print
-  call __printHeap
+  //call __printHeap
 
 call __throughError 
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarNamePanic, %rax 
@@ -7809,7 +7848,7 @@ mov $enter, %rsi
 call __print 
 
 
-call __throughError 
+//call __throughError 
 
 
 mov $data6, %rsi
