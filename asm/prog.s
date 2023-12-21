@@ -125,6 +125,9 @@ lenStrMax = . - strMax
 isNeg:
 .byte 0 
 lenIsNeg = . - isNeg
+userConcatinateFlag:
+.byte 0
+lenUserConcatinateFlag = . - userConcatinateFlag
 isExpNeg:
 .byte 0
 lenIsExpNeg = . - isExpNeg
@@ -1997,9 +2000,16 @@ __concatinate:
  mov $1, %rax 
  call __setVar 
 
- mov (mem13), %rsi 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName, %rax 
+ mov (mem13), %rdi 
+ call __set
+ call __getVar 
+
+ mov (userData), %rsi 
  call __len 
- mov (mem13), %rsi 
+ mov (userData), %rsi 
  add %rax, %rsi 
  mov %rsi, (mem16) # length of the first operand 
 
@@ -2059,16 +2069,14 @@ __concatinate:
  mov (mem20), %r12 
  mov (userData), %rsi 
  mov %rsi, (mem20)
-
+ 
  __userConcatinateVarsPrepare:
  mov (%rbx), %dil 
  
- push %rax 
+ /*push %rax 
  push %rbx 
- push %r12
+ push %r12 
 
- xor %rax, %rax 
- mov %dil, %al   
  call __toStr 
  mov $buf2, %rsi 
  call  __print 
@@ -2078,7 +2086,7 @@ __concatinate:
  pop %r12 
  pop %rbx 
  pop %rax 
- mov (%rbx), %dil 
+ mov (%rbx), %dil*/
 
  cmp $2, %dil 
  jnz __userConcatinateVarsMoreMemEnd0
@@ -2098,10 +2106,15 @@ __concatinate:
  __userConcatinateVarsPrepareEnd:
 
  # получаем значение второй переменной по новому адресу 
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName, %rax 
  mov (mem14), %rdi
+ call __set*/
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenSystemVarName, %rax 
+ mov $systemVarName, %rdi
  call __set
  
  call __getVar 
@@ -2130,6 +2143,8 @@ __userConcatinateVarsEnd:
  # rbx = 1 - строка справа лежит в переменной 
  # rbx = 0 - строка справа лежит в статичесой памяти 
  # $varName - адрес имени переменной, куда положить результат
+ 
+ movb $0, (userConcatinateFlag) # for the case left_var = left_var + right_var is one 
  mov %r8, (mem13)
  mov %r9, (mem14)
  mov %rax, (mem15)
@@ -2182,13 +2197,12 @@ __userConcatinateVarsEnd:
 
  cmp $0, %rax 
  
- jz __notSetSystemVar
+ jnz __jmpNotSetSystemVarEnd
  
- /*__jmpNotSetSystemVar:
- mov $trueVal, %rsi 
- call __print 
+ __jmpNotSetSystemVar:
+ movb $1, (userConcatinateFlag)
  jmp __notSetSystemVar
- __jmpNotSetSystemVarEnd:*/
+ __jmpNotSetSystemVarEnd:
  __userConcatinateCheckTheSameRightEnd:
 
  __userConcatinateCheckTheSameLeftEnd: 
@@ -2275,6 +2289,12 @@ __userConcatinateVarsEnd:
  mov (userData), %rbx 
  mov (mem13), %rax 
  
+ mov (userConcatinateFlag), %dil 
+ cmp $1, %dil 
+ jz __userConcatinateTwoVars
+
+ __userConcatinateNotSpecial:
+
  __userConcatinateClearStr:
  mov (%rbx), %dil 
  cmp $2, %dil 
