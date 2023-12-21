@@ -2104,12 +2104,12 @@ __userConcatinateVarsEnd:
  mov $lenVarName, %rax 
  mov $varName, %rdi 
  call __set
-
- mov $mem17, %r8  
- mov %r8, (userData)
- // сохраним в системной переменной значение, которое сейчас хранится в приемнике
+ 
+ // modification for the case left_var = left_var + right_var
  mov (mem15), %rax 
  cmp $1, %rax 
+ jnz __userConcatinateCheckTheSameLeftEnd 
+ cmp $1, %rbx 
  jnz __userConcatinateCheckTheSameLeftEnd 
  __userConcatinateCheckTheSameLeft: 
  mov $lenBuf, %rsi 
@@ -2126,16 +2126,39 @@ __userConcatinateVarsEnd:
  call __compare 
 
  cmp $1, %rax 
- // if left variable is the same as input variable then not set systemVar 
- jz __notSetSystemVar 
+ 
+ jnz __notSetSystemVar 
 
+ __userConcatinateCheckTheSameRight:
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenBuf, %rax 
+ mov (mem14), %rdi 
+ call __set
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
+ call __compare 
+
+ cmp $0, %rax 
+ 
+ jz __notSetSystemVar
+ 
  /*__jmpNotSetSystemVar:
  mov $trueVal, %rsi 
  call __print 
  jmp __notSetSystemVar
  __jmpNotSetSystemVarEnd:*/
+ __userConcatinateCheckTheSameRightEnd:
 
  __userConcatinateCheckTheSameLeftEnd: 
+ // сохраним в системной переменной значение, которое сейчас хранится в приемнике
+ mov $mem17, %r8  
+ mov %r8, (userData)
+
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenSystemVarName, %rax 
