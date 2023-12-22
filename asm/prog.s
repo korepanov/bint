@@ -2145,411 +2145,31 @@ __userConcatinateVarsEnd:
  # rbx = 1 - строка справа лежит в переменной 
  # rbx = 0 - строка справа лежит в статичесой памяти 
  # $varName - адрес имени переменной, куда положить результат
- 
- movb $0, (userConcatinateFlag) # for the case left_var = left_var + right_var is one 
- mov %r8, (mem13)
- mov %r9, (mem14)
- mov %rax, (mem15)
- mov %rbx, (mem16)
- 
- # сохранили приемник
- mov $lenMem17, %rsi 
- mov $mem17, %rdx 
- mov $lenVarName, %rax 
- mov $varName, %rdi 
- call __set
- 
- // modification for the case left_var = left_var + right_var
- mov (mem15), %rax 
- cmp $1, %rax 
- jnz __userConcatinateCheckTheSameLeftEnd 
- cmp $1, %rbx 
- jnz __userConcatinateCheckTheSameLeftEnd 
- __userConcatinateCheckTheSameLeft: 
- mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenBuf, %rax 
- mov (mem13), %rdi 
- call __set
-
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenVarName, %rax 
- mov $varName, %rdi 
- call __set
- call __compare 
-
- cmp $1, %rax 
- 
- jnz __notSetSystemVar 
-
- __userConcatinateCheckTheSameRight:
- mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenBuf, %rax 
- mov (mem14), %rdi 
- call __set
-
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenVarName, %rax 
- mov $varName, %rdi 
- call __set
- call __compare 
 
  cmp $0, %rax 
+ jz __userConcatinateLeftZero
+ cmp $0, %rbx 
+ jz __userConcatinateRightZero 
+ // слева и справа динамические данные 
  
- jnz __jmpNotSetSystemVarEnd
- 
- __jmpNotSetSystemVar:
- movb $1, (userConcatinateFlag)
- jmp __notSetSystemVar
- __jmpNotSetSystemVarEnd:
- __userConcatinateCheckTheSameRightEnd:
-
- __userConcatinateCheckTheSameLeftEnd: 
- // сохраним в системной переменной значение, которое сейчас хранится в приемнике
- mov $mem17, %r8  
- mov %r8, (userData)
-
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenSystemVarName, %rax 
- mov $systemVarName, %rdi 
- call __set
-
- mov $1, %rax 
- call __setVar 
-
- __notSetSystemVar:
- 
- # восстановили приемник
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenMem17, %rax 
- mov $mem17, %rdi 
- call __set
-
- call __getVar
-
- mov %r13, %rbx
- __userConcatinateLocal:
- cmp %r15, %rbx
- jg __userConcatinateEnd
-
- mov %rbx, %r12 
- call __read 
- cmp $1, (buf)
- jz __userConcatinateEnd 
- 
- add (varSize), %rbx 
- jmp __userConcatinateLocal  
-  
- __userConcatinateEnd:
- __userConcatinateSearch:
- sub (varSize), %rbx 
- mov %rbx, %r12 
- call __read 
- cmp $1, (buf)
- jz __throughError
- mov $buf, %rsi 
- mov %rbx, %r12 
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenVarName, %rax 
- mov $varName, %rdi 
- call __set
- call __compare
- mov %r12, %rbx 
- cmp $0, %rax 
- jz __userConcatinateSearch
- 
-
- add (varNameSize), %rbx 
- mov %rbx, %rax 
- mov %rbx, %r12 
- call __read  
- add (typeSize), %rbx 
-
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenStringType, %rax 
- mov $stringType, %rdi 
- call __set
- mov %rbx, %r12 
- call __compare
- mov %r12, %rbx 
- cmp $0, %rax 
- jnz __userConcatinateErrEnd
- mov $strError, %rsi 
- call __throughUserError
  ret 
 
- __userConcatinateErrEnd:
-
+ __userConcatinateRightZero:
+ // слева динамические данные, а справа статические 
+  
+ ret 
+ __userConcatinateLeftZero:
+ cmp $0, %rbx 
+ jz __userConcatinateTwoZeros
+ // слева статические данные, а справа динамические 
  
- mov (userData), %rbx 
- mov (mem13), %rax 
- 
- mov (userConcatinateFlag), %dil 
- cmp $1, %dil 
- jz __userConcatinateTwoVars
-
- __userConcatinateNotSpecial:
-
- __userConcatinateClearStr:
- mov (%rbx), %dil 
- cmp $2, %dil 
- jz __userConcatinateClearStrEnd
- movb $1, (%rbx)
- inc %rbx 
- jmp __userConcatinateClearStr
- __userConcatinateClearStrEnd:
- dec %rbx 
- movb $0, (%rbx)
- mov (userData), %rbx 
-
- __userConcatinateIsNotStr:
- 
- cmp $1, (mem15)
- jnz __userConcatinateRightVar
- cmp $1, (mem16)
- jz __userConcatinateTwoVars
- 
- // переменная только слева 
- mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenMem13, %rax 
- mov (mem13), %rdi 
- call __set
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenVarName, %rax 
- mov $varName, %rdi 
- call __set
- call __compare 
-
- cmp $1, %rax 
- jnz __userConcatinateNotTheSameLeft
- 
- mov $systemVarName, %rax 
- mov %rax, (userData)
-
- mov $1, %rax 
-
- call __setVar
- jmp __userConcatinateTheSameLeft
-
- __userConcatinateNotTheSameLeft:
-
- mov (mem13), %rsi 
- mov %rsi, (userData)
- mov $1, %rax 
- 
- call __setVar
- 
- __userConcatinateTheSameLeft:
- call __getVar 
- mov (userData), %rsi 
- call __len 
- mov %rax, %rbx 
- add (userData), %rbx 
- mov (mem14), %rax 
-
- jmp __userConcatinateNow2 
-
- __userConcatinateTwoVars:
- // с обеих сторон переменная
- mov (mem13), %r8 
- mov (mem14), %r9 
- call __userConcatinateVars 
+ ret 
+ __userConcatinateTwoZeros:
+ // слева и справа статические данные 
+ mov $trueVal, %rsi 
+ call __print
  ret 
 
- __userConcatinateRightVar:
- cmp $1, (mem16)
- jnz __userConcatinateNoVars
- // переменная только справа 
- mov (mem13), %rsi 
- call __len 
- mov %rax, (mem16) # сохранили длину первого операнда
- 
- # сохранили приемник
- mov $lenMem15, %rsi 
- mov $mem15, %rdx 
- mov $lenVarName, %rax 
- mov $varName, %rdi 
- call __set
-
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName, %rax 
- mov (mem14), %rdi 
- call __set
- call __getVar 
-
- # восстановили приемник
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenMem15, %rax 
- mov $mem15, %rdi 
- call __set
- 
- mov (userData), %rsi 
- call __len 
- add (mem16), %rax # длина результата 
- mov %rax, (mem16)
-
- call __getVar 
- mov (userData), %rbx
- mov (mem16), %rax  
-
-
-  __userConcatinatePrepare:
- mov (%rbx), %dil 
- cmp $2, %dil 
- jnz __userConcatinateMoreMemEnd0
- mov %rax, (mem4)
- mov %rbx, (mem5) 
- mov %r12, (mem10)
- call __internalShiftStr
- mov (mem10), %r12 
- mov (mem4), %rax
- mov (mem5), %rbx
- __userConcatinateMoreMemEnd0:
- cmp $0, %rax 
- jz __userConcatinatePrepareEnd
- inc %rbx 
- dec %rax 
- jmp __userConcatinatePrepare
- __userConcatinatePrepareEnd:
- 
- call __getVar 
- mov (userData), %rbx
-
- mov (mem13), %rax
-
- __userConcatinateNow0: 
- mov (%rax), %dl
- cmp $0, %dl 
- jz __userConcatinateRet0 
- mov %dl, (%rbx)
- inc %rbx 
- inc %rax 
- 
- jmp __userConcatinateNow0 
- __userConcatinateRet0:
- movb $0, (%rbx)
- mov %rbx, (mem16) # сохранили %rbx, куда нужно записывать результат
-
- mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenMem14, %rax 
- mov (mem14), %rdi 
- call __set
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenVarName, %rax 
- mov $varName, %rdi 
- call __set
- call __compare 
-
- cmp $1, %rax 
- jnz __userConcatinateNotTheSameRight
- 
- mov $systemVarName, %rax 
- mov %rax, (mem14)
- 
- __userConcatinateNotTheSameRight:
-
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName, %rax 
- mov (mem14), %rdi 
- call __set
- call __getVar 
-
- mov (userData), %rax 
- mov (mem16), %rbx 
-
- __userConcatinateNow1: 
- mov (%rax), %dl
- cmp $0, %dl 
- jz __userConcatinateRet1 
- mov %dl, (%rbx)
- inc %rbx 
- inc %rax 
- 
- jmp __userConcatinateNow1 
- __userConcatinateRet1:
- movb $0, (%rbx)
-
- ret  
-
- __userConcatinateNoVars:
- // нет переменных 
- 
- __userConcatinateEndCheck:
- __userConcatinateNow:
-  
- mov (%rbx), %dil 
- cmp $2, %dil 
- jnz __userConcatinateMoreMemEnd
-
- mov %rax, (mem4)
- mov %rbx, (mem5) 
- mov %r12, (mem10)
- call __internalShiftStr
- mov (mem10), %r12 
- mov (mem4), %rax
- mov (mem5), %rbx 
- 
- __userConcatinateMoreMemEnd:
- mov (%rax), %dl
- cmp $0, %dl 
- jz __userConcatinateRet 
- mov %dl, (%rbx)
- inc %rbx 
- inc %rax 
- 
- jmp __userConcatinateNow 
-
- __userConcatinateRet: 
- movb $0, (%rbx)
-
- mov (mem14), %rax  
-__userConcatinateNow2:
-   
- mov (%rbx), %dil 
- cmp $2, %dil 
- jnz __userConcatinateMoreMemEnd2
-
- mov %rax, (mem4)
- mov %rbx, (mem5) 
- mov %r12, (mem10)
- call __internalShiftStr
- mov (mem10), %r12 
- mov (mem4), %rax
- mov (mem5), %rbx 
- 
- __userConcatinateMoreMemEnd2:
- mov (%rax), %dl
- cmp $0, %dl 
- jz __userConcatinateRet2 
- mov %dl, (%rbx)
- inc %rbx 
- inc %rax 
- 
- jmp __userConcatinateNow2 
-
- __userConcatinateRet2:
- movb $0, (%rbx) 
-
- mov (mem13), %r8 
- mov (mem14), %r9 
- mov (mem15), %rax 
- mov (mem16), %rbx 
- ret
- 
 
 __toNumber:
  # вход: buf 
@@ -7742,6 +7362,8 @@ mov $lenVarName, %rsi
 jmp .main_end
 .main: 
 
+
+
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName4, %rax 
@@ -7767,7 +7389,28 @@ jmp .main_end
  call __defineVar
 
 
+  mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName18, %rax 
+ mov $varName18, %rdi
+ call __set 
 
+  mov $trueVal, %r8 
+  mov $falseVal, %r9 
+  mov $0, %rax 
+  mov $0, %rbx 
+  call __userConcatinate
+
+  mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName18, %rax 
+ mov $varName18, %rdi
+ call __set 
+ call __getVar 
+
+ mov (userData), %rsi 
+ call __print 
+ call __throughError
 
 
  mov $data24, %rax 
