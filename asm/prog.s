@@ -2166,8 +2166,56 @@ __userConcatinateVarsEnd:
  ret 
  __userConcatinateTwoZeros:
  // слева и справа статические данные 
+ push %r8 
+ push %r9 
+ call __getVar 
+ mov (userData), %rsi 
+ call __clear 
+ pop %r9 
+ pop %r8 
+ 
+ push %r8 
+ push %r9 
+
+ mov %r8, %rsi
+ call __len 
+
+ pop %r9
+ pop %r8 
+
+ push %r8 
+ push %r9  
+ push %rax 
+
+ mov %r9, %rsi 
+ call __len 
+
+ pop %rbx # old %rax  
+
+ add %rbx, %rax 
+ inc %rax # 0 byte 
+
+ call __getVar 
+ mov (userData), %rbx 
+ call __printHeap 
+ call __throughError
+ __userConcatinateTwoZerosPrepare:
+ cmp $0, %rax 
+ jz __userConcatinateTwoZerosNow
+ mov (%rbx), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateTwoZerosMoreMemEnd
+ __userConcatinateTwoZerosMoreMem:
  mov $trueVal, %rsi 
- call __print
+ call __print 
+ call __throughError
+ __userConcatinateTwoZerosMoreMemEnd:
+ dec %rax 
+ inc %rbx 
+ jmp __userConcatinateTwoZerosPrepare
+
+ __userConcatinateTwoZerosNow:
+ 
  ret 
 
 
@@ -7394,6 +7442,10 @@ jmp .main_end
  mov $lenVarName18, %rax 
  mov $varName18, %rdi
  call __set 
+ mov $data8, %rax 
+ mov %rax, (userData)
+ xor %rax, %rax 
+ call __setVar
 
   mov $trueVal, %r8 
   mov $falseVal, %r9 
@@ -7409,7 +7461,7 @@ jmp .main_end
  call __getVar 
 
  mov (userData), %rsi 
- call __print 
+ //call __print 
  call __throughError
 
 
