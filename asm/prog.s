@@ -2244,9 +2244,6 @@ __userConcatinateVarsEnd:
  push %rbx
  push %r12 
 
- mov %rbx, %rsi 
- call __clear 
-
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName, %rax 
@@ -2302,6 +2299,9 @@ __userConcatinateVarsEnd:
  push %rbx
  push %rcx 
  push %r12 
+
+ mov %rbx, %rsi 
+ call __clear 
 
  mov %r9, %rsi 
  call __len 
@@ -7729,8 +7729,8 @@ mov $lenVarName, %rsi
  
   mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName3, %rax 
- mov $varName3, %rdi
+ mov $lenVarName18, %rax 
+ mov $varName18, %rdi
  call __set 
  call __getVar 
 
