@@ -2233,6 +2233,15 @@ __userConcatinateVarsEnd:
  jmp __userConcatinateTwoZerosFirst
  __userConcatinateTwoZerosFirstEnd:
  
+ __userCincatinateTwoZerosSecond:
+ mov (%r9), %dil 
+ cmp $0, %dil 
+ jz __userCincatinateTwoZerosSecondEnd 
+ mov %dil, (%rbx)
+ inc %r9 
+ inc %rbx 
+ jmp __userCincatinateTwoZerosSecond
+ __userCincatinateTwoZerosSecondEnd:
  movb $0, (%rbx)
 
  ret 
