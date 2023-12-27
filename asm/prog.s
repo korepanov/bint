@@ -2200,6 +2200,7 @@ __userConcatinateVarsEnd:
  pop %rax 
 
  mov (userData), %rbx 
+ push %rbx 
 
  __userConcatinateTwoZerosPrepare:
  cmp $0, %rax 
@@ -2218,6 +2219,22 @@ __userConcatinateVarsEnd:
 
  __userConcatinateTwoZerosNow:
  
+ pop %rbx 
+ pop %r9 
+ pop %r8 
+ 
+ __userConcatinateTwoZerosFirst:
+ mov (%r8), %dil 
+ cmp $0, %dil 
+ jz __userConcatinateTwoZerosFirstEnd
+ mov %dil, (%rbx)
+ inc %r8 
+ inc %rbx 
+ jmp __userConcatinateTwoZerosFirst
+ __userConcatinateTwoZerosFirstEnd:
+ 
+ movb $0, (%rbx)
+
  ret 
 
 
@@ -7463,7 +7480,7 @@ jmp .main_end
  call __getVar 
 
  mov (userData), %rsi 
- //call __print 
+ call __print 
  call __throughError
 
 
