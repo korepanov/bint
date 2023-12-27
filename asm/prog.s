@@ -2426,7 +2426,9 @@ __userConcatinateVarsEnd:
  cmp $0, %rbx 
  jz __userConcatinateTwoZeros
  // слева статические данные, а справа динамические 
- 
+ mov $trueVal, %rsi # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ call __print 
+ call __throughError
  ret 
  __userConcatinateTwoZeros:
  // слева и справа статические данные 
@@ -7764,20 +7766,20 @@ jmp .main_end
 
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName18, %rax 
- mov $varName18, %rdi
+ mov $lenVarName3, %rax 
+ mov $varName3, %rdi
  call __set
  
-  mov $varName18, %r8 
-  mov $data9, %r9 
-  mov $1, %rax 
-  mov $0, %rbx 
+  mov $data9, %r8 
+  mov $varName18, %r9 
+  mov $0, %rax 
+  mov $1, %rbx 
   call __userConcatinate
  
   mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName18, %rax 
- mov $varName18, %rdi
+ mov $lenVarName3, %rax 
+ mov $varName3, %rdi
  call __set 
  call __getVar 
 
