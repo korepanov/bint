@@ -2278,6 +2278,8 @@ __userConcatinateVarsEnd:
  __userConcatinateRightZeroTheSame:
  # the same variable 
  # some registers in the stack!
+ mov $trueVal, %rsi 
+ call __print 
  call __throughError # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  ret  
  __userConcatinateRightZeroShift:
@@ -7715,8 +7717,8 @@ jmp .main_end
 
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName3, %rax 
- mov $varName3, %rdi
+ mov $lenVarName18, %rax 
+ mov $varName18, %rdi
  call __set
  
   mov $varName18, %r8 
