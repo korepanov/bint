@@ -7715,11 +7715,11 @@ jmp .main_end
 
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName18, %rax 
- mov $varName18, %rdi
+ mov $lenVarName3, %rax 
+ mov $varName3, %rdi
  call __set
  
-  mov $varName3, %r8 
+  mov $varName18, %r8 
   mov $data9, %r9 
   mov $1, %rax 
   mov $0, %rbx 
@@ -7727,8 +7727,8 @@ mov $lenVarName, %rsi
  
   mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName18, %rax 
- mov $varName18, %rdi
+ mov $lenVarName3, %rax 
+ mov $varName3, %rdi
  call __set 
  call __getVar 
 
