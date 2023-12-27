@@ -2194,18 +2194,20 @@ __userConcatinateVarsEnd:
 
  add %rbx, %rax 
  inc %rax # 0 byte 
+ push %rax 
 
  call __getVar 
+ pop %rax 
+
  mov (userData), %rbx 
- call __printHeap 
- call __throughError
+
  __userConcatinateTwoZerosPrepare:
  cmp $0, %rax 
  jz __userConcatinateTwoZerosNow
  mov (%rbx), %dil 
  cmp $2, %dil 
  jnz __userConcatinateTwoZerosMoreMemEnd
- __userConcatinateTwoZerosMoreMem:
+ __userConcatinateTwoZerosMoreMem: 
  mov $trueVal, %rsi 
  call __print 
  call __throughError
