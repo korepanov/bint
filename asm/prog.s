@@ -18,7 +18,7 @@ typeSize:
 valSize:
 .quad 64 
 strValSize:
-.quad 64 # 1024 
+.quad 1024 
 labelSize:
 .quad 128  
 labelsMax:
@@ -1303,11 +1303,13 @@ varName18:
 .space 1, 0
 lenVarName18 = . - varName18
 data8:
-.ascii "«Страна багровых туч» — приключенческая фантастическая повесть"
+//.ascii "«Страна багровых туч» — приключенческая фантастическая повесть"
+.ascii "ABC"
 .space 1, 0
 lenData8 = . - data8
 data9:
-.ascii ", первое крупное произведение Аркадия и Бориса Стругацких. "
+//.ascii ", первое крупное произведение Аркадия и Бориса Стругацких. "
+.ascii "DEFG"
 .space 1, 0
 lenData9 = . - data9
 data10:
@@ -2145,6 +2147,8 @@ __userConcatinateVarsEnd:
  # rbx = 1 - строка справа лежит в переменной 
  # rbx = 0 - строка справа лежит в статичесой памяти 
  # $varName - адрес имени переменной, куда положить результат
+ movb $0, (userConcatinateFlag)
+
  push %r8 
  push %r9 
  push %rax 
@@ -2223,7 +2227,109 @@ __userConcatinateVarsEnd:
 
  __userConcatinateRightZero:
  // слева динамические данные, а справа статические 
+ push %r8 
+ push %r9 
+ call __getVar 
+ mov (userData), %rbx 
+ 
+ pop %r9 
+ pop %r8 
+ 
+ push %r8 
+ push %r9 
+ push %rbx 
+ mov %rbx, %rsi 
+ call __clear 
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName, %rax 
+ mov %r8, %rdi
+ call __set
+ call __getVar 
+
+
+ mov (userData), %rax 
+ 
+ pop %rbx 
+ pop %r9 
+ pop %r8
+
+ push %r8 
+ push %r9 
+ push %rax 
+ push %rbx 
+
+ # %rbx - dest
+ # %rax - source 
+ cmp %rbx, %rax 
+ jz __userConcatinateRightZeroTheSame 
+ jg __userConcatinateRightZeroShift 
+ jmp __userConcatinateRightZeroShiftEnd 
+
+ __userConcatinateRightZeroTheSame:
+ # the same variable 
+ # some registers in the stack!
+ call __throughError
+ ret  
+ __userConcatinateRightZeroShift:
+ movb $1, (userConcatinateFlag) # add size of the shift to the source 
+ __userConcatinateRightZeroShiftEnd:
+
+ mov %rax, %rsi 
+ call __len 
+ mov %rax, %rcx 
+ 
+ pop %rbx 
+ pop %rax 
+ pop %r9 
+ pop %r8
+
+ push %r8 
+ push %r9 
+ push %rax 
+ push %rbx
+ push %rcx 
+
+ mov %r9, %rsi 
+ call __len 
   
+ pop %rcx 
+ add %rax, %rcx # length of the result 
+ 
+ pop %rbx 
+ push %rbx 
+
+ __userConcatinateRightZeroPrepare:
+ cmp $0, %rcx 
+ jz __userConcatinateRightZeroPrepareEnd 
+ mov (%rbx), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateRightZeroMoreMemEnd
+ mov $trueVal, %rsi 
+ call __print 
+ call __throughError # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ __userConcatinateRightZeroMoreMemEnd:
+ inc %rbx 
+ dec %rcx 
+ jmp __userConcatinateRightZeroPrepare
+ __userConcatinateRightZeroPrepareEnd:
+ 
+ pop %rbx 
+ pop %rax 
+
+ __userConcatinateRightZeroFirst:
+ mov (%rax), %dil 
+ cmp $0, %dil 
+ jz __userConcatinateRightZeroFirstEnd
+ mov %dil, (%rbx)
+ inc %rax 
+ inc %rbx 
+ jmp __userConcatinateRightZeroFirst
+ __userConcatinateRightZeroFirstEnd:
+  
+ pop %r9
+ pop %r8 
  ret 
  __userConcatinateLeftZero:
  cmp $0, %rbx 
@@ -7555,16 +7661,26 @@ jmp .main_end
  xor %rax, %rax 
  call __setVar
 
-  mov $data10, %r8 
-  mov $data11, %r9 
-  mov $0, %rax 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName3, %rax 
+ mov $varName3, %rdi
+ call __set 
+ mov $data10, %rax 
+ mov %rax, (userData)
+ xor %rax, %rax 
+ call __setVar
+
+  mov $varName18, %r8 
+  mov $data9, %r9 
+  mov $1, %rax 
   mov $0, %rbx 
   call __userConcatinate
-
+ 
   mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName18, %rax 
- mov $varName18, %rdi
+ mov $lenVarName3, %rax 
+ mov $varName3, %rdi
  call __set 
  call __getVar 
 
