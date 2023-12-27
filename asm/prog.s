@@ -18,7 +18,7 @@ typeSize:
 valSize:
 .quad 64 
 strValSize:
-.quad 1024
+.quad 64 # 1024 
 labelSize:
 .quad 128  
 labelsMax:
@@ -7475,8 +7475,8 @@ jmp .main_end
  xor %rax, %rax 
  call __setVar
 
-  mov $trueVal, %r8 
-  mov $falseVal, %r9 
+  mov $data10, %r8 
+  mov $data11, %r9 
   mov $0, %rax 
   mov $0, %rbx 
   call __userConcatinate
