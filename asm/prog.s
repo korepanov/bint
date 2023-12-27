@@ -2821,8 +2821,8 @@ __undefineVar:
  ret 
 
 # %r13 - heapBegin 
-# %r14 - variables pointer  
-# %r15 - end of the labels and variables tables 
+# %r14 - heapPointer 
+# %r15 - heapMax 
 
 __firstMem:
  # в %rax адрес начала выделяемой памяти 
