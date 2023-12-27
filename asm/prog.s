@@ -7782,8 +7782,8 @@ mov $lenVarName, %rsi
  call __getVar 
 
  mov (userData), %rsi 
- //call __print 
- call __printHeap 
+ call __print 
+ //call __printHeap 
  call __throughError
 
 
