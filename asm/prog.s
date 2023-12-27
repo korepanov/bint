@@ -2326,10 +2326,21 @@ __userConcatinateVarsEnd:
  inc %rax 
  inc %rbx 
  jmp __userConcatinateRightZeroFirst
- __userConcatinateRightZeroFirstEnd:
-  
+ __userConcatinateRightZeroFirstEnd: 
  pop %r9
  pop %r8 
+
+ __userConcatinateRightZeroSecond:
+ mov (%r9), %dil 
+ cmp $0, %dil 
+ jz __userConcatinateRightZeroSecondEnd
+ mov %dil, (%rbx)
+ inc %r9 
+ inc %rbx 
+ jmp __userConcatinateRightZeroSecond 
+ __userConcatinateRightZeroSecondEnd:
+ movb $0, (%rbx)
+
  ret 
  __userConcatinateLeftZero:
  cmp $0, %rbx 
