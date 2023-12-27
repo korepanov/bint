@@ -18,7 +18,7 @@ typeSize:
 valSize:
 .quad 64 
 strValSize:
-.quad 1024 
+.quad 64 # 1024
 labelSize:
 .quad 128  
 labelsMax:
@@ -1303,13 +1303,13 @@ varName18:
 .space 1, 0
 lenVarName18 = . - varName18
 data8:
-//.ascii "«Страна багровых туч» — приключенческая фантастическая повесть"
-.ascii "ABC"
+.ascii "«Страна багровых туч» — приключенческая фантастическая повесть"
+//.ascii "ABC"
 .space 1, 0
 lenData8 = . - data8
 data9:
-//.ascii ", первое крупное произведение Аркадия и Бориса Стругацких. "
-.ascii "DEFG"
+.ascii ", первое крупное произведение Аркадия и Бориса Стругацких. "
+//.ascii "DEFG"
 .space 1, 0
 lenData9 = . - data9
 data10:
@@ -2229,15 +2229,20 @@ __userConcatinateVarsEnd:
  // слева динамические данные, а справа статические 
  push %r8 
  push %r9 
+ push %r12 
  call __getVar 
  mov (userData), %rbx 
- 
+
+ pop %r12  
  pop %r9 
  pop %r8 
- 
+
+
  push %r8 
  push %r9 
- push %rbx 
+ push %rbx
+ push %r12 
+
  mov %rbx, %rsi 
  call __clear 
 
@@ -2251,14 +2256,16 @@ __userConcatinateVarsEnd:
 
  mov (userData), %rax 
  
+ pop %r12 
  pop %rbx 
  pop %r9 
- pop %r8
+ pop %r8 
 
  push %r8 
  push %r9 
  push %rax 
  push %rbx 
+ push %r12 
 
  # %rbx - dest
  # %rax - source 
@@ -2270,7 +2277,7 @@ __userConcatinateVarsEnd:
  __userConcatinateRightZeroTheSame:
  # the same variable 
  # some registers in the stack!
- call __throughError
+ call __throughError # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  ret  
  __userConcatinateRightZeroShift:
  movb $1, (userConcatinateFlag) # add size of the shift to the source 
@@ -2280,6 +2287,7 @@ __userConcatinateVarsEnd:
  call __len 
  mov %rax, %rcx 
  
+ pop %r12 
  pop %rbx 
  pop %rax 
  pop %r9 
@@ -2290,15 +2298,19 @@ __userConcatinateVarsEnd:
  push %rax 
  push %rbx
  push %rcx 
+ push %r12 
 
  mov %r9, %rsi 
  call __len 
   
+ pop %r12 
  pop %rcx 
  add %rax, %rcx # length of the result 
  
  pop %rbx 
  push %rbx 
+ push %r12 
+ pop %r12 
 
  __userConcatinateRightZeroPrepare:
  cmp $0, %rcx 
@@ -2306,9 +2318,26 @@ __userConcatinateVarsEnd:
  mov (%rbx), %dil 
  cmp $2, %dil 
  jnz __userConcatinateRightZeroMoreMemEnd
- mov $trueVal, %rsi 
- call __print 
- call __throughError # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+ mov (userConcatinateFlag), %dil
+ cmp $1, %dil 
+ jnz __userConcatinateRightZeroAddEnd
+ mov (strValSize), %rdx   
+ add %rdx, %rax  
+ __userConcatinateRightZeroAddEnd:
+ push %r8 
+ push %r9 
+ push %rax 
+ push %rbx
+ push %rcx 
+ push %r12 
+ call __internalShiftStr
+ pop %r12 
+ pop %rcx
+ pop %rbx
+ pop %rax 
+ pop %r9 
+ pop %r8  
  __userConcatinateRightZeroMoreMemEnd:
  inc %rbx 
  dec %rcx 
@@ -2430,15 +2459,15 @@ __userConcatinateVarsEnd:
  jmp __userConcatinateTwoZerosFirst
  __userConcatinateTwoZerosFirstEnd:
  
- __userCincatinateTwoZerosSecond:
+ __userConcatinateTwoZerosSecond:
  mov (%r9), %dil 
  cmp $0, %dil 
- jz __userCincatinateTwoZerosSecondEnd 
+ jz __userConcatinateTwoZerosSecondEnd 
  mov %dil, (%rbx)
  inc %r9 
  inc %rbx 
- jmp __userCincatinateTwoZerosSecond
- __userCincatinateTwoZerosSecondEnd:
+ jmp __userConcatinateTwoZerosSecond
+ __userConcatinateTwoZerosSecondEnd:
  movb $0, (%rbx)
 
  ret 
@@ -7697,7 +7726,7 @@ jmp .main_end
 
  mov (userData), %rsi 
  call __print 
-
+ //call __printHeap 
  call __throughError
 
 
