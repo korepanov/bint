@@ -2309,7 +2309,7 @@ __userConcatinateVarsEnd:
  pop %r12 
  pop %rcx 
  add %rax, %rcx # length of the result 
- 
+ inc %rcx # 0 byte 
  pop %rbx
  pop %rax  
  push %rbx 
