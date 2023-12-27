@@ -2145,6 +2145,73 @@ __userConcatinateVarsEnd:
  # rbx = 1 - строка справа лежит в переменной 
  # rbx = 0 - строка справа лежит в статичесой памяти 
  # $varName - адрес имени переменной, куда положить результат
+ push %r8 
+ push %r9 
+ push %rax 
+ push %rbx 
+
+
+ mov %r13, %rbx
+ __userConcatinateLocal:
+ cmp %r15, %rbx
+ jg __userConcatinateEnd
+
+ mov %rbx, %r12 
+ call __read 
+ cmp $1, (buf)
+ jz __userConcatinateEnd 
+ 
+ add (varSize), %rbx 
+ jmp __userConcatinateLocal
+ 
+ __userConcatinateEnd:
+  __userConcatinateSearch:
+ sub (varSize), %rbx 
+ mov %rbx, %r12 
+ call __read 
+ cmp $1, (buf)
+ jz __throughError
+ mov $buf, %rsi 
+ mov %rbx, %r12 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
+ call __compare
+ mov %r12, %rbx 
+ cmp $0, %rax 
+ jz __userConcatinateSearch
+ 
+
+ add (varNameSize), %rbx 
+ mov %rbx, %rax 
+ mov %rbx, %r12 
+ call __read  
+ add (typeSize), %rbx 
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi 
+ call __set
+ mov %rbx, %r12 
+ call __compare
+ mov %r12, %rbx 
+ cmp $0, %rax 
+ jnz __userConcatinateErrEnd
+ mov $strError, %rsi 
+ call __throughUserError
+ ret 
+
+ __userConcatinateErrEnd:
+
+ pop %rbx 
+ pop %rax 
+ pop %r9 
+ pop %r8 
+
+
 
  cmp $0, %rax 
  jz __userConcatinateLeftZero
@@ -2168,35 +2235,44 @@ __userConcatinateVarsEnd:
  // слева и справа статические данные 
  push %r8 
  push %r9 
+ push %r12 
  call __getVar 
  mov (userData), %rsi 
- call __clear 
+ call __clear
+ pop %r12  
  pop %r9 
  pop %r8 
  
  push %r8 
  push %r9 
+ push %r12 
 
  mov %r8, %rsi
  call __len 
 
+ pop %r12 
  pop %r9
  pop %r8 
 
  push %r8 
  push %r9  
  push %rax 
+ push %r12 
 
  mov %r9, %rsi 
  call __len 
 
+ pop %r12 
  pop %rbx # old %rax  
 
  add %rbx, %rax 
  inc %rax # 0 byte 
  push %rax 
+ push %r12 
 
- call __getVar 
+ call __getVar
+
+ pop %r12  
  pop %rax 
 
  mov (userData), %rbx 
@@ -2209,9 +2285,13 @@ __userConcatinateVarsEnd:
  cmp $2, %dil 
  jnz __userConcatinateTwoZerosMoreMemEnd
  __userConcatinateTwoZerosMoreMem: 
- mov $trueVal, %rsi 
- call __print 
- call __throughError
+ push %rax 
+ push %rbx 
+ push %r12 
+ call __internalShiftStr
+ pop %r12 
+ pop %rbx 
+ pop %rax 
  __userConcatinateTwoZerosMoreMemEnd:
  dec %rax 
  inc %rbx 
@@ -7490,6 +7570,7 @@ jmp .main_end
 
  mov (userData), %rsi 
  call __print 
+
  call __throughError
 
 
