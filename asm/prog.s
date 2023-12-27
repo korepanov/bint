@@ -2230,6 +2230,7 @@ __userConcatinateVarsEnd:
  push %r8 
  push %r9 
  push %r12 
+
  call __getVar 
  mov (userData), %rbx 
 
@@ -2307,7 +2308,8 @@ __userConcatinateVarsEnd:
  pop %rcx 
  add %rax, %rcx # length of the result 
  
- pop %rbx 
+ pop %rbx
+ pop %rax  
  push %rbx 
  push %r12 
  pop %r12 
@@ -2345,7 +2347,6 @@ __userConcatinateVarsEnd:
  __userConcatinateRightZeroPrepareEnd:
  
  pop %rbx 
- pop %rax 
 
  __userConcatinateRightZeroFirst:
  mov (%rax), %dil 
@@ -7711,7 +7712,14 @@ jmp .main_end
  xor %rax, %rax 
  call __setVar
 
-  mov $varName18, %r8 
+
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName18, %rax 
+ mov $varName18, %rdi
+ call __set
+ 
+  mov $varName3, %r8 
   mov $data9, %r9 
   mov $1, %rax 
   mov $0, %rbx 
@@ -7719,8 +7727,8 @@ jmp .main_end
  
   mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName3, %rax 
- mov $varName3, %rdi
+ mov $lenVarName18, %rax 
+ mov $varName18, %rdi
  call __set 
  call __getVar 
 
