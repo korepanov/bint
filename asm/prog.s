@@ -1304,7 +1304,6 @@ varName18:
 lenVarName18 = . - varName18
 data8:
 .ascii "«Страна багровых туч» — приключенческая фантастическая повесть"
-//.ascii "ABC"
 .space 1, 0
 lenData8 = . - data8
 data9:
@@ -2275,9 +2274,58 @@ __userConcatinateVarsEnd:
  __userConcatinateRightZeroTheSame:
  # the same variable 
  # some registers in the stack!
- mov $trueVal, %rsi 
- call __print 
- call __throughError # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ pop %r12 
+ pop %rbx 
+ pop %rax 
+ pop %r9 
+ pop %r8 
+ push %r12 
+
+ mov (userData), %rsi 
+ call __len
+ pop %r12 
+
+ push %rbx 
+ push %rax 
+
+ add %rax, %rbx 
+
+ __userConcatinateRightZeroTheSamePrepare:
+ cmp $0, %rax 
+ jz __userConcatinateRightZeroTheSamePrepareEnd
+ mov (%rbx), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateRightZeroTheSameMoreMemEnd
+
+ push %rax 
+ push %rbx 
+ push %r12 
+ call __internalShiftStr
+ pop %r12 
+ pop %rbx 
+ pop %rax 
+ 
+ __userConcatinateRightZeroTheSameMoreMemEnd:
+ inc %rbx 
+ dec %rax 
+ jmp __userConcatinateRightZeroTheSamePrepare
+ __userConcatinateRightZeroTheSamePrepareEnd:
+ pop %rax 
+ pop %rbx 
+ mov %rbx, %rcx 
+ add %rax, %rcx 
+
+ __userConcatinateRightZeroTheSameNow:
+ cmp $0, %rax 
+ jz __userConcatinateRightZeroTheSameEnd 
+ mov (%rbx), %dil 
+ mov %dil, (%rcx)
+ inc %rbx 
+ inc %rcx 
+ dec %rax 
+ jmp __userConcatinateRightZeroTheSameNow
+ __userConcatinateRightZeroTheSameEnd:
+ movb $0, (%rcx)
  ret  
  __userConcatinateRightZeroShift:
  movb $1, (userConcatinateFlag) # add size of the shift to the source 
@@ -2772,10 +2820,9 @@ __undefineVar:
  __undefEnd:
  ret 
 
-# r12 - pointer (общего назначения)
-# r13 - heapBegin 
-# r14 - heapPointer 
-# r15 - heapMax 
+# %r13 - heapBegin 
+# %r14 - variables pointer  
+# %r15 - end of the labels and variables tables 
 
 __firstMem:
  # в %rax адрес начала выделяемой памяти 
@@ -7735,8 +7782,8 @@ mov $lenVarName, %rsi
  call __getVar 
 
  mov (userData), %rsi 
- call __print 
- //call __printHeap 
+ //call __print 
+ call __printHeap 
  call __throughError
 
 
