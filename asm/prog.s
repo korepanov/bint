@@ -2273,7 +2273,6 @@ __userConcatinateVarsEnd:
 
  __userConcatinateRightZeroTheSame:
  # the same variable 
- # some registers in the stack!
  pop %r12 
  pop %rbx 
  pop %rax 
@@ -7755,8 +7754,8 @@ jmp .main_end
 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName3, %rax 
- mov $varName3, %rdi
+ mov $lenVarName18, %rax 
+ mov $varName18, %rdi
  call __set 
  mov $data10, %rax 
  mov %rax, (userData)
@@ -7766,20 +7765,20 @@ jmp .main_end
 
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName3, %rax 
- mov $varName3, %rdi
+ mov $lenVarName18, %rax 
+ mov $varName18, %rdi
  call __set
  
-  mov $data9, %r8 
-  mov $varName18, %r9 
-  mov $0, %rax 
-  mov $1, %rbx 
+  mov $varName18, %r8 
+  mov $data9, %r9 
+  mov $1, %rax 
+  mov $0, %rbx 
   call __userConcatinate
  
   mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName3, %rax 
- mov $varName3, %rdi
+ mov $lenVarName18, %rax 
+ mov $varName18, %rdi
  call __set 
  call __getVar 
 
