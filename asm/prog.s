@@ -2490,7 +2490,6 @@ __userConcatinateLeftZeroShift:
 movb $1, (userConcatinateFlag)
 __userConcatinateLeftZeroShiftEnd:
  
- //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  mov %rax, %rsi
  call __len 
  mov %rax, %rcx 
@@ -2525,25 +2524,19 @@ __userConcatinateLeftZeroShiftEnd:
  pop %r12 
 
 
- mov %rcx, %rax 
- call __toStr 
- mov $buf2, %rsi 
- call __print 
- call __throughError
-/*
- __userConcatinateRightZeroPrepare:
+ __userConcatinateLeftZeroPrepare:
  cmp $0, %rcx 
- jz __userConcatinateRightZeroPrepareEnd 
+ jz __userConcatinateLeftZeroPrepareEnd 
  mov (%rbx), %dil 
  cmp $2, %dil 
- jnz __userConcatinateRightZeroMoreMemEnd
+ jnz __userConcatinateLeftZeroMoreMemEnd
 
  mov (userConcatinateFlag), %dil
  cmp $1, %dil 
- jnz __userConcatinateRightZeroAddEnd
+ jnz __userConcatinateLeftZeroAddEnd
  mov (strValSize), %rdx   
  add %rdx, %rax  
- __userConcatinateRightZeroAddEnd:
+ __userConcatinateLeftZeroAddEnd:
  push %r8 
  push %r9 
  push %rax 
@@ -2557,46 +2550,39 @@ __userConcatinateLeftZeroShiftEnd:
  pop %rax 
  pop %r9 
  pop %r8  
- __userConcatinateRightZeroMoreMemEnd:
+ __userConcatinateLeftZeroMoreMemEnd:
  inc %rbx 
  dec %rcx 
- jmp __userConcatinateRightZeroPrepare
- __userConcatinateRightZeroPrepareEnd:
+ jmp __userConcatinateLeftZeroPrepare
+ __userConcatinateLeftZeroPrepareEnd:
  
  pop %rbx 
 
- __userConcatinateRightZeroFirst:
- mov (%rax), %dil 
- cmp $0, %dil 
- jz __userConcatinateRightZeroFirstEnd
- mov %dil, (%rbx)
- inc %rax 
- inc %rbx 
- jmp __userConcatinateRightZeroFirst
- __userConcatinateRightZeroFirstEnd: 
  pop %r9
  pop %r8 
 
- __userConcatinateRightZeroSecond:
- mov (%r9), %dil 
+ __userConcatinateLeftZeroFirst:
+ mov (%r8), %dil 
  cmp $0, %dil 
- jz __userConcatinateRightZeroSecondEnd
+ jz __userConcatinateLeftZeroFirstEnd
  mov %dil, (%rbx)
- inc %r9 
+ inc %r8 
  inc %rbx 
- jmp __userConcatinateRightZeroSecond 
- __userConcatinateRightZeroSecondEnd:
- movb $0, (%rbx)*/
+ jmp __userConcatinateLeftZeroFirst 
+ __userConcatinateLeftZeroFirstEnd:
+ movb $0, (%rbx)
+ 
+ __userConcatinateLeftZeroSecond:
+ mov (%rax), %dil 
+ cmp $0, %dil 
+ jz __userConcatinateLeftZeroSecondEnd
+ mov %dil, (%rbx)
+ inc %rax 
+ inc %rbx 
+ jmp __userConcatinateLeftZeroSecond 
+ __userConcatinateLeftZeroSecondEnd: 
+ movb $0, (%rbx)
 
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-
-
-
-
- call __throughError
  ret 
  __userConcatinateTwoZeros:
  // слева и справа статические данные 
