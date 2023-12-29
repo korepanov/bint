@@ -2430,8 +2430,165 @@ __userConcatinateVarsEnd:
  cmp $0, %rbx 
  jz __userConcatinateTwoZeros
  // слева статические данные, а справа динамические 
- mov $trueVal, %rsi # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- call __print 
+ 
+ push %r8 
+ push %r9 
+ push %r12 
+
+ call __getVar 
+ mov (userData), %rbx 
+
+ pop %r12  
+ pop %r9 
+ pop %r8 
+
+
+ push %r8 
+ push %r9 
+ push %rbx
+ push %r12 
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName, %rax 
+ mov %r9, %rdi
+ call __set
+ call __getVar 
+
+
+ mov (userData), %rax 
+ mov %rax, %rsi 
+ 
+ pop %r12 
+ pop %rbx 
+ pop %r9 
+ pop %r8 
+
+ push %r8 
+ push %r9 
+ push %rax 
+ push %rbx 
+ push %r12 
+
+ # %rbx - dest
+ # %rax - source 
+ cmp %rbx, %rax 
+ jz __userConcatinateLeftZeroTheSame 
+ jg __userConcatinateLeftZeroShift 
+ jmp __userConcatinateLeftZeroShiftEnd 
+
+__userConcatinateLeftZeroTheSame:
+mov $trueVal, %rsi # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+call __print 
+call __throughError
+ret 
+
+__userConcatinateLeftZeroShift:
+mov $1, (userConcatinateFlag)
+__userConcatinateLeftZeroShiftEnd:
+
+
+
+
+ //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ mov %rax, %rsi 
+ call __len 
+ mov %rax, %rcx 
+ 
+ pop %r12 
+ pop %rbx 
+ pop %rax 
+ pop %r9 
+ pop %r8
+
+ push %r8 
+ push %r9 
+ push %rax 
+ push %rbx
+ push %rcx 
+ push %r12 
+
+ mov %rbx, %rsi 
+ call __clear 
+
+ mov %r9, %rsi 
+ call __len 
+  
+ pop %r12 
+ pop %rcx 
+ add %rax, %rcx # length of the result 
+ inc %rcx # 0 byte 
+ pop %rbx
+ pop %rax  
+ push %rbx 
+ push %r12 
+ pop %r12 
+
+ __userConcatinateRightZeroPrepare:
+ cmp $0, %rcx 
+ jz __userConcatinateRightZeroPrepareEnd 
+ mov (%rbx), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateRightZeroMoreMemEnd
+
+ mov (userConcatinateFlag), %dil
+ cmp $1, %dil 
+ jnz __userConcatinateRightZeroAddEnd
+ mov (strValSize), %rdx   
+ add %rdx, %rax  
+ __userConcatinateRightZeroAddEnd:
+ push %r8 
+ push %r9 
+ push %rax 
+ push %rbx
+ push %rcx 
+ push %r12 
+ call __internalShiftStr
+ pop %r12 
+ pop %rcx
+ pop %rbx
+ pop %rax 
+ pop %r9 
+ pop %r8  
+ __userConcatinateRightZeroMoreMemEnd:
+ inc %rbx 
+ dec %rcx 
+ jmp __userConcatinateRightZeroPrepare
+ __userConcatinateRightZeroPrepareEnd:
+ 
+ pop %rbx 
+
+ __userConcatinateRightZeroFirst:
+ mov (%rax), %dil 
+ cmp $0, %dil 
+ jz __userConcatinateRightZeroFirstEnd
+ mov %dil, (%rbx)
+ inc %rax 
+ inc %rbx 
+ jmp __userConcatinateRightZeroFirst
+ __userConcatinateRightZeroFirstEnd: 
+ pop %r9
+ pop %r8 
+
+ __userConcatinateRightZeroSecond:
+ mov (%r9), %dil 
+ cmp $0, %dil 
+ jz __userConcatinateRightZeroSecondEnd
+ mov %dil, (%rbx)
+ inc %r9 
+ inc %rbx 
+ jmp __userConcatinateRightZeroSecond 
+ __userConcatinateRightZeroSecondEnd:
+ movb $0, (%rbx)
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
+
+
+
  call __throughError
  ret 
  __userConcatinateTwoZeros:
@@ -7752,6 +7909,16 @@ jmp .main_end
  mov $lenVarName18, %rax 
  mov $varName18, %rdi
  call __set 
+ mov $data10, %rax 
+ mov %rax, (userData)
+ xor %rax, %rax 
+ call __setVar
+
+  mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName3, %rax 
+ mov $varName3, %rdi
+ call __set 
  mov $data8, %rax 
  mov %rax, (userData)
  xor %rax, %rax 
@@ -7774,10 +7941,10 @@ mov $lenVarName, %rsi
  mov $varName18, %rdi
  call __set
  
-  mov $varName18, %r8 
-  mov $data9, %r9 
-  mov $1, %rax 
-  mov $0, %rbx 
+  mov $data9, %r8 
+  mov $varName3, %r9 
+  mov $0, %rax 
+  mov $1, %rbx 
   call __userConcatinate
  
   mov $lenVarName, %rsi 
