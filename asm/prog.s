@@ -1303,14 +1303,13 @@ varName18:
 .space 1, 0
 lenVarName18 = . - varName18
 data8:
-.ascii "DEFG"
-//.ascii "«Страна багровых туч» — приключенческая фантастическая повесть"
+//.ascii "DEFG"
+.ascii "«Страна багровых туч» — приключенческая фантастическая повесть"
 .space 1, 0
 lenData8 = . - data8
 data9:
-.ascii "ABC"
-//.ascii ", первое крупное произведение Аркадия и Бориса Стругацких. "
-//.ascii "DEFG"
+//.ascii "ABC"
+.ascii ", первое крупное произведение Аркадия и Бориса Стругацких. "
 .space 1, 0
 lenData9 = . - data9
 data10:
@@ -2536,7 +2535,7 @@ __userConcatinateLeftZeroShiftEnd:
  jnz __userConcatinateLeftZeroAddEnd
  mov (strValSize), %rdx   
  add %rdx, %rax  
- __userConcatinateLeftZeroAddEnd:
+ __userConcatinateLeftZeroAddEnd: 
  push %r8 
  push %r9 
  push %rax 
@@ -7930,20 +7929,20 @@ jmp .main_end
 
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName18, %rax 
- mov $varName18, %rdi
+ mov $lenVarName3, %rax 
+ mov $varName3, %rdi
  call __set
  
   mov $data9, %r8 
-  mov $varName3, %r9 
+  mov $varName18, %r9 
   mov $0, %rax 
   mov $1, %rbx 
   call __userConcatinate
  
   mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName18, %rax 
- mov $varName18, %rdi
+ mov $lenVarName3, %rax 
+ mov $varName3, %rdi
  call __set 
  call __getVar 
 
