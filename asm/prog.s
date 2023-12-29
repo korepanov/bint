@@ -2479,11 +2479,70 @@ __userConcatinateVarsEnd:
  jmp __userConcatinateLeftZeroShiftEnd 
 
 __userConcatinateLeftZeroTheSame:
-// some registers in the stack!
-mov $trueVal, %rsi # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-call __print 
-call __throughError
-ret 
+
+
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# the same variable 
+ pop %r12 
+ pop %rbx 
+ pop %rax 
+ pop %r9 
+ pop %r8 
+ push %r12 
+
+ mov (userData), %rsi 
+ call __len
+ pop %r12  
+
+ add %rax, %rbx 
+ push %rbx
+
+ mov %r9, %rsi 
+ call __len 
+
+ pop %rbx 
+ 
+ push %rbx 
+ __userConcatinateRightZeroTheSamePrepare:
+ cmp $0, %rax 
+ jz __userConcatinateRightZeroTheSamePrepareEnd
+ mov (%rbx), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateRightZeroTheSameMoreMemEnd
+
+ push %rax 
+ push %rbx 
+ push %r12 
+ push %r9 
+ call __internalShiftStr
+ pop %r9 
+ pop %r12 
+ pop %rbx 
+ pop %rax 
+ 
+ __userConcatinateRightZeroTheSameMoreMemEnd:
+ inc %rbx 
+ dec %rax 
+ jmp __userConcatinateRightZeroTheSamePrepare
+ __userConcatinateRightZeroTheSamePrepareEnd:
+ 
+ pop %rbx 
+ mov %rbx, %rcx 
+ mov %r9, %rbx 
+
+ __userConcatinateRightZeroTheSameNow:
+ mov (%rbx), %dil 
+ cmp $0, %dil 
+ jz __userConcatinateRightZeroTheSameEnd 
+ mov %dil, (%rcx)
+ inc %rbx 
+ inc %rcx  
+ jmp __userConcatinateRightZeroTheSameNow
+ __userConcatinateRightZeroTheSameEnd:
+ movb $0, (%rcx)
+ ret  
+ # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 __userConcatinateLeftZeroShift:
 movb $1, (userConcatinateFlag)
@@ -7929,8 +7988,8 @@ jmp .main_end
 
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName3, %rax 
- mov $varName3, %rdi
+ mov $lenVarName18, %rax 
+ mov $varName18, %rdi
  call __set
  
   mov $data9, %r8 
@@ -7941,8 +8000,8 @@ mov $lenVarName, %rsi
  
   mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName3, %rax 
- mov $varName3, %rdi
+ mov $lenVarName18, %rax 
+ mov $varName18, %rdi
  call __set 
  call __getVar 
 
