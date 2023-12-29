@@ -2282,13 +2282,17 @@ __userConcatinateVarsEnd:
 
  mov (userData), %rsi 
  call __len
- pop %r12 
-
- push %rbx 
- push %rax 
+ pop %r12  
 
  add %rax, %rbx 
+ push %rbx
 
+ mov %r9, %rsi 
+ call __len 
+
+ pop %rbx 
+ 
+ push %rbx 
  __userConcatinateRightZeroTheSamePrepare:
  cmp $0, %rax 
  jz __userConcatinateRightZeroTheSamePrepareEnd
@@ -2299,7 +2303,9 @@ __userConcatinateVarsEnd:
  push %rax 
  push %rbx 
  push %r12 
+ push %r9 
  call __internalShiftStr
+ pop %r9 
  pop %r12 
  pop %rbx 
  pop %rax 
@@ -2309,19 +2315,18 @@ __userConcatinateVarsEnd:
  dec %rax 
  jmp __userConcatinateRightZeroTheSamePrepare
  __userConcatinateRightZeroTheSamePrepareEnd:
- pop %rax 
+ 
  pop %rbx 
  mov %rbx, %rcx 
- add %rax, %rcx 
+ mov %r9, %rbx 
 
  __userConcatinateRightZeroTheSameNow:
- cmp $0, %rax 
- jz __userConcatinateRightZeroTheSameEnd 
  mov (%rbx), %dil 
+ cmp $0, %dil 
+ jz __userConcatinateRightZeroTheSameEnd 
  mov %dil, (%rcx)
  inc %rbx 
- inc %rcx 
- dec %rax 
+ inc %rcx  
  jmp __userConcatinateRightZeroTheSameNow
  __userConcatinateRightZeroTheSameEnd:
  movb $0, (%rcx)
