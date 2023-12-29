@@ -1303,11 +1303,13 @@ varName18:
 .space 1, 0
 lenVarName18 = . - varName18
 data8:
-.ascii "«Страна багровых туч» — приключенческая фантастическая повесть"
+.ascii "DEFG"
+//.ascii "«Страна багровых туч» — приключенческая фантастическая повесть"
 .space 1, 0
 lenData8 = . - data8
 data9:
-.ascii ", первое крупное произведение Аркадия и Бориса Стругацких. "
+.ascii "ABC"
+//.ascii ", первое крупное произведение Аркадия и Бориса Стругацких. "
 //.ascii "DEFG"
 .space 1, 0
 lenData9 = . - data9
@@ -2478,20 +2480,18 @@ __userConcatinateVarsEnd:
  jmp __userConcatinateLeftZeroShiftEnd 
 
 __userConcatinateLeftZeroTheSame:
+// some registers in the stack!
 mov $trueVal, %rsi # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 call __print 
 call __throughError
 ret 
 
 __userConcatinateLeftZeroShift:
-mov $1, (userConcatinateFlag)
+movb $1, (userConcatinateFlag)
 __userConcatinateLeftZeroShiftEnd:
-
-
-
-
+ 
  //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- mov %rax, %rsi 
+ mov %rax, %rsi
  call __len 
  mov %rax, %rcx 
  
@@ -2511,7 +2511,7 @@ __userConcatinateLeftZeroShiftEnd:
  mov %rbx, %rsi 
  call __clear 
 
- mov %r9, %rsi 
+ mov %r8, %rsi 
  call __len 
   
  pop %r12 
@@ -2524,6 +2524,13 @@ __userConcatinateLeftZeroShiftEnd:
  push %r12 
  pop %r12 
 
+
+ mov %rcx, %rax 
+ call __toStr 
+ mov $buf2, %rsi 
+ call __print 
+ call __throughError
+/*
  __userConcatinateRightZeroPrepare:
  cmp $0, %rcx 
  jz __userConcatinateRightZeroPrepareEnd 
@@ -2579,7 +2586,7 @@ __userConcatinateLeftZeroShiftEnd:
  inc %rbx 
  jmp __userConcatinateRightZeroSecond 
  __userConcatinateRightZeroSecondEnd:
- movb $0, (%rbx)
+ movb $0, (%rbx)*/
 
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
