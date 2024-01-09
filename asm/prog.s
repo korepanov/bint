@@ -2097,6 +2097,69 @@ __concatinate:
  jng __userConcatinateTwoOnesSecondFlagEnd
  movb $1, (userConcatinateFlag2) # to shift the address of the second string 
  __userConcatinateTwoOnesSecondFlagEnd:
+ push %rax
+ push %rbx 
+ push %rcx 
+ push %r12 
+ 
+ mov %rax, %rsi 
+ call __clear 
+ mov %rbx, %rsi 
+ call __len 
+ push %rax 
+ mov %rcx, %rsi 
+ call __len 
+ mov %rax, %rdx 
+ pop %rax 
+ add %rax, %rdx 
+
+ pop %r12 
+ pop %rcx
+ pop %rbx 
+ pop %rax 
+ 
+
+  __userConcatinateTwoOnesPrepare:
+ cmp $0, %rdx  
+ jz __userConcatinateTwoOnesPrepareEnd
+ mov (%rax), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateTwoOnesMoreMemEnd
+
+ mov (userConcatinateFlag), %dil
+ cmp $1, %dil 
+ jnz __userConcatinateTwoOnesAddEnd
+ mov (strValSize), %r8  
+ add %r8, %rbx
+ __userConcatinateTwoOnesAddEnd:
+
+ mov (userConcatinateFlag2), %dil
+ cmp $1, %dil 
+ jnz __userConcatinateTwoOnesAddEnd2
+ mov (strValSize), %r8  
+ add %r8, %rcx
+ __userConcatinateTwoOnesAddEnd2:
+
+ push %rax 
+ push %rbx 
+ push %rcx 
+ push %rdx 
+ push %r12 
+
+ call __internalShiftStr
+ 
+ pop %r12
+ pop %rdx 
+ pop %rcx  
+ pop %rbx 
+ pop %rax 
+ 
+ __userConcatinateTwoOnesMoreMemEnd:
+ inc %rax 
+ dec %rdx 
+ jmp __userConcatinateTwoOnesPrepare
+ __userConcatinateTwoOnesPrepareEnd:
+ call __printHeap
  mov $trueVal, %rsi 
  call __print 
  call __throughError
