@@ -2494,16 +2494,18 @@ __userConcatinateLeftZeroTheSame:
  mov (userData), %rsi 
  
  call __len
+ 
  pop %r12  
-  
+ push %rax 
+ 
  push %rbx 
  add %rax, %rbx 
  push %rbx
 
- mov %r9, %rsi 
+ mov %r8, %rsi 
  call __len 
-
  pop %rbx 
+ push %rax
  
  __userConcatinateLeftZeroTheSamePrepare:
  cmp $0, %rax 
@@ -2527,10 +2529,27 @@ __userConcatinateLeftZeroTheSame:
  dec %rax 
  jmp __userConcatinateLeftZeroTheSamePrepare
  __userConcatinateLeftZeroTheSamePrepareEnd:
- pop %rbx 
+ pop %rdx # length of the static value 
+ pop %rbx # address of the string begin in the variable 
+ pop %rax # length of the string in the variable
 
- mov %rbx, %rsi 
- call __print 
+ push %rbx 
+ add %rax, %rbx # the end if the string in the variable
+ __userConcatinateLeftZeroShiftTheSame:
+ cmp $0, %rax 
+ jl __userConcatinateLeftZeroShiftTheSameEnd
+ mov (%rbx), %dil
+ movb $1, (%rbx)
+ add %rdx, %rbx 
+ mov %dil, (%rbx)
+ sub %rdx, %rbx 
+ dec %rbx 
+ dec %rax 
+ jmp __userConcatinateLeftZeroShiftTheSame
+ __userConcatinateLeftZeroShiftTheSameEnd:
+ pop %rbx 
+ call __printHeap 
+
  call __throughError
  ret 
  
