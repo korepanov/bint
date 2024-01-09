@@ -1959,7 +1959,8 @@ __concatinate:
  # rbx = 0 - строка справа лежит в статичесой памяти 
  # $varName - адрес имени переменной, куда положить результат
  movb $0, (userConcatinateFlag)
-
+ movb $0, (userConcatinateFlag2)
+ 
  push %r8 
  push %r9 
  push %rax 
@@ -2088,6 +2089,14 @@ __concatinate:
  cmp %rbx, %rcx 
  jz __userConcatinateTwoOnesTheSame4
  // all three variables are different 
+ cmp %rax, %rbx 
+ jng __userConcatinateTwoOnesFirstFlagEnd
+ movb $1, (userConcatinateFlag) # to shift the address of the first string  
+ __userConcatinateTwoOnesFirstFlagEnd:
+ cmp %rax, %rcx 
+ jng __userConcatinateTwoOnesSecondFlagEnd
+ movb $1, (userConcatinateFlag2) # to shift the address of the second string 
+ __userConcatinateTwoOnesSecondFlagEnd:
  mov $trueVal, %rsi 
  call __print 
  call __throughError
@@ -7826,8 +7835,7 @@ mov $lenVarName, %rsi
  call __defineVar
 jmp .main_end
 .main: 
-
-mov $lenVarName, %rsi 
+ mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName20, %rax 
  mov $varName20, %rdi
