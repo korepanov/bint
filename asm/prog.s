@@ -1340,6 +1340,10 @@ varName19:
 .ascii "$cut_res0"
 .space 1, 0
 lenVarName19 = . - varName19
+varName20:
+.ascii "res"
+.space 1, 0
+lenVarName20 = . - varName20
 data16:
 .ascii "bla"
 .space 1, 0
@@ -2222,7 +2226,10 @@ __userConcatinateVarsEnd:
  cmp $0, %rbx 
  jz __userConcatinateRightZero 
  // слева и справа динамические данные 
- 
+  # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ mov $trueVal, %rsi 
+ call __print 
+ call __throughError
  ret 
 
  __userConcatinateRightZero:
@@ -7945,7 +7952,17 @@ mov $lenVarName, %rsi
 jmp .main_end
 .main: 
 
-
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName20, %rax 
+ mov $varName20, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -8023,8 +8040,8 @@ mov $lenVarName, %rsi
  call __getVar 
 
  mov (userData), %rsi 
- call __print 
- //call __printHeap 
+ //call __print 
+ call __printHeap 
  call __throughError
 
 
