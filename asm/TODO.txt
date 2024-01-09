@@ -8,3 +8,4 @@
 доделать модификацию __userConcatinate 
 проверить длинные строки для a = "somehing" + b, a = "something" + a 
 
+

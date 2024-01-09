@@ -2159,9 +2159,9 @@ __concatinate:
  dec %rdx 
  jmp __userConcatinateTwoOnesPrepare
  __userConcatinateTwoOnesPrepareEnd:
- call __printHeap
+// call __printHeap
  mov $trueVal, %rsi 
- call __print 
+ call __print
  call __throughError
  __userConcatinateTwoOnesTheSame4:
  // the first and the second variables are the same
