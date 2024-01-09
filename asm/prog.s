@@ -2480,9 +2480,6 @@ __userConcatinateVarsEnd:
 
 __userConcatinateLeftZeroTheSame:
 
-
-
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # the same variable 
  pop %r12 
  pop %rbx 
@@ -2517,9 +2514,11 @@ __userConcatinateLeftZeroTheSame:
  push %rax 
  push %rbx 
  push %r12 
+ push %r8 
  push %r9 
  call __internalShiftStr
  pop %r9 
+ pop %r8 
  pop %r12 
  pop %rbx 
  pop %rax 
@@ -2548,28 +2547,19 @@ __userConcatinateLeftZeroTheSame:
  jmp __userConcatinateLeftZeroShiftTheSame
  __userConcatinateLeftZeroShiftTheSameEnd:
  pop %rbx 
- call __printHeap 
 
- call __throughError
- ret 
- 
- /*
- pop %rbx 
- mov %rbx, %rcx 
- mov %r9, %rbx 
-
- __userConcatinateRightZeroTheSameNow:
- mov (%rbx), %dil 
- cmp $0, %dil 
- jz __userConcatinateRightZeroTheSameEnd 
- mov %dil, (%rcx)
+ __userConcatinateLeftZeroTheSameNow:
+ cmp $0, %rdx 
+ jz __userConcatinateLeftZeroTheSameNowEnd 
+ mov (%r8), %dil 
+ mov %dil, (%rbx) 
+ inc %r8
  inc %rbx 
- inc %rcx  
- jmp __userConcatinateRightZeroTheSameNow
- __userConcatinateRightZeroTheSameEnd:
- movb $0, (%rcx)
- ret  */
- # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ dec %rdx  
+ jmp __userConcatinateLeftZeroTheSameNow
+ __userConcatinateLeftZeroTheSameNowEnd:
+
+ ret 
 
 __userConcatinateLeftZeroShift:
 movb $1, (userConcatinateFlag)
