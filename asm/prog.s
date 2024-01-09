@@ -130,6 +130,9 @@ lenIsNeg = . - isNeg
 userConcatinateFlag:
 .byte 0
 lenUserConcatinateFlag = . - userConcatinateFlag
+userConcatinateFlag2:
+.byte 0
+lenUserConcatinateFlag2 = . - userConcatinateFlag2
 isExpNeg:
 .byte 0
 lenIsExpNeg = . - isExpNeg
