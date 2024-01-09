@@ -2226,7 +2226,58 @@ __userConcatinateVarsEnd:
  cmp $0, %rbx 
  jz __userConcatinateRightZero 
  // слева и справа динамические данные 
-  # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ push %r8 
+ push %r9  
+ push %r12 
+
+ call __getVar 
+ mov (userData), %rax 
+ pop %r12 
+ pop %r9 
+ pop %r8
+ 
+ push %rax 
+ push %r8 
+ push %r9 
+ push %r12 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName, %rax 
+ mov %r8, %rdi
+ call __set
+ call __getVar 
+ mov (userData), %rax 
+ 
+ pop %r12 
+ pop %r9 
+ pop %r8
+ push %rax 
+ push %r8 
+ push %r9 
+ push %r12 
+ 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName, %rax 
+ mov %r9, %rdi
+ call __set
+ call __getVar 
+ mov (userData), %rax 
+ pop %r12 # for internalShiftStr 
+ pop %r9 
+ pop %r8
+
+ push %rax
+
+ pop %rcx # address of the second string 
+ pop %rbx # address os the first string 
+ pop %rax # address of the result 
+
+ mov %rcx, %rsi 
+ call __print 
+ call __throughError
+
  mov $trueVal, %rsi 
  call __print 
  call __throughError
@@ -8020,28 +8071,39 @@ mov $lenVarName, %rsi
  call __setVar
 
 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName20, %rax 
+ mov $varName20, %rdi
+ call __set 
+ mov $data11, %rax 
+ mov %rax, (userData)
+ xor %rax, %rax 
+ call __setVar
+
+
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName18, %rax 
- mov $varName18, %rdi
+ mov $lenVarName20, %rax 
+ mov $varName20, %rdi
  call __set
  
-  mov $data9, %r8 
+  mov $varName3, %r8 
   mov $varName18, %r9 
-  mov $0, %rax 
+  mov $1, %rax 
   mov $1, %rbx 
   call __userConcatinate
  
   mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName18, %rax 
- mov $varName18, %rdi
+ mov $lenVarName20, %rax 
+ mov $varName20, %rdi
  call __set 
  call __getVar 
 
  mov (userData), %rsi 
- //call __print 
- call __printHeap 
+ call __print 
+ //call __printHeap 
  call __throughError
 
 
