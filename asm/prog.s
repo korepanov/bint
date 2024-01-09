@@ -2492,9 +2492,11 @@ __userConcatinateLeftZeroTheSame:
  push %r12 
 
  mov (userData), %rsi 
+ 
  call __len
  pop %r12  
-
+  
+ push %rbx 
  add %rax, %rbx 
  push %rbx
 
@@ -2503,13 +2505,12 @@ __userConcatinateLeftZeroTheSame:
 
  pop %rbx 
  
- push %rbx 
- __userConcatinateRightZeroTheSamePrepare:
+ __userConcatinateLeftZeroTheSamePrepare:
  cmp $0, %rax 
- jz __userConcatinateRightZeroTheSamePrepareEnd
+ jz __userConcatinateLeftZeroTheSamePrepareEnd
  mov (%rbx), %dil 
  cmp $2, %dil 
- jnz __userConcatinateRightZeroTheSameMoreMemEnd
+ jnz __userConcatinateLeftZeroTheSameMoreMemEnd
 
  push %rax 
  push %rbx 
@@ -2521,12 +2522,19 @@ __userConcatinateLeftZeroTheSame:
  pop %rbx 
  pop %rax 
  
- __userConcatinateRightZeroTheSameMoreMemEnd:
+ __userConcatinateLeftZeroTheSameMoreMemEnd:
  inc %rbx 
  dec %rax 
- jmp __userConcatinateRightZeroTheSamePrepare
- __userConcatinateRightZeroTheSamePrepareEnd:
+ jmp __userConcatinateLeftZeroTheSamePrepare
+ __userConcatinateLeftZeroTheSamePrepareEnd:
+ pop %rbx 
+
+ mov %rbx, %rsi 
+ call __print 
+ call __throughError
+ ret 
  
+ /*
  pop %rbx 
  mov %rbx, %rcx 
  mov %r9, %rbx 
@@ -2541,7 +2549,7 @@ __userConcatinateLeftZeroTheSame:
  jmp __userConcatinateRightZeroTheSameNow
  __userConcatinateRightZeroTheSameEnd:
  movb $0, (%rcx)
- ret  
+ ret  */
  # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 __userConcatinateLeftZeroShift:
