@@ -1945,202 +1945,6 @@ __concatinate:
  
  ret   
  
- __userConcatinateVars:
- # функция вызывается ТОЛЬКО из userConcatinate!
- # входные параметры 
- # r8 - адрес имени первой переменной 
- # r9 - адрес имени второй переменной
- # r12 - место, откуда расширять строку 
- # $varName - адрес имени переменной, куда положить результат 
-
- #mem13 - 16 свободны 
- mov %r12, (mem20)
- mov %r8, (mem13)
- mov %r9, (mem14)
- 
- # проверим, нет ли в выражении той же переменной, куда выполняется присваивание 
- mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenMem13, %rax 
- mov (mem13), %rdi 
- call __set
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenVarName, %rax 
- mov $varName, %rdi 
- call __set
- call __compare 
-
- mov %rax, (mem15) # запомнили признак 
-
- mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenMem14, %rax 
- mov (mem14), %rdi 
- call __set
- call __compare 
-
- mov %rax, (mem16) # запомнили признак 
-
- mov (mem15), %r8 
- mov (mem16), %r9 
-
- cmp $1, %r8 # слева та же переменная? 
- jnz __userConcatinateVarsNotLeft
- cmp $1, %r9 # справа та же переменная?
- jnz __userConcatinateVarsLeft
- # та же переменная и слева, и справа
- mov $systemVarName, %r8 
- mov %r8, (mem13)
- mov $systemVarName, %r9 
- mov %r9, (mem14) 
- jmp __userConcatinateVarsNo 
- __userConcatinateVarsLeft:
- # та же переменная только слева 
- # set systemVar with rightVar 
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenSystemVarName, %rax 
- mov $systemVarName, %rdi 
- call __set
- mov (mem14), %rax 
- mov %rax, (userData)
- mov $1, %rax 
- call __setVar 
-
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName, %rax 
- mov (mem13), %rdi 
- call __set
- call __getVar 
-
- mov (userData), %rsi 
- call __len 
- mov (userData), %rsi 
- add %rax, %rsi 
- mov %rsi, (mem16) # length of the first operand 
-
- mov $systemVarName, %r9 
- mov %r9, (mem14)
- jmp __userConcatinateVarsSpecial 
- __userConcatinateVarsNotLeft:
- cmp $1, %r9
- jnz __userConcatinateVarsNo
- # та же переменная только справа 
- mov $systemVarName, %r9 
- mov %r9, (mem14) 
- jmp __userConcatinateVarsNo 
- __userConcatinateVarsNo:
- # нет той же переменной 
-
- # устанавливаем в приемник значение переменной слева 
- mov (mem13), %rax 
- mov %rax, (userData)
- mov $1, %rax 
- call __setVar 
-
- # выделим дополнительное место для приемника, если требуется
- call __getVar 
- mov (userData), %rbx 
- mov %rbx, %rsi 
- call __len 
- add %rax, %rbx # смещаемся на длину первого операнда 
- mov %rbx, (mem16) # сохраним %rbx 
-  __userConcatinateVarsSpecial:
- # сохранили приемник
- mov $lenMem15, %rsi 
- mov $mem15, %rdx 
- mov $lenVarName, %rax 
- mov $varName, %rdi 
- call __set
-
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName, %rax 
- mov (mem14), %rdi
- call __set
- 
- call __getVar 
-
- # восстанавливаем приемник 
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenMem15, %rax 
- mov $mem15, %rdi 
- call __set
-
- mov (userData), %rsi 
- call __len 
-
- mov (mem16), %rbx # восстановим %rbx 
- mov (mem20), %r12 
- mov (userData), %rsi 
- mov %rsi, (mem20)
- 
- __userConcatinateVarsPrepare:
- mov (%rbx), %dil 
- 
- /*push %rax 
- push %rbx 
- push %r12 
-
- call __toStr 
- mov $buf2, %rsi 
- call  __print 
- mov $enter, %rsi 
- call __print
- 
- pop %r12 
- pop %rbx 
- pop %rax 
- mov (%rbx), %dil*/
-
- cmp $2, %dil 
- jnz __userConcatinateVarsMoreMemEnd0
- mov %rax, (mem4)
- mov %rbx, (mem5) 
- mov %r12, (mem10)
- call __internalShiftStr
- mov (mem10), %r12 
- mov (mem4), %rax
- mov (mem5), %rbx
- __userConcatinateVarsMoreMemEnd0:
- cmp $0, %rax 
- jz __userConcatinateVarsPrepareEnd
- inc %rbx 
- dec %rax 
- jmp __userConcatinateVarsPrepare
- __userConcatinateVarsPrepareEnd:
-
- # получаем значение второй переменной по новому адресу 
- /*mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName, %rax 
- mov (mem14), %rdi
- call __set*/
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenSystemVarName, %rax 
- mov $systemVarName, %rdi
- call __set
- 
- call __getVar 
-
- mov (userData), %rax 
- mov (mem16), %rbx 
- 
- __userConcatinateVarsNow: 
- mov (%rax), %dl 
- cmp $0, %dl  
- jz __userConcatinateVarsEnd 
- mov %dl, (%rbx)
- inc %rax 
- inc %rbx 
- jmp __userConcatinateVarsNow 
-__userConcatinateVarsEnd:
- movb $0, (%rbx)
- ret 
 
  __userConcatinate:
  # входные параметры 
@@ -2274,13 +2078,30 @@ __userConcatinateVarsEnd:
  pop %rbx # address os the first string 
  pop %rax # address of the result 
 
- mov %rcx, %rsi 
- call __print 
- call __throughError
-
+ cmp %rax, %rbx 
+ jz __userConcatinateTwoOnesTheSame1
+ cmp %rax, %rcx 
+ jz __userConcatinateTwoOnesTheSame3 
+ cmp %rbx, %rcx 
+ jz __userConcatinateTwoOnesTheSame4
+ // all three variables are different 
  mov $trueVal, %rsi 
  call __print 
  call __throughError
+ __userConcatinateTwoOnesTheSame4:
+ // the first and the second variables are the same
+ ret 
+ __userConcatinateTwoOnesTheSame3:
+ // result and the second variable are the same 
+ ret 
+ __userConcatinateTwoOnesTheSame1:
+ cmp %rax, %rcx 
+ jz __userConcatinateTwoOnesTheSame2
+ // result and the first variable are the same 
+ ret  
+ __userConcatinateTwoOnesTheSame2:
+ // all three variables are the same 
+ 
  ret 
 
  __userConcatinateRightZero:
