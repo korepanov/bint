@@ -2192,6 +2192,75 @@ __concatinate:
  ret 
  __userConcatinateTwoOnesTheSame3:
  // result and the second variable are the same 
+ cmp %rax, %rbx 
+ jng __userConcatinateTwoOnesTheSameRightFlagEnd
+ movb $1, (userConcatinateFlag) # to shift the address of the first string  
+ __userConcatinateTwoOnesTheSameRightFlagEnd:
+ 
+ push %rax
+ push %rbx 
+ push %rcx 
+ push %r12 
+ 
+ mov %rbx, %rsi 
+ call __len 
+ mov %rax, %rdx 
+ push %rdx 
+
+ mov %rcx, %rsi 
+ call __len 
+ mov %rax, %rdi   
+
+ pop %rdx 
+ pop %r12 
+ pop %rcx
+ pop %rbx 
+ pop %rax 
+ 
+ push %rax  
+ add %rdi, %rax 
+
+  __userConcatinateTwoOnesTheSameRightPrepare:
+ cmp $0, %rdx  
+ jz __userConcatinateTwoOnesTheSameRightPrepareEnd
+ mov (%rax), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateTwoOnesMoreMemTheSameRightEnd
+
+ mov (userConcatinateFlag), %dil
+ cmp $1, %dil 
+ jnz __userConcatinateTwoOnesTheSameRightAddEnd
+ mov (strValSize), %r8  
+ add %r8, %rbx
+ __userConcatinateTwoOnesTheSameRightAddEnd:
+
+ push %rax 
+ push %rbx 
+ push %rcx 
+ push %rdx 
+ push %r12 
+
+ call __internalShiftStr
+ 
+ pop %r12
+ pop %rdx 
+ pop %rcx  
+ pop %rbx 
+ pop %rax 
+ 
+ __userConcatinateTwoOnesMoreMemTheSameRightEnd:
+ inc %rax 
+ dec %rdx 
+ jmp __userConcatinateTwoOnesTheSameRightPrepare
+ __userConcatinateTwoOnesTheSameRightPrepareEnd:
+ 
+ pop %rax 
+ 
+ call __printHeap 
+ 
+ mov $trueVal, %rsi 
+ call __print 
+ call __throughError
  ret 
  __userConcatinateTwoOnesTheSame1:
  cmp %rax, %rcx 
@@ -8008,7 +8077,7 @@ mov $lenVarName, %rsi
  call __set
  
   mov $varName3, %r8 
-  mov $varName3, %r9 
+  mov $varName20, %r9 
   mov $1, %rax 
   mov $1, %rbx 
   call __userConcatinate
