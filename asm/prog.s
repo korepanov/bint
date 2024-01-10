@@ -2217,7 +2217,10 @@ __concatinate:
  pop %rbx 
  pop %rax 
  
- push %rax  
+ push %rax 
+ push %rdx 
+ push %rdi 
+
  add %rdi, %rax 
 
   __userConcatinateTwoOnesTheSameRightPrepare:
@@ -2254,13 +2257,38 @@ __concatinate:
  jmp __userConcatinateTwoOnesTheSameRightPrepare
  __userConcatinateTwoOnesTheSameRightPrepareEnd:
  
- pop %rax 
- 
- call __printHeap 
- 
- mov $trueVal, %rsi 
- call __print 
- call __throughError
+ mov %rbx, %rsi # address of the first string in the variable 
+ pop %rax # length of the string in the variable
+ pop %rdx # length of the static value 
+ pop %rbx # address of the string begin in the variable 
+
+ push %rbx 
+ add %rax, %rbx # the end if the string in the variable
+ __userConcatinateTwoOnesShiftTheSameRight:
+ cmp $0, %rax 
+ jl __userConcatinateTwoOnesShiftTheSameRightEnd
+ mov (%rbx), %dil
+ movb $1, (%rbx)
+ add %rdx, %rbx 
+ mov %dil, (%rbx)
+ sub %rdx, %rbx 
+ dec %rbx 
+ dec %rax 
+ jmp __userConcatinateTwoOnesShiftTheSameRight 
+ __userConcatinateTwoOnesShiftTheSameRightEnd:
+ pop %rbx 
+
+ __userConcatinateTwoOnesTheSameRightNow:
+ mov (%rsi), %dil 
+ cmp $0, %rdx 
+ jz __userConcatinateTwoOnesTheSameRightNowEnd 
+ mov %dil, (%rbx)
+ inc %rsi 
+ inc %rbx
+ dec %rdx  
+ jmp __userConcatinateTwoOnesTheSameRightNow 
+ __userConcatinateTwoOnesTheSameRightNowEnd:
+
  ret 
  __userConcatinateTwoOnesTheSame1:
  cmp %rax, %rcx 
