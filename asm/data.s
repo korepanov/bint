@@ -4,9 +4,9 @@ starSymbol:
 endSymbol:
 .ascii ";"
 deltaSize:
-.quad 1024
+.quad 0
 pageSize:
-.quad 2048
+.quad 4096
 shiftSize:
 .quad 4096
 varNameSize:
@@ -17,6 +17,8 @@ typeSize:
 .quad 32 
 valSize:
 .quad 64 
+strValSize:
+.quad 1024 # 64
 labelSize:
 .quad 128 
 labelsMax:
@@ -125,6 +127,12 @@ lenStrMax = . - strMax
 isNeg:
 .byte 0 
 lenIsNeg = . - isNeg
+userConcatinateFlag:
+.byte 0
+lenUserConcatinateFlag = . - userConcatinateFlag
+userConcatinateFlag2:
+.byte 0
+lenUserConcatinateFlag2 = . - userConcatinateFlag2
 isExpNeg:
 .byte 0
 lenIsExpNeg = . - isExpNeg
@@ -1586,7 +1594,7 @@ varName6:
 .space 1, 0
 lenVarName6 = . - varName6
 data0:
-.ascii "4096"
+.ascii "2124680"
 .space 1, 0
 lenData0 = . - data0
 data1:
@@ -1603,23 +1611,19 @@ labelName0:
 .ascii ".again"
 .space 1,0
 data3:
-.ascii "*"
+.ascii ""
 .space 1, 0
 lenData3 = . - data3
 data4:
 .ascii ""
 .space 1, 0
 lenData4 = . - data4
-data5:
-.ascii ""
-.space 1, 0
-lenData5 = . - data5
 label1:
  .quad .end
 labelName1:
 .ascii ".end"
 .space 1,0
-data6:
+data5:
 .ascii ""
 .space 1, 0
-lenData6 = . - data6
+lenData5 = . - data5

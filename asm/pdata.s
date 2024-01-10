@@ -4,9 +4,9 @@ starSymbol:
 endSymbol:
 .ascii ";"
 deltaSize:
-.quad 1024
+.quad 0
 pageSize:
-.quad 2048
+.quad 4096
 shiftSize:
 .quad 4096
 varNameSize:
@@ -17,6 +17,8 @@ typeSize:
 .quad 32 
 valSize:
 .quad 64 
+strValSize:
+.quad 1024 # 64
 labelSize:
 .quad 128 
 labelsMax:
@@ -125,6 +127,12 @@ lenStrMax = . - strMax
 isNeg:
 .byte 0 
 lenIsNeg = . - isNeg
+userConcatinateFlag:
+.byte 0
+lenUserConcatinateFlag = . - userConcatinateFlag
+userConcatinateFlag2:
+.byte 0
+lenUserConcatinateFlag2 = . - userConcatinateFlag2
 isExpNeg:
 .byte 0
 lenIsExpNeg = . - isExpNeg

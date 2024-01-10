@@ -295,156 +295,6 @@ __concatinate:
  
  ret   
  
- __userConcatinateVars:
- # функция вызывается ТОЛЬКО из userConcatinate!
- # входные параметры 
- # r8 - адрес имени первой переменной 
- # r9 - адрес имени второй переменной
- # r12 - место, откуда расширять строку 
- # $varName - адрес имени переменной, куда положить результат 
-
- #mem13 - 16 свободны 
- mov %r12, (mem20)
- mov %r8, (mem13)
- mov %r9, (mem14)
- 
- # проверим, нет ли в выражении той же переменной, куда выполняется присваивание 
- mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenMem13, %rax 
- mov (mem13), %rdi 
- call __set
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenVarName, %rax 
- mov $varName, %rdi 
- call __set
- call __compare 
-
- mov %rax, (mem15) # запомнили признак 
-
- mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenMem14, %rax 
- mov (mem14), %rdi 
- call __set
- call __compare 
-
- mov %rax, (mem16) # запомнили признак 
-
- mov (mem15), %r8 
- mov (mem16), %r9 
-
- cmp $1, %r8 # слева та же переменная? 
- jnz __userConcatinateVarsNotLeft
- cmp $1, %r9 # справа та же переменная?
- jnz __userConcatinateVarsLeft
- # та же переменная и слева, и справа
- mov $systemVarName, %r8 
- mov %r8, (mem13)
- mov $systemVarName, %r9 
- mov %r9, (mem14) 
- jmp __userConcatinateVarsNo 
- __userConcatinateVarsLeft:
- # та же переменная только слева 
- mov $systemVarName, %r8 
- mov %r8, (mem13)
- jmp __userConcatinateVarsNo  
- __userConcatinateVarsNotLeft:
- cmp $1, %r9
- jnz __userConcatinateVarsNo
- # та же переменная только справа 
- mov $systemVarName, %r9 
- mov %r9, (mem14) 
- jmp __userConcatinateVarsNo 
- __userConcatinateVarsNo:
- # нет той же переменной 
-
- # устанавливаем в приемник значение переменной слева 
- mov (mem13), %rax 
- mov %rax, (userData)
- mov $1, %rax 
- call __setVar 
- 
- # выделим дополнительное место для приемника, если требуется
- call __getVar 
- mov (userData), %rbx 
- mov %rbx, %rsi 
- call __len 
- add %rax, %rbx # смещаемся на длину первого операнда 
- mov %rbx, (mem16) # сохраним %rbx 
-
- # сохранили приемник
- mov $lenMem15, %rsi 
- mov $mem15, %rdx 
- mov $lenVarName, %rax 
- mov $varName, %rdi 
- call __set
-
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName, %rax 
- mov (mem14), %rdi
- call __set
- 
- call __getVar 
-
- # восстанавливаем приемник 
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenMem15, %rax 
- mov $mem15, %rdi 
- call __set
-
- mov (userData), %rsi 
- call __len 
-
- mov (mem16), %rbx # восстановим %rbx 
- mov (mem20), %r12 
- mov (userData), %rsi 
- mov %rsi, (mem20)
- __userConcatinateVarsPrepare:
- mov (%rbx), %dil 
- cmp $2, %dil 
- jnz __userConcatinateVarsMoreMemEnd0
- mov %rax, (mem4)
- mov %rbx, (mem5) 
- mov %r12, (mem10)
- call __internalShiftStr
- mov (mem10), %r12 
- mov (mem4), %rax
- mov (mem5), %rbx
- __userConcatinateVarsMoreMemEnd0:
- cmp $0, %rax 
- jz __userConcatinateVarsPrepareEnd
- inc %rbx 
- dec %rax 
- jmp __userConcatinateVarsPrepare
- __userConcatinateVarsPrepareEnd:
- 
- # получаем значение второй переменной по новому адресу 
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName, %rax 
- mov (mem14), %rdi
- call __set
- 
- call __getVar 
-
- mov (userData), %rax 
- mov (mem16), %rbx 
- __userConcatinateVarsNow: 
- mov (%rax), %dl 
- cmp $0, %dl  
- jz __userConcatinateVarsEnd 
- mov %dl, (%rbx)
- inc %rax 
- inc %rbx 
- jmp __userConcatinateVarsNow 
-__userConcatinateVarsEnd:
- movb $0, (%rbx)
- ret 
-
  __userConcatinate:
  # входные параметры 
  # r8 - адрес начала первой строки (либо адрес имени переменной)
@@ -454,38 +304,14 @@ __userConcatinateVarsEnd:
  # rbx = 1 - строка справа лежит в переменной 
  # rbx = 0 - строка справа лежит в статичесой памяти 
  # $varName - адрес имени переменной, куда положить результат
- mov %r8, (mem13)
- mov %r9, (mem14)
- mov %rax, (mem15)
- mov %rbx, (mem16)
+ movb $0, (userConcatinateFlag)
+ movb $0, (userConcatinateFlag2)
  
- # сохранили приемник
- mov $lenMem17, %rsi 
- mov $mem17, %rdx 
- mov $lenVarName, %rax 
- mov $varName, %rdi 
- call __set
+ push %r8 
+ push %r9 
+ push %rax 
+ push %rbx 
 
- mov $mem17, %r8  
- mov %r8, (userData)
- // сохраним в системной переменной значение, которое сейчас хранится в приемнике
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenSystemVarName, %rax 
- mov $systemVarName, %rdi 
- call __set
-
- mov $1, %rax 
- call __setVar 
-
- # восстановили приемник
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenMem17, %rax 
- mov $mem17, %rdi 
- call __set
-
- call __getVar
 
  mov %r13, %rbx
  __userConcatinateLocal:
@@ -498,10 +324,10 @@ __userConcatinateVarsEnd:
  jz __userConcatinateEnd 
  
  add (varSize), %rbx 
- jmp __userConcatinateLocal  
-  
+ jmp __userConcatinateLocal
+ 
  __userConcatinateEnd:
- __userConcatinateSearch:
+  __userConcatinateSearch:
  sub (varSize), %rbx 
  mov %rbx, %r12 
  call __read 
@@ -538,266 +364,911 @@ __userConcatinateVarsEnd:
  jnz __userConcatinateErrEnd
  mov $strError, %rsi 
  call __throughUserError
- ret
+ ret 
 
  __userConcatinateErrEnd:
 
- 
- mov (userData), %rbx 
- mov (mem13), %rax 
- 
- __userConcatinateClearStr:
- mov (%rbx), %dil 
- cmp $2, %dil 
- jz __userConcatinateClearStrEnd
- movb $1, (%rbx)
- inc %rbx 
- jmp __userConcatinateClearStr
- __userConcatinateClearStrEnd:
- dec %rbx 
- movb $0, (%rbx)
- mov (userData), %rbx 
-
- __userConcatinateIsNotStr:
- 
- cmp $1, (mem15)
- jnz __userConcatinateRightVar
- cmp $1, (mem16)
- jz __userConcatinateTwoVars
- 
- // переменная только слева 
- mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenMem13, %rax 
- mov (mem13), %rdi 
- call __set
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenVarName, %rax 
- mov $varName, %rdi 
- call __set
- call __compare 
-
- cmp $1, %rax 
- jnz __userConcatinateNotTheSameLeft
- 
- mov $systemVarName, %rax 
- mov %rax, (userData)
-
- mov $1, %rax 
-
- call __setVar 
- jmp __userConcatinateTheSameLeft
-
- __userConcatinateNotTheSameLeft:
-
- mov (mem13), %rsi 
- mov %rsi, (userData)
- mov $1, %rax 
- 
- call __setVar
- 
- __userConcatinateTheSameLeft:
- call __getVar 
- mov (userData), %rsi 
- call __len 
- mov %rax, %rbx 
- add (userData), %rbx 
- mov (mem14), %rax 
-
- jmp __userConcatinateNow2 
-
- __userConcatinateTwoVars:
- // с обеих сторон переменная
- mov (mem13), %r8 
- mov (mem14), %r9 
- call __userConcatinateVars 
- ret 
-
- __userConcatinateRightVar:
- cmp $1, (mem16)
- jnz __userConcatinateNoVars
- // переменная только справа 
- mov (mem13), %rsi 
- call __len 
- mov %rax, (mem16) # сохранили длину первого операнда
- 
- # сохранили приемник
- mov $lenMem15, %rsi 
- mov $mem15, %rdx 
- mov $lenVarName, %rax 
- mov $varName, %rdi 
- call __set
-
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName, %rax 
- mov (mem14), %rdi 
- call __set
- call __getVar 
-
- # восстановили приемник
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenMem15, %rax 
- mov $mem15, %rdi 
- call __set
- 
- mov (userData), %rsi 
- call __len 
- add (mem16), %rax # длина результата 
- mov %rax, (mem16)
-
- call __getVar 
- mov (userData), %rbx
- mov (mem16), %rax  
+ pop %rbx 
+ pop %rax 
+ pop %r9 
+ pop %r8 
 
 
-  __userConcatinatePrepare:
- mov (%rbx), %dil 
- cmp $2, %dil 
- jnz __userConcatinateMoreMemEnd0
- mov %rax, (mem4)
- mov %rbx, (mem5) 
- mov %r12, (mem10)
- call __internalShiftStr
- mov (mem10), %r12 
- mov (mem4), %rax
- mov (mem5), %rbx
- __userConcatinateMoreMemEnd0:
+
  cmp $0, %rax 
- jz __userConcatinatePrepareEnd
- inc %rbx 
- dec %rax 
- jmp __userConcatinatePrepare
- __userConcatinatePrepareEnd:
+ jz __userConcatinateLeftZero
+ cmp $0, %rbx 
+ jz __userConcatinateRightZero 
+ // слева и справа динамические данные 
  
+ push %r8 
+ push %r9  
+ push %r12 
+
  call __getVar 
- mov (userData), %rbx
-
- mov (mem13), %rax
-
- __userConcatinateNow0: 
- mov (%rax), %dl
- cmp $0, %dl 
- jz __userConcatinateRet0 
- mov %dl, (%rbx)
- inc %rbx 
- inc %rax 
+ mov (userData), %rax 
+ pop %r12 
+ pop %r9 
+ pop %r8
  
- jmp __userConcatinateNow0 
- __userConcatinateRet0:
- movb $0, (%rbx)
- mov %rbx, (mem16) # сохранили %rbx, куда нужно записывать результат
-
- mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov $lenMem14, %rax 
- mov (mem14), %rdi 
- call __set
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenVarName, %rax 
- mov $varName, %rdi 
- call __set
- call __compare 
-
- cmp $1, %rax 
- jnz __userConcatinateNotTheSameRight
- 
- mov $systemVarName, %rax 
- mov %rax, (mem14)
- 
- __userConcatinateNotTheSameRight:
-
+ push %rax 
+ push %r8 
+ push %r9 
+ push %r12 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName, %rax 
- mov (mem14), %rdi 
+ mov %r8, %rdi
  call __set
  call __getVar 
-
  mov (userData), %rax 
- mov (mem16), %rbx 
+ 
+ pop %r12 
+ pop %r9 
+ pop %r8
+ push %rax 
+ push %r8 
+ push %r9 
+ push %r12 
+ 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName, %rax 
+ mov %r9, %rdi
+ call __set
+ call __getVar 
+ mov (userData), %rax 
+ pop %r12 # for internalShiftStr 
+ pop %r9 
+ pop %r8
 
- __userConcatinateNow1: 
- mov (%rax), %dl
- cmp $0, %dl 
- jz __userConcatinateRet1 
- mov %dl, (%rbx)
+ push %rax
+
+ pop %rcx # address of the second string 
+ pop %rbx # address os the first string 
+ pop %rax # address of the result 
+
+ cmp %rax, %rbx 
+ jz __userConcatinateTwoOnesTheSame1
+ cmp %rax, %rcx 
+ jz __userConcatinateTwoOnesTheSame3 
+ cmp %rbx, %rcx 
+ jz __userConcatinateTwoOnesTheSame4
+ // all three variables are different 
+ __userConcatinateTwoOnesStart:
+ cmp %rax, %rbx 
+ jng __userConcatinateTwoOnesFirstFlagEnd
+ movb $1, (userConcatinateFlag) # to shift the address of the first string  
+ __userConcatinateTwoOnesFirstFlagEnd:
+ cmp %rax, %rcx 
+ jng __userConcatinateTwoOnesSecondFlagEnd
+ movb $1, (userConcatinateFlag2) # to shift the address of the second string 
+ __userConcatinateTwoOnesSecondFlagEnd:
+ push %rax
+ push %rbx 
+ push %rcx 
+ push %r12 
+ 
+ mov %rax, %rsi 
+ call __clear 
+ mov %rbx, %rsi 
+ call __len 
+ push %rax 
+ mov %rcx, %rsi 
+ call __len 
+ mov %rax, %rdx 
+ pop %rax 
+ add %rax, %rdx 
+
+ pop %r12 
+ pop %rcx
+ pop %rbx 
+ pop %rax 
+ 
+ push %rax  
+
+  __userConcatinateTwoOnesPrepare:
+ cmp $0, %rdx  
+ jz __userConcatinateTwoOnesPrepareEnd
+ mov (%rax), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateTwoOnesMoreMemEnd
+
+ mov (userConcatinateFlag), %dil
+ cmp $1, %dil 
+ jnz __userConcatinateTwoOnesAddEnd
+ mov (strValSize), %r8  
+ add %r8, %rbx
+ __userConcatinateTwoOnesAddEnd:
+
+ mov (userConcatinateFlag2), %dil
+ cmp $1, %dil 
+ jnz __userConcatinateTwoOnesAddEnd2
+ mov (strValSize), %r8  
+ add %r8, %rcx
+ __userConcatinateTwoOnesAddEnd2:
+
+ push %rax 
+ push %rbx 
+ push %rcx 
+ push %rdx 
+ push %r12 
+
+ call __internalShiftStr
+ 
+ pop %r12
+ pop %rdx 
+ pop %rcx  
+ pop %rbx 
+ pop %rax 
+ 
+ __userConcatinateTwoOnesMoreMemEnd:
+ inc %rax 
+ dec %rdx 
+ jmp __userConcatinateTwoOnesPrepare
+ __userConcatinateTwoOnesPrepareEnd:
+ 
+ pop %rax 
+
+ __userConcatinateTwoOnesNow:
+ mov (%rbx), %dil 
+ cmp $0, %dil 
+ jz __userConcatinateTwoOnesNowEnd
+ mov %dil, (%rax)
  inc %rbx 
  inc %rax 
+ jmp __userConcatinateTwoOnesNow 
+ __userConcatinateTwoOnesNowEnd:
  
- jmp __userConcatinateNow1 
- __userConcatinateRet1:
- movb $0, (%rbx)
+ __userConcatinateTwoOnesNow2:
+ mov (%rcx), %dil 
+ cmp $0, %dil 
+ jz __userConcatinateTwoOnesNowEnd2 
+ mov %dil, (%rax)
+ inc %rcx 
+ inc %rax
+ jmp __userConcatinateTwoOnesNow2  
+ __userConcatinateTwoOnesNowEnd2:
+ movb $0, (%rax)
+
+ ret 
+ __userConcatinateTwoOnesTheSame4:
+ // the first and the second variables are the same
+ jmp __userConcatinateTwoOnesStart
+ ret 
+ __userConcatinateTwoOnesTheSame3:
+ // result and the second variable are the same 
+ cmp %rax, %rbx 
+ jng __userConcatinateTwoOnesTheSameRightFlagEnd
+ movb $1, (userConcatinateFlag) # to shift the address of the first string  
+ __userConcatinateTwoOnesTheSameRightFlagEnd:
+ 
+ push %rax
+ push %rbx 
+ push %rcx 
+ push %r12 
+ 
+ mov %rbx, %rsi 
+ call __len 
+ mov %rax, %rdx 
+ push %rdx 
+
+ mov %rcx, %rsi 
+ call __len 
+ mov %rax, %rdi   
+
+ pop %rdx 
+ pop %r12 
+ pop %rcx
+ pop %rbx 
+ pop %rax 
+ 
+ push %rax 
+ push %rdx 
+ push %rdi 
+
+ add %rdi, %rax 
+
+  __userConcatinateTwoOnesTheSameRightPrepare:
+ cmp $0, %rdx  
+ jz __userConcatinateTwoOnesTheSameRightPrepareEnd
+ mov (%rax), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateTwoOnesMoreMemTheSameRightEnd
+
+ mov (userConcatinateFlag), %dil
+ cmp $1, %dil 
+ jnz __userConcatinateTwoOnesTheSameRightAddEnd
+ mov (strValSize), %r8  
+ add %r8, %rbx
+ __userConcatinateTwoOnesTheSameRightAddEnd:
+
+ push %rax 
+ push %rbx 
+ push %rcx 
+ push %rdx 
+ push %r12 
+
+ call __internalShiftStr
+ 
+ pop %r12
+ pop %rdx 
+ pop %rcx  
+ pop %rbx 
+ pop %rax 
+ 
+ __userConcatinateTwoOnesMoreMemTheSameRightEnd:
+ inc %rax 
+ dec %rdx 
+ jmp __userConcatinateTwoOnesTheSameRightPrepare
+ __userConcatinateTwoOnesTheSameRightPrepareEnd:
+ 
+ mov %rbx, %rsi # address of the first string in the variable 
+ pop %rax # length of the string in the variable
+ pop %rdx # length of the static value 
+ pop %rbx # address of the string begin in the variable 
+
+ push %rbx 
+ add %rax, %rbx # the end if the string in the variable
+ __userConcatinateTwoOnesShiftTheSameRight:
+ cmp $0, %rax 
+ jl __userConcatinateTwoOnesShiftTheSameRightEnd
+ mov (%rbx), %dil
+ movb $1, (%rbx)
+ add %rdx, %rbx 
+ mov %dil, (%rbx)
+ sub %rdx, %rbx 
+ dec %rbx 
+ dec %rax 
+ jmp __userConcatinateTwoOnesShiftTheSameRight 
+ __userConcatinateTwoOnesShiftTheSameRightEnd:
+ pop %rbx 
+
+ __userConcatinateTwoOnesTheSameRightNow:
+ mov (%rsi), %dil 
+ cmp $0, %rdx 
+ jz __userConcatinateTwoOnesTheSameRightNowEnd 
+ mov %dil, (%rbx)
+ inc %rsi 
+ inc %rbx
+ dec %rdx  
+ jmp __userConcatinateTwoOnesTheSameRightNow 
+ __userConcatinateTwoOnesTheSameRightNowEnd:
+
+ ret 
+ __userConcatinateTwoOnesTheSame1:
+ cmp %rax, %rcx 
+ jz __userConcatinateTwoOnesTheSame2
+ // result and the first variable are the same 
+ cmp %rax, %rcx 
+ jng __userConcatinateTwoOnesTheSameLeftFlagEnd
+ movb $1, (userConcatinateFlag) # to shift the address of the second string  
+ __userConcatinateTwoOnesTheSameLeftFlagEnd:
+
+
+
+ push %rax 
+ push %rbx 
+ push %rcx
+ push %r12  
+
+ mov %rax, %rsi 
+ call __len 
+ mov %rax, %rdx  
+ 
+ pop %r12 
+ pop %rcx 
+ pop %rbx 
+ pop %rax 
+ 
+ push %rbx 
+ push %rcx 
+ push %r12 
+
+ add %rdx, %rax 
+ push %rax 
+ mov %rcx, %rsi 
+ call __len 
+ mov %rax, %rdx 
+ 
+ pop %rax 
+ pop %r12 
+ pop %rcx 
+ pop %rbx 
+
+ push %rax 
+ push %rbx 
+ push %r12 
+
+
+ __userConcatinateTwoOnesTheSameLeftPrepare:
+ cmp $0, %rdx  
+ jz __userConcatinateTwoOnesTheSameLeftPrepareEnd
+ mov (%rax), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateTwoOnesMoreMemTheSameLeftEnd
+
+ mov (userConcatinateFlag), %dil
+ cmp $1, %dil 
+ jnz __userConcatinateTwoOnesTheSameLeftAddEnd
+ mov (strValSize), %r8  
+ add %r8, %rcx
+ __userConcatinateTwoOnesTheSameLeftAddEnd:
+
+ push %rax 
+ push %rbx 
+ push %rcx 
+ push %rdx 
+ push %r12 
+
+ call __internalShiftStr
+ 
+ pop %r12
+ pop %rdx 
+ pop %rcx  
+ pop %rbx 
+ pop %rax 
+ 
+ __userConcatinateTwoOnesMoreMemTheSameLeftEnd:
+ inc %rax 
+ dec %rdx 
+ jmp __userConcatinateTwoOnesTheSameLeftPrepare
+ __userConcatinateTwoOnesTheSameLeftPrepareEnd:
+
+ pop %r12 
+ pop %rbx 
+ pop %rax
+
+ __userConcatinateTwoOnesTheSameLeftNow:
+ mov (%rcx), %dil 
+ cmp $0, %dil 
+ jz __userConcatinateTwoOnesTheSameLeftNowEnd 
+ mov %dil, (%rax)
+ inc %rcx 
+ inc %rax 
+ jmp __userConcatinateTwoOnesTheSameLeftNow
+ __userConcatinateTwoOnesTheSameLeftNowEnd:
+ movb $0, (%rax)
 
  ret  
+ __userConcatinateTwoOnesTheSame2:
+ // all three variables are the same 
+ // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ mov $trueVal, %rsi 
+ call __print 
+ call __throughError
+ ret 
 
- __userConcatinateNoVars:
- // нет переменных 
+ __userConcatinateRightZero:
+ // слева динамические данные, а справа статические 
+ push %r8 
+ push %r9 
+ push %r12 
+
+ call __getVar 
+ mov (userData), %rbx 
+
+ pop %r12  
+ pop %r9 
+ pop %r8 
+
+
+ push %r8 
+ push %r9 
+ push %rbx
+ push %r12 
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName, %rax 
+ mov %r8, %rdi
+ call __set
+ call __getVar 
+
+
+ mov (userData), %rax 
  
- __userConcatinateEndCheck:
- __userConcatinateNow:
-  
+ pop %r12 
+ pop %rbx 
+ pop %r9 
+ pop %r8 
+
+ push %r8 
+ push %r9 
+ push %rax 
+ push %rbx 
+ push %r12 
+
+ # %rbx - dest
+ # %rax - source 
+ cmp %rbx, %rax 
+ jz __userConcatinateRightZeroTheSame 
+ jg __userConcatinateRightZeroShift 
+ jmp __userConcatinateRightZeroShiftEnd 
+
+ __userConcatinateRightZeroTheSame:
+ # the same variable 
+ pop %r12 
+ pop %rbx 
+ pop %rax 
+ pop %r9 
+ pop %r8 
+ push %r12 
+
+ mov (userData), %rsi 
+ call __len
+ pop %r12  
+
+ add %rax, %rbx 
+ push %rbx
+
+ mov %r9, %rsi 
+ call __len 
+
+ pop %rbx 
+ 
+ push %rbx 
+ __userConcatinateRightZeroTheSamePrepare:
+ cmp $0, %rax 
+ jz __userConcatinateRightZeroTheSamePrepareEnd
  mov (%rbx), %dil 
  cmp $2, %dil 
- jnz __userConcatinateMoreMemEnd
+ jnz __userConcatinateRightZeroTheSameMoreMemEnd
 
- mov %rax, (mem4)
- mov %rbx, (mem5) 
- mov %r12, (mem10)
+ push %rax 
+ push %rbx 
+ push %r12 
+ push %r9 
  call __internalShiftStr
- mov (mem10), %r12 
- mov (mem4), %rax
- mov (mem5), %rbx 
+ pop %r9 
+ pop %r12 
+ pop %rbx 
+ pop %rax 
  
- __userConcatinateMoreMemEnd:
- mov (%rax), %dl
- cmp $0, %dl 
- jz __userConcatinateRet 
- mov %dl, (%rbx)
+ __userConcatinateRightZeroTheSameMoreMemEnd:
  inc %rbx 
- inc %rax 
+ dec %rax 
+ jmp __userConcatinateRightZeroTheSamePrepare
+ __userConcatinateRightZeroTheSamePrepareEnd:
  
- jmp __userConcatinateNow 
+ pop %rbx 
+ mov %rbx, %rcx 
+ mov %r9, %rbx 
 
- __userConcatinateRet: 
+ __userConcatinateRightZeroTheSameNow:
+ mov (%rbx), %dil 
+ cmp $0, %dil 
+ jz __userConcatinateRightZeroTheSameEnd 
+ mov %dil, (%rcx)
+ inc %rbx 
+ inc %rcx  
+ jmp __userConcatinateRightZeroTheSameNow
+ __userConcatinateRightZeroTheSameEnd:
+ movb $0, (%rcx)
+ ret  
+ __userConcatinateRightZeroShift:
+ movb $1, (userConcatinateFlag) # add size of the shift to the source 
+ __userConcatinateRightZeroShiftEnd:
+
+ mov %rax, %rsi 
+ call __len 
+ mov %rax, %rcx 
+ 
+ pop %r12 
+ pop %rbx 
+ pop %rax 
+ pop %r9 
+ pop %r8
+
+ push %r8 
+ push %r9 
+ push %rax 
+ push %rbx
+ push %rcx 
+ push %r12 
+
+ mov %rbx, %rsi 
+ call __clear 
+
+ mov %r9, %rsi 
+ call __len 
+  
+ pop %r12 
+ pop %rcx 
+ add %rax, %rcx # length of the result 
+ inc %rcx # 0 byte 
+ pop %rbx
+ pop %rax  
+ push %rbx 
+ push %r12 
+ pop %r12 
+
+ __userConcatinateRightZeroPrepare:
+ cmp $0, %rcx 
+ jz __userConcatinateRightZeroPrepareEnd 
+ mov (%rbx), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateRightZeroMoreMemEnd
+
+ mov (userConcatinateFlag), %dil
+ cmp $1, %dil 
+ jnz __userConcatinateRightZeroAddEnd
+ mov (strValSize), %rdx   
+ add %rdx, %rax  
+ __userConcatinateRightZeroAddEnd:
+ push %r8 
+ push %r9 
+ push %rax 
+ push %rbx
+ push %rcx 
+ push %r12 
+ call __internalShiftStr
+ pop %r12 
+ pop %rcx
+ pop %rbx
+ pop %rax 
+ pop %r9 
+ pop %r8  
+ __userConcatinateRightZeroMoreMemEnd:
+ inc %rbx 
+ dec %rcx 
+ jmp __userConcatinateRightZeroPrepare
+ __userConcatinateRightZeroPrepareEnd:
+ 
+ pop %rbx 
+
+ __userConcatinateRightZeroFirst:
+ mov (%rax), %dil 
+ cmp $0, %dil 
+ jz __userConcatinateRightZeroFirstEnd
+ mov %dil, (%rbx)
+ inc %rax 
+ inc %rbx 
+ jmp __userConcatinateRightZeroFirst
+ __userConcatinateRightZeroFirstEnd: 
+ pop %r9
+ pop %r8 
+
+ __userConcatinateRightZeroSecond:
+ mov (%r9), %dil 
+ cmp $0, %dil 
+ jz __userConcatinateRightZeroSecondEnd
+ mov %dil, (%rbx)
+ inc %r9 
+ inc %rbx 
+ jmp __userConcatinateRightZeroSecond 
+ __userConcatinateRightZeroSecondEnd:
  movb $0, (%rbx)
 
- mov (mem14), %rax  
-__userConcatinateNow2:
-   
+ ret 
+ __userConcatinateLeftZero:
+ cmp $0, %rbx 
+ jz __userConcatinateTwoZeros
+ // слева статические данные, а справа динамические 
+ 
+ push %r8 
+ push %r9 
+ push %r12 
+
+ call __getVar 
+ mov (userData), %rbx 
+
+ pop %r12  
+ pop %r9 
+ pop %r8 
+
+
+ push %r8 
+ push %r9 
+ push %rbx
+ push %r12 
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName, %rax 
+ mov %r9, %rdi
+ call __set
+ call __getVar 
+
+
+ mov (userData), %rax 
+ mov %rax, %rsi 
+ 
+ pop %r12 
+ pop %rbx 
+ pop %r9 
+ pop %r8 
+
+ push %r8 
+ push %r9 
+ push %rax 
+ push %rbx 
+ push %r12 
+
+ # %rbx - dest
+ # %rax - source 
+ cmp %rbx, %rax 
+ jz __userConcatinateLeftZeroTheSame 
+ jg __userConcatinateLeftZeroShift 
+ jmp __userConcatinateLeftZeroShiftEnd 
+
+__userConcatinateLeftZeroTheSame:
+
+# the same variable 
+ pop %r12 
+ pop %rbx 
+ pop %rax 
+ pop %r9 
+ pop %r8 
+ push %r12 
+
+ mov (userData), %rsi 
+ 
+ call __len
+ 
+ pop %r12  
+ push %rax 
+ 
+ push %rbx 
+ add %rax, %rbx 
+ push %rbx
+
+ mov %r8, %rsi 
+ call __len 
+ pop %rbx 
+ push %rax
+ 
+ __userConcatinateLeftZeroTheSamePrepare:
+ cmp $0, %rax 
+ jz __userConcatinateLeftZeroTheSamePrepareEnd
  mov (%rbx), %dil 
  cmp $2, %dil 
- jnz __userConcatinateMoreMemEnd2
+ jnz __userConcatinateLeftZeroTheSameMoreMemEnd
 
- mov %rax, (mem4)
- mov %rbx, (mem5) 
- mov %r12, (mem10)
+ push %rax 
+ push %rbx 
+ push %r12 
+ push %r8 
+ push %r9 
  call __internalShiftStr
- mov (mem10), %r12 
- mov (mem4), %rax
- mov (mem5), %rbx 
+ pop %r9 
+ pop %r8 
+ pop %r12 
+ pop %rbx 
+ pop %rax 
  
- __userConcatinateMoreMemEnd2:
- mov (%rax), %dl
- cmp $0, %dl 
- jz __userConcatinateRet2 
- mov %dl, (%rbx)
+ __userConcatinateLeftZeroTheSameMoreMemEnd:
  inc %rbx 
- inc %rax 
+ dec %rax 
+ jmp __userConcatinateLeftZeroTheSamePrepare
+ __userConcatinateLeftZeroTheSamePrepareEnd:
+ pop %rdx # length of the static value 
+ pop %rbx # address of the string begin in the variable 
+ pop %rax # length of the string in the variable
+
+ push %rbx 
+ add %rax, %rbx # the end if the string in the variable
+ __userConcatinateLeftZeroShiftTheSame:
+ cmp $0, %rax 
+ jl __userConcatinateLeftZeroShiftTheSameEnd
+ mov (%rbx), %dil
+ movb $1, (%rbx)
+ add %rdx, %rbx 
+ mov %dil, (%rbx)
+ sub %rdx, %rbx 
+ dec %rbx 
+ dec %rax 
+ jmp __userConcatinateLeftZeroShiftTheSame
+ __userConcatinateLeftZeroShiftTheSameEnd:
+ pop %rbx 
+
+ __userConcatinateLeftZeroTheSameNow:
+ cmp $0, %rdx 
+ jz __userConcatinateLeftZeroTheSameNowEnd 
+ mov (%r8), %dil 
+ mov %dil, (%rbx) 
+ inc %r8
+ inc %rbx 
+ dec %rdx  
+ jmp __userConcatinateLeftZeroTheSameNow
+ __userConcatinateLeftZeroTheSameNowEnd:
+
+ ret 
+
+__userConcatinateLeftZeroShift:
+movb $1, (userConcatinateFlag)
+__userConcatinateLeftZeroShiftEnd:
  
- jmp __userConcatinateNow2 
+ mov %rax, %rsi
+ call __len 
+ mov %rax, %rcx 
+ 
+ pop %r12 
+ pop %rbx 
+ pop %rax 
+ pop %r9 
+ pop %r8
 
- __userConcatinateRet2:
- movb $0, (%rbx) 
+ push %r8 
+ push %r9 
+ push %rax 
+ push %rbx
+ push %rcx 
+ push %r12 
 
- mov (mem13), %r8 
- mov (mem14), %r9 
- mov (mem15), %rax 
- mov (mem16), %rbx 
- ret
+ mov %rbx, %rsi 
+ call __clear 
+
+ mov %r8, %rsi 
+ call __len 
+  
+ pop %r12 
+ pop %rcx 
+ add %rax, %rcx # length of the result 
+ inc %rcx # 0 byte 
+ pop %rbx
+ pop %rax  
+ push %rbx 
+ push %r12 
+ pop %r12 
+
+
+ __userConcatinateLeftZeroPrepare:
+ cmp $0, %rcx 
+ jz __userConcatinateLeftZeroPrepareEnd 
+ mov (%rbx), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateLeftZeroMoreMemEnd
+
+ mov (userConcatinateFlag), %dil
+ cmp $1, %dil 
+ jnz __userConcatinateLeftZeroAddEnd
+ mov (strValSize), %rdx   
+ add %rdx, %rax  
+ __userConcatinateLeftZeroAddEnd: 
+ push %r8 
+ push %r9 
+ push %rax 
+ push %rbx
+ push %rcx 
+ push %r12 
+ call __internalShiftStr
+ pop %r12 
+ pop %rcx
+ pop %rbx
+ pop %rax 
+ pop %r9 
+ pop %r8  
+ __userConcatinateLeftZeroMoreMemEnd:
+ inc %rbx 
+ dec %rcx 
+ jmp __userConcatinateLeftZeroPrepare
+ __userConcatinateLeftZeroPrepareEnd:
+ 
+ pop %rbx 
+
+ pop %r9
+ pop %r8 
+
+ __userConcatinateLeftZeroFirst:
+ mov (%r8), %dil 
+ cmp $0, %dil 
+ jz __userConcatinateLeftZeroFirstEnd
+ mov %dil, (%rbx)
+ inc %r8 
+ inc %rbx 
+ jmp __userConcatinateLeftZeroFirst 
+ __userConcatinateLeftZeroFirstEnd:
+ movb $0, (%rbx)
+ 
+ __userConcatinateLeftZeroSecond:
+ mov (%rax), %dil 
+ cmp $0, %dil 
+ jz __userConcatinateLeftZeroSecondEnd
+ mov %dil, (%rbx)
+ inc %rax 
+ inc %rbx 
+ jmp __userConcatinateLeftZeroSecond 
+ __userConcatinateLeftZeroSecondEnd: 
+ movb $0, (%rbx)
+
+ ret 
+ __userConcatinateTwoZeros:
+ // слева и справа статические данные 
+ push %r8 
+ push %r9 
+ push %r12 
+ call __getVar 
+ mov (userData), %rsi 
+ call __clear
+ pop %r12  
+ pop %r9 
+ pop %r8 
+ 
+ push %r8 
+ push %r9 
+ push %r12 
+
+ mov %r8, %rsi
+ call __len 
+
+ pop %r12 
+ pop %r9
+ pop %r8 
+
+ push %r8 
+ push %r9  
+ push %rax 
+ push %r12 
+
+ mov %r9, %rsi 
+ call __len 
+
+ pop %r12 
+ pop %rbx # old %rax  
+
+ add %rbx, %rax 
+ inc %rax # 0 byte 
+ push %rax 
+ push %r12 
+
+ call __getVar
+
+ pop %r12  
+ pop %rax 
+
+ mov (userData), %rbx 
+ push %rbx 
+
+ __userConcatinateTwoZerosPrepare:
+ cmp $0, %rax 
+ jz __userConcatinateTwoZerosNow
+ mov (%rbx), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateTwoZerosMoreMemEnd
+ __userConcatinateTwoZerosMoreMem: 
+ push %rax 
+ push %rbx 
+ push %r12 
+ call __internalShiftStr
+ pop %r12 
+ pop %rbx 
+ pop %rax 
+ __userConcatinateTwoZerosMoreMemEnd:
+ dec %rax 
+ inc %rbx 
+ jmp __userConcatinateTwoZerosPrepare
+
+ __userConcatinateTwoZerosNow:
+ 
+ pop %rbx 
+ pop %r9 
+ pop %r8 
+ 
+ __userConcatinateTwoZerosFirst:
+ mov (%r8), %dil 
+ cmp $0, %dil 
+ jz __userConcatinateTwoZerosFirstEnd
+ mov %dil, (%rbx)
+ inc %r8 
+ inc %rbx 
+ jmp __userConcatinateTwoZerosFirst
+ __userConcatinateTwoZerosFirstEnd:
+ 
+ __userConcatinateTwoZerosSecond:
+ mov (%r9), %dil 
+ cmp $0, %dil 
+ jz __userConcatinateTwoZerosSecondEnd 
+ mov %dil, (%rbx)
+ inc %r9 
+ inc %rbx 
+ jmp __userConcatinateTwoZerosSecond
+ __userConcatinateTwoZerosSecondEnd:
+ movb $0, (%rbx)
+
+ ret 
+
+ 
  
 
 __toNumber:
@@ -1466,7 +1937,7 @@ __internalMakeShiftStr:
  mov %rax, (mem11)
  # формируем адрес нового конца 
  mov (strPointer), %r10 
- add (valSize), %r10
+ add (strValSize), %r10
  mov %r10, (mem12)
  cmp (strMax), %r10 
  jl __internalMakeShiftStrOk
@@ -1498,7 +1969,7 @@ __internalMakeShiftStr:
 
 __internalShiftStr:
 # %r12 - место внутри таблицы переменных, после которого нужно сделать сдвиг  
-mov (valSize), %rsi 
+mov (strValSize), %rsi 
 add %rsi, (strPointer) 
 
 mov %r12, (mem9)
@@ -1552,7 +2023,7 @@ mov %rsi, %r12
 call __read 
 call __toNumber
 mov %rax, (mem8)
-add (valSize), %rax 
+add (strValSize), %rax 
 
 call __toStr 
 mov (mem6), %rdi
@@ -5462,9 +5933,7 @@ mov $systemVarName0, %rax
  mov %rax, (userData) 
 mov $1, %rax 
  call __setVar
-mov $data3, %rsi
-call __print
- mov $data4, %rax 
+ mov $data3, %rax 
  mov %rax, (buf4)
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -5490,7 +5959,7 @@ mov (userData), %al
 jmp .end
 jmp __rightEnd0
  __right0:
-mov $data5, %rsi
+mov $data4, %rsi
 call __print
 __rightEnd0:
 jmp .again
@@ -5504,7 +5973,7 @@ mov $lenVarName, %rsi
  call __getVar
  mov (userData), %rsi 
  call __print
-mov $data6, %rsi
+mov $data5, %rsi
 call __print
 mov $60,  %rax
 xor %rdi, %rdi

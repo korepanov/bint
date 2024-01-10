@@ -8,7 +8,7 @@ void main(){
 	f = open_file("/home/slava/books/cookbook.txt", "read");	
 	
 	do{
-		buf = read_file(f, 4096);
+		buf = read_file(f, 1);
 		print(buf);	
 	}while(True);
 	

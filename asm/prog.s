@@ -18,7 +18,7 @@ typeSize:
 valSize:
 .quad 64 
 strValSize:
-.quad 64 # 1024
+.quad 1024 # 64
 labelSize:
 .quad 128  
 labelsMax:
@@ -2034,7 +2034,7 @@ __concatinate:
  cmp $0, %rbx 
  jz __userConcatinateRightZero 
  // слева и справа динамические данные 
- # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ 
  push %r8 
  push %r9  
  push %r12 
@@ -2295,9 +2295,9 @@ __concatinate:
  jz __userConcatinateTwoOnesTheSame2
  // result and the first variable are the same 
  cmp %rax, %rcx 
- jng __userConcatinateTwoOnesFirstFlagEnd
+ jng __userConcatinateTwoOnesTheSameLeftFlagEnd
  movb $1, (userConcatinateFlag) # to shift the address of the second string  
- __userConcatinateTwoOnesFirstFlagEnd:
+ __userConcatinateTwoOnesTheSameLeftFlagEnd:
 
 
 
@@ -2314,31 +2314,40 @@ __concatinate:
  pop %rcx 
  pop %rbx 
  pop %rax 
- push %rax 
+ 
  push %rbx 
  push %rcx 
  push %r12 
 
  add %rdx, %rax 
+ push %rax 
  mov %rcx, %rsi 
  call __len 
  mov %rax, %rdx 
-
  
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- __userConcatinateTwoOnesTheSameRightPrepare:
+ pop %rax 
+ pop %r12 
+ pop %rcx 
+ pop %rbx 
+
+ push %rax 
+ push %rbx 
+ push %r12 
+
+
+ __userConcatinateTwoOnesTheSameLeftPrepare:
  cmp $0, %rdx  
- jz __userConcatinateTwoOnesTheSameRightPrepareEnd
+ jz __userConcatinateTwoOnesTheSameLeftPrepareEnd
  mov (%rax), %dil 
  cmp $2, %dil 
- jnz __userConcatinateTwoOnesMoreMemTheSameRightEnd
+ jnz __userConcatinateTwoOnesMoreMemTheSameLeftEnd
 
  mov (userConcatinateFlag), %dil
  cmp $1, %dil 
- jnz __userConcatinateTwoOnesTheSameRightAddEnd
+ jnz __userConcatinateTwoOnesTheSameLeftAddEnd
  mov (strValSize), %r8  
  add %r8, %rcx
- __userConcatinateTwoOnesTheSameRightAddEnd:
+ __userConcatinateTwoOnesTheSameLeftAddEnd:
 
  push %rax 
  push %rbx 
@@ -2354,27 +2363,34 @@ __concatinate:
  pop %rbx 
  pop %rax 
  
- __userConcatinateTwoOnesMoreMemTheSameRightEnd:
+ __userConcatinateTwoOnesMoreMemTheSameLeftEnd:
  inc %rax 
  dec %rdx 
- jmp __userConcatinateTwoOnesTheSameRightPrepare
- __userConcatinateTwoOnesTheSameRightPrepareEnd:*/
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ jmp __userConcatinateTwoOnesTheSameLeftPrepare
+ __userConcatinateTwoOnesTheSameLeftPrepareEnd:
 
+ pop %r12 
+ pop %rbx 
+ pop %rax
 
+ __userConcatinateTwoOnesTheSameLeftNow:
+ mov (%rcx), %dil 
+ cmp $0, %dil 
+ jz __userConcatinateTwoOnesTheSameLeftNowEnd 
+ mov %dil, (%rax)
+ inc %rcx 
+ inc %rax 
+ jmp __userConcatinateTwoOnesTheSameLeftNow
+ __userConcatinateTwoOnesTheSameLeftNowEnd:
+ movb $0, (%rax)
 
-
-
-
-
-
- mov $trueVal, %rsi 
- call __print
- call __throughError
  ret  
  __userConcatinateTwoOnesTheSame2:
  // all three variables are the same 
- 
+ // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ mov $trueVal, %rsi 
+ call __print 
+ call __throughError
  ret 
 
  __userConcatinateRightZero:
@@ -8195,9 +8211,9 @@ mov $lenVarName, %rsi
  call __getVar 
 
  mov (userData), %rsi 
- call __print 
+ //call __print 
  //call __printHeap 
- call __throughError
+ //call __throughError
 
 
  mov $data24, %rax 
