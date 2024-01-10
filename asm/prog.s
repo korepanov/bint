@@ -2294,6 +2294,17 @@ __concatinate:
  cmp %rax, %rcx 
  jz __userConcatinateTwoOnesTheSame2
  // result and the first variable are the same 
+ push %rax 
+ push %rbx 
+ push %rcx 
+
+ mov %rax, %rsi 
+ call __print 
+ 
+ pop %rcx 
+ pop %rbx 
+ pop %rax 
+ 
  mov $trueVal, %rsi 
  call __print
  call __throughError
