@@ -6,9 +6,9 @@ endSymbol:
 deltaSize:
 .quad 0
 pageSize:
-.quad 4096
+.quad 262144
 shiftSize:
-.quad 4096
+.quad 262144
 varNameSize:
 .quad 32
 varSize:
@@ -18,7 +18,7 @@ typeSize:
 valSize:
 .quad 64 
 strValSize:
-.quad 1024 # 64
+.quad 32768 # 64
 labelSize:
 .quad 128  
 labelsMax:

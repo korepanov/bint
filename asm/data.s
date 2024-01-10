@@ -42,7 +42,7 @@ readBuf:
 .byte 0, 0
 lenReadBuf = . - readBuf
 readBufSum:
-.space 65536
+.space 4096
 lenReadBufSum = . - readBufSum
 numberOfReadBytes:
 .quad 0
@@ -1594,7 +1594,7 @@ varName6:
 .space 1, 0
 lenVarName6 = . - varName6
 data0:
-.ascii "2124680"
+.ascii "4096"
 .space 1, 0
 lenData0 = . - data0
 data1:

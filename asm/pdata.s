@@ -42,7 +42,7 @@ readBuf:
 .byte 0, 0
 lenReadBuf = . - readBuf
 readBufSum:
-.space 65536
+.space 4096
 lenReadBufSum = . - readBufSum
 numberOfReadBytes:
 .quad 0
