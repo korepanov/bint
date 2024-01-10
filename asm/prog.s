@@ -2089,6 +2089,7 @@ __concatinate:
  cmp %rbx, %rcx 
  jz __userConcatinateTwoOnesTheSame4
  // all three variables are different 
+ __userConcatinateTwoOnesStart:
  cmp %rax, %rbx 
  jng __userConcatinateTwoOnesFirstFlagEnd
  movb $1, (userConcatinateFlag) # to shift the address of the first string  
@@ -2187,9 +2188,7 @@ __concatinate:
  ret 
  __userConcatinateTwoOnesTheSame4:
  // the first and the second variables are the same
- mov $trueVal, %rsi 
- call __print 
- call __throughError
+ jmp __userConcatinateTwoOnesStart
  ret 
  __userConcatinateTwoOnesTheSame3:
  // result and the second variable are the same 
