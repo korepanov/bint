@@ -2294,6 +2294,9 @@ __concatinate:
  cmp %rax, %rcx 
  jz __userConcatinateTwoOnesTheSame2
  // result and the first variable are the same 
+ mov $trueVal, %rsi 
+ call __print
+ call __throughError
  ret  
  __userConcatinateTwoOnesTheSame2:
  // all three variables are the same 
@@ -8104,8 +8107,8 @@ mov $lenVarName, %rsi
  mov $varName20, %rdi
  call __set
  
-  mov $varName3, %r8 
-  mov $varName20, %r9 
+  mov $varName20, %r8 
+  mov $varName3, %r9 
   mov $1, %rax 
   mov $1, %rbx 
   call __userConcatinate
