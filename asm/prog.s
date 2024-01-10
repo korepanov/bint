@@ -2187,6 +2187,9 @@ __concatinate:
  ret 
  __userConcatinateTwoOnesTheSame4:
  // the first and the second variables are the same
+ mov $trueVal, %rsi 
+ call __print 
+ call __throughError
  ret 
  __userConcatinateTwoOnesTheSame3:
  // result and the second variable are the same 
@@ -8006,7 +8009,7 @@ mov $lenVarName, %rsi
  call __set
  
   mov $varName3, %r8 
-  mov $varName18, %r9 
+  mov $varName3, %r9 
   mov $1, %rax 
   mov $1, %rbx 
   call __userConcatinate
