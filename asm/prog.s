@@ -2118,6 +2118,7 @@ __concatinate:
  pop %rbx 
  pop %rax 
  
+ push %rax  
 
   __userConcatinateTwoOnesPrepare:
  cmp $0, %rdx  
@@ -2159,10 +2160,31 @@ __concatinate:
  dec %rdx 
  jmp __userConcatinateTwoOnesPrepare
  __userConcatinateTwoOnesPrepareEnd:
-// call __printHeap
- mov $trueVal, %rsi 
- call __print
- call __throughError
+ 
+ pop %rax 
+
+ __userConcatinateTwoOnesNow:
+ mov (%rbx), %dil 
+ cmp $0, %dil 
+ jz __userConcatinateTwoOnesNowEnd
+ mov %dil, (%rax)
+ inc %rbx 
+ inc %rax 
+ jmp __userConcatinateTwoOnesNow 
+ __userConcatinateTwoOnesNowEnd:
+ 
+ __userConcatinateTwoOnesNow2:
+ mov (%rcx), %dil 
+ cmp $0, %dil 
+ jz __userConcatinateTwoOnesNowEnd2 
+ mov %dil, (%rax)
+ inc %rcx 
+ inc %rax
+ jmp __userConcatinateTwoOnesNow2  
+ __userConcatinateTwoOnesNowEnd2:
+ movb $0, (%rax)
+
+ ret 
  __userConcatinateTwoOnesTheSame4:
  // the first and the second variables are the same
  ret 
