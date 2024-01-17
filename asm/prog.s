@@ -3330,6 +3330,75 @@ __undefineVar:
  ret 
 
  __undefStr:
+ push %rbx 
+ mov %rbx, %r12 
+ call __read 
+ call __toNumber 
+
+ push %rax 
+ __undefStrNow:
+ mov (%rax), %dil 
+ cmp $2, %dil 
+ jz __undefStrNowEnd
+ movb $'!', (%rax)
+ inc %rax  
+ jmp __undefStrNow 
+ __undefStrNowEnd: 
+ movb $'!', (%rax)
+ inc %rax 
+ 
+ pop %rbx #begin 
+
+ mov (strMax), %rcx 
+
+ mov %rax, %rdx 
+ sub %rbx, %rdx # size to shift 
+
+ __undefStrCompress:
+ cmp %rax, %rcx 
+ jz __undefStrCompressEnd
+ mov (%rax), %dil 
+ mov %dil, (%rbx)
+ inc %rax 
+ inc %rbx 
+ jmp __undefStrCompress
+ __undefStrCompressEnd:
+
+ pop %rbx # place in the variables table
+ mov %rbx, %rax  
+ sub (typeSize), %rax 
+ sub (varNameSize), %rax # begin  
+
+ mov %rbx, %rcx 
+ add (valSize), %rcx 
+
+ __undefStrVarTable:
+ cmp %rbx, %rcx 
+ jz __undefStrVarTableEnd
+ movb $'!', (%rbx)
+ inc %rbx 
+ jmp __undefStrVarTable
+ __undefStrVarTableEnd:
+
+
+ __undefCompress2: 
+ cmp %rbx, %r15 
+ jz __undefCompressEnd2
+ mov (%rbx), %dil 
+ mov %dil, (%rax)
+ inc %rax 
+ inc %rbx 
+
+ jmp __undefCompress2
+ __undefCompressEnd2:
+
+ sub (varSize), %r15 
+ sub (varSize), %r14 
+
+ # change next addresses!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ call __printHeap 
+ call __throughError
+
  mov $trueVal, %rsi 
  call __print 
  call __throughError
