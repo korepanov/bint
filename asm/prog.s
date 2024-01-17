@@ -8397,6 +8397,13 @@ mov $lenVarName, %rsi
  
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
+ mov $lenVarName4, %rax 
+ mov $varName4, %rdi
+ call __set 
+ call __undefineVar
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
  mov $lenVarName22, %rax 
  mov $varName22, %rdi
  call __set 
