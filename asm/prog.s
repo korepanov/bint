@@ -3266,7 +3266,11 @@ __undefineVar:
  movb $0, (%rbx)
  inc %rbx 
  mov %rbx, %r12 
+ 
+ call __read 
+ mov $buf, %rsi # now type in the buf  
  add (typeSize), %r12 
+ 
  __undefType: 
  cmp %rbx, %r12 
  jz __undefTypeEx
@@ -3469,6 +3473,11 @@ __firstMem:
 
 __read: 
  # считать в buf по указателю в %r12 
+ push %r8 
+ push %r10 
+ push %rsi 
+ push %r9 
+
  mov %r12, %r8
  mov $buf, %r10 
  mov $lenBuf, %rsi 
@@ -3495,6 +3504,11 @@ __readClear:
  jnz __readOk
  movb $1, (%r10)
  __readOk:
+
+ pop %r9
+ pop %rsi 
+ pop %r10 
+ pop %r8 
  ret 
  
  __renewStr:
