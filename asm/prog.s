@@ -8336,6 +8336,17 @@ mov $lenVarName, %rsi
 
  mov (userData), %rsi 
  //call __print 
+
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName21, %rax 
+ mov $varName21, %rdi
+ call __set 
+ call __undefineVar
+
+
+
  call __printHeap 
  call __throughError
 
