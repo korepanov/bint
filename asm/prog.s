@@ -3284,6 +3284,18 @@ __undefineVar:
  inc %rbx 
  movb $0, (%rbx)
  inc %rbx 
+
+ mov $buf, %rsi 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi 
+ call __set
+ call __compare 
+ cmp $1, %rax
+
+ jz __undefStr 
+ 
  /*mov %rbx, %r12 
  add (valSize), %r12 
  __undefVal: 
@@ -3296,6 +3308,12 @@ __undefineVar:
  dec %rbx 
  movb $0, (%rbx)*/ 
  __undefEnd:
+ ret 
+
+ __undefStr:
+ mov $trueVal, %rsi 
+ call __print 
+ call __throughError
  ret 
 
 # %r13 - heapBegin 
