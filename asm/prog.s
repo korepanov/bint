@@ -2388,6 +2388,9 @@ __concatinate:
  __userConcatinateTwoOnesTheSame2:
  // all three variables are the same 
  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ mov %rax, %rsi 
+ call __print 
+ 
  mov $trueVal, %rsi 
  call __print 
  call __throughError
@@ -8198,7 +8201,7 @@ mov $lenVarName, %rsi
  call __set
  
   mov $varName20, %r8 
-  mov $varName3, %r9 
+  mov $varName20, %r9 
   mov $1, %rax 
   mov $1, %rbx 
   call __userConcatinate
@@ -8211,9 +8214,9 @@ mov $lenVarName, %rsi
  call __getVar 
 
  mov (userData), %rsi 
- //call __print 
+ call __print 
  //call __printHeap 
- //call __throughError
+ call __throughError
 
 
  mov $data24, %rax 
