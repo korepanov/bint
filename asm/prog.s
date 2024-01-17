@@ -2387,7 +2387,6 @@ __concatinate:
  ret  
  __userConcatinateTwoOnesTheSame2:
  // all three variables are the same 
- // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  push %rax 
  mov %rax, %rsi 
  call __len 
