@@ -6,9 +6,9 @@ endSymbol:
 deltaSize:
 .quad 0
 pageSize:
-.quad 262144
+.quad 4096 # 262144
 shiftSize:
-.quad 262144
+.quad 4096 # 262144
 varNameSize:
 .quad 32
 varSize:
@@ -18,7 +18,7 @@ typeSize:
 valSize:
 .quad 64 
 strValSize:
-.quad 32768 # 64
+.quad 64 # 32768
 labelSize:
 .quad 128  
 labelsMax:
@@ -2388,11 +2388,62 @@ __concatinate:
  __userConcatinateTwoOnesTheSame2:
  // all three variables are the same 
  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ push %rax 
  mov %rax, %rsi 
- call __print 
+ call __len 
+ mov %rax, %rbx # the length 
+ pop %rax #from here to read 
+ mov %rax, %rcx 
+ add %rbx, %rcx # here to write  
+
+ // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+ push %rax 
+ push %rbx 
+ push %rcx 
+ push %r12 
+
+ mov %rbx, %rdx 
+ add %rbx, %rax 
+
+ __userConcatinateTwoOnesTheSamePrepare2:
+ cmp $0, %rdx  
+ jz __userConcatinateTwoOnesTheSamePrepareEnd2
+ mov (%rax), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateTwoOnesMoreMemTheSameEnd2
+
+ push %rax 
+ push %rbx 
+ push %rcx 
+ push %rdx 
+ push %r12 
+
+ call __internalShiftStr
  
- mov $trueVal, %rsi 
- call __print 
+ pop %r12
+ pop %rdx 
+ pop %rcx  
+ pop %rbx 
+ pop %rax 
+ 
+ __userConcatinateTwoOnesMoreMemTheSameEnd2:
+ inc %rax 
+ dec %rdx 
+ jmp __userConcatinateTwoOnesTheSamePrepare2
+ __userConcatinateTwoOnesTheSamePrepareEnd2:
+
+ pop %r12 
+ pop %rcx 
+ pop %rbx 
+ pop %rax
+
+
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+call __printHeap 
  call __throughError
  ret 
 
