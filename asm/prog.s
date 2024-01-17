@@ -2396,7 +2396,6 @@ __concatinate:
  mov %rax, %rcx 
  add %rbx, %rcx # here to write  
 
- // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
  push %rax 
  push %rbx 
@@ -2438,13 +2437,18 @@ __concatinate:
  pop %rbx 
  pop %rax
 
+ __userConcatinateTwoOnesTheSameNow2:
+ cmp $0, %rbx 
+ jz __userConcatinateTwoOnesTheSameNowEnd2
+ mov (%rax), %dil 
+ mov %dil, (%rcx)
+ inc %rax 
+ inc %rcx 
+ dec %rbx 
+ jmp __userConcatinateTwoOnesTheSameNow2 
+ __userConcatinateTwoOnesTheSameNowEnd2:
+ movb $0, (%rcx) 
 
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-
-call __printHeap 
- call __throughError
  ret 
 
  __userConcatinateRightZero:
