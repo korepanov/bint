@@ -3253,6 +3253,7 @@ __undefineVar:
  cmp $0, %rax 
  jz __undefVarSearch
  
+ push %rbx 
  mov %rbx, %r12 
  add (varNameSize), %r12
  __undefName: 
@@ -3284,6 +3285,7 @@ __undefineVar:
  inc %rbx 
  movb $0, (%rbx)
  inc %rbx 
+ push %rbx 
 
  mov $buf, %rsi 
  mov $lenBuf2, %rsi 
@@ -3292,11 +3294,12 @@ __undefineVar:
  mov $stringType, %rdi 
  call __set
  call __compare 
+ pop %rbx 
  cmp $1, %rax
 
  jz __undefStr 
- 
- /*mov %rbx, %r12 
+
+ mov %rbx, %r12 
  add (valSize), %r12 
  __undefVal: 
  cmp %rbx, %r12 
@@ -3306,8 +3309,24 @@ __undefineVar:
  jmp __undefVal  
  __undefValEx:
  dec %rbx 
- movb $0, (%rbx)*/ 
+ movb $0, (%rbx) #end 
  __undefEnd:
+
+ inc %rbx 
+ pop %rax # begin
+
+ __undefCompress: 
+ cmp %rbx, %r15 
+ jz __undefCompressEnd
+ mov (%rbx), %dil 
+ mov %dil, (%rax)
+ inc %rax 
+ inc %rbx 
+
+ jmp __undefCompress
+ __undefCompressEnd:
+ sub (varSize), %r15 
+ sub (varSize), %r14 
  ret 
 
  __undefStr:
@@ -4100,8 +4119,7 @@ __setVar:
  mov %rbx, %r12 
  call __read 
  cmp $1, (buf)
- jz __throughError
- mov $buf, %rsi 
+ jz __throughError 
  mov %rbx, %r12 
  mov $lenBuf2, %rsi 
  mov $buf2, %rdx 
@@ -8376,10 +8394,18 @@ mov $lenVarName, %rsi
  mov $varName21, %rdi
  call __set 
  call __undefineVar
+ 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName22, %rax 
+ mov $varName22, %rdi
+ call __set 
+ call __getVar 
+ 
+ mov (userData), %rsi 
+ call __print
 
-
-
- call __printHeap 
+ //call __printHeap 
  call __throughError
 
 
