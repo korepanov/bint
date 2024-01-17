@@ -733,10 +733,67 @@ __concatinate:
  ret  
  __userConcatinateTwoOnesTheSame2:
  // all three variables are the same 
- // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- mov $trueVal, %rsi 
- call __print 
- call __throughError
+ push %rax 
+ mov %rax, %rsi 
+ call __len 
+ mov %rax, %rbx # the length 
+ pop %rax #from here to read 
+ mov %rax, %rcx 
+ add %rbx, %rcx # here to write  
+
+
+ push %rax 
+ push %rbx 
+ push %rcx 
+ push %r12 
+
+ mov %rbx, %rdx 
+ add %rbx, %rax 
+
+ __userConcatinateTwoOnesTheSamePrepare2:
+ cmp $0, %rdx  
+ jz __userConcatinateTwoOnesTheSamePrepareEnd2
+ mov (%rax), %dil 
+ cmp $2, %dil 
+ jnz __userConcatinateTwoOnesMoreMemTheSameEnd2
+
+ push %rax 
+ push %rbx 
+ push %rcx 
+ push %rdx 
+ push %r12 
+
+ call __internalShiftStr
+ 
+ pop %r12
+ pop %rdx 
+ pop %rcx  
+ pop %rbx 
+ pop %rax 
+ 
+ __userConcatinateTwoOnesMoreMemTheSameEnd2:
+ inc %rax 
+ dec %rdx 
+ jmp __userConcatinateTwoOnesTheSamePrepare2
+ __userConcatinateTwoOnesTheSamePrepareEnd2:
+
+ pop %r12 
+ pop %rcx 
+ pop %rbx 
+ pop %rax
+
+ __userConcatinateTwoOnesTheSameNow2:
+ cmp $0, %rbx 
+ jz __userConcatinateTwoOnesTheSameNowEnd2
+ mov (%rax), %dil 
+ mov %dil, (%rcx)
+ inc %rax 
+ inc %rcx 
+ dec %rbx 
+ jmp __userConcatinateTwoOnesTheSameNow2 
+ __userConcatinateTwoOnesTheSameNowEnd2:
+ movb $0, (%rcx) 
+
  ret 
 
  __userConcatinateRightZero:
@@ -1266,8 +1323,7 @@ __userConcatinateLeftZeroShiftEnd:
  __userConcatinateTwoZerosSecondEnd:
  movb $0, (%rbx)
 
- ret 
-
+ ret
  
  
 

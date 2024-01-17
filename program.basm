@@ -16,5 +16,6 @@ res = (res + s);
 [goto(#end),(s==""),print("")];
 goto(#again);
 #end:
+$close_f(file);
 print(res);
 print("");

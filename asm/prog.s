@@ -1305,6 +1305,7 @@ varName18:
 .ascii "s"
 .space 1, 0
 lenVarName18 = . - varName18
+
 data8:
 //.ascii "DEFG"
 .ascii "«Страна багровых туч» — приключенческая фантастическая повесть"
@@ -1347,6 +1348,15 @@ varName20:
 .ascii "res"
 .space 1, 0
 lenVarName20 = . - varName20
+varName21:
+.ascii "i"
+.space 1, 0
+lenVarName21 = . - varName21
+varName22:
+.ascii "i2"
+.space 1, 0
+lenVarName22 = . - varName22
+
 data16:
 .ascii "bla"
 .space 1, 0
@@ -1398,6 +1408,14 @@ data24:
 .ascii "/home/slava/books/cookbook.txt"
 .space 1, 0
 lenData24 = . - data24 
+data25:
+.ascii "123"
+.space 1, 0
+lenData25 = . - data25
+data26:
+.ascii "100500"
+.space 1, 0
+lenData26 = . - data26  
 
 .text
 __initLabels:
@@ -8181,6 +8199,55 @@ jmp .main_end
  call __set 
  call __defineVar
 
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName21, %rax 
+ mov $varName21, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenIntType, %rax
+ mov $intType, %rdi
+ call __set 
+ call __defineVar
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName22, %rax 
+ mov $varName22, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenIntType, %rax
+ mov $intType, %rdi
+ call __set 
+ call __defineVar
+
+ mov $data25, %rax  
+ mov %rax, (userData)
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName21, %rax 
+ mov $varName21, %rdi  
+ call __set
+
+ xor %rax, %rax
+ call __setVar
+
+
+ mov $data26, %rax  
+ mov %rax, (userData)
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName22, %rax 
+ mov $varName22, %rdi  
+ call __set
+
+ xor %rax, %rax
+ call __setVar
+
+
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName4, %rax 
@@ -8268,8 +8335,8 @@ mov $lenVarName, %rsi
  call __getVar 
 
  mov (userData), %rsi 
- call __print 
- //call __printHeap 
+ //call __print 
+ call __printHeap 
  call __throughError
 
 
