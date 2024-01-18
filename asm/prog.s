@@ -3434,8 +3434,33 @@ __undefineVar:
  pop %rbx 
 
  sub %rdx, %rax
- call __toStr 
- mov $buf2, %rsi 
+ 
+ push %rbx 
+ push %rdx 
+ call __toStr
+ pop %rdx 
+ pop %rbx 
+
+ mov %rbx, %rsi 
+ call __clear 
+ mov $buf2, %rax 
+ 
+ __undefSetAddrNow:
+ mov (%rax), %dil 
+ cmp $0, %dil 
+ jz __undefSetAddrNowEnd 
+ mov %dil, (%rbx)
+ inc %rax 
+ inc %rbx 
+ jmp __undefSetAddrNow
+ __undefSetAddrNowEnd:
+ movb $0, (%rbx)
+
+ call __printHeap 
+ call __throughError
+ 
+ 
+  
  call __print 
 
  call __throughError
