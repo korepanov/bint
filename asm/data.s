@@ -1566,64 +1566,1089 @@ lenSystemVarName127 = . - systemVarName127
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
  lenSt127 = . - st127
 varName0:
-.ascii "file"
+.ascii "$ret"
 .space 1, 0
 lenVarName0 = . - varName0
 varName1:
-.ascii "mode"
+.ascii "$find_descr_return_var"
 .space 1, 0
 lenVarName1 = . - varName1
 varName2:
-.ascii "bytes"
+.ascii "$find_descr_res"
 .space 1, 0
 lenVarName2 = . - varName2
+label0:
+ .quad .find_descr
+labelName0:
+.ascii ".find_descr"
+.space 1,0
+data0:
+.ascii ""
+.space 1, 0
+lenData0 = . - data0
 varName3:
-.ascii "f"
+.ascii "c"
 .space 1, 0
 lenVarName3 = . - varName3
 varName4:
-.ascii "size"
+.ascii "b"
 .space 1, 0
 lenVarName4 = . - varName4
 varName5:
-.ascii "s"
+.ascii "a"
 .space 1, 0
 lenVarName5 = . - varName5
-varName6:
-.ascii "res"
-.space 1, 0
-lenVarName6 = . - varName6
-data0:
-.ascii "4096"
-.space 1, 0
-lenData0 = . - data0
 data1:
-.ascii "/home/slava/books/cookbook.txt"
+.ascii ""
 .space 1, 0
 lenData1 = . - data1
 data2:
-.ascii "0"
+.ascii ""
 .space 1, 0
 lenData2 = . - data2
-label0:
- .quad .again
-labelName0:
-.ascii ".again"
-.space 1,0
 data3:
-.ascii ""
+.ascii "2.0"
 .space 1, 0
 lenData3 = . - data3
 data4:
-.ascii ""
+.ascii "4.0"
 .space 1, 0
 lenData4 = . - data4
 label1:
- .quad .end
+ .quad .find_descr_end
 labelName1:
-.ascii ".end"
+.ascii ".find_descr_end"
 .space 1,0
 data5:
 .ascii ""
 .space 1, 0
 lenData5 = . - data5
+varName6:
+.ascii "$solve_return_var"
+.space 1, 0
+lenVarName6 = . - varName6
+label2:
+ .quad .solve
+labelName2:
+.ascii ".solve"
+.space 1,0
+data6:
+.ascii ""
+.space 1, 0
+lenData6 = . - data6
+varName7:
+.ascii "d"
+.space 1, 0
+lenVarName7 = . - varName7
+varName8:
+.ascii "c"
+.space 1, 0
+lenVarName8 = . - varName8
+varName9:
+.ascii "b"
+.space 1, 0
+lenVarName9 = . - varName9
+varName10:
+.ascii "a"
+.space 1, 0
+lenVarName10 = . - varName10
+data7:
+.ascii ""
+.space 1, 0
+lenData7 = . - data7
+data8:
+.ascii ""
+.space 1, 0
+lenData8 = . - data8
+varName11:
+.ascii "x1"
+.space 1, 0
+lenVarName11 = . - varName11
+varName12:
+.ascii "x2"
+.space 1, 0
+lenVarName12 = . - varName12
+data9:
+.ascii "0"
+.space 1, 0
+lenData9 = . - data9
+data10:
+.ascii ""
+.space 1, 0
+lenData10 = . - data10
+varName13:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName13 = . - varName13
+data11:
+.ascii "Нет решений\n"
+.space 1, 0
+lenData11 = . - data11
+label3:
+ .quad ._cond0_end
+labelName3:
+.ascii "._cond0_end"
+.space 1,0
+data12:
+.ascii ""
+.space 1, 0
+lenData12 = . - data12
+data13:
+.ascii "-1.0"
+.space 1, 0
+lenData13 = . - data13
+data14:
+.ascii "0.5"
+.space 1, 0
+lenData14 = . - data14
+data15:
+.ascii "2.0"
+.space 1, 0
+lenData15 = . - data15
+data16:
+.ascii ""
+.space 1, 0
+lenData16 = . - data16
+data17:
+.ascii "-1.0"
+.space 1, 0
+lenData17 = . - data17
+data18:
+.ascii "0.5"
+.space 1, 0
+lenData18 = . - data18
+data19:
+.ascii "2.0"
+.space 1, 0
+lenData19 = . - data19
+varName14:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName14 = . - varName14
+data20:
+.ascii "Решение:\n"
+.space 1, 0
+lenData20 = . - data20
+varName15:
+.ascii "$s0"
+.space 1, 0
+lenVarName15 = . - varName15
+varName16:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName16 = . - varName16
+data21:
+.ascii "\n"
+.space 1, 0
+lenData21 = . - data21
+varName17:
+.ascii "$s0"
+.space 1, 0
+lenVarName17 = . - varName17
+varName18:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName18 = . - varName18
+data22:
+.ascii "\n"
+.space 1, 0
+lenData22 = . - data22
+label4:
+ .quad ._cond_exit0
+labelName4:
+.ascii "._cond_exit0"
+.space 1,0
+data23:
+.ascii ""
+.space 1, 0
+lenData23 = . - data23
+data24:
+.ascii ""
+.space 1, 0
+lenData24 = . - data24
+label5:
+ .quad .solve_end
+labelName5:
+.ascii ".solve_end"
+.space 1,0
+data25:
+.ascii ""
+.space 1, 0
+lenData25 = . - data25
+varName19:
+.ascii "$main_return_var"
+.space 1, 0
+lenVarName19 = . - varName19
+label6:
+ .quad .main
+labelName6:
+.ascii ".main"
+.space 1,0
+data26:
+.ascii ""
+.space 1, 0
+lenData26 = . - data26
+data27:
+.ascii ""
+.space 1, 0
+lenData27 = . - data27
+varName20:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName20 = . - varName20
+data28:
+.ascii "Решение квадратных уравнений вида ax^2+bx+c=0\n"
+.space 1, 0
+lenData28 = . - data28
+varName21:
+.ascii "next"
+.space 1, 0
+lenVarName21 = . - varName21
+data29:
+.ascii ""
+.space 1, 0
+lenData29 = . - data29
+data30:
+.ascii ""
+.space 1, 0
+lenData30 = . - data30
+varName22:
+.ascii "$for0"
+.space 1, 0
+lenVarName22 = . - varName22
+label7:
+ .quad ._for0
+labelName7:
+.ascii "._for0"
+.space 1,0
+data31:
+.ascii ""
+.space 1, 0
+lenData31 = . - data31
+data32:
+.ascii ""
+.space 1, 0
+lenData32 = . - data32
+varName23:
+.ascii "a"
+.space 1, 0
+lenVarName23 = . - varName23
+varName24:
+.ascii "b"
+.space 1, 0
+lenVarName24 = . - varName24
+varName25:
+.ascii "c"
+.space 1, 0
+lenVarName25 = . - varName25
+varName26:
+.ascii "d"
+.space 1, 0
+lenVarName26 = . - varName26
+data33:
+.ascii ""
+.space 1, 0
+lenData33 = . - data33
+data34:
+.ascii ""
+.space 1, 0
+lenData34 = . - data34
+varName27:
+.ascii "$for1"
+.space 1, 0
+lenVarName27 = . - varName27
+label8:
+ .quad ._for1
+labelName8:
+.ascii "._for1"
+.space 1,0
+data35:
+.ascii ""
+.space 1, 0
+lenData35 = . - data35
+data36:
+.ascii ""
+.space 1, 0
+lenData36 = . - data36
+varName28:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName28 = . - varName28
+data37:
+.ascii "Введите a:\n"
+.space 1, 0
+lenData37 = . - data37
+varName29:
+.ascii "s"
+.space 1, 0
+lenVarName29 = . - varName29
+data38:
+.ascii ""
+.space 1, 0
+lenData38 = . - data38
+data39:
+.ascii "0"
+.space 1, 0
+lenData39 = . - data39
+data40:
+.ascii ""
+.space 1, 0
+lenData40 = . - data40
+data41:
+.ascii ""
+.space 1, 0
+lenData41 = . - data41
+data42:
+.ascii ""
+.space 1, 0
+lenData42 = . - data42
+label9:
+ .quad ._cond4_end
+labelName9:
+.ascii "._cond4_end"
+.space 1,0
+data43:
+.ascii ""
+.space 1, 0
+lenData43 = . - data43
+varName30:
+.ascii "$F0"
+.space 1, 0
+lenVarName30 = . - varName30
+label10:
+ .quad ._attempt0
+labelName10:
+.ascii "._attempt0"
+.space 1,0
+data44:
+.ascii ""
+.space 1, 0
+lenData44 = . - data44
+data45:
+.ascii "1"
+.space 1, 0
+lenData45 = . - data45
+label11:
+ .quad ._cond3_end
+labelName11:
+.ascii "._cond3_end"
+.space 1,0
+data46:
+.ascii ""
+.space 1, 0
+lenData46 = . - data46
+data47:
+.ascii ""
+.space 1, 0
+lenData47 = . - data47
+data48:
+.ascii ""
+.space 1, 0
+lenData48 = . - data48
+data49:
+.ascii ""
+.space 1, 0
+lenData49 = . - data49
+varName31:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName31 = . - varName31
+data50:
+.ascii "Ошибка! Неверный формат числа\n"
+.space 1, 0
+lenData50 = . - data50
+varName32:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName32 = . - varName32
+data51:
+.ascii "\n"
+.space 1, 0
+lenData51 = . - data51
+label12:
+ .quad ._cond5_end
+labelName12:
+.ascii "._cond5_end"
+.space 1,0
+data52:
+.ascii ""
+.space 1, 0
+lenData52 = . - data52
+data53:
+.ascii ""
+.space 1, 0
+lenData53 = . - data53
+data54:
+.ascii ""
+.space 1, 0
+lenData54 = . - data54
+data55:
+.ascii ""
+.space 1, 0
+lenData55 = . - data55
+data56:
+.ascii ""
+.space 1, 0
+lenData56 = . - data56
+data57:
+.ascii "1"
+.space 1, 0
+lenData57 = . - data57
+label13:
+ .quad ._cond6_end
+labelName13:
+.ascii "._cond6_end"
+.space 1,0
+data58:
+.ascii ""
+.space 1, 0
+lenData58 = . - data58
+data59:
+.ascii ""
+.space 1, 0
+lenData59 = . - data59
+label14:
+ .quad ._undef_for1
+labelName14:
+.ascii "._undef_for1"
+.space 1,0
+data60:
+.ascii ""
+.space 1, 0
+lenData60 = . - data60
+label15:
+ .quad ._cond2_end
+labelName15:
+.ascii "._cond2_end"
+.space 1,0
+data61:
+.ascii ""
+.space 1, 0
+lenData61 = . - data61
+data62:
+.ascii ""
+.space 1, 0
+lenData62 = . - data62
+label16:
+ .quad ._cond7_end
+labelName16:
+.ascii "._cond7_end"
+.space 1,0
+data63:
+.ascii ""
+.space 1, 0
+lenData63 = . - data63
+data64:
+.ascii ""
+.space 1, 0
+lenData64 = . - data64
+label17:
+ .quad ._cond8_end
+labelName17:
+.ascii "._cond8_end"
+.space 1,0
+data65:
+.ascii ""
+.space 1, 0
+lenData65 = . - data65
+label18:
+ .quad ._for1_end
+labelName18:
+.ascii "._for1_end"
+.space 1,0
+data66:
+.ascii ""
+.space 1, 0
+lenData66 = . - data66
+data67:
+.ascii ""
+.space 1, 0
+lenData67 = . - data67
+data68:
+.ascii ""
+.space 1, 0
+lenData68 = . - data68
+data69:
+.ascii ""
+.space 1, 0
+lenData69 = . - data69
+varName33:
+.ascii "$for2"
+.space 1, 0
+lenVarName33 = . - varName33
+label19:
+ .quad ._for2
+labelName19:
+.ascii "._for2"
+.space 1,0
+data70:
+.ascii ""
+.space 1, 0
+lenData70 = . - data70
+data71:
+.ascii ""
+.space 1, 0
+lenData71 = . - data71
+varName34:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName34 = . - varName34
+data72:
+.ascii "Введите b:\n"
+.space 1, 0
+lenData72 = . - data72
+varName35:
+.ascii "s"
+.space 1, 0
+lenVarName35 = . - varName35
+data73:
+.ascii ""
+.space 1, 0
+lenData73 = . - data73
+data74:
+.ascii "0"
+.space 1, 0
+lenData74 = . - data74
+data75:
+.ascii ""
+.space 1, 0
+lenData75 = . - data75
+data76:
+.ascii ""
+.space 1, 0
+lenData76 = . - data76
+data77:
+.ascii ""
+.space 1, 0
+lenData77 = . - data77
+label20:
+ .quad ._cond11_end
+labelName20:
+.ascii "._cond11_end"
+.space 1,0
+data78:
+.ascii ""
+.space 1, 0
+lenData78 = . - data78
+varName36:
+.ascii "$F0"
+.space 1, 0
+lenVarName36 = . - varName36
+label21:
+ .quad ._attempt1
+labelName21:
+.ascii "._attempt1"
+.space 1,0
+data79:
+.ascii ""
+.space 1, 0
+lenData79 = . - data79
+data80:
+.ascii "1"
+.space 1, 0
+lenData80 = . - data80
+label22:
+ .quad ._cond10_end
+labelName22:
+.ascii "._cond10_end"
+.space 1,0
+data81:
+.ascii ""
+.space 1, 0
+lenData81 = . - data81
+data82:
+.ascii ""
+.space 1, 0
+lenData82 = . - data82
+data83:
+.ascii ""
+.space 1, 0
+lenData83 = . - data83
+data84:
+.ascii ""
+.space 1, 0
+lenData84 = . - data84
+varName37:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName37 = . - varName37
+data85:
+.ascii "Ошибка! Неверный формат числа\n"
+.space 1, 0
+lenData85 = . - data85
+varName38:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName38 = . - varName38
+data86:
+.ascii "\n"
+.space 1, 0
+lenData86 = . - data86
+label23:
+ .quad ._cond12_end
+labelName23:
+.ascii "._cond12_end"
+.space 1,0
+data87:
+.ascii ""
+.space 1, 0
+lenData87 = . - data87
+data88:
+.ascii ""
+.space 1, 0
+lenData88 = . - data88
+data89:
+.ascii ""
+.space 1, 0
+lenData89 = . - data89
+data90:
+.ascii ""
+.space 1, 0
+lenData90 = . - data90
+data91:
+.ascii ""
+.space 1, 0
+lenData91 = . - data91
+data92:
+.ascii "1"
+.space 1, 0
+lenData92 = . - data92
+label24:
+ .quad ._cond13_end
+labelName24:
+.ascii "._cond13_end"
+.space 1,0
+data93:
+.ascii ""
+.space 1, 0
+lenData93 = . - data93
+data94:
+.ascii ""
+.space 1, 0
+lenData94 = . - data94
+label25:
+ .quad ._undef_for2
+labelName25:
+.ascii "._undef_for2"
+.space 1,0
+data95:
+.ascii ""
+.space 1, 0
+lenData95 = . - data95
+label26:
+ .quad ._cond9_end
+labelName26:
+.ascii "._cond9_end"
+.space 1,0
+data96:
+.ascii ""
+.space 1, 0
+lenData96 = . - data96
+data97:
+.ascii ""
+.space 1, 0
+lenData97 = . - data97
+label27:
+ .quad ._cond14_end
+labelName27:
+.ascii "._cond14_end"
+.space 1,0
+data98:
+.ascii ""
+.space 1, 0
+lenData98 = . - data98
+data99:
+.ascii ""
+.space 1, 0
+lenData99 = . - data99
+label28:
+ .quad ._cond15_end
+labelName28:
+.ascii "._cond15_end"
+.space 1,0
+data100:
+.ascii ""
+.space 1, 0
+lenData100 = . - data100
+label29:
+ .quad ._for2_end
+labelName29:
+.ascii "._for2_end"
+.space 1,0
+data101:
+.ascii ""
+.space 1, 0
+lenData101 = . - data101
+data102:
+.ascii ""
+.space 1, 0
+lenData102 = . - data102
+data103:
+.ascii ""
+.space 1, 0
+lenData103 = . - data103
+data104:
+.ascii ""
+.space 1, 0
+lenData104 = . - data104
+varName39:
+.ascii "$for3"
+.space 1, 0
+lenVarName39 = . - varName39
+label30:
+ .quad ._for3
+labelName30:
+.ascii "._for3"
+.space 1,0
+data105:
+.ascii ""
+.space 1, 0
+lenData105 = . - data105
+data106:
+.ascii ""
+.space 1, 0
+lenData106 = . - data106
+varName40:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName40 = . - varName40
+data107:
+.ascii "Введите c:\n"
+.space 1, 0
+lenData107 = . - data107
+varName41:
+.ascii "s"
+.space 1, 0
+lenVarName41 = . - varName41
+data108:
+.ascii ""
+.space 1, 0
+lenData108 = . - data108
+data109:
+.ascii "0"
+.space 1, 0
+lenData109 = . - data109
+data110:
+.ascii ""
+.space 1, 0
+lenData110 = . - data110
+data111:
+.ascii ""
+.space 1, 0
+lenData111 = . - data111
+data112:
+.ascii ""
+.space 1, 0
+lenData112 = . - data112
+label31:
+ .quad ._cond18_end
+labelName31:
+.ascii "._cond18_end"
+.space 1,0
+data113:
+.ascii ""
+.space 1, 0
+lenData113 = . - data113
+varName42:
+.ascii "$F0"
+.space 1, 0
+lenVarName42 = . - varName42
+label32:
+ .quad ._attempt2
+labelName32:
+.ascii "._attempt2"
+.space 1,0
+data114:
+.ascii ""
+.space 1, 0
+lenData114 = . - data114
+data115:
+.ascii "1"
+.space 1, 0
+lenData115 = . - data115
+label33:
+ .quad ._cond17_end
+labelName33:
+.ascii "._cond17_end"
+.space 1,0
+data116:
+.ascii ""
+.space 1, 0
+lenData116 = . - data116
+data117:
+.ascii ""
+.space 1, 0
+lenData117 = . - data117
+data118:
+.ascii ""
+.space 1, 0
+lenData118 = . - data118
+data119:
+.ascii ""
+.space 1, 0
+lenData119 = . - data119
+varName43:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName43 = . - varName43
+data120:
+.ascii "Ошибка! Неверный формат числа\n"
+.space 1, 0
+lenData120 = . - data120
+varName44:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName44 = . - varName44
+data121:
+.ascii "\n"
+.space 1, 0
+lenData121 = . - data121
+label34:
+ .quad ._cond19_end
+labelName34:
+.ascii "._cond19_end"
+.space 1,0
+data122:
+.ascii ""
+.space 1, 0
+lenData122 = . - data122
+data123:
+.ascii ""
+.space 1, 0
+lenData123 = . - data123
+data124:
+.ascii ""
+.space 1, 0
+lenData124 = . - data124
+data125:
+.ascii ""
+.space 1, 0
+lenData125 = . - data125
+data126:
+.ascii ""
+.space 1, 0
+lenData126 = . - data126
+data127:
+.ascii "1"
+.space 1, 0
+lenData127 = . - data127
+label35:
+ .quad ._cond20_end
+labelName35:
+.ascii "._cond20_end"
+.space 1,0
+data128:
+.ascii ""
+.space 1, 0
+lenData128 = . - data128
+data129:
+.ascii ""
+.space 1, 0
+lenData129 = . - data129
+label36:
+ .quad ._undef_for3
+labelName36:
+.ascii "._undef_for3"
+.space 1,0
+data130:
+.ascii ""
+.space 1, 0
+lenData130 = . - data130
+label37:
+ .quad ._cond16_end
+labelName37:
+.ascii "._cond16_end"
+.space 1,0
+data131:
+.ascii ""
+.space 1, 0
+lenData131 = . - data131
+data132:
+.ascii ""
+.space 1, 0
+lenData132 = . - data132
+label38:
+ .quad ._cond21_end
+labelName38:
+.ascii "._cond21_end"
+.space 1,0
+data133:
+.ascii ""
+.space 1, 0
+lenData133 = . - data133
+data134:
+.ascii ""
+.space 1, 0
+lenData134 = . - data134
+label39:
+ .quad ._cond22_end
+labelName39:
+.ascii "._cond22_end"
+.space 1,0
+data135:
+.ascii ""
+.space 1, 0
+lenData135 = . - data135
+label40:
+ .quad ._for3_end
+labelName40:
+.ascii "._for3_end"
+.space 1,0
+data136:
+.ascii ""
+.space 1, 0
+lenData136 = . - data136
+data137:
+.ascii ""
+.space 1, 0
+lenData137 = . - data137
+varName45:
+.ascii "$find_descr_res0"
+.space 1, 0
+lenVarName45 = . - varName45
+data138:
+.ascii "#find_descr_res0"
+.space 1, 0
+lenData138 = . - data138
+label41:
+ .quad .find_descr_res0
+labelName41:
+.ascii ".find_descr_res0"
+.space 1,0
+data139:
+.ascii "#solve_res0"
+.space 1, 0
+lenData139 = . - data139
+label42:
+ .quad .solve_res0
+labelName42:
+.ascii ".solve_res0"
+.space 1,0
+data140:
+.ascii ""
+.space 1, 0
+lenData140 = . - data140
+data141:
+.ascii ""
+.space 1, 0
+lenData141 = . - data141
+varName46:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName46 = . - varName46
+data142:
+.ascii "Решить еще одно уравнение? д/н\n"
+.space 1, 0
+lenData142 = . - data142
+data143:
+.ascii "д"
+.space 1, 0
+lenData143 = . - data143
+data144:
+.ascii ""
+.space 1, 0
+lenData144 = . - data144
+data145:
+.ascii ""
+.space 1, 0
+lenData145 = . - data145
+data146:
+.ascii "1"
+.space 1, 0
+lenData146 = . - data146
+label43:
+ .quad ._cond23_end
+labelName43:
+.ascii "._cond23_end"
+.space 1,0
+data147:
+.ascii ""
+.space 1, 0
+lenData147 = . - data147
+data148:
+.ascii ""
+.space 1, 0
+lenData148 = . - data148
+label44:
+ .quad ._undef_for0
+labelName44:
+.ascii "._undef_for0"
+.space 1,0
+data149:
+.ascii ""
+.space 1, 0
+lenData149 = . - data149
+label45:
+ .quad ._cond1_end
+labelName45:
+.ascii "._cond1_end"
+.space 1,0
+data150:
+.ascii ""
+.space 1, 0
+lenData150 = . - data150
+data151:
+.ascii ""
+.space 1, 0
+lenData151 = . - data151
+label46:
+ .quad ._cond24_end
+labelName46:
+.ascii "._cond24_end"
+.space 1,0
+data152:
+.ascii ""
+.space 1, 0
+lenData152 = . - data152
+data153:
+.ascii ""
+.space 1, 0
+lenData153 = . - data153
+label47:
+ .quad ._cond25_end
+labelName47:
+.ascii "._cond25_end"
+.space 1,0
+data154:
+.ascii ""
+.space 1, 0
+lenData154 = . - data154
+label48:
+ .quad ._for0_end
+labelName48:
+.ascii "._for0_end"
+.space 1,0
+data155:
+.ascii ""
+.space 1, 0
+lenData155 = . - data155
+data156:
+.ascii ""
+.space 1, 0
+lenData156 = . - data156
+label49:
+ .quad .main_end
+labelName49:
+.ascii ".main_end"
+.space 1,0
+data157:
+.ascii ""
+.space 1, 0
+lenData157 = . - data157
+data158:
+.ascii "#main_res0"
+.space 1, 0
+lenData158 = . - data158
+label50:
+ .quad .main_res0
+labelName50:
+.ascii ".main_res0"
+.space 1,0
+data159:
+.ascii ""
+.space 1, 0
+lenData159 = . - data159
+data160:
+.ascii ""
+.space 1, 0
+lenData160 = . - data160

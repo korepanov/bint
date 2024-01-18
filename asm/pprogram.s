@@ -216,6 +216,9 @@ __set: #set strings
  # rax - длина буфера источника 
  # rdi - адрес буфера источника 
 
+ cmp %rdi, %rdx 
+ jz __setEnd
+
  mov %rdx, %r8 
  mov %rsi, %r9
   
@@ -253,6 +256,8 @@ __set: #set strings
  inc %rdx
  __star: 
  movb $0, (%rdx)
+
+ __setEnd:
  ret 
 
 __concatinate:
@@ -1582,6 +1587,7 @@ __undefineVar:
  cmp $0, %rax 
  jz __undefVarSearch
  
+ push %rbx 
  mov %rbx, %r12 
  add (varNameSize), %r12
  __undefName: 
@@ -1595,7 +1601,11 @@ __undefineVar:
  movb $0, (%rbx)
  inc %rbx 
  mov %rbx, %r12 
+ 
+ call __read 
+ mov $buf, %rsi # now type in the buf  
  add (typeSize), %r12 
+ 
  __undefType: 
  cmp %rbx, %r12 
  jz __undefTypeEx
@@ -1609,7 +1619,21 @@ __undefineVar:
  inc %rbx 
  movb $0, (%rbx)
  inc %rbx 
- /*mov %rbx, %r12 
+ push %rbx 
+
+ mov $buf, %rsi 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi 
+ call __set
+ call __compare 
+ pop %rbx 
+ cmp $1, %rax
+
+ jz __undefStr 
+
+ mov %rbx, %r12 
  add (valSize), %r12 
  __undefVal: 
  cmp %rbx, %r12 
@@ -1619,8 +1643,161 @@ __undefineVar:
  jmp __undefVal  
  __undefValEx:
  dec %rbx 
- movb $0, (%rbx)*/ 
+ movb $0, (%rbx) #end 
  __undefEnd:
+
+ inc %rbx 
+ pop %rax # begin
+
+ __undefCompress: 
+ cmp %rbx, %r15 
+ jz __undefCompressEnd
+ mov (%rbx), %dil 
+ mov %dil, (%rax)
+ inc %rax 
+ inc %rbx 
+
+ jmp __undefCompress
+ __undefCompressEnd:
+ sub (varSize), %r15 
+ sub (varSize), %r14 
+ ret 
+
+ __undefStr:
+ push %rbx 
+ mov %rbx, %r12 
+ call __read 
+ call __toNumber 
+
+ push %rax 
+ __undefStrNow:
+ mov (%rax), %dil 
+ cmp $2, %dil 
+ jz __undefStrNowEnd
+ movb $'!', (%rax)
+ inc %rax  
+ jmp __undefStrNow 
+ __undefStrNowEnd: 
+ movb $'!', (%rax)
+ inc %rax 
+ 
+ pop %rbx #begin 
+
+ mov (strMax), %rcx 
+
+ mov %rax, %rdx 
+ sub %rbx, %rdx # size to shift 
+ 
+ __undefStrCompress:
+ cmp %rax, %rcx 
+ jz __undefStrCompressEnd
+ mov (%rax), %dil 
+ mov %dil, (%rbx)
+ inc %rax 
+ inc %rbx 
+ jmp __undefStrCompress
+ __undefStrCompressEnd:
+
+ pop %rbx # place in the variables table
+ push %rdx 
+
+ mov %rbx, %rax  
+ sub (typeSize), %rax 
+ sub (varNameSize), %rax # begin  
+
+ mov %rbx, %rcx 
+ add (valSize), %rcx 
+
+ __undefStrVarTable:
+ cmp %rbx, %rcx 
+ jz __undefStrVarTableEnd
+ movb $'!', (%rbx)
+ inc %rbx 
+ jmp __undefStrVarTable
+ __undefStrVarTableEnd:
+
+
+ __undefCompress2: 
+ cmp %rbx, %r15 
+ jz __undefCompressEnd2
+ mov (%rbx), %dil 
+ mov %dil, (%rax)
+ inc %rax 
+ inc %rbx 
+
+ jmp __undefCompress2
+ __undefCompressEnd2:
+
+ sub (varSize), %r15 
+ sub (varSize), %r14 
+
+ pop %rdx # size to change address 
+ pop %rbx # from here change next addresses for the strings   
+ 
+ add (varNameSize), %rbx
+
+ __undefChangeAddr: 
+ mov (%rbx), %dil 
+ cmp $1, %dil
+ jz __undefChangeAddrEnd
+ mov %rbx, %r12 
+ call __read 
+
+ push %rbx
+ push %rdx 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi 
+ call __set 
+ call __compare
+ pop %rdx 
+ pop %rbx
+   
+ cmp $1, %rax
+ jnz __undefChangeAddrNowEnd
+ __undefChangeAddrNow:
+ add (typeSize), %rbx 
+ mov %rbx, %r12 
+ call __read  
+ push %rbx 
+ push %rdx 
+ call __toNumber
+ pop %rdx 
+ pop %rbx 
+
+ sub %rdx, %rax
+ 
+ push %rbx 
+ push %rdx 
+ call __toStr
+ pop %rdx 
+ pop %rbx 
+
+ mov %rbx, %rsi 
+ call __clear 
+ mov $buf2, %rax 
+ 
+ push %rbx 
+ __undefSetAddrNow:
+ mov (%rax), %dil 
+ cmp $0, %dil 
+ jz __undefSetAddrNowEnd 
+ mov %dil, (%rbx)
+ inc %rax 
+ inc %rbx 
+ jmp __undefSetAddrNow
+ __undefSetAddrNowEnd:
+ movb $0, (%rbx)
+ pop %rbx 
+ sub (typeSize), %rbx 
+
+ __undefChangeAddrNowEnd:
+ 
+ add (varSize), %rbx 
+ jmp __undefChangeAddr 
+ __undefChangeAddrEnd: 
+
  ret 
 
 # r12 - pointer (общего назначения)
@@ -1799,6 +1976,11 @@ __firstMem:
 
 __read: 
  # считать в buf по указателю в %r12 
+ push %r8 
+ push %r10 
+ push %rsi 
+ push %r9
+
  mov %r12, %r8
  mov $buf, %r10 
  mov $lenBuf, %rsi 
@@ -1825,6 +2007,11 @@ __readClear:
  jnz __readOk
  movb $1, (%r10)
  __readOk:
+
+ pop %r9
+ pop %rsi 
+ pop %r10 
+ pop %r8 
  ret 
  
  __renewStr:

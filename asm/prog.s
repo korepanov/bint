@@ -1887,6 +1887,9 @@ __set: #set strings
  # rax - длина буфера источника 
  # rdi - адрес буфера источника 
 
+ cmp %rdi, %rdx 
+ jz __setEnd
+
  mov %rdx, %r8 
  mov %rsi, %r9
   
@@ -1924,6 +1927,8 @@ __set: #set strings
  inc %rdx
  __star: 
  movb $0, (%rdx)
+
+ __setEnd:
  ret 
 
 __concatinate:
@@ -3397,7 +3402,6 @@ __undefineVar:
  sub (varSize), %r15 
  sub (varSize), %r14 
 
- # change next addresses!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  pop %rdx # size to change address 
  pop %rbx # from here change next addresses for the strings   
  
