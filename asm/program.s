@@ -1570,7 +1570,9 @@ __undefineVar:
   
  __undefVarEnd:
  __undefVarSearch:
- sub (varSize), %rbx 
+ sub (varSize), %rbx
+ cmp %rbx, %r13 
+ jg __undefEnd2  
  mov %rbx, %r12 
  call __read 
  cmp $1, (buf)
@@ -1797,7 +1799,7 @@ __undefineVar:
  add (varSize), %rbx 
  jmp __undefChangeAddr 
  __undefChangeAddrEnd: 
-
+ __undefEnd2:
  ret 
 
 # r12 - pointer (общего назначения)
@@ -9289,6 +9291,7 @@ mov $data159, %rsi
 call __print
 mov $data160, %rsi
 call __print
+call __printHeap
 mov $60,  %rax
 xor %rdi, %rdi
 syscall
