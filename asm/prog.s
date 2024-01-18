@@ -3353,7 +3353,7 @@ __undefineVar:
 
  mov %rax, %rdx 
  sub %rbx, %rdx # size to shift 
-
+ 
  __undefStrCompress:
  cmp %rax, %rcx 
  jz __undefStrCompressEnd
@@ -3365,6 +3365,8 @@ __undefineVar:
  __undefStrCompressEnd:
 
  pop %rbx # place in the variables table
+ push %rdx 
+
  mov %rbx, %rax  
  sub (typeSize), %rax 
  sub (varNameSize), %rax # begin  
@@ -3396,7 +3398,9 @@ __undefineVar:
  sub (varSize), %r14 
 
  # change next addresses!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ pop %rdx # size to change address 
  pop %rbx # from here change next addresses for the strings   
+ 
  add (varNameSize), %rbx
 
  __undefChangeAddr: 
@@ -3406,20 +3410,34 @@ __undefineVar:
  mov %rbx, %r12 
  call __read 
 
+ push %rbx
+ push %rdx 
  mov $lenBuf2, %rsi 
  mov $buf2, %rdx 
  mov $lenStringType, %rax 
  mov $stringType, %rdi 
- call __set
- push %rbx 
+ call __set 
  call __compare
+ pop %rdx 
  pop %rbx
    
  cmp $1, %rax
  jnz __undefChangeAddrNowEnd
  __undefChangeAddrNow:
- mov $trueVal, %rsi 
+ add (typeSize), %rbx 
+ mov %rbx, %r12 
+ call __read  
+ push %rbx 
+ push %rdx 
+ call __toNumber
+ pop %rdx 
+ pop %rbx 
+
+ sub %rdx, %rax
+ call __toStr 
+ mov $buf2, %rsi 
  call __print 
+
  call __throughError
  __undefChangeAddrNowEnd:
 
