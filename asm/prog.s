@@ -3445,6 +3445,7 @@ __undefineVar:
  call __clear 
  mov $buf2, %rax 
  
+ push %rbx 
  __undefSetAddrNow:
  mov (%rax), %dil 
  cmp $0, %dil 
@@ -3455,28 +3456,15 @@ __undefineVar:
  jmp __undefSetAddrNow
  __undefSetAddrNowEnd:
  movb $0, (%rbx)
+ pop %rbx 
+ sub (typeSize), %rbx 
 
- call __printHeap 
- call __throughError
- 
- 
-  
- call __print 
-
- call __throughError
  __undefChangeAddrNowEnd:
-
+ 
+ add (varSize), %rbx 
  jmp __undefChangeAddr 
  __undefChangeAddrEnd: 
 
-
- call __throughError
- call __printHeap 
- //call __throughError
- 
- mov $trueVal, %rsi 
- call __print 
- //call __throughError
  ret 
 
 # %r13 - heapBegin 
@@ -7628,6 +7616,17 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName21, %rax 
+ mov $varName21, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenIntType, %rax
+ mov $intType, %rdi
+ call __set 
+ call __defineVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName0, %rax 
@@ -8404,19 +8403,6 @@ jmp .main_end
  call __set 
  call __defineVar
 
-
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName21, %rax 
- mov $varName21, %rdi
- call __set 
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenIntType, %rax
- mov $intType, %rdi
- call __set 
- call __defineVar
-
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName22, %rax 
@@ -8529,13 +8515,12 @@ mov $lenVarName, %rsi
  mov (userData), %rsi 
  //call __print 
 
-
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName21, %rax 
  mov $varName21, %rdi
  call __set 
- call __undefineVar
+ call __undefineVar*/
  
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -8552,9 +8537,20 @@ mov $lenVarName, %rsi
  call __getVar 
  
  mov (userData), %rsi 
- call __print
+ //call __print
 
- //call __printHeap 
+
+  mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName21, %rax 
+ mov $varName21, %rdi
+ call __set 
+ call __getVar
+ mov (userData), %rsi 
+ call __print 
+
+
+// call __printHeap 
  call __throughError
 
 
