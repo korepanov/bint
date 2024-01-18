@@ -3396,12 +3396,44 @@ __undefineVar:
  sub (varSize), %r14 
 
  # change next addresses!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- call __printHeap 
- call __throughError
+ pop %rbx # from here change next addresses for the strings   
+ add (varNameSize), %rbx
 
+ __undefChangeAddr: 
+ mov (%rbx), %dil 
+ cmp $1, %dil
+ jz __undefChangeAddrEnd
+ mov %rbx, %r12 
+ call __read 
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi 
+ call __set
+ push %rbx 
+ call __compare
+ pop %rbx
+   
+ cmp $1, %rax
+ jnz __undefChangeAddrNowEnd
+ __undefChangeAddrNow:
  mov $trueVal, %rsi 
  call __print 
  call __throughError
+ __undefChangeAddrNowEnd:
+
+ jmp __undefChangeAddr 
+ __undefChangeAddrEnd: 
+
+
+ call __throughError
+ call __printHeap 
+ //call __throughError
+ 
+ mov $trueVal, %rsi 
+ call __print 
+ //call __throughError
  ret 
 
 # %r13 - heapBegin 
@@ -7542,6 +7574,17 @@ mov $lenVarName, %rsi
  mov $stringType, %rdi
  call __set 
  call __defineVar
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName4, %rax 
+ mov $varName4, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName0, %rax 
@@ -8365,19 +8408,6 @@ jmp .main_end
 
  xor %rax, %rax
  call __setVar
-
-
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName4, %rax 
- mov $varName4, %rdi
- call __set 
- mov $lenVarType, %rsi 
- mov $varType, %rdx 
- mov $lenStringType, %rax
- mov $stringType, %rdi
- call __set 
- call __defineVar
 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
