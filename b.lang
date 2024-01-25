@@ -224,6 +224,7 @@
       <keyword>REROUTE</keyword>
       <keyword>send_command</keyword>
       <keyword>UNDEFINE</keyword>
+	  <keyword>CLEAR</keyword>
       <keyword>push</keyword>
       <keyword>pop</keyword>
       <keyword>AND</keyword>

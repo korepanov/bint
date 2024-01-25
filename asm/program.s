@@ -7914,6 +7914,7 @@ mov $lenVarName, %rsi
 mov $varName27, %rdi 
  call __set 
 call __undefineVar
+ call __clearVars
 mov $data67, %rsi
 call __print
 mov $data68, %rsi
@@ -8422,6 +8423,7 @@ mov $lenVarName, %rsi
 mov $varName33, %rdi 
  call __set 
 call __undefineVar
+ call __clearVars
 mov $data102, %rsi
 call __print
 mov $data103, %rsi
@@ -8939,6 +8941,7 @@ mov $lenVarName, %rsi
 mov $varName39, %rdi 
  call __set 
 call __undefineVar
+ call __clearVars
 mov $data137, %rsi
 call __print
 mov $lenVarName, %rsi 
@@ -9033,6 +9036,9 @@ mov $varName2, %rax
 mov %rax, (userData)
  mov $1, %rax
 call __setVar
+ call __printHeap
+ call __clearVars
+ call __printHeap
 mov $lenVarName, %rsi 
  mov $varName, %rdx
  mov $lenVarName26, %rax 
@@ -9085,6 +9091,7 @@ jmp .solve
 
 mov $data140, %rsi
 call __print
+ call __clearVars
 mov $data141, %rsi
 call __print
 mov $lenVarName, %rsi 
@@ -9282,6 +9289,7 @@ mov $lenVarName, %rsi
 mov $varName22, %rdi 
  call __set 
 call __undefineVar
+ call __clearVars
 mov $data156, %rsi
 call __print
 mov $lenVarName, %rsi 
@@ -9324,6 +9332,7 @@ jmp .main
 
 mov $data159, %rsi
 call __print
+ call __clearVars
 mov $data160, %rsi
 call __print
 mov $60,  %rax

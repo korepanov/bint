@@ -283,10 +283,18 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 	wasOpenF := false
 	wasReadF := false
 	wasCloseF := false
+	wasClear := false
 
 	if "goto" == fmt.Sprintf("%v", exprList[0][1]) {
 		exprList = makeOperationBinary(exprList)
 		wasGoto = true
+	}
+	if "CLEAR" == fmt.Sprintf("%v", exprList[0][1]) {
+		exprList = makeOperationBinary(exprList)
+		exprList = Pop(exprList, 0) // скобочки
+		exprList = Pop(exprList, 0)
+		exprList = Insert(exprList, 0, []interface{}{"VAL", "null", "null"})
+		wasClear = true
 	}
 	if "exit" == fmt.Sprintf("%v", exprList[0][1]) {
 		exprList = makeOperationBinary(exprList)
@@ -1115,7 +1123,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 	if maxNbraces > 0 || wasCd || wasAssignment || wasNOT || wasGoto || wasSetSource ||
 		wasNextCommand || wasSendCommand || wasUndefine || wasPop || wasPush || wasSetDest || wasDelDest ||
 		wasSendDest || wasPoint || wasLen || wasIndex || wasGetRootSource || wasGetRootDest ||
-		wasIsLetter || wasIsDigit || wasExit || wasExists || wasOpenF || wasReadF || wasCloseF {
+		wasIsLetter || wasIsDigit || wasExit || wasExists || wasOpenF || wasReadF || wasCloseF || wasClear {
 		if !wasCd {
 			if !wasAssignment {
 				//if not was_NOT:

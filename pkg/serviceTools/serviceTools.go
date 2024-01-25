@@ -241,7 +241,7 @@ func Insert(a [][]interface{}, index int, value []interface{}) [][]interface{} {
 func IsUnaryOperation(OP string) bool {
 	operations := []string{"print", "str", "input", "int", "float", "bool", "goto", "SET_SOURCE", "SET_DEST",
 		"next_command", "send_command", "UNDEFINE", "pop", "push", "DEL_DEST", "SEND_DEST", "len", "get_root_source",
-		"get_root_dest", "is_letter", "is_digit", "exists"}
+		"get_root_dest", "is_letter", "is_digit", "exists", "CLEAR"}
 	return StringInSlice(OP, operations)
 }
 
@@ -467,7 +467,7 @@ func IsKeyWord(word string) bool {
 		"pop", "push", "input", "next_command", "get_root_source", "get_root_dest", "send_command", "goto", "exit",
 		"SET_SOURCE", "SET_DEST", "SEND_DEST", "DEL_DEST", "UNDEFINE", "UNSET_SOURCE", "REROUTE", "UNSET_DEST",
 		"RESET_SOURCE", "str", "int", "float", "bool", "string", "stack", "do", "while", "for", "void",
-		"if", "index", "try", "error", "$open_f", "$read_f"}
+		"if", "index", "try", "error", "$open_f", "$read_f", "CLEAR"}
 	if StringInSlice(word, words) {
 		return true
 	}
@@ -488,7 +488,7 @@ func IsOp(s string) bool {
 		"goto", "SET_SOURCE", "UNSET_SOURCE", "RESET_SOURCE",
 		"SET_DEST", "UNSET_DEST", "next_command", "send_command", "UNDEFINE", "pop", "push",
 		"DEL_DEST", "SEND_DEST", "REROUTE", ".", "len", "index", "get_root_source", "get_root_dest",
-		"is_letter", "is_digit", "reg_find", "exists", "$open_f", "$read_f"}
+		"is_letter", "is_digit", "reg_find", "exists", "$open_f", "$read_f", "CLEAR"}
 
 	if StringInSlice(s, ops) {
 		return true

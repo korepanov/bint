@@ -4012,6 +4012,13 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			os.Exit(1)
 		}
 		return []interface{}{0}, systemStack, "", nil
+	} else if "CLEAR" == OP {
+		_, err := progFile.Write([]byte("\n call __clearVars"))
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		return []interface{}{0}, systemStack, "", nil
 	} else if "int" == OP {
 
 		var lenLO string

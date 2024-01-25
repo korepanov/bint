@@ -184,6 +184,9 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 		} else if len(expr) > i+8 && "UNDEFINE" == expr[i:i+8] {
 			res = append(res, []interface{}{"OP", "UNDEFINE"})
 			i += 7
+		} else if len(expr) > i+5 && "CLEAR" == expr[i:i+5] {
+			res = append(res, []interface{}{"OP", "CLEAR"})
+			i += 4
 		} else if len(expr) > i+12 && "UNSET_SOURCE" == expr[i:i+12] {
 			res = append(res, []interface{}{"OP", "UNSET_SOURCE"})
 			i += 13 // плюс скобки, которые мы не разбираем
