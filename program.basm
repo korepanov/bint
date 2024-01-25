@@ -177,6 +177,7 @@ print("");
 goto(#_for0_end);
 #_cond14_end:print("");
 [print(""),(True),goto(#_cond15_end)];
+CLEAR();
 goto(#_for0);
 #_cond15_end:print("");
 #_for0_end:print("");

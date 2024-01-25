@@ -7834,6 +7834,7 @@ jmp __rightEnd15
  __right15:
 jmp ._cond15_end
 __rightEnd15:
+ call __clearVars
 jmp ._for0
 ._cond15_end:
 
