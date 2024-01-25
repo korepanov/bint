@@ -3372,10 +3372,10 @@ __defineVar:
    
  add (varNameSize), %rbx   
 
- __undefChangeAddr: 
+ __clearVarsChangeAddr: 
  mov (%rbx), %dil 
  cmp $1, %dil
- jz __undefChangeAddrEnd
+ jz __clearVarsChangeAddrEnd
  mov %rbx, %r12 
  call __read 
 
@@ -3391,8 +3391,8 @@ __defineVar:
  pop %rbx
    
  cmp $1, %rax
- jnz __undefChangeAddrNowEnd
- __undefChangeAddrNow:
+ jnz __clearVarsChangeAddrNowEnd
+ __clearVarsChangeAddrNow:
  add (typeSize), %rbx 
  mov %rbx, %r12 
  call __read  
@@ -3415,27 +3415,25 @@ __defineVar:
  mov $buf2, %rax 
  
  push %rbx 
- __undefSetAddrNow:
+ __clearVarsSetAddrNow:
  mov (%rax), %dil 
  cmp $0, %dil 
- jz __undefSetAddrNowEnd 
+ jz __clearVarsSetAddrNowEnd 
  mov %dil, (%rbx)
  inc %rax 
  inc %rbx 
- jmp __undefSetAddrNow
- __undefSetAddrNowEnd:
+ jmp __clearVarsSetAddrNow
+ __clearVarsSetAddrNowEnd:
  movb $0, (%rbx)
  pop %rbx 
  sub (typeSize), %rbx 
 
- __undefChangeAddrNowEnd:
+ __clearVarsChangeAddrNowEnd:
  
  add (varSize), %rbx 
- jmp __undefChangeAddr 
- __undefChangeAddrEnd: 
+ jmp __clearVarsChangeAddr 
+ __clearVarsChangeAddrEnd: 
  
- call __printHeap 
- call __throughError
  jmp __clearVars 
 
  __clearVarsEnd:
