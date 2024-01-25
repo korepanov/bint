@@ -3258,13 +3258,27 @@ __defineVar:
   
 
  __clearThis:
+ push %rbx 
+ 
+ add (varNameSize), %rbx 
+ mov %rbx, %r12 
+ call __read 
 
- mov %rbx, %rsi 
- call __print 
- call __throughError
- 
- 
- /*__undefCompress: 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi 
+ call __set 
+ call __compare
+
+ cmp $1, %rax 
+ jz __clearVarsStr 
+
+ pop %rbx  
+ mov %rbx, %rax 
+ add (varSize), %rbx 
+
+ __undefCompress: 
  cmp %rbx, %r15 
  jz __undefCompressEnd
  mov (%rbx), %dil 
@@ -3276,10 +3290,13 @@ __defineVar:
  __undefCompressEnd:
  sub (varSize), %r15 
  sub (varSize), %r14 
- ret 
+ 
+ jmp __clearVars  
 
- __undefStr:
- push %rbx 
+ __clearVarsStr:
+ 
+ jmp __clearVars 
+ /*push %rbx 
  mov %rbx, %r12 
  call __read 
  call __toNumber 
@@ -8582,6 +8599,7 @@ mov $lenVarName, %rsi
  call __undefineVar
  # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  call __clearVars 
+
  call __printHeap 
  call __throughError
 
