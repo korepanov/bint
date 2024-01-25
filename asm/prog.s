@@ -8606,7 +8606,16 @@ mov $lenVarName, %rsi
  # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  call __clearVars 
 
- call __printHeap 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName3, %rax 
+ mov $varName3, %rdi
+ call __set
+ call __getVar 
+ mov (userData), %rsi 
+ call __print 
+
+ //call __printHeap 
  call __throughError
 
 

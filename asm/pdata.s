@@ -1,4 +1,8 @@
 .data
+clearSymbol:
+.ascii "$clear"
+.space 1, 0
+lenClearSymbol = . - clearSymbol 
 starSymbol:
 .ascii "*"
 endSymbol:

@@ -1553,195 +1553,152 @@ __defineVar:
  add (varSize), %r14
  ret 
 
-__undefineVar:
- # вход: имя переменной по адресу $varName 
+
+  __clearVars:
  mov %r13, %rbx
- __undefVarLocal:
+ __clearVarsLocal:
  cmp %r15, %rbx
- jg __undefVarEnd
+ jg __clearVarsEnd
 
  mov %rbx, %r12 
  call __read 
  cmp $1, (buf)
- jz __undefVarEnd 
+ jz __clearVarsEnd 
  
- add (varSize), %rbx 
- jmp __undefVarLocal  
-  
- __undefVarEnd:
- __undefVarSearch:
- sub (varSize), %rbx
- cmp %rbx, %r13 
- jg __undefEnd2  
- mov %rbx, %r12 
- call __read 
- cmp $1, (buf)
- jz __undefEnd
- mov $buf, %rsi 
- mov %rbx, %r12 
+ push %rbx 
  mov $lenBuf2, %rsi 
  mov $buf2, %rdx 
- mov $lenVarName, %rax 
- mov $varName, %rdi 
+ mov $lenClearSymbol, %rax 
+ mov $clearSymbol, %rdi 
  call __set
  call __compare
- mov %r12, %rbx 
- cmp $0, %rax 
- jz __undefVarSearch
- 
- push %rbx 
- mov %rbx, %r12 
- add (varNameSize), %r12
- __undefName: 
- cmp %rbx, %r12 
- jz __undefNameEx
- movb $'!', (%rbx)
- inc %rbx 
- jmp __undefName 
- __undefNameEx:
- dec %rbx 
- movb $0, (%rbx)
- inc %rbx 
- mov %rbx, %r12 
- 
- call __read 
- mov $buf, %rsi # now type in the buf  
- add (typeSize), %r12 
- 
- __undefType: 
- cmp %rbx, %r12 
- jz __undefTypeEx
- movb $'!', (%rbx)
- inc %rbx 
- jmp __undefType 
- __undefTypeEx:
- dec %rbx
- dec %rbx  
- movb $0, (%rbx)
- inc %rbx 
- movb $0, (%rbx)
- inc %rbx 
- push %rbx 
+ pop %rbx  
+ cmp $1, %rax 
+ jz __clearThis 
 
- mov $buf, %rsi 
+ add (varSize), %rbx 
+ jmp __clearVarsLocal  
+  
+
+ __clearThis:
+ push %rbx 
+ 
+ add (varNameSize), %rbx 
+ mov %rbx, %r12 
+ call __read 
+
  mov $lenBuf2, %rsi 
  mov $buf2, %rdx 
  mov $lenStringType, %rax 
  mov $stringType, %rdi 
- call __set
- call __compare 
- pop %rbx 
- cmp $1, %rax
+ call __set 
+ call __compare
 
- jz __undefStr 
+ cmp $1, %rax 
+ jz __clearVarsStr 
 
- mov %rbx, %r12 
- add (valSize), %r12 
- __undefVal: 
- cmp %rbx, %r12 
- jz __undefValEx
- movb $'!', (%rbx)
- inc %rbx 
- jmp __undefVal  
- __undefValEx:
- dec %rbx 
- movb $0, (%rbx) #end 
- __undefEnd:
+ pop %rbx  
+ mov %rbx, %rax 
+ add (varSize), %rbx 
 
- inc %rbx 
- pop %rax # begin
-
- __undefCompress: 
+ __clearVarsCompress: 
  cmp %rbx, %r15 
- jz __undefCompressEnd
+ jz __clearVarsCompressEnd
  mov (%rbx), %dil 
  mov %dil, (%rax)
  inc %rax 
  inc %rbx 
 
- jmp __undefCompress
- __undefCompressEnd:
+ jmp __clearVarsCompress
+ __clearVarsCompressEnd:
  sub (varSize), %r15 
  sub (varSize), %r14 
- ret 
+ 
+ jmp __clearVars  
 
- __undefStr:
+ __clearVarsStr:
+ 
+ pop %rbx 
+ add (varNameSize), %rbx 
+ add (typeSize), %rbx 
+
  push %rbx 
  mov %rbx, %r12 
  call __read 
  call __toNumber 
 
  push %rax 
- __undefStrNow:
+ __clearVarsStrNow:
  mov (%rax), %dil 
  cmp $2, %dil 
- jz __undefStrNowEnd
+ jz __clearVarsStrNowEnd
  movb $'!', (%rax)
  inc %rax  
- jmp __undefStrNow 
- __undefStrNowEnd: 
+ jmp __clearVarsStrNow 
+ __clearVarsStrNowEnd: 
  movb $'!', (%rax)
  inc %rax 
  
  pop %rbx #begin 
-
+ 
  mov (strMax), %rcx 
 
  mov %rax, %rdx 
  sub %rbx, %rdx # size to shift 
  
- __undefStrCompress:
+ __clearVarsStrCompress:
  cmp %rax, %rcx 
- jz __undefStrCompressEnd
+ jz __clearVarsStrCompressEnd
  mov (%rax), %dil 
  mov %dil, (%rbx)
  inc %rax 
  inc %rbx 
- jmp __undefStrCompress
- __undefStrCompressEnd:
-
+ jmp __clearVarsStrCompress
+ __clearVarsStrCompressEnd:
+ 
  pop %rbx # place in the variables table
  push %rdx 
 
  mov %rbx, %rax  
  sub (typeSize), %rax 
  sub (varNameSize), %rax # begin  
+ push %rax 
 
  mov %rbx, %rcx 
  add (valSize), %rcx 
 
- __undefStrVarTable:
+ __clearVarsStrVarTable:
  cmp %rbx, %rcx 
- jz __undefStrVarTableEnd
+ jz __clearVarsStrVarTableEnd
  movb $'!', (%rbx)
  inc %rbx 
- jmp __undefStrVarTable
- __undefStrVarTableEnd:
+ jmp __clearVarsStrVarTable
+ __clearVarsStrVarTableEnd:
 
 
- __undefCompress2: 
+ __clearVarsCompress2: 
  cmp %rbx, %r15 
- jz __undefCompressEnd2
+ jz __clearVarsCompressEnd2
  mov (%rbx), %dil 
  mov %dil, (%rax)
  inc %rax 
  inc %rbx 
 
- jmp __undefCompress2
- __undefCompressEnd2:
+ jmp __clearVarsCompress2
+ __clearVarsCompressEnd2:
 
  sub (varSize), %r15 
  sub (varSize), %r14 
 
+ pop %rbx # from here change next addresses for the strings 
  pop %rdx # size to change address 
- pop %rbx # from here change next addresses for the strings   
- 
- add (varNameSize), %rbx
+   
+ add (varNameSize), %rbx   
 
- __undefChangeAddr: 
+ __clearVarsChangeAddr: 
  mov (%rbx), %dil 
  cmp $1, %dil
- jz __undefChangeAddrEnd
+ jz __clearVarsChangeAddrEnd
  mov %rbx, %r12 
  call __read 
 
@@ -1757,8 +1714,8 @@ __undefineVar:
  pop %rbx
    
  cmp $1, %rax
- jnz __undefChangeAddrNowEnd
- __undefChangeAddrNow:
+ jnz __clearVarsChangeAddrNowEnd
+ __clearVarsChangeAddrNow:
  add (typeSize), %rbx 
  mov %rbx, %r12 
  call __read  
@@ -1781,24 +1738,102 @@ __undefineVar:
  mov $buf2, %rax 
  
  push %rbx 
- __undefSetAddrNow:
+ __clearVarsSetAddrNow:
  mov (%rax), %dil 
  cmp $0, %dil 
- jz __undefSetAddrNowEnd 
+ jz __clearVarsSetAddrNowEnd 
  mov %dil, (%rbx)
  inc %rax 
  inc %rbx 
- jmp __undefSetAddrNow
- __undefSetAddrNowEnd:
+ jmp __clearVarsSetAddrNow
+ __clearVarsSetAddrNowEnd:
  movb $0, (%rbx)
  pop %rbx 
  sub (typeSize), %rbx 
 
- __undefChangeAddrNowEnd:
+ __clearVarsChangeAddrNowEnd:
  
  add (varSize), %rbx 
- jmp __undefChangeAddr 
- __undefChangeAddrEnd: 
+ jmp __clearVarsChangeAddr 
+ __clearVarsChangeAddrEnd: 
+ 
+ jmp __clearVars 
+
+ __clearVarsEnd:
+ ret 
+
+
+
+__undefineVar:
+ # вход: имя переменной по адресу $varName 
+ mov %r13, %rbx
+ __undefVarLocal:
+ cmp %r15, %rbx
+ jg __undefVarEnd
+
+ mov %rbx, %r12 
+ call __read 
+ cmp $1, (buf)
+ jz __undefVarEnd 
+ 
+ add (varSize), %rbx 
+ jmp __undefVarLocal  
+  
+ __undefVarEnd:
+ __undefVarSearch:
+ sub (varSize), %rbx 
+ cmp %rbx, %r13 
+ jg __undefEnd2 
+
+ mov %rbx, %r12 
+ call __read 
+ cmp $1, (buf)
+ jz __undefEnd
+ mov $buf, %rsi 
+ mov %rbx, %r12 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
+ call __compare
+ mov %r12, %rbx 
+ cmp $0, %rax 
+ jz __undefVarSearch
+ 
+ push %rbx 
+ mov %rbx, %r12 
+ add (varNameSize), %r12
+
+ push %rbx 
+
+ __undefName: 
+ cmp %rbx, %r12 
+ jz __undefNameEx
+ movb $1, (%rbx)
+ inc %rbx 
+ jmp __undefName 
+ __undefNameEx:
+ 
+ pop %rbx 
+ # from here set the mark for clearVars
+ mov $clearSymbol, %rax 
+
+ __undefSetMark:
+ mov (%rax), %dil 
+ cmp $0, %dil   
+ jz __undefSetMarkEnd 
+ movb %dil, (%rbx)
+ inc %rbx 
+ inc %rax 
+ jmp __undefSetMark  
+ __undefSetMarkEnd:
+ movb $0, (%rbx)
+
+ __undefEnd:
+
+ pop %rax # begin
+ 
  __undefEnd2:
  ret 
 
