@@ -3232,6 +3232,38 @@ __defineVar:
 
 
  __clearVars:
+ mov %r13, %rbx
+ __clearVarsLocal:
+ cmp %r15, %rbx
+ jg __clearVarsEnd
+
+ mov %rbx, %r12 
+ call __read 
+ cmp $1, (buf)
+ jz __clearVarsEnd 
+ 
+ push %rbx 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenClearSymbol, %rax 
+ mov $clearSymbol, %rdi 
+ call __set
+ call __compare
+ pop %rbx  
+ cmp $1, %rax 
+ jz __clearThis 
+
+ add (varSize), %rbx 
+ jmp __clearVarsLocal  
+  
+
+ __clearThis:
+
+ mov %rbx, %rsi 
+ call __print 
+ call __throughError
+ 
+ 
  /*__undefCompress: 
  cmp %rbx, %r15 
  jz __undefCompressEnd
@@ -3380,6 +3412,8 @@ __defineVar:
  add (varSize), %rbx 
  jmp __undefChangeAddr 
  __undefChangeAddrEnd: */
+ 
+ __clearVarsEnd:
  ret 
 
 
@@ -8546,7 +8580,8 @@ mov $lenVarName, %rsi
  mov $varName22, %rdi
  call __set 
  call __undefineVar
-
+ # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ call __clearVars 
  call __printHeap 
  call __throughError
 
