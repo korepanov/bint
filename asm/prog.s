@@ -1,4 +1,8 @@
 .data
+clearSymbol:
+.ascii "$clear"
+.space 1, 0
+lenClearSymbol = . - clearSymbol 
 starSymbol:
 .ascii "*"
 endSymbol:
@@ -3224,106 +3228,11 @@ __defineVar:
  add (varSize), %r14
  ret 
 
-__undefineVar:
- # вход: имя переменной по адресу $varName 
- mov %r13, %rbx
- __undefVarLocal:
- cmp %r15, %rbx
- jg __undefVarEnd
 
- mov %rbx, %r12 
- call __read 
- cmp $1, (buf)
- jz __undefVarEnd 
- 
- add (varSize), %rbx 
- jmp __undefVarLocal  
-  
- __undefVarEnd:
- __undefVarSearch:
- sub (varSize), %rbx 
- cmp %rbx, %r13 
- jg __undefEnd2 
 
- mov %rbx, %r12 
- call __read 
- cmp $1, (buf)
- jz __undefEnd
- mov $buf, %rsi 
- mov %rbx, %r12 
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenVarName, %rax 
- mov $varName, %rdi 
- call __set
- call __compare
- mov %r12, %rbx 
- cmp $0, %rax 
- jz __undefVarSearch
- 
- push %rbx 
- mov %rbx, %r12 
- add (varNameSize), %r12
- __undefName: 
- cmp %rbx, %r12 
- jz __undefNameEx
- movb $'!', (%rbx)
- inc %rbx 
- jmp __undefName 
- __undefNameEx:
- dec %rbx 
- movb $0, (%rbx)
- inc %rbx 
- mov %rbx, %r12 
- 
- call __read 
- mov $buf, %rsi # now type in the buf  
- add (typeSize), %r12 
- 
- __undefType: 
- cmp %rbx, %r12 
- jz __undefTypeEx
- movb $'!', (%rbx)
- inc %rbx 
- jmp __undefType 
- __undefTypeEx:
- dec %rbx
- dec %rbx  
- movb $0, (%rbx)
- inc %rbx 
- movb $0, (%rbx)
- inc %rbx 
- push %rbx 
 
- mov $buf, %rsi 
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenStringType, %rax 
- mov $stringType, %rdi 
- call __set
- call __compare 
- pop %rbx 
- cmp $1, %rax
-
- jz __undefStr 
-
- mov %rbx, %r12 
- add (valSize), %r12 
- __undefVal: 
- cmp %rbx, %r12 
- jz __undefValEx
- movb $'!', (%rbx)
- inc %rbx 
- jmp __undefVal  
- __undefValEx:
- dec %rbx 
- movb $0, (%rbx) #end 
- __undefEnd:
-
- inc %rbx 
- pop %rax # begin
-
- __undefCompress: 
+ __clearVars:
+ /*__undefCompress: 
  cmp %rbx, %r15 
  jz __undefCompressEnd
  mov (%rbx), %dil 
@@ -3470,7 +3379,81 @@ __undefineVar:
  
  add (varSize), %rbx 
  jmp __undefChangeAddr 
- __undefChangeAddrEnd: 
+ __undefChangeAddrEnd: */
+ ret 
+
+
+
+
+__undefineVar:
+ # вход: имя переменной по адресу $varName 
+ mov %r13, %rbx
+ __undefVarLocal:
+ cmp %r15, %rbx
+ jg __undefVarEnd
+
+ mov %rbx, %r12 
+ call __read 
+ cmp $1, (buf)
+ jz __undefVarEnd 
+ 
+ add (varSize), %rbx 
+ jmp __undefVarLocal  
+  
+ __undefVarEnd:
+ __undefVarSearch:
+ sub (varSize), %rbx 
+ cmp %rbx, %r13 
+ jg __undefEnd2 
+
+ mov %rbx, %r12 
+ call __read 
+ cmp $1, (buf)
+ jz __undefEnd
+ mov $buf, %rsi 
+ mov %rbx, %r12 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenVarName, %rax 
+ mov $varName, %rdi 
+ call __set
+ call __compare
+ mov %r12, %rbx 
+ cmp $0, %rax 
+ jz __undefVarSearch
+ 
+ push %rbx 
+ mov %rbx, %r12 
+ add (varNameSize), %r12
+
+ push %rbx 
+
+ __undefName: 
+ cmp %rbx, %r12 
+ jz __undefNameEx
+ movb $1, (%rbx)
+ inc %rbx 
+ jmp __undefName 
+ __undefNameEx:
+ 
+ pop %rbx 
+ # from here set the mark for clearVars
+ mov $clearSymbol, %rax 
+
+ __undefSetMark:
+ mov (%rax), %dil 
+ cmp $0, %dil   
+ jz __undefSetMarkEnd 
+ movb %dil, (%rbx)
+ inc %rbx 
+ inc %rax 
+ jmp __undefSetMark  
+ __undefSetMarkEnd:
+ movb $0, (%rbx)
+
+ __undefEnd:
+
+ pop %rax # begin
  
  __undefEnd2:
  ret 
@@ -8529,13 +8512,6 @@ mov $lenVarName, %rsi
  mov $varName21, %rdi
  call __set 
  call __undefineVar*/
- 
- mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName4, %rax 
- mov $varName4, %rdi
- call __set 
- call __undefineVar
 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -8561,6 +8537,13 @@ mov $lenVarName, %rsi
  mov $varName, %rdx 
  mov $lenVarName4, %rax 
  mov $varName4, %rdi
+ call __set 
+ call __undefineVar
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName22, %rax 
+ mov $varName22, %rdi
  call __set 
  call __undefineVar
 
