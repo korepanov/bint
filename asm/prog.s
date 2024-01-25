@@ -3278,16 +3278,16 @@ __defineVar:
  mov %rbx, %rax 
  add (varSize), %rbx 
 
- __undefCompress: 
+ __clearVarsCompress: 
  cmp %rbx, %r15 
- jz __undefCompressEnd
+ jz __clearVarsCompressEnd
  mov (%rbx), %dil 
  mov %dil, (%rax)
  inc %rax 
  inc %rbx 
 
- jmp __undefCompress
- __undefCompressEnd:
+ jmp __clearVarsCompress
+ __clearVarsCompressEnd:
  sub (varSize), %r15 
  sub (varSize), %r14 
  
@@ -3295,78 +3295,82 @@ __defineVar:
 
  __clearVarsStr:
  
- jmp __clearVars 
- /*push %rbx 
+ pop %rbx 
+ add (varNameSize), %rbx 
+ add (typeSize), %rbx 
+
+ push %rbx 
  mov %rbx, %r12 
  call __read 
  call __toNumber 
 
  push %rax 
- __undefStrNow:
+ __clearVarsStrNow:
  mov (%rax), %dil 
  cmp $2, %dil 
- jz __undefStrNowEnd
+ jz __clearVarsStrNowEnd
  movb $'!', (%rax)
  inc %rax  
- jmp __undefStrNow 
- __undefStrNowEnd: 
+ jmp __clearVarsStrNow 
+ __clearVarsStrNowEnd: 
  movb $'!', (%rax)
  inc %rax 
  
  pop %rbx #begin 
-
+ 
  mov (strMax), %rcx 
 
  mov %rax, %rdx 
  sub %rbx, %rdx # size to shift 
  
- __undefStrCompress:
+ __clearVarsStrCompress:
  cmp %rax, %rcx 
- jz __undefStrCompressEnd
+ jz __clearVarsStrCompressEnd
  mov (%rax), %dil 
  mov %dil, (%rbx)
  inc %rax 
  inc %rbx 
- jmp __undefStrCompress
- __undefStrCompressEnd:
-
+ jmp __clearVarsStrCompress
+ __clearVarsStrCompressEnd:
+ 
  pop %rbx # place in the variables table
  push %rdx 
 
  mov %rbx, %rax  
  sub (typeSize), %rax 
  sub (varNameSize), %rax # begin  
+ push %rax 
 
  mov %rbx, %rcx 
  add (valSize), %rcx 
 
- __undefStrVarTable:
+ __clearVarsStrVarTable:
  cmp %rbx, %rcx 
- jz __undefStrVarTableEnd
+ jz __clearVarsStrVarTableEnd
  movb $'!', (%rbx)
  inc %rbx 
- jmp __undefStrVarTable
- __undefStrVarTableEnd:
+ jmp __clearVarsStrVarTable
+ __clearVarsStrVarTableEnd:
 
 
- __undefCompress2: 
+ __clearVarsCompress2: 
  cmp %rbx, %r15 
- jz __undefCompressEnd2
+ jz __clearVarsCompressEnd2
  mov (%rbx), %dil 
  mov %dil, (%rax)
  inc %rax 
  inc %rbx 
 
- jmp __undefCompress2
- __undefCompressEnd2:
+ jmp __clearVarsCompress2
+ __clearVarsCompressEnd2:
 
  sub (varSize), %r15 
  sub (varSize), %r14 
 
+ pop %rbx # from here change next addresses for the strings 
  pop %rdx # size to change address 
- pop %rbx # from here change next addresses for the strings   
- 
- add (varNameSize), %rbx
+   
+ add (varNameSize), %rbx   
 
  __undefChangeAddr: 
  mov (%rbx), %dil 
@@ -3428,8 +3432,12 @@ __defineVar:
  
  add (varSize), %rbx 
  jmp __undefChangeAddr 
- __undefChangeAddrEnd: */
+ __undefChangeAddrEnd: 
  
+ call __printHeap 
+ call __throughError
+ jmp __clearVars 
+
  __clearVarsEnd:
  ret 
 
