@@ -3323,7 +3323,7 @@ varName26:
 .space 1, 0
 lenVarName26 = . - varName26
 data71:
-.ascii "/home/slava/books/russian.txt"
+.ascii "/home/slava/books/cookbook.txt"
 .space 1, 0
 lenData71 = . - data71
 data72:
