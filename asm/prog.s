@@ -1262,11 +1262,11 @@ deltaSize:
 pageSize:
 .quad 4096 
 pageSizeMax:
-.quad 131072
+.quad 4500000000 #131072
 shiftSize:
 .quad 8192 
 shiftSizeMax:
-.quad 262144
+.quad 9000000000 #262144
 varNameSize:
 .quad 32
 varSize:
@@ -1278,7 +1278,7 @@ valSize:
 strValSize:
 .quad 1024
 strValSizeMax:
-.quad 32768 
+.quad 22500000 #32768 
 labelSize:
 .quad 128 
 labelsMax:
@@ -3323,7 +3323,7 @@ varName26:
 .space 1, 0
 lenVarName26 = . - varName26
 data71:
-.ascii "/home/slava/books/cookbook.txt"
+.ascii "/home/slava/books/russian.txt"
 .space 1, 0
 lenData71 = . - data71
 data72:
