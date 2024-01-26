@@ -12,7 +12,7 @@ deltaSize:
 pageSize:
 .quad 4096 # 262144
 shiftSize:
-.quad 4096 # 262144
+.quad 8192 # 262144
 varNameSize:
 .quad 32
 varSize:
@@ -2125,12 +2125,8 @@ label23:
 labelName23:
 .ascii ".read_file_res0"
 .space 1,0
-varName29:
-.ascii "$print_arg0"
-.space 1, 0
-lenVarName29 = . - varName29
 data80:
-.ascii "1"
+.ascii ""
 .space 1, 0
 lenData80 = . - data80
 data81:
@@ -2215,10 +2211,10 @@ data93:
 .ascii ""
 .space 1, 0
 lenData93 = . - data93
-varName30:
+varName29:
 .ascii "$print_arg0"
 .space 1, 0
-lenVarName30 = . - varName30
+lenVarName29 = . - varName29
 data94:
 .ascii "#close_file_res0"
 .space 1, 0

@@ -1611,7 +1611,7 @@ __defineVar:
 
  jmp __clearVarsCompress
  __clearVarsCompressEnd:
- sub (varSize), %r15 
+ 
  sub (varSize), %r14 
  
  jmp __clearVars  
@@ -1687,8 +1687,11 @@ __defineVar:
  jmp __clearVarsCompress2
  __clearVarsCompressEnd2:
 
- sub (varSize), %r15 
  sub (varSize), %r14 
+
+ mov (strPointer), %rbx 
+ sub %rdx, %rbx 
+ mov %rbx, (strPointer)
 
  pop %rbx # from here change next addresses for the strings 
  pop %rdx # size to change address 

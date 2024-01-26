@@ -12,7 +12,7 @@ deltaSize:
 pageSize:
 .quad 4096 # 262144
 shiftSize:
-.quad 4096 # 262144
+.quad 8192 # 262144
 varNameSize:
 .quad 32
 varSize:
