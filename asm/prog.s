@@ -1261,8 +1261,12 @@ deltaSize:
 .quad 0
 pageSize:
 .quad 4096 # 262144
+pageSizeMax:
+.quad 131072
 shiftSize:
 .quad 8192 # 262144
+shiftSizeMax:
+.quad 262144
 varNameSize:
 .quad 32
 varSize:
@@ -1273,6 +1277,8 @@ valSize:
 .quad 64 
 strValSize:
 .quad 1024 # 32768
+strValSizeMax:
+.quad 32768 
 labelSize:
 .quad 128 
 labelsMax:
@@ -5447,7 +5453,6 @@ __firstMem:
  __newMem:
  # адрес начала выделяемой памяти в  %r8 
 # запомнить адрес начала выделяемой памяти
- #mov %r8, %r14 
  mov %r8, %r9 
  add (pageSize), %r9 
  #mov %r9, %r15
@@ -5477,6 +5482,34 @@ __firstMem:
  mov (strMax), %r8 
  call __newStrMem
  call __shiftStr
+
+
+ mov (strValSize), %r9
+ add (strValSize), %r9 
+ 
+ mov (strValSizeMax), %r8 
+ cmp %r9, %r8 
+ jl __newMemNoMoreStrValSize 
+ mov %r9, (strValSize)
+ __newMemNoMoreStrValSize:
+
+ mov (pageSize), %r9 
+ add (pageSize), %r9 
+
+ mov (pageSizeMax), %r8 
+ cmp %r9, %r8 
+ jl __newMemNoMorePageSize
+ mov %r9, (pageSize)
+ __newMemNoMorePageSize:
+
+ mov (shiftSize), %r9 
+ add (shiftSize), %r9 
+
+ mov (shiftSizeMax), %r9 
+ cmp %r9, %r8 
+ jl __newMemNoMoreShiftSize
+ mov %r9, (shiftSize)
+ __newMemNoMoreShiftSize:
  ret  
 
  __newStrMem:
