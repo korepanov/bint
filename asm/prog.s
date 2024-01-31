@@ -1262,11 +1262,11 @@ deltaSize:
 pageSize:
 .quad 4096 
 pageSizeMax:
-.quad 4500000000 #131072
+.quad 4500000000 
 shiftSize:
 .quad 8192 
 shiftSizeMax:
-.quad 9000000000 #262144
+.quad 9000000000 
 varNameSize:
 .quad 32
 varSize:
@@ -1278,7 +1278,7 @@ valSize:
 strValSize:
 .quad 1024
 strValSizeMax:
-.quad 22500000 #32768 
+.quad 22500000 
 labelSize:
 .quad 128 
 labelsMax:

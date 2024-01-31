@@ -1967,6 +1967,33 @@ __firstMem:
  mov (strMax), %r8 
  call __newStrMem
  call __shiftStr
+
+  mov (strValSize), %r9
+ add (strValSize), %r9 
+ 
+ mov (strValSizeMax), %r8 
+ cmp %r9, %r8 
+ jl __newMemNoMoreStrValSize 
+ mov %r9, (strValSize)
+ __newMemNoMoreStrValSize:
+
+ mov (pageSize), %r9 
+ add (pageSize), %r9 
+
+ mov (pageSizeMax), %r8 
+ cmp %r9, %r8 
+ jl __newMemNoMorePageSize
+ mov %r9, (pageSize)
+ __newMemNoMorePageSize:
+
+ mov (shiftSize), %r9 
+ add (shiftSize), %r9 
+
+ mov (shiftSizeMax), %r9 
+ cmp %r9, %r8 
+ jl __newMemNoMoreShiftSize
+ mov %r9, (shiftSize)
+ __newMemNoMoreShiftSize:
  ret  
 
  __newStrMem:
