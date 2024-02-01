@@ -160,6 +160,8 @@ void main(){
 			buf = "}";
 			send_command(buf);			
 			send_command(condition);
+			buf = "CLEAR()";
+			send_command(buf); 
 			buf = (("goto(#_for" + snum) + ")");
 			send_command(buf);
 			buf = "}";
