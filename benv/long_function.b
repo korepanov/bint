@@ -456,6 +456,8 @@ void replace(){
 	goto(#pop_func_pos_start);
 	#pop_func_pos_end:
 	send_command(replaced_command);
+	command = (("UNDEFINE(" + ((("$" + func_name) + "_res") + str_func_entry)) + ")");
+	send_command(command);
 	offset = 0;
 	goto(#next);
 	#next_end:

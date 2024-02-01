@@ -848,7 +848,7 @@ UNDEFINE($sl0);
 UNDEFINE($sl_left0);
 UNDEFINE($sl_right0);
 stack$stack_var0;
-$stack_var0=reg_find("[[:alpha:]]+[[:alnum:]]*$",command);
+$stack_var0=reg_find("[[:alpha:]]+[[:alnum:]|_]*$",command);
 temp=$stack_var0;
 UNDEFINE($stack_var0);
 temp.pop(el);

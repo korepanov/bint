@@ -28,6 +28,7 @@ int slice_end(string command, int func_begin){
 	int pos;
 	string spos;
 	int command_len;
+ 	bool b;
 	
 	command_len = len(command);
 	obrace = "[";
@@ -42,10 +43,12 @@ int slice_end(string command, int func_begin){
 	#braces_s:
 	[print(""), (pos < command_len), goto(#braces_e)];
 	spos = str(pos);
-	[print(""), in_stack(obraces, spos), goto(#o_plus_end)];
+	b = in_stack(obraces, spos);
+	[print(""), b, goto(#o_plus_end)];
 	o_sum = (o_sum + 1);
 	#o_plus_end:
-	[print(""), in_stack(cbraces, spos), goto(#c_plus_end)];
+	b = in_stack(obraces, spos);
+	[print(""), b, goto(#c_plus_end)];
 	c_sum = (c_sum + 1);
 	#c_plus_end:
 	[goto(#braces_e), (o_sum == c_sum), print("")];
@@ -117,7 +120,7 @@ int slice_name_start(string command, int slice_begin){
 	stack temp;
 	
 	command = command[0:slice_begin];
-	temp = reg_find("[[:alpha:]]+[[:alnum:]]*$", command);
+	temp = reg_find("[[:alpha:]]+[[:alnum:]|_]*$", command);
 	temp.pop(el); 
 	el.pop(res);
 	return res; 

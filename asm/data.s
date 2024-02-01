@@ -2061,11 +2061,11 @@ varName23:
 .space 1, 0
 lenVarName23 = . - varName23
 varName24:
-.ascii "s"
+.ascii "buf"
 .space 1, 0
 lenVarName24 = . - varName24
 varName25:
-.ascii "buf"
+.ascii "s"
 .space 1, 0
 lenVarName25 = . - varName25
 varName26:
