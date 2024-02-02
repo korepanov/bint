@@ -1,8 +1,41 @@
 // Программа вычисления таблицы простых чисел 
 
+int mod(int a, int b){
+	float fa;
+	float fb;
+
+	fa = float(a);
+	fb = float(b); 
+
+	int c; 
+
+	c = int((fa / fb)); 
+
+	return (a-((a@b)*b));
+};
+
 // вычисляет простое число, следующее за n 
 int next_prime(int n){
-	return 5;
+	
+	while(True){	
+		n = (n + 1);
+		bool is_prime; 
+		is_prime = True; 
+
+		for (int i; i = 2; i < n; i = (i + 1)){
+			if (mod(n, i) == 0){
+				is_prime = False;
+				break;			
+			};		
+		};	
+		
+		if (is_prime){
+			return n;		
+		};	
+
+	};
+
+	return -1; 
 };
 
 int main(){
@@ -48,13 +81,16 @@ int main(){
 		return 0;
 	};
 
-	print((str(p) + ", ")); 
-
+	
+	//print((str(p) + ", ")); 
+	
 	for (int i; i = 0; i < (n - 1); i = (i + 1)){
 		p = next_prime(p);
-		print(str(p)); 
+		print(str(i));
+		print("\n");
+		//print(str(p)); 
 		if (NOT(i == (n - 2))){
-			print(", ");		
+			//print(", ");		
 		};
 	};
 	print("\n");
