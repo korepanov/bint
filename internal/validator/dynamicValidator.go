@@ -1424,6 +1424,12 @@ func dValidateElseIf(command string, variables [][][]interface{}) (string, int, 
 			return tail, status.Err, variables, errors.New("the expression inside if is not a boolean expression")
 		}
 
+		if len(closureHistory) > 0 {
+			closureHistory = closureHistory[:len(closureHistory)-1]
+		} else {
+			return ``, status.Err, variables, errors.New(`'{' is missing`)
+		}
+
 	}
 
 	return tail, stat, variables, nil
@@ -1917,6 +1923,11 @@ func dValidateDoWhile(command string, variables [][][]interface{}) (string, int,
 			return tail, status.Err, variables, errors.New("the expression inside while is not a boolean expression")
 		}
 
+		if len(closureHistory) > 0 {
+			closureHistory = closureHistory[:len(closureHistory)-1]
+		} else {
+			return ``, status.Err, variables, errors.New(`'{' is missing`)
+		}
 	}
 
 	return tail, stat, variables, nil

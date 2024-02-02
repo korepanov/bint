@@ -1,61 +1,13 @@
-// Программа вычисления чисел Фибоначчи 
+// Программа вычисления таблицы простых чисел 
 
-int fibonacci(int n){
-	if (n < 1){
-		return -1; 	
-	};
-
-	if (n == 1){
-		print(str(0));
-		print("\n");
-		return 0;	
-	};
-
-	if (n == 2){
-		print(((str(0) + ", ") + str(1)));
-		print("\n");
-		return 0; 	
-	};
-
-	if (n == 3){
-		print(((str(0) + ", ") + str(1)));
-		print((", " + str(1)));
-		print("\n");
-		return 0;
-	};
-
-	int a1;
-	int a2; 
-	int a3;
-
-	a1 = 0;
-	a2 = 1; 
-	
-	print((str(a1) + ", "));
-	print((str(a2) + ", "));
-
-	for (int i; i = 0; i < (n - 2); i = (i + 1)){
-		
-		a3 = (a1 + a2); 
-		print(str(a3));
-		if (i < (n - 3)){
-			print(", ");
-		};	
-
-		a1 = a2;
-		a2 = a3;
-	};
-
-	print("\n");
-
-	return 0; 
+// вычисляет простое число, следующее за n 
+int next_prime(int n){
+	return 5;
 };
 
-
-
-void main(){
-	print("Программа вычисления чисел Фибоначчи\n");
-	print("Задайте количество чисел (не более 25)\n");
+int main(){
+	print("Программа вычисления таблицы простых чисел\n");
+	print("Задайте количество чисел (не более 200)\n");
 	string s;
 	int n;
 
@@ -71,26 +23,44 @@ void main(){
 			print(error);
 			print("\n");	
 			print("Повторите ввод\n");	
-		};
-
-		if (n < 0){
+		}else if (n < 0){
 			error = "Введено отрицательное число"; 
 			print((("Ошибка! " + error) + "\n")); 
 			print("Повторите ввод\n");		
-		};
-
-		if (n > 25){
+		}else if (n > 200){
 			error = "Слишком большое количество чисел";
 			print((("Ошибка! " + error) + "\n")); 
 			print("Повторите ввод\n");	
 		};
+
 	}while(NOT(error==""));
 
-	int res;	
-	print("\n");
-	print("Результат:\n");
-	res = fibonacci(n); 
+	if (n == 0){
+		return 0;	
+	};
 	
+	int p;
+	p = 2;
+ 
+	if (n == 1){
+		print(str(p));
+		print("\n");
+		return 0;
+	};
+
+	print((str(p) + ", ")); 
+
+	for (int i; i = 0; i < (n - 1); i = (i + 1)){
+		p = next_prime(p);
+		print(str(p)); 
+		if (NOT(i == (n - 2))){
+			print(", ");		
+		};
+	};
+	print("\n");
+	
+	return 0;
 };
 
-main();
+int res;
+res = main();
