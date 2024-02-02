@@ -20,21 +20,21 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 	i := 0
 	isType := false
 
-	for i < len(expr) {
+	for i < len([]rune(expr)) {
 		newVariable := EachVariable(variables)
 		for v := newVariable(); "end" != v[0]; v = newVariable() {
-			if len(expr) > i+len(v[1].(string)) {
-				if v[1].(string) == expr[i:i+len(v[1].(string))] {
+			if len([]rune(expr)) > i+len(v[1].(string)) {
+				if v[1].(string) == string([]rune(expr)[i:i+len(v[1].(string))]) {
 					// проверяем, что имя переменной не является частью имени другой переменной
-					if i+len(v[1].(string)) < len(expr) && !unicode.IsDigit(rune(expr[i+len(v[1].(string))])) &&
-						!unicode.IsLetter(rune(expr[i+len(v[1].(string))])) && "_" != string(expr[i+len(v[1].(string))]) {
+					if i+len(v[1].(string)) < len([]rune(expr)) && !unicode.IsDigit(rune([]rune(expr)[i+len(v[1].(string))])) &&
+						!unicode.IsLetter(rune([]rune(expr)[i+len(v[1].(string))])) && "_" != string([]rune(expr)[i+len(v[1].(string))]) {
 						// проверяем, что это не присвоение
-						if i+1 < len(expr) && "=" != string(expr[i+len(v[1].(string))]) {
+						if i+1 < len([]rune(expr)) && "=" != string([]rune(expr)[i+len(v[1].(string))]) {
 							// проверяем, что найденная переменная не является частью какого-либо другого слова
 							if i-1 >= 0 && !unicode.IsDigit(rune(expr[i-1])) &&
-								!unicode.IsLetter(rune(expr[i-1])) &&
-								!unicode.IsDigit(rune(expr[i+len(v[1].(string))])) &&
-								!unicode.IsLetter(rune(expr[i+len(v[1].(string))])) {
+								!unicode.IsLetter(rune([]rune(expr)[i-1])) &&
+								!unicode.IsDigit(rune([]rune(expr)[i+len(v[1].(string))])) &&
+								!unicode.IsLetter(rune([]rune(expr)[i+len(v[1].(string))])) {
 								res = append(res, []interface{}{"VAR", v[1]})
 								i += len(v[1].(string))
 							}
@@ -44,101 +44,101 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 			}
 		}
 
-		if len(expr) > i+3 && "AND" == expr[i:i+3] {
+		if len([]rune(expr)) > i+3 && "AND" == string([]rune(expr)[i:i+3]) {
 			res = append(res, []interface{}{"OP", "AND"})
 			i += 2
-		} else if len(expr) > i+2 && "OR" == expr[i:i+2] {
+		} else if len([]rune(expr)) > i+2 && "OR" == string([]rune(expr)[i:i+2]) {
 			res = append(res, []interface{}{"OP", "OR"})
 			i += 1
-		} else if len(expr) > i+3 && "NOT" == expr[i:i+3] {
+		} else if len([]rune(expr)) > i+3 && "NOT" == string([]rune(expr)[i:i+3]) {
 			res = append(res, []interface{}{"OP", "NOT"})
 			i += 2
-		} else if len(expr) > i+3 && "XOR" == expr[i:i+3] {
+		} else if len([]rune(expr)) > i+3 && "XOR" == string([]rune(expr)[i:i+3]) {
 			res = append(res, []interface{}{"OP", "XOR"})
 			i += 2
-		} else if len(expr) > i && "." == string(expr[i]) {
+		} else if len([]rune(expr)) > i && "." == string([]rune(expr)[i]) {
 			res = append(res, []interface{}{"OP", "."})
-		} else if len(expr) > i && "+" == string(expr[i]) {
+		} else if len([]rune(expr)) > i && "+" == string([]rune(expr)[i]) {
 			res = append(res, []interface{}{"OP", "+"})
-		} else if i > 0 && len(expr) > i+1 && "-" == string(expr[i]) && (unicode.IsDigit(rune(expr[i-1])) ||
-			unicode.IsLetter(rune(expr[i-1])) ||
-			")" == string(expr[i-1])) && (unicode.IsDigit(rune(expr[i+1])) || unicode.IsLetter(rune(expr[i+1])) ||
-			"(" == string(expr[i+1]) || "$" == string(expr[i+1])) {
+		} else if i > 0 && len([]rune(expr)) > i+1 && "-" == string([]rune(expr)[i]) && (unicode.IsDigit(rune([]rune(expr)[i-1])) ||
+			unicode.IsLetter(rune([]rune(expr)[i-1])) ||
+			")" == string([]rune(expr)[i-1])) && (unicode.IsDigit(rune([]rune(expr)[i+1])) || unicode.IsLetter(rune([]rune(expr)[i+1])) ||
+			"(" == string([]rune(expr)[i+1]) || "$" == string([]rune(expr)[i+1])) {
 			res = append(res, []interface{}{"OP", "-"})
-		} else if len(expr) > i && "*" == string(expr[i]) {
+		} else if len([]rune(expr)) > i && "*" == string([]rune(expr)[i]) {
 			res = append(res, []interface{}{"OP", "*"})
-		} else if len(expr) > i && "/" == string(expr[i]) {
+		} else if len([]rune(expr)) > i && "/" == string([]rune(expr)[i]) {
 			res = append(res, []interface{}{"OP", "/"})
-		} else if len(expr) > i && "@" == string(expr[i]) {
+		} else if len([]rune(expr)) > i && "@" == string([]rune(expr)[i]) {
 			res = append(res, []interface{}{"OP", "@"})
-		} else if len(expr) > i && "^" == string(expr[i]) {
+		} else if len([]rune(expr)) > i && "^" == string([]rune(expr)[i]) {
 			res = append(res, []interface{}{"OP", "^"})
-		} else if len(expr) > i+6 && "print(" == expr[i:i+6] {
+		} else if len([]rune(expr)) > i+6 && "print(" == string([]rune(expr)[i:i+6]) {
 			res = append(res, []interface{}{"OP", "print"})
 			i += 4
-		} else if len(expr) > i+4 && "len(" == expr[i:i+4] {
+		} else if len([]rune(expr)) > i+4 && "len(" == string([]rune(expr)[i:i+4]) {
 			res = append(res, []interface{}{"OP", "len"})
 			i += 2
-		} else if len(expr) > i+6 && "exists" == expr[i:i+6] {
+		} else if len([]rune(expr)) > i+6 && "exists" == string([]rune(expr)[i:i+6]) {
 			res = append(res, []interface{}{"OP", "exists"})
 			i += 5
-		} else if len(expr) > i+6 && "index(" == expr[i:i+6] {
+		} else if len([]rune(expr)) > i+6 && "index(" == string([]rune(expr)[i:i+6]) {
 			res = append(res, []interface{}{"OP", "index"})
 			i += 4
-		} else if len(expr) > i+9 && "is_letter" == expr[i:i+9] {
+		} else if len([]rune(expr)) > i+9 && "is_letter" == string([]rune(expr)[i:i+9]) {
 			res = append(res, []interface{}{"OP", "is_letter"})
 			i += 8
-		} else if len(expr) > i+8 && "is_digit" == expr[i:i+8] {
+		} else if len([]rune(expr)) > i+8 && "is_digit" == string([]rune(expr)[i:i+8]) {
 			res = append(res, []interface{}{"OP", "is_digit"})
 			i += 7
-		} else if len(expr) > i+8 && "reg_find" == expr[i:i+8] {
+		} else if len([]rune(expr)) > i+8 && "reg_find" == string([]rune(expr)[i:i+8]) {
 			res = append(res, []interface{}{"OP", "reg_find"})
 			i += 7
-		} else if len(expr) > i+3 && "pop" == expr[i:i+3] {
+		} else if len([]rune(expr)) > i+3 && "pop" == string([]rune(expr)[i:i+3]) {
 			res = append(res, []interface{}{"OP", "pop"})
 			i += 2
-		} else if len(expr) > i+4 && "push" == expr[i:i+4] {
+		} else if len([]rune(expr)) > i+4 && "push" == string([]rune(expr)[i:i+4]) {
 			res = append(res, []interface{}{"OP", "push"})
 			i += 3
-		} else if len(expr) > i+5 && "input" == expr[i:i+5] {
+		} else if len([]rune(expr)) > i+5 && "input" == string([]rune(expr)[i:i+5]) {
 			res = append(res, []interface{}{"OP", "input"})
 			i += 4
-		} else if len(expr) > i+8 && "$open_f(" == expr[i:i+8] {
+		} else if len([]rune(expr)) > i+8 && "$open_f(" == string([]rune(expr)[i:i+8]) {
 			res = append(res, []interface{}{"OP", "$open_f"})
 			i += 6
-		} else if len(expr) > i+8 && "$read_f(" == expr[i:i+8] {
+		} else if len([]rune(expr)) > i+8 && "$read_f(" == string([]rune(expr)[i:i+8]) {
 			res = append(res, []interface{}{"OP", "$read_f"})
 			i += 6
-		} else if len(expr) > i+9 && "$close_f(" == expr[i:i+9] {
+		} else if len([]rune(expr)) > i+9 && "$close_f(" == string(expr[i:i+9]) {
 			res = append(res, []interface{}{"OP", "$close_f"})
 			i += 7
-		} else if len(expr) > i+12 && "next_command" == expr[i:i+12] {
+		} else if len([]rune(expr)) > i+12 && "next_command" == string(expr[i:i+12]) {
 			res = append(res, []interface{}{"OP", "next_command"})
 			i += 11
-		} else if len(expr) > i+15 && "get_root_source" == expr[i:i+15] {
+		} else if len([]rune(expr)) > i+15 && "get_root_source" == string([]rune(expr)[i:i+15]) {
 			res = append(res, []interface{}{"OP", "get_root_source"})
 			i += 14
-		} else if len(expr) > i+13 && "get_root_dest" == expr[i:i+13] {
+		} else if len([]rune(expr)) > i+13 && "get_root_dest" == string([]rune(expr)[i:i+13]) {
 			res = append(res, []interface{}{"OP", "get_root_dest"})
 			i += 12
-		} else if len(expr) > i+12 && "send_command" == expr[i:i+12] {
+		} else if len([]rune(expr)) > i+12 && "send_command" == string([]rune(expr)[i:i+12]) {
 			res = append(res, []interface{}{"OP", "send_command"})
 			i += 11
-		} else if len(expr) > i+4 && "goto" == expr[i:i+4] {
+		} else if len([]rune(expr)) > i+4 && "goto" == string([]rune(expr)[i:i+4]) {
 			res = append(res, []interface{}{"OP", "goto"})
 			i += 3
-		} else if len(expr) > i+5 && "exit(" == expr[i:i+5] {
+		} else if len([]rune(expr)) > i+5 && "exit(" == string([]rune(expr)[i:i+5]) {
 			res = append(res, []interface{}{"OP", "exit"})
 			i += 3
-		} else if len(expr) > i && "#" == string(expr[i]) {
-			mark := string(expr[i])
+		} else if len([]rune(expr)) > i && "#" == string([]rune(expr)[i]) {
+			mark := string([]rune(expr)[i])
 			i += 1
 
-			for ":" != string(expr[i]) && ")" != string(expr[i]) {
-				mark += string(expr[i])
+			for ":" != string([]rune(expr)[i]) && ")" != string([]rune(expr)[i]) {
+				mark += string([]rune(expr)[i])
 				i += 1
 			}
-			if ":" == string(expr[i]) && toCompile {
+			if ":" == string([]rune(expr)[i]) && toCompile {
 				_, err := progFile.Write([]byte("\n." + mark[1:] + ":\n"))
 				if nil != err {
 					fmt.Println(err)
@@ -165,114 +165,115 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 					"call __newLabelMem\n add (labelSize), %r12 \n\n mov %r10, %rdi \n mov %rsi, %r9"))
 				LabelCounter++
 			}
-			if ")" == string(expr[i]) {
+			if ")" == string([]rune(expr)[i]) {
 				res = append(res, []interface{}{"VAR", mark})
 				res = append(res, []interface{}{"BR", ")"})
 			}
-		} else if len(expr) > i+10 && "SET_SOURCE" == expr[i:i+10] {
+		} else if len([]rune(expr)) > i+10 && "SET_SOURCE" == string([]rune(expr)[i:i+10]) {
 			res = append(res, []interface{}{"OP", "SET_SOURCE"})
 			i += 9
-		} else if len(expr) > i+8 && "SET_DEST" == expr[i:i+8] {
+		} else if len([]rune(expr)) > i+8 && "SET_DEST" == string([]rune(expr)[i:i+8]) {
 			res = append(res, []interface{}{"OP", "SET_DEST"})
 			i += 7
-		} else if len(expr) > i+9 && "SEND_DEST" == expr[i:i+9] {
+		} else if len([]rune(expr)) > i+9 && "SEND_DEST" == string([]rune(expr)[i:i+9]) {
 			res = append(res, []interface{}{"OP", "SEND_DEST"})
 			i += 8
-		} else if len(expr) > i+8 && "DEL_DEST" == expr[i:i+8] {
+		} else if len([]rune(expr)) > i+8 && "DEL_DEST" == string([]rune(expr)[i:i+8]) {
 			res = append(res, []interface{}{"OP", "DEL_DEST"})
 			i += 7
-		} else if len(expr) > i+8 && "UNDEFINE" == expr[i:i+8] {
+		} else if len([]rune(expr)) > i+8 && "UNDEFINE" == string([]rune(expr)[i:i+8]) {
 			res = append(res, []interface{}{"OP", "UNDEFINE"})
 			i += 7
-		} else if len(expr) > i+5 && "CLEAR" == expr[i:i+5] {
+		} else if len([]rune(expr)) > i+5 && "CLEAR" == string([]rune(expr)[i:i+5]) {
 			res = append(res, []interface{}{"OP", "CLEAR"})
 			i += 4
-		} else if len(expr) > i+12 && "UNSET_SOURCE" == expr[i:i+12] {
+		} else if len([]rune(expr)) > i+12 && "UNSET_SOURCE" == string([]rune(expr)[i:i+12]) {
 			res = append(res, []interface{}{"OP", "UNSET_SOURCE"})
 			i += 13 // плюс скобки, которые мы не разбираем
-		} else if len(expr) > i+7 && "REROUTE" == expr[i:i+7] {
+		} else if len([]rune(expr)) > i+7 && "REROUTE" == string([]rune(expr)[i:i+7]) {
 			res = append(res, []interface{}{"OP", "REROUTE"})
 			i += 8
-		} else if len(expr) > i+10 && "UNSET_DEST" == expr[i:i+10] {
+		} else if len([]rune(expr)) > i+10 && "UNSET_DEST" == string([]rune(expr)[i:i+10]) {
 			res = append(res, []interface{}{"OP", "UNSET_DEST"})
 			i += 11
-		} else if len(expr) > i+12 && "RESET_SOURCE" == expr[i:i+12] {
+		} else if len([]rune(expr)) > i+12 && "RESET_SOURCE" == string([]rune(expr)[i:i+12]) {
 			res = append(res, []interface{}{"OP", "RESET_SOURCE"})
 			i += 13
-		} else if len(expr) > i+3 && "str" == expr[i:i+3] && "(" == string(expr[i+3]) {
+		} else if len([]rune(expr)) > i+3 && "str" == string([]rune(expr)[i:i+3]) && "(" == string([]rune(expr)[i+3]) {
 			res = append(res, []interface{}{"OP", "str"})
 			i += 2
-		} else if len(expr) > i+3 && "int" == expr[i:i+3] && "(" == string(expr[i+3]) {
+		} else if len([]rune(expr)) > i+3 && "int" == string([]rune(expr)[i:i+3]) && "(" == string([]rune(expr)[i+3]) {
 			res = append(res, []interface{}{"OP", "int"})
 			i += 2
-		} else if len(expr) > i+5 && "float" == expr[i:i+5] && "(" == string(expr[i+5]) {
+		} else if len([]rune(expr)) > i+5 && "float" == string([]rune(expr)[i:i+5]) && "(" == string([]rune(expr)[i+5]) {
 			res = append(res, []interface{}{"OP", "float"})
 			i += 4
-		} else if len(expr) > i+4 && "bool" == expr[i:i+4] && "(" == string(expr[i+4]) {
+		} else if len([]rune(expr)) > i+4 && "bool" == string([]rune(expr)[i:i+4]) && "(" == string([]rune(expr)[i+4]) {
 			res = append(res, []interface{}{"OP", "bool"})
 			i += 3
-		} else if len(expr) > i && "(" == string(expr[i]) {
+		} else if len([]rune(expr)) > i && "(" == string([]rune(expr)[i]) {
 			res = append(res, []interface{}{"BR", "("})
-		} else if len(expr) > i && ")" == string(expr[i]) {
+		} else if len([]rune(expr)) > i && ")" == string([]rune(expr)[i]) {
 			res = append(res, []interface{}{"BR", ")"})
-		} else if len(expr) > i && ":" == string(expr[i]) {
+		} else if len([]rune(expr)) > i && ":" == string([]rune(expr)[i]) {
 			res = append(res, []interface{}{"OP", ":"})
-		} else if len(expr) >= i+4 && "True" == expr[i:i+4] {
+		} else if len([]rune(expr)) >= i+4 && "True" == string([]rune(expr)[i:i+4]) {
 			// крайнее правое значение - операция, которая была выполнена
 			// значение посередине - результат этой операции
 			res = append(res, []interface{}{"VAL", "True", "True"})
 			i += 3
-		} else if len(expr) >= i+5 && "False" == expr[i:i+5] {
+		} else if len([]rune(expr)) >= i+5 && "False" == string([]rune(expr)[i:i+5]) {
 			res = append(res, []interface{}{"VAL", "False", "False"})
 			i += 4
-		} else if len(expr) > i && "=" == string(expr[i]) && "=" != string(expr[i+1]) {
+		} else if len([]rune(expr)) > i && "=" == string([]rune(expr)[i]) && "=" != string([]rune(expr)[i+1]) {
 			res = append(res, []interface{}{"OP", "="})
-		} else if len(expr) > i && "[" == string(expr[i]) {
+		} else if len([]rune(expr)) > i && "[" == string([]rune(expr)[i]) {
 			res = append(res, []interface{}{"CD_BR", "["})
-		} else if len(expr) > i && "]" == string(expr[i]) {
+		} else if len([]rune(expr)) > i && "]" == string([]rune(expr)[i]) {
 			res = append(res, []interface{}{"CD_BR", "]"})
-		} else if len(expr) > i+2 && "<=" == expr[i:i+2] {
+		} else if len([]rune(expr)) > i+2 && "<=" == string([]rune(expr)[i:i+2]) {
 			res = append(res, []interface{}{"OP", "<="})
 			i += 1
-		} else if len(expr) > i+2 && ">=" == expr[i:i+2] {
+		} else if len([]rune(expr)) > i+2 && ">=" == string([]rune(expr)[i:i+2]) {
 			res = append(res, []interface{}{"OP", ">="})
 			i += 1
-		} else if len(expr) > i+2 && "==" == expr[i:i+2] {
+		} else if len([]rune(expr)) > i+2 && "==" == string([]rune(expr)[i:i+2]) {
 			res = append(res, []interface{}{"OP", "=="})
 			i += 1
-		} else if len(expr) > i && "<" == string(expr[i]) {
+		} else if len([]rune(expr)) > i && "<" == string([]rune(expr)[i]) {
 			res = append(res, []interface{}{"OP", "<"})
-		} else if len(expr) > i && ">" == string(expr[i]) {
+		} else if len([]rune(expr)) > i && ">" == string([]rune(expr)[i]) {
 			res = append(res, []interface{}{"OP", ">"})
-		} else if len(expr) > i && "," == string(expr[i]) {
+		} else if len([]rune(expr)) > i && "," == string([]rune(expr)[i]) {
 			res = append(res, []interface{}{"SEP", ","})
-		} else if len(expr) > i+3 && "int" == expr[i:i+3] && "_" != string(expr[i+3]) && IsValidString(expr[i+3:]) && !isType {
+		} else if len([]rune(expr)) > i+3 && "int" == string([]rune(expr)[i:i+3]) && "_" != string([]rune(expr)[i+3]) && IsValidString(string([]rune(expr)[i+3:])) && !isType {
 			isType = true
 			variables = append(variables, []interface{}{"int", "var_name", []interface{}{"0"}})
 			i += 2
-		} else if len(expr) > i+5 && "float" == expr[i:i+5] && "_" != string(expr[i+5]) && IsValidString(expr[i+5:]) && !isType {
+		} else if len([]rune(expr)) > i+5 && "float" == string([]rune(expr)[i:i+5]) && "_" != string([]rune(expr)[i+5]) && IsValidString(string([]rune(expr)[i+5:])) && !isType {
 			isType = true
 			variables = append(variables, []interface{}{"float", "var_name", []interface{}{"0"}})
 			i += 4
-		} else if len(expr) > i+4 && "bool" == expr[i:i+4] && "_" != string(expr[i+4]) && IsValidString(expr[i+4:]) && !isType {
+		} else if len([]rune(expr)) > i+4 && "bool" == string([]rune(expr)[i:i+4]) && "_" != string([]rune(expr)[i+4]) && IsValidString(string([]rune(expr)[i+4:])) && !isType {
 			isType = true
 			variables = append(variables, []interface{}{"bool", "var_name", []interface{}{"False"}})
 			i += 3
-		} else if len(expr) > i+6 && "string" == expr[i:i+6] && "_" != string(expr[i+6]) && IsValidString(expr[i+6:]) && !isType {
+		} else if len([]rune(expr)) > i+6 && "string" == string([]rune(expr)[i:i+6]) && "_" != string([]rune(expr)[i+6]) && IsValidString(string([]rune(expr)[i+6:])) && !isType {
 			isType = true
 			variables = append(variables, []interface{}{"string", "var_name", []interface{}{""}})
 			i += 5
-		} else if len(expr) > i+5 && "stack" == expr[i:i+5] && "_" != string(expr[i+5]) && IsValidString(expr[i+5:]) && !isType {
+		} else if len([]rune(expr)) > i+5 && "stack" == string([]rune(expr)[i:i+5]) && "_" != string([]rune(expr)[i+5]) && IsValidString(string([]rune(expr)[i+5:])) && !isType {
 			isType = true
 			variables = append(variables, []interface{}{"stack", "var_name", []interface{}{[]interface{}{"end"}}})
 			i += 4
 		} else {
+
 			// число, либо переменная, либо строка
 			// число
 			// выражение "-(переменная)" недопустимо
-			if unicode.IsDigit(rune(expr[i])) || "-" == string(expr[i]) {
-				number := string(expr[i])
-				exprInside := expr[i+1:]
+			if unicode.IsDigit(rune([]rune(expr)[i])) || "-" == string([]rune(expr)[i]) {
+				number := string([]rune(expr)[i])
+				exprInside := string([]rune(expr)[i+1:])
 				for _, ch := range exprInside {
 					if unicode.IsDigit(ch) || "." == string(ch) {
 						number += string(ch)
@@ -283,7 +284,7 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 
 				res = append(res, []interface{}{"VAL", number})
 				i += len(number) - 1
-			} else if unicode.IsLetter(rune(expr[i])) || "$" == string(expr[i]) {
+			} else if unicode.IsLetter(rune([]rune(expr)[i])) || "$" == string([]rune(expr)[i]) {
 				// переменная
 				// переменная может состоять только из:
 				// а) латинских букв;
@@ -292,8 +293,8 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 				// переменная всегда начинается с буквы
 				// системная переменная начинается с символа "$"
 
-				varName := string(expr[i])
-				exprInside := expr[i+1:]
+				varName := string([]rune(expr)[i])
+				exprInside := string([]rune(expr)[i+1:])
 
 				for _, ch := range exprInside {
 					if unicode.IsLetter(ch) || unicode.IsDigit(ch) || "_" == string(ch) {
@@ -474,9 +475,9 @@ func LexicalAnalyze(expr string, variables [][]interface{}, toTranspile bool, to
 				}
 
 				res = append(res, []interface{}{"VAL", "\"" + stringInside + "\""})
-				i += len(stringInside) + offset
+				i += len([]rune(stringInside)) + offset
 			} else {
-				err := errors.New("lexer: ERROR: can not recognize symbol " + "\"" + string(expr[i]) + "\"")
+				err := errors.New("lexer: ERROR: can not recognize symbol " + "\"" + string([]rune(expr)[i]) + "\"")
 				return res, variables, err
 			}
 

@@ -2034,7 +2034,7 @@ varName32:
 .space 1, 0
 lenVarName32 = . - varName32
 data64:
-.ascii "Задайте количество чисел\n"
+.ascii "Задайте количество чисел (не более 25)\n"
 .space 1, 0
 lenData64 = . - data64
 varName33:
@@ -2211,3 +2211,222 @@ varName41:
 .ascii "$print_arg0"
 .space 1, 0
 lenVarName41 = . - varName41
+data92:
+.ascii "Ошибка! "
+.space 1, 0
+lenData92 = . - data92
+data93:
+.ascii "\n"
+.space 1, 0
+lenData93 = . - data93
+varName42:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName42 = . - varName42
+data94:
+.ascii "Повторите ввод\n"
+.space 1, 0
+lenData94 = . - data94
+label20:
+ .quad ._cond13_end
+labelName20:
+.ascii "._cond13_end"
+.space 1,0
+data95:
+.ascii ""
+.space 1, 0
+lenData95 = . - data95
+data96:
+.ascii ""
+.space 1, 0
+lenData96 = . - data96
+data97:
+.ascii "25"
+.space 1, 0
+lenData97 = . - data97
+data98:
+.ascii ""
+.space 1, 0
+lenData98 = . - data98
+data99:
+.ascii "Слишком большое количество чисел"
+.space 1, 0
+lenData99 = . - data99
+varName43:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName43 = . - varName43
+data100:
+.ascii "Ошибка! "
+.space 1, 0
+lenData100 = . - data100
+data101:
+.ascii "\n"
+.space 1, 0
+lenData101 = . - data101
+varName44:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName44 = . - varName44
+data102:
+.ascii "Повторите ввод\n"
+.space 1, 0
+lenData102 = . - data102
+label21:
+ .quad ._cond14_end
+labelName21:
+.ascii "._cond14_end"
+.space 1,0
+data103:
+.ascii ""
+.space 1, 0
+lenData103 = . - data103
+data104:
+.ascii ""
+.space 1, 0
+lenData104 = . - data104
+data105:
+.ascii ""
+.space 1, 0
+lenData105 = . - data105
+data106:
+.ascii ""
+.space 1, 0
+lenData106 = . - data106
+data107:
+.ascii ""
+.space 1, 0
+lenData107 = . - data107
+data108:
+.ascii "1"
+.space 1, 0
+lenData108 = . - data108
+label22:
+ .quad ._cond15_end
+labelName22:
+.ascii "._cond15_end"
+.space 1,0
+data109:
+.ascii ""
+.space 1, 0
+lenData109 = . - data109
+data110:
+.ascii ""
+.space 1, 0
+lenData110 = . - data110
+label23:
+ .quad ._undef_for1
+labelName23:
+.ascii "._undef_for1"
+.space 1,0
+data111:
+.ascii ""
+.space 1, 0
+lenData111 = . - data111
+label24:
+ .quad ._cond8_end
+labelName24:
+.ascii "._cond8_end"
+.space 1,0
+data112:
+.ascii ""
+.space 1, 0
+lenData112 = . - data112
+data113:
+.ascii ""
+.space 1, 0
+lenData113 = . - data113
+label25:
+ .quad ._cond16_end
+labelName25:
+.ascii "._cond16_end"
+.space 1,0
+data114:
+.ascii ""
+.space 1, 0
+lenData114 = . - data114
+data115:
+.ascii ""
+.space 1, 0
+lenData115 = . - data115
+label26:
+ .quad ._cond17_end
+labelName26:
+.ascii "._cond17_end"
+.space 1,0
+data116:
+.ascii ""
+.space 1, 0
+lenData116 = . - data116
+label27:
+ .quad ._for1_end
+labelName27:
+.ascii "._for1_end"
+.space 1,0
+data117:
+.ascii ""
+.space 1, 0
+lenData117 = . - data117
+data118:
+.ascii ""
+.space 1, 0
+lenData118 = . - data118
+varName45:
+.ascii "res"
+.space 1, 0
+lenVarName45 = . - varName45
+varName46:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName46 = . - varName46
+data119:
+.ascii "\n"
+.space 1, 0
+lenData119 = . - data119
+varName47:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName47 = . - varName47
+data120:
+.ascii "Результат:\n"
+.space 1, 0
+lenData120 = . - data120
+varName48:
+.ascii "$fibonacci_res0"
+.space 1, 0
+lenVarName48 = . - varName48
+data121:
+.ascii "#fibonacci_res0"
+.space 1, 0
+lenData121 = . - data121
+label28:
+ .quad .fibonacci_res0
+labelName28:
+.ascii ".fibonacci_res0"
+.space 1,0
+label29:
+ .quad .main_end
+labelName29:
+.ascii ".main_end"
+.space 1,0
+data122:
+.ascii ""
+.space 1, 0
+lenData122 = . - data122
+data123:
+.ascii "#main_res0"
+.space 1, 0
+lenData123 = . - data123
+label30:
+ .quad .main_res0
+labelName30:
+.ascii ".main_res0"
+.space 1,0
+data124:
+.ascii ""
+.space 1, 0
+lenData124 = . - data124
+data125:
+.ascii ""
+.space 1, 0
+lenData125 = . - data125
