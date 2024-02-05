@@ -192,6 +192,7 @@ void replace_if(string cond, int stop_pos){
 	string buf;
 	string snum;
 	stack args_to_undefine;
+	stack args_to_undefine_old;
 	string arg_type;
 	int command_len;
 	string arg_name;
@@ -216,11 +217,17 @@ void replace_if(string cond, int stop_pos){
 	
 	buf = (("#_cond" + snum) + "_end:print(\"\")");
 	send_command(buf);
+	check_br(command);	
 	switch_command();
+	
+
 	#add_replace_clear_if_mark:
 
-	/*[print(""), (len(command) > 6), goto(#replace_if_ret_end)];
+	[print(""), (len(command) > 6), goto(#replace_if_ret_end)];
+	print("");
 	[print(""), (command[0:6] == "return"), goto(#replace_if_ret_end)];
+	
+	args_to_undefine_old = args_to_undefine;
 
 	args_to_undefine.pop(arg_name);
 	#un6:
@@ -231,8 +238,8 @@ void replace_if(string cond, int stop_pos){
 	goto(#un6);
 	#un_end6:
 	print("");
-	#replace_if_ret_end:*/
-	check_br(command);
+	args_to_undefine = args_to_undefine_old; 
+	#replace_if_ret_end:
 
 	[print(""), ((is_var_def(command))AND(br_closed == br_opened)), goto(#pop_e)];
 	arg_type = Type(command);

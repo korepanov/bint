@@ -7188,15 +7188,14 @@ jmp ._cond5_end
 __rightEnd5:
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName, %rax 
- mov $varName13, %rdi
+ mov $lenVarName17, %rax 
+mov $varName17, %rdi 
  call __set 
- call __getVar 
- push (userData)
+call __undefineVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName13, %rax 
-mov $varName13, %rdi 
+ mov $lenVarName16, %rax 
+mov $varName16, %rdi 
  call __set 
 call __undefineVar
 mov $lenVarName, %rsi 
@@ -7207,8 +7206,15 @@ mov $varName15, %rdi
 call __undefineVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName16, %rax 
-mov $varName16, %rdi 
+ mov $lenVarName, %rax 
+ mov $varName13, %rdi
+ call __set 
+ call __getVar 
+ push (userData)
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName13, %rax 
+mov $varName13, %rdi 
  call __set 
 call __undefineVar
 mov $lenVarName, %rsi 
@@ -7232,24 +7238,6 @@ call __print
 
 mov $data36, %rsi
 call __print
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName17, %rax 
-mov $varName17, %rdi 
- call __set 
-call __undefineVar
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName16, %rax 
-mov $varName16, %rdi 
- call __set 
-call __undefineVar
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName15, %rax 
-mov $varName15, %rdi 
- call __set 
-call __undefineVar
 ._cond0_end:
 
 mov $data37, %rsi
