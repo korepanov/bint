@@ -38,6 +38,63 @@ bool is_for(string command){
 	return (NOT("end" == buf));
 };
 
+bool is_var_def(string command){
+	stack s;
+	string buf;
+
+	s = reg_find("^(?:(int|float|bool|stack|string)[^\(]*)", command);
+	s.pop(buf);
+	
+	return (NOT("end" == buf)); 
+};
+
+string Type(string command){
+	stack s;
+	string buf;
+
+	s = reg_find("(?:(^int))", command);
+	s.pop(buf);
+	
+	[goto(#int_end), ("end" == buf), print("")];
+	return "int";	
+	#int_end:
+
+	s = reg_find("(?:(^float))", command);
+	s.pop(buf);
+	[goto(#float_end), ("end" == buf), print("")];
+	return "float";	
+	#float_end:
+
+	s = reg_find("(?:(^bool))", command);
+	s.pop(buf);
+	[goto(#bool_end), ("end" == buf), print("")];
+	return "bool";	
+	#bool_end:
+
+	s = reg_find("(?:(^stack))", command);
+	s.pop(buf);
+	[goto(#stack_end), ("end" == buf), print("")];
+	return "stack";	
+	#stack_end:
+
+	s = reg_find("(?:(^string))", command);
+	s.pop(buf);
+	[goto(#string_end), ("end" == buf), print("")];
+	return "string";	
+	#string_end:
+
+	s = reg_find("(?:(^void))", command);
+	s.pop(buf);
+	[goto(#void_end), ("end" == buf), print("")];
+	return "void";	
+	#void_end:
+	
+	print(command);
+	print("\n");
+	print("Type: ERROR\n");
+	exit(1);
+};
+
 void switch_files(){
 	finish();
 	[print(""), (first_file), goto(#first_end)];
@@ -76,12 +133,23 @@ void main(){
 	int counter;
 	int internal_counter;
 	int command_len;
+	int command_len2;
+	int buf_len;
+	int old_num;
+	string sold_num;
 	string snum;
 	string buf;
+	string buf2;
 	string inc;
+	string old_command;
+	string internal_old_command; 
 	int pos;
 	bool was_for;
 	bool was_internal_for;
+	bool was_shift;
+	string arg_type;
+	string arg_name; 
+	
 	
 	was_for = False;
 	was_internal_for = False;
@@ -89,12 +157,28 @@ void main(){
 	#next:
 	switch_command();
 	if (NOT("end" == command)){
+		sold_num = str(old_num); 
+		buf2 = ("#_for" + sold_num);
+		buf_len = len(buf2);
+
+		if (len(command) > buf_len){
+	
+			if (command[0:buf_len] == buf2){
+				if (was_internal_for){
+					was_shift = True;
+					send_command(internal_old_command);				
+				};
+			}; 
+		};
 		if (is_for(command)){
 			was_for = True;
 			was_internal_for = False;
 			command_len = len(command);
 			command = command[4:command_len];
-			send_command(command);
+			if(NOT(was_shift)){
+				send_command(command);
+			};
+			old_command = command;
 			switch_command();
 			send_command(command);
 			switch_command();
@@ -119,6 +203,8 @@ void main(){
 			switch_command(); 
 			if (COMMAND_COUNTER < counter){
 				if (is_for(command)){
+					command_len2 = len(command);
+					internal_old_command = command[4:command_len2];
 					was_internal_for = True;
 					send_command(command); 
 					switch_command();
@@ -170,6 +256,18 @@ void main(){
 			send_command(command); 
 			command = (("UNDEFINE($for" + snum) + ")");
 			send_command(command);
+			
+			if(is_var_def(old_command)){
+				arg_type = Type(old_command);
+				int type_len;
+				type_len = len(arg_type);
+				command_len = len(old_command);
+				arg_name = old_command[type_len:command_len];
+				old_command = (("UNDEFINE(" + arg_name) + ")");
+				send_command(old_command); 				
+			};
+
+			old_num = num;
 			num = (num + 1);
 		}else{
 			send_command(command);
