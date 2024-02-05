@@ -158,6 +158,8 @@ void main(){
 		if (is_for(command)){
 			was_for = True;
 			was_internal_for = False;
+			buf = "if(True){print(\"\")";
+			send_command(buf); 
 			command_len = len(command);
 			command = command[4:command_len];
 			send_command(command);
@@ -237,8 +239,9 @@ void main(){
 			send_command(command); 
 			command = (("UNDEFINE($for" + snum) + ")");
 			send_command(command);
-			
-			if(is_var_def(old_command)){
+			command = "}";
+			send_command(command);
+			/*if(is_var_def(old_command)){
 				arg_type = Type(old_command);
 				int type_len;
 				type_len = len(arg_type);
@@ -246,7 +249,7 @@ void main(){
 				arg_name = old_command[type_len:command_len];
 				old_command = (("UNDEFINE(" + arg_name) + ")");
 				send_command(old_command); 				
-			};
+			};*/
 
 			old_num = num;
 			num = (num + 1);
