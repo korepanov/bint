@@ -7201,6 +7201,18 @@ mov $varName13, %rdi
 call __undefineVar
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
+ mov $lenVarName15, %rax 
+mov $varName15, %rdi 
+ call __set 
+call __undefineVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName16, %rax 
+mov $varName16, %rdi 
+ call __set 
+call __undefineVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
  mov $lenVarName11, %rax 
  mov $varName11, %rdi 
  call __set 

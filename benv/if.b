@@ -11,9 +11,9 @@ int br_opened;
 void init(){
 	br_closed = 0;
 	br_opened = 0;
-	root_source = "benv/internal/prep_if_program.b";
+	root_source = "benv/for_program.b";
 	SET_SOURCE(root_source);
-	SET_DEST("benv/internal/if_program.b");
+	SET_DEST("benv/if_program.b");
 };
 
 void finish(){
@@ -176,13 +176,13 @@ string if_type(string command){
 void switch_files(){
 	finish();
 	[print(""), (first_file), goto(#first_end)];
-	SET_SOURCE("benv/internal/if_program.b");
-	SET_DEST("benv/internal/if_program2.b");
+	SET_SOURCE("benv/if_program.b");
+	SET_DEST("benv/if_program2.b");
 	first_file = False;
 	goto(#switch_files_e);
 	#first_end:
-	SET_SOURCE("benv/internal/if_program2.b");
-	SET_DEST("benv/internal/if_program.b");
+	SET_SOURCE("benv/if_program2.b");
+	SET_DEST("benv/if_program.b");
 	first_file = True; 
 	#switch_files_e:
 	print("");
@@ -218,6 +218,20 @@ void replace_if(string cond, int stop_pos){
 	send_command(buf);
 	switch_command();
 	#add_replace_clear_if_mark:
+
+	/*[print(""), (len(command) > 6), goto(#replace_if_ret_end)];
+	[print(""), (command[0:6] == "return"), goto(#replace_if_ret_end)];
+
+	args_to_undefine.pop(arg_name);
+	#un6:
+	[goto(#un_end6), ("end" == arg_name), print("")];
+	buf = (("UNDEFINE(" + arg_name) + ")");
+	send_command(buf);
+	args_to_undefine.pop(arg_name); 
+	goto(#un6);
+	#un_end6:
+	print("");
+	#replace_if_ret_end:*/
 	check_br(command);
 
 	[print(""), ((is_var_def(command))AND(br_closed == br_opened)), goto(#pop_e)];
@@ -462,7 +476,7 @@ void clear_files(){
 	print("");
 	#clear_files_e:
 	finish();
-	DEL_DEST("benv/internal/if_program2.b");
+	DEL_DEST("benv/if_program2.b");
 	DEL_DEST(root_source);
 };
 

@@ -3,9 +3,10 @@ package validator
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 
-	"bint.com/internal/const/options"
+	//"path/filepath"
+
+	//"bint.com/internal/const/options"
 	. "bint.com/internal/internalTools"
 	. "bint.com/pkg/serviceTools"
 )
@@ -22,7 +23,7 @@ func Validate(toTranslate int, filesListToExecute []string, rootSource string,
 		}
 	}()
 
-	var err error
+	/*var err error
 	var name string
 
 	if options.UserTranslate == toTranslate ||
@@ -83,5 +84,5 @@ func Validate(toTranslate int, filesListToExecute []string, rootSource string,
 			DynamicValidate(validatingFile, rootSource)
 		}
 
-	}
+	}*/
 }
