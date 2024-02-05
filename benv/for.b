@@ -136,17 +136,14 @@ void main(){
 	int command_len2;
 	int buf_len;
 	int old_num;
-	string sold_num;
 	string snum;
 	string buf;
-	string buf2;
 	string inc;
 	string old_command;
 	string internal_old_command; 
 	int pos;
 	bool was_for;
 	bool was_internal_for;
-	bool was_shift;
 	string arg_type;
 	string arg_name; 
 	
@@ -157,27 +154,13 @@ void main(){
 	#next:
 	switch_command();
 	if (NOT("end" == command)){
-		sold_num = str(old_num); 
-		buf2 = ("#_for" + sold_num);
-		buf_len = len(buf2);
 
-		if (len(command) > buf_len){
-	
-			if (command[0:buf_len] == buf2){
-				if (was_internal_for){
-					was_shift = True;
-					send_command(internal_old_command);				
-				};
-			}; 
-		};
 		if (is_for(command)){
 			was_for = True;
 			was_internal_for = False;
 			command_len = len(command);
 			command = command[4:command_len];
-			if(NOT(was_shift)){
-				send_command(command);
-			};
+			send_command(command);
 			old_command = command;
 			switch_command();
 			send_command(command);
@@ -203,8 +186,6 @@ void main(){
 			switch_command(); 
 			if (COMMAND_COUNTER < counter){
 				if (is_for(command)){
-					command_len2 = len(command);
-					internal_old_command = command[4:command_len2];
 					was_internal_for = True;
 					send_command(command); 
 					switch_command();
