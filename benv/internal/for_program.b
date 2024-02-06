@@ -546,7 +546,7 @@ print("");
 #add_replace_elseif_mark:print("");
 [print(""),(len(command)>6),goto(#replace_else_if_ret_end)];
 print("");
-[print(""),((command[0:6]=="return")AND(br_closed==br_opened)),goto(#replace_else_if_ret_end)];
+[print(""),(command[0:6]=="return"),goto(#replace_else_if_ret_end)];
 print("");
 [print(""),(COMMAND_COUNTER<stop_pos),goto(#replace_else_if_ret_end)];
 args_to_undefine_old=args_to_undefine;

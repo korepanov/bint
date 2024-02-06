@@ -1281,7 +1281,7 @@ $sl_left0=0;
 $sl_right0=6;
 string$sl0;
 $sl0=command[$sl_left0:$sl_right0];
-[print(""),(($sl0=="return")AND(br_closed==br_opened)),goto(#replace_else_if_ret_end)];
+[print(""),($sl0=="return"),goto(#replace_else_if_ret_end)];
 UNDEFINE($sl_internal0);
 UNDEFINE($sl0);
 UNDEFINE($sl_left0);
