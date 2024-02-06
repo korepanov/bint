@@ -289,6 +289,7 @@ void replace_elseif(string cond, int stop_pos){
 	string arg_name;
 	string arg_type;
 	stack args_to_undefine;
+	stack args_to_undefine_old;
 	
 	sexit_num = str(exit_num);
 	snum = str(num);
@@ -333,6 +334,26 @@ void replace_elseif(string cond, int stop_pos){
 	#elif_end:
 	print("");
 	#add_replace_elseif_mark:
+	[print(""), (len(command) > 6), goto(#replace_else_if_ret_end)];
+	print("");
+	[print(""), ((command[0:6] == "return")AND(br_closed == br_opened)), goto(#replace_else_if_ret_end)];
+	print("");
+	[print(""), (COMMAND_COUNTER < stop_pos), goto(#replace_else_if_ret_end)]; 
+	
+	args_to_undefine_old = args_to_undefine;
+
+	args_to_undefine.pop(arg_name);
+	#un7:
+	[goto(#un_end7), ("end" == arg_name), print("")];
+	buf = (("UNDEFINE(" + arg_name) + ")");
+	send_command(buf);
+	args_to_undefine.pop(arg_name); 
+	goto(#un7);
+	#un_end7:
+	print("");
+	args_to_undefine = args_to_undefine_old; 
+	#replace_else_if_ret_end:
+
 	print("");
 	[print(""), ((is_var_def(command))AND(br_closed == br_opened)), goto(#pop_e2)];
 	arg_type = Type(command);
