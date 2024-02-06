@@ -7218,6 +7218,18 @@ jmp ._cond7_end
 __rightEnd7:
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
+ mov $lenVarName14, %rax 
+mov $varName14, %rdi 
+ call __set 
+call __undefineVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName15, %rax 
+mov $varName15, %rdi 
+ call __set 
+call __undefineVar
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
  mov $lenVarName, %rax 
  mov $varName13, %rdi
  call __set 

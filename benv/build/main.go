@@ -24182,7 +24182,7 @@ setVar("$sl_right0","6")
 defineVar("$sl0")
 setVar("$sl0", "")
 setVar("$sl0",getVar("command").(string)[toInt(getVar("$sl_left0")):toInt(getVar("$sl_right0"))])
-if toBool(isEqual(ValueFoldInterface(getVar("$sl0")), ValueFoldInterface("return")))&&toBool(isEqual(ValueFoldInterface(getVar("br_closed")), ValueFoldInterface(getVar("br_opened")))){
+if isEqual(ValueFoldInterface(getVar("$sl0")), ValueFoldInterface("return")){
 print("")
 }else{
 goto replace_if_ret_end

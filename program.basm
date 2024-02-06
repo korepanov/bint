@@ -85,6 +85,8 @@ UNDEFINE(i);
 #_cond2_end:print("");
 print("");
 [print(""),(is_prime),goto(#_cond7_end)];
+UNDEFINE($for0);
+UNDEFINE(is_prime);
 push(n);
 UNDEFINE(n);
 goto($next_prime_return_var);
