@@ -1682,6 +1682,10 @@ data8:
 .ascii ""
 .space 1, 0
 lenData8 = . - data8
+data9:
+.ascii ""
+.space 1, 0
+lenData9 = . - data9
 varName14:
 .ascii "$for0"
 .space 1, 0
@@ -1691,34 +1695,38 @@ label3:
 labelName3:
 .ascii "._for0"
 .space 1,0
-data9:
-.ascii ""
-.space 1, 0
-lenData9 = . - data9
 data10:
 .ascii ""
 .space 1, 0
 lenData10 = . - data10
 data11:
-.ascii "1"
+.ascii ""
 .space 1, 0
 lenData11 = . - data11
-varName15:
-.ascii "is_prime"
-.space 1, 0
-lenVarName15 = . - varName15
 data12:
 .ascii "1"
 .space 1, 0
 lenData12 = . - data12
+varName15:
+.ascii "is_prime"
+.space 1, 0
+lenVarName15 = . - varName15
+data13:
+.ascii "1"
+.space 1, 0
+lenData13 = . - data13
+data14:
+.ascii ""
+.space 1, 0
+lenData14 = . - data14
 varName16:
 .ascii "i"
 .space 1, 0
 lenVarName16 = . - varName16
-data13:
+data15:
 .ascii "2"
 .space 1, 0
-lenData13 = . - data13
+lenData15 = . - data15
 varName17:
 .ascii "$for3"
 .space 1, 0
@@ -1728,85 +1736,72 @@ label4:
 labelName4:
 .ascii "._for3"
 .space 1,0
-data14:
+data16:
 .ascii ""
 .space 1, 0
-lenData14 = . - data14
-data15:
+lenData16 = . - data16
+data17:
 .ascii ""
 .space 1, 0
-lenData15 = . - data15
+lenData17 = . - data17
 varName18:
 .ascii "$mod_res0"
 .space 1, 0
 lenVarName18 = . - varName18
-data16:
+data18:
 .ascii "#mod_res0"
 .space 1, 0
-lenData16 = . - data16
+lenData18 = . - data18
 label5:
  .quad .mod_res0
 labelName5:
 .ascii ".mod_res0"
 .space 1,0
-data17:
-.ascii "0"
-.space 1, 0
-lenData17 = . - data17
-data18:
-.ascii ""
-.space 1, 0
-lenData18 = . - data18
 data19:
 .ascii "0"
 .space 1, 0
 lenData19 = . - data19
 data20:
-.ascii "1"
+.ascii ""
 .space 1, 0
 lenData20 = . - data20
-label6:
- .quad ._cond2_end
-labelName6:
-.ascii "._cond2_end"
-.space 1,0
 data21:
-.ascii ""
+.ascii "0"
 .space 1, 0
 lenData21 = . - data21
 data22:
-.ascii ""
-.space 1, 0
-lenData22 = . - data22
-data23:
 .ascii "1"
 .space 1, 0
+lenData22 = . - data22
+label6:
+ .quad ._cond4_end
+labelName6:
+.ascii "._cond4_end"
+.space 1,0
+data23:
+.ascii ""
+.space 1, 0
 lenData23 = . - data23
+data24:
+.ascii ""
+.space 1, 0
+lenData24 = . - data24
+data25:
+.ascii "1"
+.space 1, 0
+lenData25 = . - data25
 label7:
  .quad ._undef_for3
 labelName7:
 .ascii "._undef_for3"
 .space 1,0
-data24:
-.ascii ""
-.space 1, 0
-lenData24 = . - data24
-label8:
- .quad ._cond1_end
-labelName8:
-.ascii "._cond1_end"
-.space 1,0
-data25:
-.ascii ""
-.space 1, 0
-lenData25 = . - data25
 data26:
 .ascii ""
 .space 1, 0
 lenData26 = . - data26
-label9:
+label8:
  .quad ._cond3_end
-labelName9:
+labelName8:
 .ascii "._cond3_end"
 .space 1,0
 data27:
@@ -1817,36 +1812,41 @@ data28:
 .ascii ""
 .space 1, 0
 lenData28 = . - data28
-label10:
- .quad ._cond4_end
-labelName10:
-.ascii "._cond4_end"
+label9:
+ .quad ._cond5_end
+labelName9:
+.ascii "._cond5_end"
 .space 1,0
 data29:
 .ascii ""
 .space 1, 0
 lenData29 = . - data29
+data30:
+.ascii ""
+.space 1, 0
+lenData30 = . - data30
+label10:
+ .quad ._cond6_end
+labelName10:
+.ascii "._cond6_end"
+.space 1,0
+data31:
+.ascii ""
+.space 1, 0
+lenData31 = . - data31
 label11:
  .quad ._for3_end
 labelName11:
 .ascii "._for3_end"
 .space 1,0
-data30:
-.ascii ""
-.space 1, 0
-lenData30 = . - data30
-data31:
-.ascii ""
-.space 1, 0
-lenData31 = . - data31
 data32:
 .ascii ""
 .space 1, 0
 lenData32 = . - data32
 label12:
- .quad ._cond5_end
+ .quad ._cond2_end
 labelName12:
-.ascii "._cond5_end"
+.ascii "._cond2_end"
 .space 1,0
 data33:
 .ascii ""
@@ -1861,19 +1861,14 @@ data35:
 .space 1, 0
 lenData35 = . - data35
 label13:
- .quad ._undef_for0
+ .quad ._cond7_end
 labelName13:
-.ascii "._undef_for0"
+.ascii "._cond7_end"
 .space 1,0
 data36:
 .ascii ""
 .space 1, 0
 lenData36 = . - data36
-label14:
- .quad ._cond0_end
-labelName14:
-.ascii "._cond0_end"
-.space 1,0
 data37:
 .ascii ""
 .space 1, 0
@@ -1882,32 +1877,32 @@ data38:
 .ascii ""
 .space 1, 0
 lenData38 = . - data38
-label15:
- .quad ._cond6_end
-labelName15:
-.ascii "._cond6_end"
+label14:
+ .quad ._undef_for0
+labelName14:
+.ascii "._undef_for0"
 .space 1,0
 data39:
 .ascii ""
 .space 1, 0
 lenData39 = . - data39
+label15:
+ .quad ._cond1_end
+labelName15:
+.ascii "._cond1_end"
+.space 1,0
 data40:
 .ascii ""
 .space 1, 0
 lenData40 = . - data40
-label16:
- .quad ._cond7_end
-labelName16:
-.ascii "._cond7_end"
-.space 1,0
 data41:
 .ascii ""
 .space 1, 0
 lenData41 = . - data41
-label17:
- .quad ._for0_end
-labelName17:
-.ascii "._for0_end"
+label16:
+ .quad ._cond8_end
+labelName16:
+.ascii "._cond8_end"
 .space 1,0
 data42:
 .ascii ""
@@ -1917,31 +1912,28 @@ data43:
 .ascii ""
 .space 1, 0
 lenData43 = . - data43
+label17:
+ .quad ._cond9_end
+labelName17:
+.ascii "._cond9_end"
+.space 1,0
 data44:
-.ascii "-1"
+.ascii ""
 .space 1, 0
 lenData44 = . - data44
 label18:
- .quad .next_prime_end
+ .quad ._for0_end
 labelName18:
-.ascii ".next_prime_end"
+.ascii "._for0_end"
 .space 1,0
 data45:
 .ascii ""
 .space 1, 0
 lenData45 = . - data45
-varName19:
-.ascii "$main_return_var"
-.space 1, 0
-lenVarName19 = . - varName19
-varName20:
-.ascii "$main_res"
-.space 1, 0
-lenVarName20 = . - varName20
 label19:
- .quad .main
+ .quad ._cond0_end
 labelName19:
-.ascii ".main"
+.ascii "._cond0_end"
 .space 1,0
 data46:
 .ascii ""
@@ -1951,30 +1943,32 @@ data47:
 .ascii ""
 .space 1, 0
 lenData47 = . - data47
-varName21:
-.ascii "$print_arg0"
-.space 1, 0
-lenVarName21 = . - varName21
 data48:
-.ascii "Программа вычисления таблицы простых чисел\n"
+.ascii "-1"
 .space 1, 0
 lenData48 = . - data48
-varName22:
-.ascii "$print_arg0"
-.space 1, 0
-lenVarName22 = . - varName22
+label20:
+ .quad .next_prime_end
+labelName20:
+.ascii ".next_prime_end"
+.space 1,0
 data49:
-.ascii "Задайте количество чисел (не более 200)\n"
+.ascii ""
 .space 1, 0
 lenData49 = . - data49
-varName23:
-.ascii "s"
+varName19:
+.ascii "$main_return_var"
 .space 1, 0
-lenVarName23 = . - varName23
-varName24:
-.ascii "n"
+lenVarName19 = . - varName19
+varName20:
+.ascii "$main_res"
 .space 1, 0
-lenVarName24 = . - varName24
+lenVarName20 = . - varName20
+label21:
+ .quad .main
+labelName21:
+.ascii ".main"
+.space 1,0
 data50:
 .ascii ""
 .space 1, 0
@@ -1983,35 +1977,51 @@ data51:
 .ascii ""
 .space 1, 0
 lenData51 = . - data51
-varName25:
-.ascii "$for1"
+varName21:
+.ascii "$print_arg0"
 .space 1, 0
-lenVarName25 = . - varName25
-label20:
- .quad ._for1
-labelName20:
-.ascii "._for1"
-.space 1,0
+lenVarName21 = . - varName21
 data52:
-.ascii ""
+.ascii "Программа вычисления таблицы простых чисел\n"
 .space 1, 0
 lenData52 = . - data52
+varName22:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName22 = . - varName22
 data53:
-.ascii ""
+.ascii "Задайте количество чисел (не более 200)\n"
 .space 1, 0
 lenData53 = . - data53
+varName23:
+.ascii "s"
+.space 1, 0
+lenVarName23 = . - varName23
+varName24:
+.ascii "n"
+.space 1, 0
+lenVarName24 = . - varName24
 data54:
 .ascii ""
 .space 1, 0
 lenData54 = . - data54
 data55:
-.ascii "0"
+.ascii ""
 .space 1, 0
 lenData55 = . - data55
 data56:
 .ascii ""
 .space 1, 0
 lenData56 = . - data56
+varName25:
+.ascii "$for1"
+.space 1, 0
+lenVarName25 = . - varName25
+label22:
+ .quad ._for1
+labelName22:
+.ascii "._for1"
+.space 1,0
 data57:
 .ascii ""
 .space 1, 0
@@ -2020,54 +2030,35 @@ data58:
 .ascii ""
 .space 1, 0
 lenData58 = . - data58
-label21:
- .quad ._cond10_end
-labelName21:
-.ascii "._cond10_end"
-.space 1,0
 data59:
 .ascii ""
 .space 1, 0
 lenData59 = . - data59
 data60:
-.ascii ""
+.ascii "0"
 .space 1, 0
 lenData60 = . - data60
 data61:
 .ascii ""
 .space 1, 0
 lenData61 = . - data61
-label22:
- .quad ._cond11_end
-labelName22:
-.ascii "._cond11_end"
-.space 1,0
 data62:
 .ascii ""
 .space 1, 0
 lenData62 = . - data62
-varName26:
-.ascii "$I0"
-.space 1, 0
-lenVarName26 = . - varName26
-label23:
- .quad ._attempt0
-labelName23:
-.ascii "._attempt0"
-.space 1,0
 data63:
 .ascii ""
 .space 1, 0
 lenData63 = . - data63
+label23:
+ .quad ._cond13_end
+labelName23:
+.ascii "._cond13_end"
+.space 1,0
 data64:
-.ascii "1"
+.ascii ""
 .space 1, 0
 lenData64 = . - data64
-label24:
- .quad ._cond9_end
-labelName24:
-.ascii "._cond9_end"
-.space 1,0
 data65:
 .ascii ""
 .space 1, 0
@@ -2076,22 +2067,61 @@ data66:
 .ascii ""
 .space 1, 0
 lenData66 = . - data66
+label24:
+ .quad ._cond14_end
+labelName24:
+.ascii "._cond14_end"
+.space 1,0
 data67:
 .ascii ""
 .space 1, 0
 lenData67 = . - data67
+varName26:
+.ascii "$I0"
+.space 1, 0
+lenVarName26 = . - varName26
+label25:
+ .quad ._attempt0
+labelName25:
+.ascii "._attempt0"
+.space 1,0
 data68:
 .ascii ""
 .space 1, 0
 lenData68 = . - data68
+data69:
+.ascii "1"
+.space 1, 0
+lenData69 = . - data69
+label26:
+ .quad ._cond12_end
+labelName26:
+.ascii "._cond12_end"
+.space 1,0
+data70:
+.ascii ""
+.space 1, 0
+lenData70 = . - data70
+data71:
+.ascii ""
+.space 1, 0
+lenData71 = . - data71
+data72:
+.ascii ""
+.space 1, 0
+lenData72 = . - data72
+data73:
+.ascii ""
+.space 1, 0
+lenData73 = . - data73
 varName27:
 .ascii "$print_arg0"
 .space 1, 0
 lenVarName27 = . - varName27
-data69:
+data74:
 .ascii "Ошибка! Неправильный формат числа\n"
 .space 1, 0
-lenData69 = . - data69
+lenData74 = . - data74
 varName28:
 .ascii "$print_arg0"
 .space 1, 0
@@ -2100,151 +2130,126 @@ varName29:
 .ascii "$print_arg0"
 .space 1, 0
 lenVarName29 = . - varName29
-data70:
+data75:
 .ascii "\n"
 .space 1, 0
-lenData70 = . - data70
+lenData75 = . - data75
 varName30:
 .ascii "$print_arg0"
 .space 1, 0
 lenVarName30 = . - varName30
-data71:
+data76:
 .ascii "Повторите ввод\n"
 .space 1, 0
-lenData71 = . - data71
-label25:
- .quad ._cond12_end
-labelName25:
-.ascii "._cond12_end"
+lenData76 = . - data76
+label27:
+ .quad ._cond15_end
+labelName27:
+.ascii "._cond15_end"
 .space 1,0
-data72:
+data77:
 .ascii ""
 .space 1, 0
-lenData72 = . - data72
-data73:
+lenData77 = . - data77
+data78:
 .ascii "0"
 .space 1, 0
-lenData73 = . - data73
-data74:
+lenData78 = . - data78
+data79:
 .ascii ""
 .space 1, 0
-lenData74 = . - data74
-data75:
+lenData79 = . - data79
+data80:
 .ascii "Введено отрицательное число"
 .space 1, 0
-lenData75 = . - data75
-data76:
+lenData80 = . - data80
+data81:
 .ascii ""
 .space 1, 0
-lenData76 = . - data76
+lenData81 = . - data81
 varName31:
 .ascii "$print_arg0"
 .space 1, 0
 lenVarName31 = . - varName31
-data77:
+data82:
 .ascii "Ошибка! "
 .space 1, 0
-lenData77 = . - data77
-data78:
+lenData82 = . - data82
+data83:
 .ascii "\n"
 .space 1, 0
-lenData78 = . - data78
+lenData83 = . - data83
 varName32:
 .ascii "$print_arg0"
 .space 1, 0
 lenVarName32 = . - varName32
-data79:
+data84:
 .ascii "Повторите ввод\n"
 .space 1, 0
-lenData79 = . - data79
-label26:
- .quad ._cond13_end
-labelName26:
-.ascii "._cond13_end"
-.space 1,0
-data80:
-.ascii ""
-.space 1, 0
-lenData80 = . - data80
-data81:
-.ascii "200"
-.space 1, 0
-lenData81 = . - data81
-data82:
-.ascii ""
-.space 1, 0
-lenData82 = . - data82
-data83:
-.ascii "Слишком большое количество чисел"
-.space 1, 0
-lenData83 = . - data83
-data84:
-.ascii ""
-.space 1, 0
 lenData84 = . - data84
-varName33:
-.ascii "$print_arg0"
-.space 1, 0
-lenVarName33 = . - varName33
+label28:
+ .quad ._cond16_end
+labelName28:
+.ascii "._cond16_end"
+.space 1,0
 data85:
-.ascii "Ошибка! "
+.ascii ""
 .space 1, 0
 lenData85 = . - data85
 data86:
-.ascii "\n"
+.ascii "200"
 .space 1, 0
 lenData86 = . - data86
-varName34:
-.ascii "$print_arg0"
-.space 1, 0
-lenVarName34 = . - varName34
 data87:
-.ascii "Повторите ввод\n"
-.space 1, 0
-lenData87 = . - data87
-label27:
- .quad ._cond14_end
-labelName27:
-.ascii "._cond14_end"
-.space 1,0
-data88:
 .ascii ""
 .space 1, 0
+lenData87 = . - data87
+data88:
+.ascii "Слишком большое количество чисел"
+.space 1, 0
 lenData88 = . - data88
-label28:
- .quad ._cond_exit0
-labelName28:
-.ascii "._cond_exit0"
-.space 1,0
 data89:
 .ascii ""
 .space 1, 0
 lenData89 = . - data89
+varName33:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName33 = . - varName33
 data90:
-.ascii ""
+.ascii "Ошибка! "
 .space 1, 0
 lenData90 = . - data90
 data91:
-.ascii ""
+.ascii "\n"
 .space 1, 0
 lenData91 = . - data91
+varName34:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName34 = . - varName34
 data92:
-.ascii ""
+.ascii "Повторите ввод\n"
 .space 1, 0
 lenData92 = . - data92
+label29:
+ .quad ._cond17_end
+labelName29:
+.ascii "._cond17_end"
+.space 1,0
 data93:
 .ascii ""
 .space 1, 0
 lenData93 = . - data93
+label30:
+ .quad ._cond_exit0
+labelName30:
+.ascii "._cond_exit0"
+.space 1,0
 data94:
-.ascii "1"
+.ascii ""
 .space 1, 0
 lenData94 = . - data94
-label29:
- .quad ._cond15_end
-labelName29:
-.ascii "._cond15_end"
-.space 1,0
 data95:
 .ascii ""
 .space 1, 0
@@ -2253,32 +2258,22 @@ data96:
 .ascii ""
 .space 1, 0
 lenData96 = . - data96
-label30:
- .quad ._undef_for1
-labelName30:
-.ascii "._undef_for1"
-.space 1,0
 data97:
 .ascii ""
 .space 1, 0
 lenData97 = . - data97
-label31:
- .quad ._cond8_end
-labelName31:
-.ascii "._cond8_end"
-.space 1,0
 data98:
 .ascii ""
 .space 1, 0
 lenData98 = . - data98
 data99:
-.ascii ""
+.ascii "1"
 .space 1, 0
 lenData99 = . - data99
-label32:
- .quad ._cond16_end
-labelName32:
-.ascii "._cond16_end"
+label31:
+ .quad ._cond18_end
+labelName31:
+.ascii "._cond18_end"
 .space 1,0
 data100:
 .ascii ""
@@ -2288,19 +2283,19 @@ data101:
 .ascii ""
 .space 1, 0
 lenData101 = . - data101
-label33:
- .quad ._cond17_end
-labelName33:
-.ascii "._cond17_end"
+label32:
+ .quad ._undef_for1
+labelName32:
+.ascii "._undef_for1"
 .space 1,0
 data102:
 .ascii ""
 .space 1, 0
 lenData102 = . - data102
-label34:
- .quad ._for1_end
-labelName34:
-.ascii "._for1_end"
+label33:
+ .quad ._cond11_end
+labelName33:
+.ascii "._cond11_end"
 .space 1,0
 data103:
 .ascii ""
@@ -2310,47 +2305,91 @@ data104:
 .ascii ""
 .space 1, 0
 lenData104 = . - data104
+label34:
+ .quad ._cond19_end
+labelName34:
+.ascii "._cond19_end"
+.space 1,0
 data105:
-.ascii "0"
+.ascii ""
 .space 1, 0
 lenData105 = . - data105
 data106:
 .ascii ""
 .space 1, 0
 lenData106 = . - data106
+label35:
+ .quad ._cond20_end
+labelName35:
+.ascii "._cond20_end"
+.space 1,0
 data107:
-.ascii "0"
+.ascii ""
 .space 1, 0
 lenData107 = . - data107
-label35:
- .quad ._cond18_end
-labelName35:
-.ascii "._cond18_end"
+label36:
+ .quad ._for1_end
+labelName36:
+.ascii "._for1_end"
 .space 1,0
 data108:
 .ascii ""
 .space 1, 0
 lenData108 = . - data108
+label37:
+ .quad ._cond10_end
+labelName37:
+.ascii "._cond10_end"
+.space 1,0
 data109:
 .ascii ""
 .space 1, 0
 lenData109 = . - data109
-varName35:
-.ascii "p"
-.space 1, 0
-lenVarName35 = . - varName35
 data110:
-.ascii "2"
+.ascii ""
 .space 1, 0
 lenData110 = . - data110
 data111:
-.ascii "1"
+.ascii "0"
 .space 1, 0
 lenData111 = . - data111
 data112:
 .ascii ""
 .space 1, 0
 lenData112 = . - data112
+data113:
+.ascii "0"
+.space 1, 0
+lenData113 = . - data113
+label38:
+ .quad ._cond21_end
+labelName38:
+.ascii "._cond21_end"
+.space 1,0
+data114:
+.ascii ""
+.space 1, 0
+lenData114 = . - data114
+data115:
+.ascii ""
+.space 1, 0
+lenData115 = . - data115
+varName35:
+.ascii "p"
+.space 1, 0
+lenVarName35 = . - varName35
+data116:
+.ascii "2"
+.space 1, 0
+lenData116 = . - data116
+data117:
+.ascii "1"
+.space 1, 0
+lenData117 = . - data117
+data118:
+.ascii ""
+.space 1, 0
+lenData118 = . - data118
 varName36:
 .ascii "$s0"
 .space 1, 0
@@ -2363,71 +2402,75 @@ varName38:
 .ascii "$print_arg0"
 .space 1, 0
 lenVarName38 = . - varName38
-data113:
-.ascii "\n"
-.space 1, 0
-lenData113 = . - data113
-data114:
-.ascii "0"
-.space 1, 0
-lenData114 = . - data114
-label36:
- .quad ._cond19_end
-labelName36:
-.ascii "._cond19_end"
-.space 1,0
-data115:
-.ascii ""
-.space 1, 0
-lenData115 = . - data115
-data116:
-.ascii ""
-.space 1, 0
-lenData116 = . - data116
-data117:
-.ascii ""
-.space 1, 0
-lenData117 = . - data117
-varName39:
-.ascii "i"
-.space 1, 0
-lenVarName39 = . - varName39
-data118:
-.ascii "0"
-.space 1, 0
-lenData118 = . - data118
-varName40:
-.ascii "$for2"
-.space 1, 0
-lenVarName40 = . - varName40
-label37:
- .quad ._for2
-labelName37:
-.ascii "._for2"
-.space 1,0
 data119:
-.ascii ""
+.ascii "\n"
 .space 1, 0
 lenData119 = . - data119
 data120:
-.ascii "1"
+.ascii "0"
 .space 1, 0
 lenData120 = . - data120
+label39:
+ .quad ._cond22_end
+labelName39:
+.ascii "._cond22_end"
+.space 1,0
 data121:
 .ascii ""
 .space 1, 0
 lenData121 = . - data121
+data122:
+.ascii ""
+.space 1, 0
+lenData122 = . - data122
+data123:
+.ascii ""
+.space 1, 0
+lenData123 = . - data123
+data124:
+.ascii ""
+.space 1, 0
+lenData124 = . - data124
+varName39:
+.ascii "i"
+.space 1, 0
+lenVarName39 = . - varName39
+data125:
+.ascii "0"
+.space 1, 0
+lenData125 = . - data125
+varName40:
+.ascii "$for2"
+.space 1, 0
+lenVarName40 = . - varName40
+label40:
+ .quad ._for2
+labelName40:
+.ascii "._for2"
+.space 1,0
+data126:
+.ascii ""
+.space 1, 0
+lenData126 = . - data126
+data127:
+.ascii "1"
+.space 1, 0
+lenData127 = . - data127
+data128:
+.ascii ""
+.space 1, 0
+lenData128 = . - data128
 varName41:
 .ascii "$next_prime_res0"
 .space 1, 0
 lenVarName41 = . - varName41
-data122:
+data129:
 .ascii "#next_prime_res0"
 .space 1, 0
-lenData122 = . - data122
-label38:
+lenData129 = . - data129
+label41:
  .quad .next_prime_res0
-labelName38:
+labelName41:
 .ascii ".next_prime_res0"
 .space 1,0
 varName42:
@@ -2442,125 +2485,134 @@ varName44:
 .ascii "$print_arg0"
 .space 1, 0
 lenVarName44 = . - varName44
-data123:
+data130:
 .ascii "\n"
 .space 1, 0
-lenData123 = . - data123
-data124:
-.ascii ""
-.space 1, 0
-lenData124 = . - data124
-data125:
-.ascii "2"
-.space 1, 0
-lenData125 = . - data125
-data126:
-.ascii ""
-.space 1, 0
-lenData126 = . - data126
-data127:
-.ascii ""
-.space 1, 0
-lenData127 = . - data127
-label39:
- .quad ._cond21_end
-labelName39:
-.ascii "._cond21_end"
-.space 1,0
-data128:
-.ascii ""
-.space 1, 0
-lenData128 = . - data128
-data129:
-.ascii ""
-.space 1, 0
-lenData129 = . - data129
-data130:
-.ascii "1"
-.space 1, 0
 lenData130 = . - data130
-label40:
- .quad ._undef_for2
-labelName40:
-.ascii "._undef_for2"
-.space 1,0
 data131:
 .ascii ""
 .space 1, 0
 lenData131 = . - data131
-label41:
- .quad ._cond20_end
-labelName41:
-.ascii "._cond20_end"
-.space 1,0
 data132:
-.ascii ""
+.ascii "2"
 .space 1, 0
 lenData132 = . - data132
 data133:
 .ascii ""
 .space 1, 0
 lenData133 = . - data133
-label42:
- .quad ._cond22_end
-labelName42:
-.ascii "._cond22_end"
-.space 1,0
 data134:
 .ascii ""
 .space 1, 0
 lenData134 = . - data134
+label42:
+ .quad ._cond25_end
+labelName42:
+.ascii "._cond25_end"
+.space 1,0
 data135:
-.ascii "1"
+.ascii ""
 .space 1, 0
 lenData135 = . - data135
 data136:
 .ascii ""
 .space 1, 0
 lenData136 = . - data136
-label43:
- .quad ._cond23_end
-labelName43:
-.ascii "._cond23_end"
-.space 1,0
 data137:
-.ascii ""
+.ascii "1"
 .space 1, 0
 lenData137 = . - data137
-label44:
- .quad ._for2_end
-labelName44:
-.ascii "._for2_end"
+label43:
+ .quad ._undef_for2
+labelName43:
+.ascii "._undef_for2"
 .space 1,0
 data138:
 .ascii ""
 .space 1, 0
 lenData138 = . - data138
+label44:
+ .quad ._cond24_end
+labelName44:
+.ascii "._cond24_end"
+.space 1,0
 data139:
 .ascii ""
 .space 1, 0
 lenData139 = . - data139
+data140:
+.ascii ""
+.space 1, 0
+lenData140 = . - data140
+label45:
+ .quad ._cond26_end
+labelName45:
+.ascii "._cond26_end"
+.space 1,0
+data141:
+.ascii ""
+.space 1, 0
+lenData141 = . - data141
+data142:
+.ascii "1"
+.space 1, 0
+lenData142 = . - data142
+data143:
+.ascii ""
+.space 1, 0
+lenData143 = . - data143
+label46:
+ .quad ._cond27_end
+labelName46:
+.ascii "._cond27_end"
+.space 1,0
+data144:
+.ascii ""
+.space 1, 0
+lenData144 = . - data144
+label47:
+ .quad ._for2_end
+labelName47:
+.ascii "._for2_end"
+.space 1,0
+data145:
+.ascii ""
+.space 1, 0
+lenData145 = . - data145
+label48:
+ .quad ._cond23_end
+labelName48:
+.ascii "._cond23_end"
+.space 1,0
+data146:
+.ascii ""
+.space 1, 0
+lenData146 = . - data146
+data147:
+.ascii ""
+.space 1, 0
+lenData147 = . - data147
 varName45:
 .ascii "$print_arg0"
 .space 1, 0
 lenVarName45 = . - varName45
-data140:
+data148:
 .ascii "\n"
 .space 1, 0
-lenData140 = . - data140
-data141:
+lenData148 = . - data148
+data149:
 .ascii "0"
 .space 1, 0
-lenData141 = . - data141
-label45:
+lenData149 = . - data149
+label49:
  .quad .main_end
-labelName45:
+labelName49:
 .ascii ".main_end"
 .space 1,0
-data142:
+data150:
 .ascii ""
 .space 1, 0
-lenData142 = . - data142
+lenData150 = . - data150
 varName46:
 .ascii "res"
 .space 1, 0
@@ -2569,12 +2621,12 @@ varName47:
 .ascii "$main_res0"
 .space 1, 0
 lenVarName47 = . - varName47
-data143:
+data151:
 .ascii "#main_res0"
 .space 1, 0
-lenData143 = . - data143
-label46:
+lenData151 = . - data151
+label50:
  .quad .main_res0
-labelName46:
+labelName50:
 .ascii ".main_res0"
 .space 1,0
