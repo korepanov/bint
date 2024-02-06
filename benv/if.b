@@ -493,15 +493,18 @@ void replace_else(string cond, int stop_pos){
 	goto(#replace_else_e);
 	#figure_brace_end:
 
-	print("1\n");
+	
 	[print(""), (len(command) > 6), goto(#replace_else_ret_end)];
 	print("");
-	print("2\n");
+	
 	[print(""), (command[0:6] == "return"), goto(#replace_else_ret_end)];
 	print("");
-	print("3\n");
+	print(str(COMMAND_COUNTER));
+	print(", ");
+	print(str(stop_pos));
+	print("\n");
 	[print(""), (COMMAND_COUNTER < stop_pos), goto(#replace_else_ret_end)]; 
-	print("4\n");
+	
 	args_to_undefine_old = args_to_undefine;
 
 	args_to_undefine.pop(arg_name);

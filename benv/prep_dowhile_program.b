@@ -1,0 +1,16 @@
+intmain(){print("");
+if(False){}else{inta;
+if(False){}else{return1;
+};
+print("");
+};
+print("");
+print("");
+print("");
+print("");
+print("");
+return0;
+};
+print("");
+intres;
+res=main();
