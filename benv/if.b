@@ -436,6 +436,7 @@ void replace_else(string cond, int stop_pos){
 	string arg_type;
 	stack args_to_undefine;
 	
+	print("Hello!\n");
 	pos = -1;
 	snum = str(num);
 	buf = (((("[print(\"\"), " + cond) + ", goto(#_cond") + snum) + "_end)]");
@@ -468,6 +469,7 @@ void replace_else(string cond, int stop_pos){
 	switch_command();
 	check_br(command);
 	#add_replace_else_mark:
+
 	[print(""), (pos == COMMAND_COUNTER), goto(#figure_brace_end)];
 	args_to_undefine.pop(arg_name);
 	#un5:
@@ -490,6 +492,31 @@ void replace_else(string cond, int stop_pos){
 	#ete:
 	goto(#replace_else_e);
 	#figure_brace_end:
+
+	print("1\n");
+	[print(""), (len(command) > 6), goto(#replace_else_ret_end)];
+	print("");
+	print("2\n");
+	[print(""), (command[0:6] == "return"), goto(#replace_else_ret_end)];
+	print("");
+	print("3\n");
+	[print(""), (COMMAND_COUNTER < stop_pos), goto(#replace_else_ret_end)]; 
+	print("4\n");
+	args_to_undefine_old = args_to_undefine;
+
+	args_to_undefine.pop(arg_name);
+	#un8:
+	[goto(#un_end8), ("end" == arg_name), print("")];
+	buf = (("UNDEFINE(" + arg_name) + ")");
+	send_command(buf);
+	args_to_undefine.pop(arg_name); 
+	goto(#un8);
+	#un_end8:
+	print("");
+	args_to_undefine = args_to_undefine_old; 
+	#replace_else_ret_end:
+
+
 	[print(""), ((is_var_def(command))AND(br_closed == br_opened)), goto(#pop_e4)];
 	arg_type = Type(command);
 	int type_len;
