@@ -237,8 +237,8 @@ void main(){
 			send_command(buf); 
 			command = (("#_for" + snum) + "_end:print(\"\")");
 			send_command(command); 
-			command = (("UNDEFINE($for" + snum) + ")");
-			send_command(command);
+			//command = (("UNDEFINE($for" + snum) + ")");
+			//send_command(command);
 			command = "}";
 			send_command(command);
 			/*if(is_var_def(old_command)){

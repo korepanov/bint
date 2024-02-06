@@ -196,12 +196,18 @@ void replace_if(string cond, int stop_pos){
 	string arg_type;
 	int command_len;
 	string arg_name;
+	bool was_br;
 	
 	snum = str(num);
 	buf = (((("[print(\"\"), " + cond) + ", goto(#_cond") + snum) + "_end)]");
 	send_command(buf);
 	switch_command(); 
+	check_br(command);
 
+	[print(""), (br_opened > (br_closed + 1)), goto(#was_not_br)];
+	was_br = True;
+	#was_not_br:
+	print("");
 	#replace_clear_if_s:
 	[goto(#replace_clear_if_e), ("end" == command), print("")];
 	[print(""), (stop_pos == COMMAND_COUNTER), goto(#add_replace_clear_if_mark)];
@@ -217,15 +223,22 @@ void replace_if(string cond, int stop_pos){
 	
 	buf = (("#_cond" + snum) + "_end:print(\"\")");
 	send_command(buf);
-	check_br(command);	
-	switch_command();
 	
+	switch_command();
+	check_br(command);	
+
+	[print(""), (br_opened > (br_closed + 1)), goto(#was_not_br2)];
+	was_br = True;
+	#was_not_br2:
+	print("");
 
 	#add_replace_clear_if_mark:
 
 	[print(""), (len(command) > 6), goto(#replace_if_ret_end)];
 	print("");
-	[print(""), (command[0:6] == "return"), goto(#replace_if_ret_end)];
+	[print(""), ((command[0:6] == "return")AND(br_closed == br_opened)), goto(#replace_if_ret_end)];
+	print("");
+	[print(""), (COMMAND_COUNTER < stop_pos), goto(#replace_if_ret_end)]; 
 	
 	args_to_undefine_old = args_to_undefine;
 
@@ -252,6 +265,11 @@ void replace_if(string cond, int stop_pos){
 
 	send_command(command);
 	switch_command();
+	check_br(command);
+	[print(""), (br_opened > (br_closed + 1)), goto(#was_not_br3)];
+	was_br = True;
+	#was_not_br3:
+	print("");
 	goto(#replace_clear_if_s);
 	#replace_clear_if_e:
 	reset_br();
