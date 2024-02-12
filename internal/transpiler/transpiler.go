@@ -1,12 +1,13 @@
 package transpiler
 
 import (
-	. "bint.com/pkg/serviceTools"
 	"errors"
 	"fmt"
 	"os"
 	"strconv"
 	"strings"
+
+	. "bint.com/pkg/serviceTools"
 )
 
 func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []interface{},
@@ -694,6 +695,8 @@ func Transpile(systemStack []interface{}, OP string, LO []interface{}, RO []inte
 		} else {
 			return ValueFoldInterface(res).([]interface{}), systemStack, nil
 		}
+	} else if "CLEAR" == OP {
+		return []interface{}{0}, systemStack, nil
 	}
 	err := errors.New("execute: ERROR: wrong syntax: OP=\"" + OP + "\", " +
 		"LO=\"" + fmt.Sprintf("%v", LO) + "\", " + "RO=\"" + fmt.Sprintf("%v", RO) + "\"")

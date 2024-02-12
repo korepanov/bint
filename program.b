@@ -1,21 +1,8 @@
-int main(){
+void main(){
 
-	
-	if (False){
-	}else if (False){
-	}else if (False){
-	}else{
-		int a;
-		if(False){
-		}else if (False){
-		}else if (False){
-		}else{
-			return 1; 
-		};
+	for (int i; i = 0; i < 5; i = (i + 1)){
+		print("Hello!\n");	
 	};
-
-	return 0;
 };
 
-int res;
-res = main();
+main();
