@@ -8,7 +8,7 @@ starSymbol:
 endSymbol:
 .ascii ";"
 deltaSize:
-.quad 0
+.quad 2048
 pageSize:
 .quad 4096 
 pageSizeMax:
@@ -2423,26 +2423,34 @@ data122:
 .ascii ""
 .space 1, 0
 lenData122 = . - data122
+varName39:
+.ascii "$s0"
+.space 1, 0
+lenVarName39 = . - varName39
+varName40:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName40 = . - varName40
 data123:
-.ascii ""
+.ascii ", "
 .space 1, 0
 lenData123 = . - data123
 data124:
 .ascii ""
 .space 1, 0
 lenData124 = . - data124
-varName39:
+varName41:
 .ascii "i"
 .space 1, 0
-lenVarName39 = . - varName39
+lenVarName41 = . - varName41
 data125:
 .ascii "0"
 .space 1, 0
 lenData125 = . - data125
-varName40:
+varName42:
 .ascii "$for2"
 .space 1, 0
-lenVarName40 = . - varName40
+lenVarName42 = . - varName42
 label40:
  .quad ._for2
 labelName40:
@@ -2460,10 +2468,10 @@ data128:
 .ascii ""
 .space 1, 0
 lenData128 = . - data128
-varName41:
+varName43:
 .ascii "$next_prime_res0"
 .space 1, 0
-lenVarName41 = . - varName41
+lenVarName43 = . - varName43
 data129:
 .ascii "#next_prime_res0"
 .space 1, 0
@@ -2473,26 +2481,22 @@ label41:
 labelName41:
 .ascii ".next_prime_res0"
 .space 1,0
-varName42:
-.ascii "$s0"
-.space 1, 0
-lenVarName42 = . - varName42
-varName43:
-.ascii "$print_arg0"
-.space 1, 0
-lenVarName43 = . - varName43
-varName44:
-.ascii "$print_arg0"
-.space 1, 0
-lenVarName44 = . - varName44
 data130:
-.ascii "\n"
+.ascii ""
 .space 1, 0
 lenData130 = . - data130
 data131:
 .ascii ""
 .space 1, 0
 lenData131 = . - data131
+varName44:
+.ascii "$s0"
+.space 1, 0
+lenVarName44 = . - varName44
+varName45:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName45 = . - varName45
 data132:
 .ascii "2"
 .space 1, 0
@@ -2501,8 +2505,12 @@ data133:
 .ascii ""
 .space 1, 0
 lenData133 = . - data133
+varName46:
+.ascii "$print_arg0"
+.space 1, 0
+lenVarName46 = . - varName46
 data134:
-.ascii ""
+.ascii ", "
 .space 1, 0
 lenData134 = . - data134
 label42:
@@ -2592,10 +2600,10 @@ data147:
 .ascii ""
 .space 1, 0
 lenData147 = . - data147
-varName45:
+varName47:
 .ascii "$print_arg0"
 .space 1, 0
-lenVarName45 = . - varName45
+lenVarName47 = . - varName47
 data148:
 .ascii "\n"
 .space 1, 0
@@ -2613,14 +2621,14 @@ data150:
 .ascii ""
 .space 1, 0
 lenData150 = . - data150
-varName46:
+varName48:
 .ascii "res"
 .space 1, 0
-lenVarName46 = . - varName46
-varName47:
+lenVarName48 = . - varName48
+varName49:
 .ascii "$main_res0"
 .space 1, 0
-lenVarName47 = . - varName47
+lenVarName49 = . - varName49
 data151:
 .ascii "#main_res0"
 .space 1, 0

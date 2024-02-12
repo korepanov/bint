@@ -8,7 +8,7 @@ starSymbol:
 endSymbol:
 .ascii ";"
 deltaSize:
-.quad 0
+.quad 2048
 pageSize:
 .quad 4096 
 pageSizeMax:

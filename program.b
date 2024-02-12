@@ -19,10 +19,12 @@ int next_prime(int n){
 	
 	while(True){	
 		n = (n + 1);
+		
 		bool is_prime; 
 		is_prime = True; 
 
 		for (int i; i = 2; i < n; i = (i + 1)){
+			
 			if (mod(n, i) == 0){
 				is_prime = False;
 				break;			
@@ -82,15 +84,15 @@ int main(){
 	};
 
 	
-	//print((str(p) + ", ")); 
+	print((str(p) + ", ")); 
 	
-	for (int i; i = 0; i < (n - 1); i = (i + 1)){
+	for (int i; i = 0; i < (n - 1); i = (i + 1)){		
 		p = next_prime(p);
-		print(str(i));
-		print("\n");
-		//print(str(p)); 
+		//print(str(i));
+		//print("\n");
+		print(str(p)); 
 		if (NOT(i == (n - 2))){
-			//print(", ");		
+			print(", ");		
 		};
 	};
 	print("\n");

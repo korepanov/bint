@@ -1986,10 +1986,10 @@ __firstMem:
  mov %r9, (pageSize)
  __newMemNoMorePageSize:
 
- mov (shiftSize), %r9 
- add (shiftSize), %r9 
+ mov (pageSize), %r9 
+ add (pageSize), %r9 
 
- mov (shiftSizeMax), %r9 
+ mov (shiftSizeMax), %r8
  cmp %r9, %r8 
  jl __newMemNoMoreShiftSize
  mov %r9, (shiftSize)
