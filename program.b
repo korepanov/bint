@@ -1,15 +1,6 @@
 int main(){
-	
-	if(False){
-	}else{
-		int a;
-		if(False){
-		}else{
-			return 1; 		
-		};	
-	};
 
-	/*
+	
 	if (False){
 	}else if (False){
 	}else if (False){
@@ -21,7 +12,7 @@ int main(){
 		}else{
 			return 1; 
 		};
-	};*/
+	};
 
 	return 0;
 };
