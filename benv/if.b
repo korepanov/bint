@@ -435,8 +435,8 @@ void replace_else(string cond, int stop_pos){
 	string arg_name;
 	string arg_type;
 	stack args_to_undefine;
+	stack args_to_undefine_old;
 	
-	print("Hello!\n");
 	pos = -1;
 	snum = str(num);
 	buf = (((("[print(\"\"), " + cond) + ", goto(#_cond") + snum) + "_end)]");
@@ -499,11 +499,7 @@ void replace_else(string cond, int stop_pos){
 	
 	[print(""), (command[0:6] == "return"), goto(#replace_else_ret_end)];
 	print("");
-	print(str(COMMAND_COUNTER));
-	print(", ");
-	print(str(stop_pos));
-	print("\n");
-	[print(""), (COMMAND_COUNTER < stop_pos), goto(#replace_else_ret_end)]; 
+	[print(""), (COMMAND_COUNTER < pos), goto(#replace_else_ret_end)]; 
 	
 	args_to_undefine_old = args_to_undefine;
 

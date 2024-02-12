@@ -11,6 +11,7 @@ inta;
 [print(""),(False),goto(#_cond1_end)];
 goto(#_cond_exit1);
 #_cond1_end:print("");
+UNDEFINE(a);
 push(1);
 goto($main_return_var);
 #_cond_exit1:print("");
