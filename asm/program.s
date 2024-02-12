@@ -1603,7 +1603,7 @@ __defineVar:
 
  __clearVarsCompress: 
  cmp %rbx, %r15 
- jz __clearVarsCompressEnd
+ jl __clearVarsCompressEnd
  mov (%rbx), %dil 
  mov %dil, (%rax)
  inc %rax 
@@ -1648,7 +1648,7 @@ __defineVar:
  
  __clearVarsStrCompress:
  cmp %rax, %rcx 
- jz __clearVarsStrCompressEnd
+ jl __clearVarsStrCompressEnd
  mov (%rax), %dil 
  mov %dil, (%rbx)
  inc %rax 
@@ -1678,7 +1678,7 @@ __defineVar:
 
  __clearVarsCompress2: 
  cmp %rbx, %r15 
- jz __clearVarsCompressEnd2
+ jl __clearVarsCompressEnd2
  mov (%rbx), %dil 
  mov %dil, (%rax)
  inc %rax 
@@ -7170,6 +7170,7 @@ jmp __rightEnd6
  __right6:
 jmp ._cond6_end
 __rightEnd6:
+ call __clearVars
 jmp ._for3
 ._cond6_end:
 
@@ -7304,6 +7305,7 @@ jmp __rightEnd9
  __right9:
 jmp ._cond9_end
 __rightEnd9:
+ call __clearVars
 jmp ._for0
 ._cond9_end:
 
@@ -8354,6 +8356,7 @@ jmp __rightEnd20
  __right20:
 jmp ._cond20_end
 __rightEnd20:
+ call __clearVars
 jmp ._for1
 ._cond20_end:
 
@@ -9314,6 +9317,7 @@ jmp __rightEnd27
  __right27:
 jmp ._cond27_end
 __rightEnd27:
+ call __clearVars
 jmp ._for2
 ._cond27_end:
 

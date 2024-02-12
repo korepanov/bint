@@ -1603,7 +1603,7 @@ __defineVar:
 
  __clearVarsCompress: 
  cmp %rbx, %r15 
- jz __clearVarsCompressEnd
+ jl __clearVarsCompressEnd
  mov (%rbx), %dil 
  mov %dil, (%rax)
  inc %rax 
@@ -1648,7 +1648,7 @@ __defineVar:
  
  __clearVarsStrCompress:
  cmp %rax, %rcx 
- jz __clearVarsStrCompressEnd
+ jl __clearVarsStrCompressEnd
  mov (%rax), %dil 
  mov %dil, (%rbx)
  inc %rax 
@@ -1678,7 +1678,7 @@ __defineVar:
 
  __clearVarsCompress2: 
  cmp %rbx, %r15 
- jz __clearVarsCompressEnd2
+ jl __clearVarsCompressEnd2
  mov (%rbx), %dil 
  mov %dil, (%rax)
  inc %rax 
