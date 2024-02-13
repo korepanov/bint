@@ -23,7 +23,7 @@ int next_prime(int n){
 		bool is_prime; 
 		is_prime = True; 
 
-		for (int i; i = 2; i < n; i = (i + 1)){
+		for (int i; i = 2; i < (((n@2) + 1)); i = (i + 1)){
 			
 			if (mod(n, i) == 0){
 				is_prime = False;
