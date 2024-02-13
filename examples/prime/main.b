@@ -1,16 +1,6 @@
 // Программа вычисления таблицы простых чисел 
 
 int mod(int a, int b){
-	float fa;
-	float fb;
-
-	fa = float(a);
-	fb = float(b); 
-
-	int c; 
-
-	c = int((fa / fb)); 
-
 	return (a-((a@b)*b));
 };
 
