@@ -4558,6 +4558,10 @@ data153:
 .ascii "#main_res0"
 .space 1, 0
 lenData153 = . - data153
+data154:
+.ascii "/home/slava/Go/bint/test.txt"
+.space 1, 0
+lenData154 = . - data154
 label50:
  .quad .main_res0
 labelName50:
@@ -12048,6 +12052,54 @@ mov $lenVarName, %rsi
 jmp .main_end
 .main:
 
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName23, %rax 
+ mov $varName23, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
+  
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName23, %rax 
+ mov $varName23, %rdi 
+call __set
+
+ mov $data154, %rax  
+ mov %rax, (userData)
+ xor %rax, %rax
+call __setVar
+call __getVar 
+
+mov (userData), %rax 
+xor %rbx, %rbx 
+call __openFile 
+
+push %rax 
+
+mov %rax, %r10 
+mov $4096, %rbx 
+mov $varName23, %r8 
+call __readFromFile
+
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName23, %rax 
+ mov $varName23, %rdi 
+call __set
+call __getVar 
+mov (userData), %rsi 
+call __print 
+
+pop %rdi 
+call __closeFile
+#call __printHeap 
+call __throughError
 mov $data54, %rsi
 call __print
 mov $data55, %rsi
