@@ -1245,6 +1245,228 @@ call __newLabelMem
 
  mov %r10, %rdi 
  mov %rsi, %r9
+mov $labelName33, %rbx
+ __initLabelsName33: 
+ mov (%rbx), %dl 
+ cmp $0, %dl 
+jz __initLabelsNameEx33
+ mov %dl, (%rdi) 
+ inc %rbx 
+ inc %rdi
+ jmp __initLabelsName33
+ __initLabelsNameEx33:
+ movb $0, (%rdi)
+
+ mov (label33), %rax 
+ call __toStr
+ add (valSize), %r9
+ mov %r9, %rdi
+ mov $buf2, %rbx 
+__initLabelsAddr33:
+ mov (%rbx), %dl 
+ cmp $0, %dl 
+ jz __initLabelsAddrEx33
+ mov %dl, (%rdi)
+ inc %rbx
+ inc %rdi 
+ jmp __initLabelsAddr33
+ __initLabelsAddrEx33:
+ movb $0, (%rdi)
+ add (valSize), %r9 
+ mov %r9, %rdi 
+ mov %rdi, %r10 
+ mov %r9, %rsi 
+ mov %r12, %rax
+call __newLabelMem
+ add (labelSize), %r12 
+
+ mov %r10, %rdi 
+ mov %rsi, %r9
+mov $labelName34, %rbx
+ __initLabelsName34: 
+ mov (%rbx), %dl 
+ cmp $0, %dl 
+jz __initLabelsNameEx34
+ mov %dl, (%rdi) 
+ inc %rbx 
+ inc %rdi
+ jmp __initLabelsName34
+ __initLabelsNameEx34:
+ movb $0, (%rdi)
+
+ mov (label34), %rax 
+ call __toStr
+ add (valSize), %r9
+ mov %r9, %rdi
+ mov $buf2, %rbx 
+__initLabelsAddr34:
+ mov (%rbx), %dl 
+ cmp $0, %dl 
+ jz __initLabelsAddrEx34
+ mov %dl, (%rdi)
+ inc %rbx
+ inc %rdi 
+ jmp __initLabelsAddr34
+ __initLabelsAddrEx34:
+ movb $0, (%rdi)
+ add (valSize), %r9 
+ mov %r9, %rdi 
+ mov %rdi, %r10 
+ mov %r9, %rsi 
+ mov %r12, %rax
+call __newLabelMem
+ add (labelSize), %r12 
+
+ mov %r10, %rdi 
+ mov %rsi, %r9
+mov $labelName35, %rbx
+ __initLabelsName35: 
+ mov (%rbx), %dl 
+ cmp $0, %dl 
+jz __initLabelsNameEx35
+ mov %dl, (%rdi) 
+ inc %rbx 
+ inc %rdi
+ jmp __initLabelsName35
+ __initLabelsNameEx35:
+ movb $0, (%rdi)
+
+ mov (label35), %rax 
+ call __toStr
+ add (valSize), %r9
+ mov %r9, %rdi
+ mov $buf2, %rbx 
+__initLabelsAddr35:
+ mov (%rbx), %dl 
+ cmp $0, %dl 
+ jz __initLabelsAddrEx35
+ mov %dl, (%rdi)
+ inc %rbx
+ inc %rdi 
+ jmp __initLabelsAddr35
+ __initLabelsAddrEx35:
+ movb $0, (%rdi)
+ add (valSize), %r9 
+ mov %r9, %rdi 
+ mov %rdi, %r10 
+ mov %r9, %rsi 
+ mov %r12, %rax
+call __newLabelMem
+ add (labelSize), %r12 
+
+ mov %r10, %rdi 
+ mov %rsi, %r9
+mov $labelName36, %rbx
+ __initLabelsName36: 
+ mov (%rbx), %dl 
+ cmp $0, %dl 
+jz __initLabelsNameEx36
+ mov %dl, (%rdi) 
+ inc %rbx 
+ inc %rdi
+ jmp __initLabelsName36
+ __initLabelsNameEx36:
+ movb $0, (%rdi)
+
+ mov (label36), %rax 
+ call __toStr
+ add (valSize), %r9
+ mov %r9, %rdi
+ mov $buf2, %rbx 
+__initLabelsAddr36:
+ mov (%rbx), %dl 
+ cmp $0, %dl 
+ jz __initLabelsAddrEx36
+ mov %dl, (%rdi)
+ inc %rbx
+ inc %rdi 
+ jmp __initLabelsAddr36
+ __initLabelsAddrEx36:
+ movb $0, (%rdi)
+ add (valSize), %r9 
+ mov %r9, %rdi 
+ mov %rdi, %r10 
+ mov %r9, %rsi 
+ mov %r12, %rax
+call __newLabelMem
+ add (labelSize), %r12 
+
+ mov %r10, %rdi 
+ mov %rsi, %r9
+mov $labelName37, %rbx
+ __initLabelsName37: 
+ mov (%rbx), %dl 
+ cmp $0, %dl 
+jz __initLabelsNameEx37
+ mov %dl, (%rdi) 
+ inc %rbx 
+ inc %rdi
+ jmp __initLabelsName37
+ __initLabelsNameEx37:
+ movb $0, (%rdi)
+
+ mov (label37), %rax 
+ call __toStr
+ add (valSize), %r9
+ mov %r9, %rdi
+ mov $buf2, %rbx 
+__initLabelsAddr37:
+ mov (%rbx), %dl 
+ cmp $0, %dl 
+ jz __initLabelsAddrEx37
+ mov %dl, (%rdi)
+ inc %rbx
+ inc %rdi 
+ jmp __initLabelsAddr37
+ __initLabelsAddrEx37:
+ movb $0, (%rdi)
+ add (valSize), %r9 
+ mov %r9, %rdi 
+ mov %rdi, %r10 
+ mov %r9, %rsi 
+ mov %r12, %rax
+call __newLabelMem
+ add (labelSize), %r12 
+
+ mov %r10, %rdi 
+ mov %rsi, %r9
+mov $labelName38, %rbx
+ __initLabelsName38: 
+ mov (%rbx), %dl 
+ cmp $0, %dl 
+jz __initLabelsNameEx38
+ mov %dl, (%rdi) 
+ inc %rbx 
+ inc %rdi
+ jmp __initLabelsName38
+ __initLabelsNameEx38:
+ movb $0, (%rdi)
+
+ mov (label38), %rax 
+ call __toStr
+ add (valSize), %r9
+ mov %r9, %rdi
+ mov $buf2, %rbx 
+__initLabelsAddr38:
+ mov (%rbx), %dl 
+ cmp $0, %dl 
+ jz __initLabelsAddrEx38
+ mov %dl, (%rdi)
+ inc %rbx
+ inc %rdi 
+ jmp __initLabelsAddr38
+ __initLabelsAddrEx38:
+ movb $0, (%rdi)
+ add (valSize), %r9 
+ mov %r9, %rdi 
+ mov %rdi, %r10 
+ mov %r9, %rsi 
+ mov %r12, %rax
+call __newLabelMem
+ add (labelSize), %r12 
+
+ mov %r10, %rdi 
+ mov %rsi, %r9
  mov %r12, %rax 
  mov %r12, (labelsMax)
  ret 

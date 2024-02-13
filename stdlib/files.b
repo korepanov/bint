@@ -1,3 +1,18 @@
+/*
+ deletes file in file_path
+*/
+void del_file(string file_path){
+	if (exists(file_path)){
+		$del_f(file_path);	
+	}else{
+		error = ("no such file: " + file_path); 
+		
+		if ($toPanic){
+			print((error + "\n"));
+			exit(1); 		
+		};	
+	};
+};
 /* opens file with file_path and mode 
  
  modes:
@@ -14,8 +29,20 @@ int open_file(string file_path, string mode){
 
 	if (mode == "read"){
 		m = 0;
+		if (NOT(exists(file_path))){
+			error = ("could not open file: no such file " + file_path);
+			if ($toPanic){
+				print((error + "\n"));
+				exit(1);			
+			};			
+			return -1;		
+		};
 	}else if (mode == "write"){
 		m = 1;	
+
+		if (exists(file_path)){
+			del_file(file_path); 		
+		};
 	}else if (mode == "append"){
 		m = 2;	
 	}else{
@@ -50,8 +77,7 @@ string read_file(int descriptor_number, int size){
 void write_file(int descriptor_number, string s){
 	int bytes;
 	bytes = $write_f(descriptor_number, s);
-	print(str(bytes));
-	print("\n");
+
 	if (bytes < 0){
 		error = ("could not write to file with file descriptor number " + str(descriptor_number)); 
 
@@ -90,20 +116,4 @@ void close_file(int descriptor_number){
 	};
 	
 	error = "";
-};
-
-/*
- deletes file in file_path
-*/
-void del_file(string file_path){
-	if (exists(file_path)){
-		$del_f(file_path);	
-	}else{
-		error = ("no such file: " + file_path); 
-		
-		if ($toPanic){
-			print((error + "\n"));
-			exit(1); 		
-		};	
-	};
 };
