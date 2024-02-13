@@ -2366,7 +2366,7 @@ data116:
 .space 1, 0
 lenData116 = . - data116
 data117:
-.ascii "write"
+.ascii "read"
 .space 1, 0
 lenData117 = . - data117
 data118:
@@ -2379,17 +2379,17 @@ labelName34:
 .ascii ".open_file_res0"
 .space 1,0
 data119:
-.ascii "Привет!\n"
+.ascii "test.txt"
 .space 1, 0
 lenData119 = . - data119
 data120:
-.ascii "#write_file_res0"
+.ascii "#del_file_res1"
 .space 1, 0
 lenData120 = . - data120
 label35:
- .quad .write_file_res0
+ .quad .del_file_res1
 labelName35:
-.ascii ".write_file_res0"
+.ascii ".del_file_res1"
 .space 1,0
 data121:
 .ascii ""

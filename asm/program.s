@@ -8711,26 +8711,19 @@ mov $lenVarName, %rsi
 mov $varName37, %rdi 
  call __set 
 call __undefineVar
-mov $lenVarName, %rsi 
- mov $varName, %rdx 
- mov $lenVarName, %rax 
- mov $varName36, %rdi
- call __set 
- call __getVar 
- push (userData)
 push $data119
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov $lenVarName21, %rax 
- mov $varName21, %rdi 
+ mov $lenVarName1, %rax 
+ mov $varName1, %rdi 
 call __set
 
  mov $data120, %rax  
  mov %rax, (userData)
  xor %rax, %rax
 call __setVar
-jmp .write_file
-.write_file_res0:
+jmp .del_file
+.del_file_res1:
 
 mov $data121, %rsi
 call __print
