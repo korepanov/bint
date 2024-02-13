@@ -1,1 +1,1 @@
-something
+/home/slava/Go/bint/test.txt

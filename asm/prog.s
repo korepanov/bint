@@ -8908,22 +8908,22 @@ __inputEnd:
 ret  
 
 __openFile:
-# input:
-# %rax - address of the string with file name
-# %rbx - file opening mode
-# 0 - read
-# 1 - write 
-# 2 - append
-# output:
-# %rax - file descriptor number 
-# открыть файл
-cmp $0, %rbx 
-jz __openFileRead 
-cmp $1, %rbx 
-jz __openFileWrite
-cmp $2, %rbx 
-jz __openFileAppend 
-jmp __openFileException
+  # input:
+  # %rax - address of the string with file name
+  # %rbx - file opening mode
+  # 0 - read
+  # 1 - write 
+  # 2 - append
+  # output:
+  # %rax - file descriptor number 
+  # открыть файл
+  cmp $0, %rbx 
+  jz __openFileRead 
+  cmp $1, %rbx 
+  jz __openFileWrite
+  cmp $2, %rbx 
+  jz __openFileAppend 
+  jmp __openFileException
 
 __openFileRead:
   mov %rax, %rdi   # адрес строки с именем файла
@@ -8934,13 +8934,21 @@ __openFileRead:
   jl  __openFileException          # перейти к концу программы
   ret  
 __openFileWrite:
-ret
+  mov %rax, %rdi    # адрес строки с именем файла
+  mov $1,  %rsi    # открываем для записи (O_WRONLY)
+  or  $64, %rsi   # создать, если файла нет (O_CREAT)
+  mov $0777, %rdx  # права доступа создаваемого файла
+  mov $2,  %rax    # номер системного вызова
+  syscall          # вызов функции "открыть файл"
+  cmp $0, %rax    # нет ли ошибки при открытии
+  jl  __openFileException
+  ret
 __openFileAppend:
-ret 
+  ret 
 __openFileException:
-mov $openFileError, %rsi 
-call __throughUserError
-ret 
+  mov $openFileError, %rsi 
+  call __throughUserError
+  ret 
 
 __closeFile:
 # закрыть файл
@@ -8948,6 +8956,31 @@ __closeFile:
 mov  $3, %rax   # номер системного вызова
 syscall
 ret 
+
+__writeToFile:
+# input:
+# %r10 - file descriptor number 
+# %r8 - variable name address 
+push %r10 
+
+mov $lenVarName, %rsi 
+mov $varName, %rdx 
+mov $lenVarName, %rax 
+mov %r8, %rdi
+call __set 
+call __getVar
+mov (userData), %rsi 
+call __len 
+
+pop %r10 
+mov (userData), %rsi 
+mov %r10, %rdi 
+mov %rax, %rdx 
+mov $1, %rax 
+syscall 
+
+ret 
+
 
 __readFromFile:
 # input:
@@ -12077,10 +12110,18 @@ call __setVar
 call __getVar 
 
 mov (userData), %rax 
-xor %rbx, %rbx 
+mov $1, %rbx 
 call __openFile 
-
 push %rax 
+mov %rax, %r10
+mov $varName23, %r8
+call __writeToFile
+pop %rax 
+mov %rax, %rdi 
+call __closeFile 
+
+
+/*push %rax 
 
 mov %rax, %r10 
 mov $4096, %rbx 
@@ -12097,7 +12138,7 @@ mov (userData), %rsi
 call __print 
 
 pop %rdi 
-call __closeFile
+call __closeFile*/
 #call __printHeap 
 call __throughError
 mov $data54, %rsi
