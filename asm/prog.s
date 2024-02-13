@@ -8957,6 +8957,13 @@ mov  $3, %rax   # номер системного вызова
 syscall
 ret 
 
+__delFile:
+ # input:
+ # %rdi - адрес строки с путем до файла 
+ mov $87,  %rax   
+ syscall
+ ret 
+
 __writeToFile:
 # input:
 # %r10 - file descriptor number 
@@ -12116,6 +12123,10 @@ push %rax
 mov %rax, %r10
 mov $varName23, %r8
 call __writeToFile
+
+call __toStr 
+mov $buf2, %rsi 
+call __print 
 pop %rax 
 mov %rax, %rdi 
 call __closeFile 

@@ -4364,6 +4364,15 @@ __openFileRead:
   jl  __openFileException          # перейти к концу программы
   ret  
 __openFileWrite:
+  mov %rax, %rdi    # адрес строки с именем файла
+  mov $1,  %rsi    # открываем для записи (O_WRONLY)
+  or  $64, %rsi   # создать, если файла нет (O_CREAT)
+  mov $0777, %rdx  # права доступа создаваемого файла
+  mov $2,  %rax    # номер системного вызова
+  syscall          # вызов функции "открыть файл"
+  cmp $0, %rax    # нет ли ошибки при открытии
+  jl  __openFileException
+  ret
 ret
 __openFileAppend:
 ret 
@@ -4378,6 +4387,37 @@ __closeFile:
 mov  $3, %rax   # номер системного вызова
 syscall
 ret 
+
+__delFile:
+ # input:
+ # %rdi - адрес строки с путем до файла 
+ mov $87,  %rax   
+ syscall      
+ ret 
+
+__writeToFile:
+# input:
+# %r10 - file descriptor number 
+# %r8 - variable name address 
+push %r10 
+
+mov $lenVarName, %rsi 
+mov $varName, %rdx 
+mov $lenVarName, %rax 
+mov %r8, %rdi
+call __set 
+call __getVar
+mov (userData), %rsi 
+call __len 
+
+pop %r10 
+mov (userData), %rsi 
+mov %r10, %rdi 
+mov %rax, %rdx 
+mov $1, %rax 
+syscall 
+
+ret
 
 __readFromFile:
 # input:

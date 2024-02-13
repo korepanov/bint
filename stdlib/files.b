@@ -45,6 +45,24 @@ string read_file(int descriptor_number, int size){
 };
 
 /*
+ writes s string to file with descriptor_number
+*/
+void write_file(int descriptor_number, string s){
+	int bytes;
+	bytes = $write_f(descriptor_number, s);
+	print(str(bytes));
+	print("\n");
+	if (bytes < 0){
+		error = ("could not write to file with file descriptor number " + str(descriptor_number)); 
+
+		if ($toPanic){
+			print((error + "\n"));
+			exit(1);
+		};
+	};
+};
+
+/*
  closes file with descriptor_number 
 */
 void close_file(int descriptor_number){
@@ -72,4 +90,20 @@ void close_file(int descriptor_number){
 	};
 	
 	error = "";
+};
+
+/*
+ deletes file in file_path
+*/
+void del_file(string file_path){
+	if (exists(file_path)){
+		$del_f(file_path);	
+	}else{
+		error = ("no such file: " + file_path); 
+		
+		if ($toPanic){
+			print((error + "\n"));
+			exit(1); 		
+		};	
+	};
 };

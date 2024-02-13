@@ -282,7 +282,9 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 	wasExists := false
 	wasOpenF := false
 	wasReadF := false
+	wasWriteF := false
 	wasCloseF := false
+	wasDelF := false
 	wasClear := false
 
 	if "goto" == fmt.Sprintf("%v", exprList[0][1]) {
@@ -347,6 +349,10 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 	if "$close_f" == fmt.Sprintf("%v", exprList[0][1]) {
 		exprList = makeOperationBinary(exprList)
 		wasCloseF = true
+	}
+	if "$del_f" == fmt.Sprintf("%v", exprList[0][1]) {
+		exprList = makeOperationBinary(exprList)
+		wasDelF = true
 	}
 	if len(exprList) > 1 && "." == fmt.Sprintf("%v", exprList[1][1]) {
 		exprList[2] = []interface{}{"VAL", []string{exprList[2][1].(string), exprList[4][1].(string)}}
@@ -920,6 +926,12 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 				exprInside = append(exprInside, []interface{}{"BR", ")"})
 				wasReadF = true
 			}
+			if "$write_f" == exprInside[0][1] {
+				exprInside = toStandardBinaryOperation(exprInside)
+				exprInside = Insert(exprInside, 0, []interface{}{"BR", "("})
+				exprInside = append(exprInside, []interface{}{"BR", ")"})
+				wasWriteF = true
+			}
 			if "reg_find" == exprInside[0][1] {
 				exprInside = toStandardBinaryOperation(exprInside)
 				exprInside = Insert(exprInside, 0, []interface{}{"BR", "("})
@@ -1123,7 +1135,7 @@ func Parse(exprListInput [][]interface{}, variables [][]interface{}, usersStack 
 	if maxNbraces > 0 || wasCd || wasAssignment || wasNOT || wasGoto || wasSetSource ||
 		wasNextCommand || wasSendCommand || wasUndefine || wasPop || wasPush || wasSetDest || wasDelDest ||
 		wasSendDest || wasPoint || wasLen || wasIndex || wasGetRootSource || wasGetRootDest ||
-		wasIsLetter || wasIsDigit || wasExit || wasExists || wasOpenF || wasReadF || wasCloseF || wasClear {
+		wasIsLetter || wasIsDigit || wasExit || wasExists || wasOpenF || wasReadF || wasCloseF || wasDelF || wasClear || wasWriteF {
 		if !wasCd {
 			if !wasAssignment {
 				//if not was_NOT:

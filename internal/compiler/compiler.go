@@ -355,6 +355,72 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 
 		// true - признак того, что результат в вычисляемой переменной asm
 		return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "int", nil
+	} else if "$write_f" == OP {
+		var lenLO string
+		var lenRO string
+		isVarLO := false
+		isVarRO := false
+
+		newVariable := EachVariable(variables)
+
+		for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
+			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
+				isVarLO = true
+				lenLO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+				LO[0] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+			}
+			if fmt.Sprintf("%v", RO[0]) == fmt.Sprintf("%v", v[1]) {
+				isVarRO = true
+				lenRO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", RO[0])])
+				RO[0] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", RO[0])])
+			}
+		}
+
+		if len(fmt.Sprintf("%v", LO[0])) >= 2 && `"` == string(fmt.Sprintf("%v", LO[0])[0]) &&
+			`"` == string(fmt.Sprintf("%v", LO[0])[len(fmt.Sprintf("%v", LO[0]))-1]) {
+			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
+		}
+		if len(fmt.Sprintf("%v", RO[0])) >= 2 && `"` == string(fmt.Sprintf("%v", RO[0])[0]) &&
+			`"` == string(fmt.Sprintf("%v", RO[0])[len(fmt.Sprintf("%v", RO[0]))-1]) {
+			RO[0] = RO[0].(string)[1 : len(RO[0].(string))-1]
+		}
+
+		if !isVarLO {
+			return []interface{}{-1}, systemStack, "", errors.New("all the arguments of $write_f must be variables")
+		}
+
+		if !isVarRO {
+			return []interface{}{-1}, systemStack, "", errors.New("all the arguments of $write_f must be variables")
+		}
+
+		//varLO
+		_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+			", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
+			"\n call __getVar \n mov (userData), %rsi\n call __len \n mov $lenBuf, %rsi \n mov $buf, %rdx\n  \n mov (userData), %rdi \n call __set" +
+			"\n call __toNumber \n mov %rax, (buf3)"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		// varRO
+		_, err = progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenRO +
+			", %rax \n mov " + fmt.Sprintf("%v", RO[0]) + ", %rax\n mov %rax, (buf4)"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		_, err = progFile.Write([]byte(
+			"\nmov (buf3), %r10 \n mov (buf4), %r8 \n call __writeToFile \n call __toStr \n mov $lenT" +
+				fmt.Sprintf("%v", tNumber) + ", %rsi \n mov $t" + fmt.Sprintf("%v", tNumber) +
+				", %rdx \n mov $lenBuf2, %rax \n mov $buf2, %rdi\n call __set"))
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		// true - признак того, что результат в вычисляемой переменной asm
+		return []interface{}{true, "t" + fmt.Sprintf("%v", tNumber)}, systemStack, "int", nil
 	} else if "$close_f" == OP {
 		var lenLO string
 		isVarLO := false
@@ -382,6 +448,39 @@ func compile(systemStack []interface{}, OP string, LO []interface{}, RO []interf
 			", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
 			"\n call __getVar \n mov (userData), %rsi\n call __len \n mov $lenBuf, %rsi \n mov $buf, %rdx\n  \n mov (userData), %rdi \n call __set" +
 			"\n call __toNumber \n mov %rax, %rdi \n call __closeFile"))
+
+		if nil != err {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+
+		return []interface{}{0}, systemStack, "", nil
+	} else if "$del_f" == OP {
+		var lenLO string
+		isVarLO := false
+
+		newVariable := EachVariable(variables)
+
+		for v := newVariable(); "end" != fmt.Sprintf("%v", v[0]); v = newVariable() {
+			if fmt.Sprintf("%v", LO[0]) == fmt.Sprintf("%v", v[1]) {
+				isVarLO = true
+				lenLO = "$lenVarName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+				LO[0] = "$varName" + fmt.Sprintf("%v", CompilerVars[fmt.Sprintf("%v", LO[0])])
+			}
+		}
+
+		if len(fmt.Sprintf("%v", LO[0])) >= 2 && `"` == string(fmt.Sprintf("%v", LO[0])[0]) &&
+			`"` == string(fmt.Sprintf("%v", LO[0])[len(fmt.Sprintf("%v", LO[0]))-1]) {
+			LO[0] = LO[0].(string)[1 : len(LO[0].(string))-1]
+		}
+
+		if !isVarLO {
+			return []interface{}{-1}, systemStack, "", errors.New("all the arguments of $del_f must be variables")
+		}
+
+		_, err := progFile.Write([]byte("\nmov $lenVarName, %rsi \n mov $varName, %rdx \n mov " + lenLO +
+			", %rax \n mov " + fmt.Sprintf("%v", LO[0]) + ", %rdi\n call __set " +
+			"\n call __getVar \n mov (userData), %rdi\ncall __delFile"))
 
 		if nil != err {
 			fmt.Println(err)
