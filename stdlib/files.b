@@ -32,9 +32,9 @@ int open_file(string file_path, string mode){
 };
 
 /*
- reads size bytes from file with descriptor_number into variable s
+ reads size bytes from file with descriptor_number
 
- returns number of read bytes 
+ returns read info as a string 
 */
 string read_file(int descriptor_number, int size){
 	int bytes; 
