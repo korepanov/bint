@@ -1916,6 +1916,9 @@ call __newLabelMem
  ret 
  
  .data
+stackEndSymbol:
+.ascii "end"
+.space 1, 0 
 clearSymbol:
 .ascii "$clear"
 .space 1, 0
@@ -6011,6 +6014,8 @@ __defineVar:
  mov %r14, %r8 
  __defOkLocal: 
  movb (%rcx), %r11b 
+ cmp $0, %r11b 
+ jz __defOkLocalEx
  cmp $1, %r11b
  jz __defOkLocalEx
  movb %r11b, (%r8)
@@ -6018,10 +6023,13 @@ __defineVar:
  inc %r8 
  jmp __defOkLocal
  __defOkLocalEx:
+ movb $0, (%r8)
  mov %r14, %r8 
  add (varNameSize), %r8 
  __defOkTypeLocal:
  movb (%rdx), %r11b
+ cmp $0, %r11b 
+ jz __defOkTypeLocalEx
  cmp $1, %r11b 
  jz __defOkTypeLocalEx
  movb %r11b, (%r8)
@@ -6029,7 +6037,8 @@ __defineVar:
  inc %r8 
  jmp __defOkTypeLocal
  __defOkTypeLocalEx:
- 
+ movb $0, (%r8)
+
  mov $lenBuf2, %rsi 
  mov $buf2, %rdx 
  mov $lenVarType, %rax 
@@ -6071,6 +6080,16 @@ __defineVar:
  call __compare
  cmp $1, %rax 
  jz __defString 
+
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov $lenStackType, %rax 
+ mov $stackType, %rdi 
+ call __set 
+ call __compare
+ cmp $1, %rax 
+ jz __defStack  
+
  call __throughError
 
  __defInt:
@@ -6131,13 +6150,45 @@ __defineVar:
  movb $0, (%r8)
  mov (strPointer), %rax 
  add (valSize), %rax 
- #cmp (strMax), %rax 
- #jg __defStrNewMem
  mov %rax, (strPointer)
- #jmp __defEnd 
- #__defStrNewMem:
- #mov %rax, (strPointer)
- #call __newStrMem
+ jmp __defEnd 
+ 
+
+
+
+ __defStack:
+ mov %r14, %r8 
+ add (varNameSize), %r8 
+ add (typeSize), %r8
+ mov (stackPointer), %rax 
+ mov $stackEndSymbol, %r12
+ __defStackEndSymbol: 
+ mov (%r12), %dil 
+ cmp $0, %dil 
+ jz __defStackEndSymbolOk
+ mov %dil, (%rax)
+ inc %r12 
+ jmp __defStackEndSymbol
+ __defStackEndSymbolOk:
+ movb $0, (%rax)
+ mov %r8, %r12 
+ mov (stackPointer), %rax 
+ call __toStr 
+ mov %r12, %r8 
+ mov $buf2, %rax
+ __defStackAddr:
+ mov (%rax), %dl 
+ cmp $0, %dl  
+ jz __defStackEnd 
+ mov %dl, (%r8)
+ inc %rax 
+ inc %r8 
+ jmp __defStackAddr
+ __defStackEnd:
+ movb $0, (%r8)
+ mov (stackPointer), %rax 
+ add (valSize), %rax 
+ mov %rax, (stackPointer)
  __defEnd:
 
  add (varSize), %r14
