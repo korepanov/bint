@@ -1952,6 +1952,8 @@ valSize:
 .quad 64 
 strValSize:
 .quad 1024
+stackValSize:
+.quad 96 
 strValSizeMax:
 .quad 22500000  
 labelSize:
@@ -6221,7 +6223,7 @@ __defineVar:
  __defStackEnd:
  movb $0, (%r8)
  mov (stackPointer), %rax 
- add (valSize), %rax 
+ add (stackValSize), %rax 
  mov %rax, (stackPointer)
  movb $2, (%rax) # признак начала стека 
  __defEnd:
@@ -7357,7 +7359,7 @@ __setVar:
  call __toNumber 
 
  mov %rax, %rcx 
- add (valSize), %rcx 
+ add (stackValSize), %rcx 
 
  movb $4, (%rcx)
  inc %rcx 
@@ -7443,6 +7445,9 @@ __setVar:
  push %rbx
  push %rcx  
 
+ 
+
+
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName, %rax 
@@ -7453,6 +7458,21 @@ __setVar:
  pop %rcx 
  pop %rbx 
  pop %rax 
+ push %rcx 
+ mov $buf, %rdx 
+ __userPushType:
+ mov (%rdx), %dil 
+ cmp $0, %dil 
+ jz __userPushTypeOk 
+ mov %dil, (%rcx)
+ inc %rdx 
+ inc %rcx 
+ jmp __userPushType 
+ __userPushTypeOk:
+ movb $0, (%rcx)
+
+ pop %rcx 
+ add (typeSize), %rcx 
 
  mov (userData), %rax 
  dec %rcx 
@@ -7472,7 +7492,7 @@ __setVar:
  add (valSize), %rcx 
  movb $2, (%rcx)
  mov (stackPointer), %rax 
- add (valSize), %rax 
+ add (stackValSize), %rax 
  inc %rax # признак начала стека  
  mov %rax, (stackPointer) 
  ret 
