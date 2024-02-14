@@ -1,1 +1,1 @@
-/home/slava/Go/bint/test.txt/home/slava/Go/bint/test.txt/home/slava/Go/bint/test.txt
+Hello world!
