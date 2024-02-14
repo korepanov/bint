@@ -1931,6 +1931,8 @@ pageSize:
 pageSizeMax:
 .quad 4500000000 
 shiftSize:
+.quad 8192
+stackShiftSize:
 .quad 8192 
 shiftSizeMax:
 .quad 9000000000 
@@ -2042,6 +2044,9 @@ lenMem20 = . - mem20
 strBegin:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrBegin = . - strBegin
+stackBegin:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenStackBegin = . - stackBegin  
 oldHeapMax:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenOldHeapMax = . - oldHeapMax
@@ -2051,6 +2056,12 @@ lenStrPointer = . - strPointer
 strMax:
 .quad 0, 0, 0, 0, 0, 0, 0, 0
 lenStrMax = . - strMax 
+stackMax:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenStackMax = . - stackMax
+stackPointer:
+.quad 0, 0, 0, 0, 0, 0, 0, 0
+lenStackPointer = . - stackPointer   
 isNeg:
 .byte 0 
 lenIsNeg = . - isNeg
@@ -3505,7 +3516,7 @@ varName2:
 .space 1, 0
 lenVarName2 = . - varName2
 label0:
- .quad .mod
+ //.quad .mod
 labelName0:
 .ascii ".mod"
 .space 1,0
@@ -3554,7 +3565,7 @@ varName10:
 .space 1, 0
 lenVarName10 = . - varName10
 label1:
- .quad .mod_end
+ //.quad .mod_end
 labelName1:
 .ascii ".mod_end"
 .space 1,0
@@ -3571,7 +3582,7 @@ varName12:
 .space 1, 0
 lenVarName12 = . - varName12
 label2:
- .quad .next_prime
+ //.quad .next_prime
 labelName2:
 .ascii ".next_prime"
 .space 1,0
@@ -3608,7 +3619,7 @@ varName14:
 .space 1, 0
 lenVarName14 = . - varName14
 label3:
- .quad ._for0
+ //.quad ._for0
 labelName3:
 .ascii "._for0"
 .space 1,0
@@ -3649,7 +3660,7 @@ varName17:
 .space 1, 0
 lenVarName17 = . - varName17
 label4:
- .quad ._for3
+ //.quad ._for3
 labelName4:
 .ascii "._for3"
 .space 1,0
@@ -3678,7 +3689,7 @@ data20:
 .space 1, 0
 lenData20 = . - data20
 label5:
- .quad .mod_res0
+ //.quad .mod_res0
 labelName5:
 .ascii ".mod_res0"
 .space 1,0
@@ -3699,7 +3710,7 @@ data24:
 .space 1, 0
 lenData24 = . - data24
 label6:
- .quad ._cond4_end
+ //.quad ._cond4_end
 labelName6:
 .ascii "._cond4_end"
 .space 1,0
@@ -3716,7 +3727,7 @@ data27:
 .space 1, 0
 lenData27 = . - data27
 label7:
- .quad ._undef_for3
+ //.quad ._undef_for3
 labelName7:
 .ascii "._undef_for3"
 .space 1,0
@@ -3725,7 +3736,7 @@ data28:
 .space 1, 0
 lenData28 = . - data28
 label8:
- .quad ._cond3_end
+ //.quad ._cond3_end
 labelName8:
 .ascii "._cond3_end"
 .space 1,0
@@ -3738,7 +3749,7 @@ data30:
 .space 1, 0
 lenData30 = . - data30
 label9:
- .quad ._cond5_end
+ //.quad ._cond5_end
 labelName9:
 .ascii "._cond5_end"
 .space 1,0
@@ -3759,7 +3770,7 @@ data34:
 .space 1, 0
 lenData34 = . - data34
 label10:
- .quad ._cond6_end
+ //.quad ._cond6_end
 labelName10:
 .ascii "._cond6_end"
 .space 1,0
@@ -3768,7 +3779,7 @@ data35:
 .space 1, 0
 lenData35 = . - data35
 label11:
- .quad ._for3_end
+ //.quad ._for3_end
 labelName11:
 .ascii "._for3_end"
 .space 1,0
@@ -3777,7 +3788,7 @@ data36:
 .space 1, 0
 lenData36 = . - data36
 label12:
- .quad ._cond2_end
+ //.quad ._cond2_end
 labelName12:
 .ascii "._cond2_end"
 .space 1,0
@@ -3794,7 +3805,7 @@ data39:
 .space 1, 0
 lenData39 = . - data39
 label13:
- .quad ._cond7_end
+ //.quad ._cond7_end
 labelName13:
 .ascii "._cond7_end"
 .space 1,0
@@ -3811,7 +3822,7 @@ data42:
 .space 1, 0
 lenData42 = . - data42
 label14:
- .quad ._undef_for0
+ //.quad ._undef_for0
 labelName14:
 .ascii "._undef_for0"
 .space 1,0
@@ -3820,7 +3831,7 @@ data43:
 .space 1, 0
 lenData43 = . - data43
 label15:
- .quad ._cond1_end
+ //.quad ._cond1_end
 labelName15:
 .ascii "._cond1_end"
 .space 1,0
@@ -3833,7 +3844,7 @@ data45:
 .space 1, 0
 lenData45 = . - data45
 label16:
- .quad ._cond8_end
+ //.quad ._cond8_end
 labelName16:
 .ascii "._cond8_end"
 .space 1,0
@@ -3846,7 +3857,7 @@ data47:
 .space 1, 0
 lenData47 = . - data47
 label17:
- .quad ._cond9_end
+ //.quad ._cond9_end
 labelName17:
 .ascii "._cond9_end"
 .space 1,0
@@ -3855,7 +3866,7 @@ data48:
 .space 1, 0
 lenData48 = . - data48
 label18:
- .quad ._for0_end
+ //.quad ._for0_end
 labelName18:
 .ascii "._for0_end"
 .space 1,0
@@ -3864,7 +3875,7 @@ data49:
 .space 1, 0
 lenData49 = . - data49
 label19:
- .quad ._cond0_end
+ //.quad ._cond0_end
 labelName19:
 .ascii "._cond0_end"
 .space 1,0
@@ -3881,7 +3892,7 @@ data52:
 .space 1, 0
 lenData52 = . - data52
 label20:
- .quad .next_prime_end
+ //.quad .next_prime_end
 labelName20:
 .ascii ".next_prime_end"
 .space 1,0
@@ -3898,7 +3909,7 @@ varName20:
 .space 1, 0
 lenVarName20 = . - varName20
 label21:
- .quad .main
+ //.quad .main
 labelName21:
 .ascii ".main"
 .space 1,0
@@ -3951,7 +3962,7 @@ varName25:
 .space 1, 0
 lenVarName25 = . - varName25
 label22:
- .quad ._for1
+ //.quad ._for1
 labelName22:
 .ascii "._for1"
 .space 1,0
@@ -3984,7 +3995,7 @@ data67:
 .space 1, 0
 lenData67 = . - data67
 label23:
- .quad ._cond13_end
+ //.quad ._cond13_end
 labelName23:
 .ascii "._cond13_end"
 .space 1,0
@@ -4001,7 +4012,7 @@ data70:
 .space 1, 0
 lenData70 = . - data70
 label24:
- .quad ._cond14_end
+ //.quad ._cond14_end
 labelName24:
 .ascii "._cond14_end"
 .space 1,0
@@ -4014,7 +4025,7 @@ varName26:
 .space 1, 0
 lenVarName26 = . - varName26
 label25:
- .quad ._attempt0
+// .quad ._attempt0
 labelName25:
 .ascii "._attempt0"
 .space 1,0
@@ -4027,7 +4038,7 @@ data73:
 .space 1, 0
 lenData73 = . - data73
 label26:
- .quad ._cond12_end
+ //.quad ._cond12_end
 labelName26:
 .ascii "._cond12_end"
 .space 1,0
@@ -4076,7 +4087,7 @@ data80:
 .space 1, 0
 lenData80 = . - data80
 label27:
- .quad ._cond15_end
+ //.quad ._cond15_end
 labelName27:
 .ascii "._cond15_end"
 .space 1,0
@@ -4121,7 +4132,7 @@ data88:
 .space 1, 0
 lenData88 = . - data88
 label28:
- .quad ._cond16_end
+ //.quad ._cond16_end
 labelName28:
 .ascii "._cond16_end"
 .space 1,0
@@ -4166,7 +4177,7 @@ data96:
 .space 1, 0
 lenData96 = . - data96
 label29:
- .quad ._cond17_end
+ //.quad ._cond17_end
 labelName29:
 .ascii "._cond17_end"
 .space 1,0
@@ -4175,7 +4186,7 @@ data97:
 .space 1, 0
 lenData97 = . - data97
 label30:
- .quad ._cond_exit0
+ //.quad ._cond_exit0
 labelName30:
 .ascii "._cond_exit0"
 .space 1,0
@@ -4204,7 +4215,7 @@ data103:
 .space 1, 0
 lenData103 = . - data103
 label31:
- .quad ._cond18_end
+ //.quad ._cond18_end
 labelName31:
 .ascii "._cond18_end"
 .space 1,0
@@ -4217,7 +4228,7 @@ data105:
 .space 1, 0
 lenData105 = . - data105
 label32:
- .quad ._undef_for1
+ //.quad ._undef_for1
 labelName32:
 .ascii "._undef_for1"
 .space 1,0
@@ -4226,7 +4237,7 @@ data106:
 .space 1, 0
 lenData106 = . - data106
 label33:
- .quad ._cond11_end
+ //.quad ._cond11_end
 labelName33:
 .ascii "._cond11_end"
 .space 1,0
@@ -4239,7 +4250,7 @@ data108:
 .space 1, 0
 lenData108 = . - data108
 label34:
- .quad ._cond19_end
+ //.quad ._cond19_end
 labelName34:
 .ascii "._cond19_end"
 .space 1,0
@@ -4252,7 +4263,7 @@ data110:
 .space 1, 0
 lenData110 = . - data110
 label35:
- .quad ._cond20_end
+ //.quad ._cond20_end
 labelName35:
 .ascii "._cond20_end"
 .space 1,0
@@ -4261,7 +4272,7 @@ data111:
 .space 1, 0
 lenData111 = . - data111
 label36:
- .quad ._for1_end
+ //.quad ._for1_end
 labelName36:
 .ascii "._for1_end"
 .space 1,0
@@ -4270,7 +4281,7 @@ data112:
 .space 1, 0
 lenData112 = . - data112
 label37:
- .quad ._cond10_end
+ //.quad ._cond10_end
 labelName37:
 .ascii "._cond10_end"
 .space 1,0
@@ -4295,7 +4306,7 @@ data117:
 .space 1, 0
 lenData117 = . - data117
 label38:
- .quad ._cond21_end
+ //.quad ._cond21_end
 labelName38:
 .ascii "._cond21_end"
 .space 1,0
@@ -4344,7 +4355,7 @@ data124:
 .space 1, 0
 lenData124 = . - data124
 label39:
- .quad ._cond22_end
+ //.quad ._cond22_end
 labelName39:
 .ascii "._cond22_end"
 .space 1,0
@@ -4385,7 +4396,7 @@ varName42:
 .space 1, 0
 lenVarName42 = . - varName42
 label40:
- .quad ._for2
+ //.quad ._for2
 labelName40:
 .ascii "._for2"
 .space 1,0
@@ -4410,7 +4421,7 @@ data133:
 .space 1, 0
 lenData133 = . - data133
 label41:
- .quad .next_prime_res0
+ //.quad .next_prime_res0
 labelName41:
 .ascii ".next_prime_res0"
 .space 1,0
@@ -4439,7 +4450,7 @@ data136:
 .space 1, 0
 lenData136 = . - data136
 label42:
- .quad ._cond25_end
+ //.quad ._cond25_end
 labelName42:
 .ascii "._cond25_end"
 .space 1,0
@@ -4456,7 +4467,7 @@ data139:
 .space 1, 0
 lenData139 = . - data139
 label43:
- .quad ._undef_for2
+ //.quad ._undef_for2
 labelName43:
 .ascii "._undef_for2"
 .space 1,0
@@ -4465,7 +4476,7 @@ data140:
 .space 1, 0
 lenData140 = . - data140
 label44:
- .quad ._cond24_end
+ //.quad ._cond24_end
 labelName44:
 .ascii "._cond24_end"
 .space 1,0
@@ -4478,7 +4489,7 @@ data142:
 .space 1, 0
 lenData142 = . - data142
 label45:
- .quad ._cond26_end
+ //.quad ._cond26_end
 labelName45:
 .ascii "._cond26_end"
 .space 1,0
@@ -4495,7 +4506,7 @@ data145:
 .space 1, 0
 lenData145 = . - data145
 label46:
- .quad ._cond27_end
+ //.quad ._cond27_end
 labelName46:
 .ascii "._cond27_end"
 .space 1,0
@@ -4504,7 +4515,7 @@ data146:
 .space 1, 0
 lenData146 = . - data146
 label47:
- .quad ._for2_end
+ //.quad ._for2_end
 labelName47:
 .ascii "._for2_end"
 .space 1,0
@@ -4513,7 +4524,7 @@ data147:
 .space 1, 0
 lenData147 = . - data147
 label48:
- .quad ._cond23_end
+// .quad ._cond23_end
 labelName48:
 .ascii "._cond23_end"
 .space 1,0
@@ -4538,7 +4549,7 @@ data151:
 .space 1, 0
 lenData151 = . - data151
 label49:
- .quad .main_end
+ //.quad .main_end
 labelName49:
 .ascii ".main_end"
 .space 1,0
@@ -4563,11 +4574,12 @@ data154:
 .space 1, 0
 lenData154 = . - data154
 label50:
- .quad .main_res0
+// .quad .main_res0
 labelName50:
 .ascii ".main_res0"
 .space 1,0
 
+.text 
  __throughError:
  mov $fatalError, %rsi
  call __print 
@@ -4668,7 +4680,7 @@ __lenEx:
 __printHeap:  
  mov (memoryBegin), %r8  
  __printHeapLoop:
- cmp (strMax), %r8 
+ cmp (stackMax), %r8 
  jz __printHeapEx
  mov (%r8), %dl 
  /*cmp $0, %dl 
@@ -6503,6 +6515,36 @@ __firstMem:
  __firstStrMemEx:
  ret 
 
+ __firstStackMem:
+ # адрес начала области для выделения памяти
+ mov (strMax), %rax
+# запомнить адрес начала выделяемой памяти
+ mov %rax, %r8  
+ mov %rax, (stackBegin)
+ mov %rax, (stackPointer)
+ mov %rax, %r9 
+ add (stackShiftSize), %r9
+ mov %r9, (stackMax)
+# выделить динамическую память
+ mov (stackShiftSize), %rdi
+ add %rax, %rdi
+ mov $12, %rax
+ syscall
+# обработка ошибки
+ cmp $-1, %rax
+ jz __throughError
+# заполним выделенную память
+ mov $1, %dl
+ mov $0, %rbx
+ __firstStackMemLo:
+ movb %dl, (%r8)
+ inc %rbx
+ inc %r8 
+ cmp (stackShiftSize), %rbx
+ jz  __firstStackMemEx
+ jmp __firstStackMemLo
+ __firstStackMemEx:
+ ret 
 
  __newMem:
  # адрес начала выделяемой памяти в  %r8 
@@ -9161,9 +9203,10 @@ _start:
  call __initLabels
  call __firstMem
  call __firstStrMem
+ call __firstStackMem
 
  # toPanic variable
- mov $lenVarName, %rsi 
+ /*mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarNamePanic, %rax 
  mov $varNamePanic, %rdi
@@ -12096,7 +12139,7 @@ mov $lenVarName, %rsi
  mov $varName, %rcx 
  mov $varType, %rdx  
  call __defineVar
-jmp .main_end
+jmp .main_end*/
 .main:
 
 mov $lenVarName, %rsi 
@@ -12121,6 +12164,13 @@ call __set
  mov %rax, (userData)
  xor %rax, %rax
 call __setVar
+
+
+
+call __printHeap 
+call __throughError
+
+
 call __getVar 
 
 mov (userData), %rax 
@@ -12158,7 +12208,7 @@ call __print
 pop %rdi 
 call __closeFile*/
 #call __printHeap 
-call __throughError
+/*call __throughError
 mov $data54, %rsi
 call __print
 mov $data55, %rsi
@@ -14291,7 +14341,7 @@ mov $lenVarName, %rsi
  mov $lenVarName49, %rax 
 mov $varName49, %rdi 
  call __set 
-call __undefineVar
+call __undefineVar*/
 mov $60,  %rax
 xor %rdi, %rdi
 syscall

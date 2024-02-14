@@ -1,3 +1,4 @@
+.text
 __throughError:
  mov $fatalError, %rsi
  call __print 
