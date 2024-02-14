@@ -4583,6 +4583,10 @@ varName51:
 .ascii "i"
 .space 1, 0
 lenVarName51 = . - varName51  
+varName52:
+.ascii "f"
+.space 1, 0
+lenVarName52 = . - varName52 
 data153:
 .ascii "#main_res0"
 .space 1, 0
@@ -4595,6 +4599,10 @@ data155:
 .ascii "57"
 .space 1, 0
 lenData155 = . - data155 
+data156:
+.ascii "98.32"
+.space 1, 0
+lenData156 = . - data156 
 label50:
 // .quad .main_res0
 labelName50:
@@ -12408,6 +12416,32 @@ call __set
  mov %rax, (userData)
  xor %rax, %rax
 call __setVar
+
+
+
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName52, %rax 
+ mov $varName52, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenFloatType, %rax
+ mov $floatType, %rdi
+ call __set 
+ call __defineVar
+  
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName52, %rax 
+ mov $varName52, %rdi 
+call __set
+
+ mov $data156, %rax  
+ mov %rax, (userData)
+ xor %rax, %rax
+call __setVar
+
 
 mov $varName50, %rax 
 mov $varName51, %rbx 
