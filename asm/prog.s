@@ -1919,6 +1919,9 @@ call __newLabelMem
 stackEndSymbol:
 .ascii "end"
 .space 1, 0 
+stackSep:
+.ascii ","
+.space 1, 0
 clearSymbol:
 .ascii "$clear"
 .space 1, 0
@@ -4576,6 +4579,10 @@ varName50:
 .ascii "myStack"
 .space 1, 0
 lenVarName50 = . - varName50 
+varName51:
+.ascii "i"
+.space 1, 0
+lenVarName51 = . - varName51  
 data153:
 .ascii "#main_res0"
 .space 1, 0
@@ -4584,6 +4591,10 @@ data154:
 .ascii "/home/slava/Go/bint/test.txt"
 .space 1, 0
 lenData154 = . - data154
+data155:
+.ascii "57"
+.space 1, 0
+lenData155 = . - data155 
 label50:
 // .quad .main_res0
 labelName50:
@@ -4705,7 +4716,12 @@ __printHeap:
  jmp __printHeapLoop
  __printHeapNotZero: */
  cmp $2, %dl 
- jnz __printHeapNotTwo
+ jz __printHeapTwo
+ cmp $3, %dl 
+ jz __printHeapThree 
+ jmp __printHeapNotServiceSymbol
+
+ __printHeapTwo:
  mov $endSymbol, %rsi 
  mov $1, %rdi	
  mov $1, %rdx
@@ -4713,7 +4729,14 @@ __printHeap:
  syscall
  inc %r8 
  jmp __printHeapLoop
- __printHeapNotTwo: 
+
+__printHeapThree:
+ mov $stackEndSymbol, %rsi 
+ call __print 
+ inc %r8 
+ jmp __printHeapLoop
+
+ __printHeapNotServiceSymbol: 
 
  cmp $1, %dl 
  jnz printHeapNopEnd
@@ -6161,17 +6184,7 @@ __defineVar:
  add (varNameSize), %r8 
  add (typeSize), %r8
  mov (stackPointer), %rax 
- mov $stackEndSymbol, %r12
- __defStackEndSymbol: 
- mov (%r12), %dil 
- cmp $0, %dil 
- jz __defStackEndSymbolOk 
- mov %dil, (%rax)
- inc %r12 
- inc %rax 
- jmp __defStackEndSymbol
- __defStackEndSymbolOk:
- movb $0, (%rax)
+ movb $3, (%rax) # признак конца стека 
  mov %r8, %r12 
  mov (stackPointer), %rax 
  call __toStr 
@@ -6190,7 +6203,7 @@ __defineVar:
  mov (stackPointer), %rax 
  add (valSize), %rax 
  mov %rax, (stackPointer)
- movb $2, (%rax) # признак конца стека 
+ movb $2, (%rax) # признак начала стека 
  __defEnd:
 
  add (varSize), %r14
@@ -7300,6 +7313,14 @@ __setVar:
  __setVarRet:
  movb $0, (%rbx) 
 
+ ret
+
+ __userPush:
+ # input:
+ # %rax - адрес имени стека 
+ # %rbx - адрес имени переменной, которую нужно положить в стек
+ mov (stackPointer), %rcx 
+ 
  ret
 
  __getVar:
@@ -12237,6 +12258,33 @@ mov $lenVarName, %rsi
  mov $stackType, %rdi
  call __set 
  call __defineVar
+
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName51, %rax 
+ mov $varName51, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenIntType, %rax
+ mov $intType, %rdi
+ call __set 
+ call __defineVar
+  
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName51, %rax 
+ mov $varName51, %rdi 
+call __set
+
+ mov $data155, %rax  
+ mov %rax, (userData)
+ xor %rax, %rax
+call __setVar
+
+mov $varName50, %rax 
+mov $varName51, %rbx 
+call __userPush
 
 call __printHeap 
 call __throughError
