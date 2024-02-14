@@ -4587,6 +4587,10 @@ varName52:
 .ascii "f"
 .space 1, 0
 lenVarName52 = . - varName52 
+varName53:
+.ascii "myStack2"
+.space 1, 0
+lenVarName53 = . - varName53 
 data153:
 .ascii "#main_res0"
 .space 1, 0
@@ -7450,7 +7454,27 @@ __setVar:
  pop %rbx 
  pop %rax 
 
-
+ mov (userData), %rax 
+ dec %rcx 
+ push %rcx 
+ inc %rcx 
+ __userPushData:
+ mov (%rax), %dil 
+ cmp $0, %dil 
+ jz __userPushDataOk
+ mov %dil, (%rcx)
+ inc %rax 
+ inc %rcx  
+ jmp __userPushData 
+ __userPushDataOk:
+ movb $0, (%rcx)
+ pop %rcx
+ add (valSize), %rcx 
+ movb $2, (%rcx)
+ mov (stackPointer), %rax 
+ add (valSize), %rax 
+ inc %rax # признак начала стека  
+ mov %rax, (stackPointer) 
  ret 
 
  __userPushVarStr:
@@ -12446,6 +12470,18 @@ call __setVar
 mov $varName50, %rax 
 mov $varName51, %rbx 
 call __userPush
+
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName53, %rax 
+ mov $varName53, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax
+ mov $stackType, %rdi
+ call __set 
+ call __defineVar
 
 call __printHeap 
 call __throughError
