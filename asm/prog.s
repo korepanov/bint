@@ -4743,7 +4743,7 @@ __printHeapThree:
  call __print 
  inc %r8 
  jmp __printHeapLoop 
- 
+
  __printHeapNotServiceSymbol: 
 
  cmp $1, %dl 
@@ -7327,9 +7327,69 @@ __setVar:
  # input:
  # %rax - адрес имени стека 
  # %rbx - адрес имени переменной, которую нужно положить в стек
+ push %rax
+ push %rbx 
+
  mov (stackPointer), %rcx 
  movb $4, (%rcx)
 
+ mov %r13, %rbx
+ __userPushLocal:
+ cmp %r15, %rbx
+ jg __userPushEnd
+
+ mov %rbx, %r12 
+ call __read 
+ cmp $1, (buf)
+ jz __userPushEnd 
+ 
+ add (varSize), %rbx 
+ jmp __userPushLocal 
+  __userPushEnd:
+ __userPushSearch:
+ sub (varSize), %rbx 
+ mov %rbx, %r12 
+ call __read 
+ cmp $1, (buf)
+ jz __throughError
+ 
+ pop %rcx 
+ push %rcx 
+ mov $buf, %rsi 
+ mov %rbx, %r12 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenBuf2, %rax 
+ mov %rcx, %rdi 
+ call __set
+ call __compare
+
+
+ mov %r12, %rbx 
+ cmp $0, %rax 
+ jz __userPushSearch
+ 
+ mov %rbx, %rsi 
+ add (varNameSize), %rbx
+ mov %rbx, %rsi 
+ call __print 
+ call __throughError
+ /* 
+ mov %rbx, %rax 
+ mov %rbx, %r12 
+ call __read  
+ add (typeSize), %rbx 
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi 
+ call __set
+ mov %rbx, %r12 
+ call __compare
+ mov %r12, %rbx 
+ cmp $0, %rax 
+ jnz __setVarStr*/
  ret
 
  __getVar:
