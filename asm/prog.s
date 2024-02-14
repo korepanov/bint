@@ -4718,7 +4718,10 @@ __printHeap:
  cmp $2, %dl 
  jz __printHeapTwo
  cmp $3, %dl 
- jz __printHeapThree 
+ jz __printHeapThree
+ cmp $4, %dl 
+ jz __printHeapFour 
+
  jmp __printHeapNotServiceSymbol
 
  __printHeapTwo:
@@ -4735,7 +4738,12 @@ __printHeapThree:
  call __print 
  inc %r8 
  jmp __printHeapLoop
-
+ __printHeapFour:
+ mov $stackSep, %rsi 
+ call __print 
+ inc %r8 
+ jmp __printHeapLoop 
+ 
  __printHeapNotServiceSymbol: 
 
  cmp $1, %dl 
@@ -7320,7 +7328,8 @@ __setVar:
  # %rax - адрес имени стека 
  # %rbx - адрес имени переменной, которую нужно положить в стек
  mov (stackPointer), %rcx 
- 
+ movb $4, (%rcx)
+
  ret
 
  __getVar:
