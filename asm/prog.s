@@ -2134,6 +2134,10 @@ stringType:
 .ascii "string"
 .space 1, 0
 lenStringType = . - stringType
+stackType:
+.ascii "stack"
+.space 1, 0
+lenStackType = . - stackType 
 enter:
 .ascii "\n"
 .space 1, 0
@@ -4565,6 +4569,10 @@ varName49:
 .ascii "$main_res0"
 .space 1, 0
 lenVarName49 = . - varName49
+varName50:
+.ascii "myStack"
+.space 1, 0
+lenVarName50 = . - varName50 
 data153:
 .ascii "#main_res0"
 .space 1, 0
@@ -12165,7 +12173,17 @@ call __set
  xor %rax, %rax
 call __setVar
 
-
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName50, %rax 
+ mov $varName50, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax
+ mov $stackType, %rdi
+ call __set 
+ call __defineVar
 
 call __printHeap 
 call __throughError
