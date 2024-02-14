@@ -7330,9 +7330,26 @@ __setVar:
  push %rax
  push %rbx 
 
- mov (stackPointer), %rcx 
- movb $4, (%rcx)
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov %rax, %rdi
+ mov $lenVarName, %rax 
+ call __set 
+ call __getVar
 
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov (userData), %rdi
+ mov $lenVarName, %rax 
+ call __set 
+ call __toNumber 
+
+ mov %rax, %rcx 
+ add (valSize), %rcx 
+
+ movb $4, (%rcx)
+ inc %rcx 
+ push %rcx 
  mov %r13, %rbx
  __userPushLocal:
  cmp %r15, %rbx
@@ -7354,16 +7371,22 @@ __setVar:
  jz __throughError
  
  pop %rcx 
- push %rcx 
+ pop %rdx 
+ pop %rax 
+ push %rax 
+ push %rdx 
+ push %rcx  
+
  mov $buf, %rsi 
  mov %rbx, %r12 
- mov $lenBuf2, %rsi 
+ mov $lenBuf2, %rsi
+ mov %rdx, %rdi  
  mov $buf2, %rdx 
  mov $lenBuf2, %rax 
- mov %rcx, %rdi 
- call __set
- call __compare
 
+ call __set
+
+ call __compare
 
  mov %r12, %rbx 
  cmp $0, %rax 
@@ -7400,19 +7423,26 @@ __setVar:
  cmp $0, %rax 
  jnz __userPushVarStack
 
- # not string and not stack  
+ # not string and not stack 
+ pop %rcx  
+ pop %rbx 
+ pop %rax 
+ push %rax 
+ push %rbx
+ push %rcx  
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName, %rax 
+ mov %rbx, %rdi 
+ call __set 
+ call __getVar
+
+ pop %rcx 
  pop %rbx 
  pop %rax 
 
- mov %rax, %rsi 
- call __print 
- mov $enter, %rsi 
- call __print 
- mov %rbx, %rsi 
- call __print 
- mov $enter, %rsi 
- call __print 
- call __throughError
+
  ret 
 
  __userPushVarStr:
