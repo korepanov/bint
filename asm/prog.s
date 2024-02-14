@@ -8944,6 +8944,13 @@ __openFileWrite:
   jl  __openFileException
   ret
 __openFileAppend:
+  mov %rax, %rdi    # адрес строки с именем файла
+  mov $0x441,  %rsi    # O_CREAT| O_WRONLY | O_APPEND
+  mov $0777, %rdx  # права доступа создаваемого файла
+  mov $2,  %rax    # номер системного вызова
+  syscall          # вызов функции "открыть файл"
+  cmp $0, %rax    # нет ли ошибки при открытии
+  jl  __openFileException
   ret 
 __openFileException:
   mov $openFileError, %rsi 
@@ -12117,7 +12124,7 @@ call __setVar
 call __getVar 
 
 mov (userData), %rax 
-mov $1, %rbx 
+mov $2, %rbx 
 call __openFile 
 push %rax 
 mov %rax, %r10
