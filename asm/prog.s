@@ -6165,9 +6165,10 @@ __defineVar:
  __defStackEndSymbol: 
  mov (%r12), %dil 
  cmp $0, %dil 
- jz __defStackEndSymbolOk
+ jz __defStackEndSymbolOk 
  mov %dil, (%rax)
  inc %r12 
+ inc %rax 
  jmp __defStackEndSymbol
  __defStackEndSymbolOk:
  movb $0, (%rax)
@@ -6189,6 +6190,7 @@ __defineVar:
  mov (stackPointer), %rax 
  add (valSize), %rax 
  mov %rax, (stackPointer)
+ movb $2, (%rax) # признак конца стека 
  __defEnd:
 
  add (varSize), %r14
