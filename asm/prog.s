@@ -7372,9 +7372,7 @@ __setVar:
  mov %rbx, %rsi 
  add (varNameSize), %rbx
  mov %rbx, %rsi 
- call __print 
- call __throughError
- /* 
+ 
  mov %rbx, %rax 
  mov %rbx, %r12 
  call __read  
@@ -7389,8 +7387,38 @@ __setVar:
  call __compare
  mov %r12, %rbx 
  cmp $0, %rax 
- jnz __setVarStr*/
- ret
+ jnz __userPushVarStr
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenStackType, %rax 
+ mov $stackType, %rdi 
+ call __set
+ mov %rbx, %r12 
+ call __compare
+ mov %r12, %rbx 
+ cmp $0, %rax 
+ jnz __userPushVarStack
+
+ # not string and not stack  
+ pop %rbx 
+ pop %rax 
+
+ mov %rax, %rsi 
+ call __print 
+ mov $enter, %rsi 
+ call __print 
+ mov %rbx, %rsi 
+ call __print 
+ mov $enter, %rsi 
+ call __print 
+ call __throughError
+ ret 
+
+ __userPushVarStr:
+ ret 
+ __userPushVarStack:
+ ret 
 
  __getVar:
  # вход: имя переменной по адресу $varName 
