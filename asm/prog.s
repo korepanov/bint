@@ -6197,10 +6197,6 @@ __defineVar:
  add (valSize), %rax 
  mov %rax, (strPointer)
  jmp __defEnd 
- 
-
-
-
  __defStack:
  mov %r14, %r8 
  add (varNameSize), %r8 
@@ -7484,12 +7480,13 @@ __shiftInternalStacks:
  movb $0, (%rcx)
 
  pop %rcx 
+ dec %rcx 
+ push %rcx
+ inc %rcx 
  add (typeSize), %rcx 
 
  mov (userData), %rax 
- dec %rcx 
- push %rcx 
- inc %rcx 
+  
  __userPushData:
  mov (%rax), %dil 
  cmp $0, %dil 
@@ -7501,7 +7498,7 @@ __shiftInternalStacks:
  __userPushDataOk:
  movb $0, (%rcx)
  pop %rcx
- add (valSize), %rcx 
+ add (stackValSize), %rcx 
  movb $2, (%rcx)
  call __shiftInternalStacks
  ret 
@@ -12502,7 +12499,11 @@ call __userPush
 
 mov $varName50, %rax 
 mov $varName52, %rbx 
-call __userPush 
+call __userPush
+
+mov $varName50, %rax 
+mov $varName52, %rbx 
+call __userPush
 
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
