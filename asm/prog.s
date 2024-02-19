@@ -7337,6 +7337,13 @@ __setVar:
 
  ret
 
+__shiftInternalStacks:
+ mov (stackPointer), %rax 
+ add (stackValSize), %rax 
+ inc %rax # признак начала стека  
+ mov %rax, (stackPointer) 
+ ret 
+
  __userPush:
  # input:
  # %rax - адрес имени стека 
@@ -7359,7 +7366,15 @@ __setVar:
  call __toNumber 
 
  mov %rax, %rcx 
- add (stackValSize), %rcx 
+
+ __userPushSetPointer:
+ xor %rax, %rax 
+ mov (%rcx), %al 
+ cmp $2, %al 
+ jz __userPushSetPointerEnd
+ add (stackValSize), %rcx
+ jmp __userPushSetPointer
+ __userPushSetPointerEnd: 
 
  movb $4, (%rcx)
  inc %rcx 
@@ -7445,9 +7460,6 @@ __setVar:
  push %rbx
  push %rcx  
 
- 
-
-
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName, %rax 
@@ -7491,10 +7503,7 @@ __setVar:
  pop %rcx
  add (valSize), %rcx 
  movb $2, (%rcx)
- mov (stackPointer), %rax 
- add (stackValSize), %rax 
- inc %rax # признак начала стека  
- mov %rax, (stackPointer) 
+ call __shiftInternalStacks
  ret 
 
  __userPushVarStr:
@@ -12490,6 +12499,10 @@ call __setVar
 mov $varName50, %rax 
 mov $varName51, %rbx 
 call __userPush
+
+mov $varName50, %rax 
+mov $varName52, %rbx 
+call __userPush 
 
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
