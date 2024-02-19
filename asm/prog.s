@@ -6204,7 +6204,7 @@ __defineVar:
  mov (stackPointer), %rax 
  movb $3, (%rax) # признак конца стека 
  mov %r8, %r12 
- mov (stackPointer), %rax 
+ mov (stackPointer), %rax  
  call __toStr 
  mov %r12, %r8 
  mov $buf2, %rax
@@ -6220,8 +6220,9 @@ __defineVar:
  movb $0, (%r8)
  mov (stackPointer), %rax 
  add (stackValSize), %rax 
- mov %rax, (stackPointer)
  movb $2, (%rax) # признак начала стека 
+ inc %rax 
+ mov %rax, (stackPointer)
  __defEnd:
 
  add (varSize), %r14
@@ -7336,7 +7337,6 @@ __setVar:
 __shiftInternalStacks:
  mov (stackPointer), %rax 
  add (stackValSize), %rax 
- inc %rax # признак начала стека  
  mov %rax, (stackPointer) 
  ret 
 
@@ -7362,7 +7362,7 @@ __shiftInternalStacks:
  call __toNumber 
 
  mov %rax, %rcx 
-
+ 
  __userPushSetPointer:
  xor %rax, %rax 
  mov (%rcx), %al 
