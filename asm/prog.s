@@ -12517,6 +12517,15 @@ mov $lenVarName, %rsi
  call __set 
  call __defineVar
 
+
+mov $varName53, %rax 
+mov $varName52, %rbx 
+call __userPush
+
+mov $varName50, %rax 
+mov $varName51, %rbx 
+call __userPush
+
 call __printHeap 
 call __throughError
 
