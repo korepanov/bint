@@ -7373,15 +7373,34 @@ __shiftInternalStacks:
  call __getVar
  pop %rax
 
- call __toStr 
- mov $buf2, %rsi 
- call __print 
- mov $enter, %rsi 
- call __print 
- mov (userData), %rsi 
- call __print
-  
+ mov (userData), %rbx 
+ add (valSize), %rbx 
+ add (varNameSize), %rbx 
 
+ __shiftInternalStacksChangeAddrs:
+ mov (%rbx), %dil 
+ cmp $1, %dil 
+ jz __shiftInternalStacksChangeAddrsEnd
+ mov %rbx, %r12
+ push %rax 
+ push %rbx  
+ call __read 
+ 
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenStringType, %rax 
+ mov $stackType, %rdi 
+ call __set 
+ call __compare 
+ cmp $1, %rax 
+ pop %rbx 
+ pop %rax  
+ jnz __shiftInternalStacksNo 
+  
+ __shiftInternalStacksNo: 
+ add (varSize), %rbx 
+ jmp __shiftInternalStacksChangeAddrs
+ __shiftInternalStacksChangeAddrsEnd:
 
  call __throughError
  # адреса всех стеков внутри стеков, которые идут начиная с адреса %rcx, нужно увеличить на %rax  
