@@ -7348,7 +7348,21 @@ __shiftInternalStacks:
  call __print 
  call __throughError 
  __shiftInternalStacksNewMemOk: 
+ mov (stackPointer), %rdx 
+ mov %rcx, %rbx 
+ add %rax, %rbx 
 
+ __shiftInternalShacksNow:
+ cmp %rdx, %rcx 
+ jg __shiftInternalStacksNowEnd
+ mov (%rcx), %al 
+ mov %al, (%rbx)
+ movb $1,(%rcx)
+
+ inc %rcx 
+ inc %rbx 
+ jmp __shiftInternalShacksNow
+ __shiftInternalStacksNowEnd: 
  # адреса всех стеков в таблице переменных, которые идут после стека в %rdi, нужно увеличить на %rax  
  # адреса всех стеков внутри стеков, которые идут начиная с адреса %rcx, нужно увеличить на %rax  
  ret 
@@ -7471,6 +7485,13 @@ __shiftInternalStacks:
  mov %rax, %rdi 
  mov (stackValSize), %rax 
  call __shiftInternalStacks
+
+ pop %rcx  
+ pop %rbx 
+ pop %rax 
+ push %rax 
+ push %rbx
+ push %rcx
 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -12510,19 +12531,6 @@ call __set
  xor %rax, %rax
 call __setVar
 
-
-mov $varName50, %rax 
-mov $varName51, %rbx 
-call __userPush
-
-mov $varName50, %rax 
-mov $varName52, %rbx 
-call __userPush
-
-mov $varName50, %rax 
-mov $varName52, %rbx 
-call __userPush
-
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
  mov $lenVarName53, %rax 
@@ -12535,6 +12543,21 @@ mov $lenVarName, %rsi
  call __set 
  call __defineVar
 
+mov $varName50, %rax 
+mov $varName51, %rbx 
+call __userPush
+
+call __printHeap
+call __throughError
+
+
+mov $varName50, %rax 
+mov $varName52, %rbx 
+call __userPush
+
+mov $varName50, %rax 
+mov $varName52, %rbx 
+call __userPush
 
 mov $varName53, %rax 
 mov $varName52, %rbx 
