@@ -7335,9 +7335,19 @@ __setVar:
  ret
 
 __shiftInternalStacks:
- mov (stackPointer), %rax 
- add (stackValSize), %rax 
- mov %rax, (stackPointer) 
+ # %rcx - адрес, откуда свиднуть все стеки вправо 
+ # %rax - размер, на который нужно сдвинуть стеки 
+ mov %rcx, %rbx 
+ add %rax, %rbx 
+
+ mov (stackMax), %rdx 
+ cmp %rdx, %rbx
+ jl __shiftInternalStacksNewMemOk
+ mov $trueVal, %rsi 
+ call __print 
+ call __throughError 
+ __shiftInternalStacksNewMemOk:  
+
  ret 
 
  __userPush:
@@ -7370,8 +7380,7 @@ __shiftInternalStacks:
  jz __userPushSetPointerEnd
  add (stackValSize), %rcx
  jmp __userPushSetPointer
- __userPushSetPointerEnd: 
-
+ __userPushSetPointerEnd:  
  movb $4, (%rcx)
  inc %rcx 
  push %rcx 
@@ -7455,6 +7464,9 @@ __shiftInternalStacks:
  push %rax 
  push %rbx
  push %rcx  
+ 
+ mov (stackValSize), %rax 
+ call __shiftInternalStacks
 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -7500,7 +7512,9 @@ __shiftInternalStacks:
  pop %rcx
  add (stackValSize), %rcx 
  movb $2, (%rcx)
- call __shiftInternalStacks
+ mov (stackPointer), %rax 
+ add (stackValSize), %rax 
+ mov %rax, (stackPointer) 
  ret 
 
  __userPushVarStr:
