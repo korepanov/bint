@@ -7396,13 +7396,60 @@ __shiftInternalStacks:
  pop %rbx 
  pop %rax  
  jnz __shiftInternalStacksNo 
-  
+ push %rax 
+ push  %rbx 
+ mov %rbx, %r12 
+ add (typeSize), %r12 
+ call __read 
+ call __toNumber 
+ mov %rax, %rdi 
+ pop %rbx 
+ pop %rax 
+ add %rax, %rdi 
+ push %rax 
+ push %rbx 
+ mov %rdi, %rax 
+ call __toStr 
+ pop %rbx 
+ pop %rax 
+ push %rax 
+ push %rbx 
+
+ add (typeSize), %rbx 
+ mov %rbx, %rsi 
+ add (valSize), %rsi 
+
+ __shiftInternalStacksClear:
+ cmp %rbx, %rsi 
+ jz __shiftInternalStacksClearEnd 
+ movb $1, (%rbx) 
+ inc %rbx 
+ jmp __shiftInternalStacksClear
+ __shiftInternalStacksClearEnd:
+ pop %rbx 
+ pop %rax 
+ push %rax 
+ push %rbx 
+ add (typeSize), %rbx 
+ mov $buf2, %rax 
+ 
+ __shiftInternalStacksSet:
+ mov (%rax), %dil 
+ cmp $0, %dil 
+ jz __shiftInternalStacksSetEnd 
+ mov %dil, (%rbx)
+ inc %rax 
+ inc %rbx 
+ jmp __shiftInternalStacksSet
+ __shiftInternalStacksSetEnd:
+ movb $0, (%rbx)
+ pop %rbx 
+ pop %rax 
+
  __shiftInternalStacksNo: 
  add (varSize), %rbx 
  jmp __shiftInternalStacksChangeAddrs
  __shiftInternalStacksChangeAddrsEnd:
-
- call __throughError
  # адреса всех стеков внутри стеков, которые идут начиная с адреса %rcx, нужно увеличить на %rax  
  ret 
 
@@ -12598,11 +12645,12 @@ mov $varName53, %rax
 mov $varName52, %rbx 
 call __userPush
 
-call __printHeap
-call __throughError
-
 mov $varName50, %rax 
 mov $varName51, %rbx 
+call __userPush
+
+mov $varName53, %rax 
+mov $varName52, %rbx 
 call __userPush
 
 call __printHeap 
