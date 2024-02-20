@@ -7352,6 +7352,7 @@ __shiftInternalStacks:
  mov %rdx, %rbx 
  add %rax, %rbx 
 
+ push %rax 
  __shiftInternalShacksNow:
  cmp %rdx, %rcx 
  jg __shiftInternalStacksNowEnd
@@ -7363,7 +7364,26 @@ __shiftInternalStacks:
  dec %rbx 
  jmp __shiftInternalShacksNow
  __shiftInternalStacksNowEnd: 
- # адреса всех стеков в таблице переменных, которые идут после стека в %rdi, нужно увеличить на %rax  
+ # адреса всех стеков в таблице переменных, которые идут после стека в %rdi, нужно увеличить на %rax   
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ #mov %rax, %rdi
+ mov $lenVarName, %rax 
+ call __set 
+ call __getVar
+ pop %rax
+
+ call __toStr 
+ mov $buf2, %rsi 
+ call __print 
+ mov $enter, %rsi 
+ call __print 
+ mov (userData), %rsi 
+ call __print
+  
+
+
+ call __throughError
  # адреса всех стеков внутри стеков, которые идут начиная с адреса %rcx, нужно увеличить на %rax  
  ret 
 
