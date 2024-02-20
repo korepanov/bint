@@ -7335,9 +7335,10 @@ __setVar:
  ret
 
 __shiftInternalStacks:
+ # %rdi - адрес имени стека, после которого нужно сделать сдвиг 
  # %rcx - адрес, откуда свиднуть все стеки вправо 
  # %rax - размер, на который нужно сдвинуть стеки 
- mov %rcx, %rbx 
+ mov (stackPointer), %rbx 
  add %rax, %rbx 
 
  mov (stackMax), %rdx 
@@ -7346,8 +7347,10 @@ __shiftInternalStacks:
  mov $trueVal, %rsi 
  call __print 
  call __throughError 
- __shiftInternalStacksNewMemOk:  
+ __shiftInternalStacksNewMemOk: 
 
+ # адреса всех стеков в таблице переменных, которые идут после стека в %rdi, нужно увеличить на %rax  
+ # адреса всех стеков внутри стеков, которые идут начиная с адреса %rcx, нужно увеличить на %rax  
  ret 
 
  __userPush:
@@ -7465,6 +7468,7 @@ __shiftInternalStacks:
  push %rbx
  push %rcx  
  
+ mov %rax, %rdi 
  mov (stackValSize), %rax 
  call __shiftInternalStacks
 
