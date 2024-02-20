@@ -4593,6 +4593,10 @@ varName53:
 .ascii "myStack2"
 .space 1, 0
 lenVarName53 = . - varName53 
+varName54:
+.ascii "myStack3"
+.space 1, 0
+lenVarName54 = . - varName54 
 data153:
 .ascii "#main_res0"
 .space 1, 0
@@ -12649,6 +12653,32 @@ mov $varName50, %rax
 mov $varName51, %rbx 
 call __userPush
 
+mov $varName53, %rax 
+mov $varName52, %rbx 
+call __userPush
+
+
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName54, %rax 
+ mov $varName54, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax
+ mov $stackType, %rdi
+ call __set 
+ call __defineVar
+
+mov $varName54, %rax 
+mov $varName52, %rbx 
+call __userPush
+mov $varName54, %rax 
+mov $varName52, %rbx 
+call __userPush
+mov $varName50, %rax 
+mov $varName52, %rbx 
+call __userPush
 mov $varName53, %rax 
 mov $varName52, %rbx 
 call __userPush
