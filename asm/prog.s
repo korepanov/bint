@@ -7573,50 +7573,54 @@ __shiftInternalStacks:
  cmp $0, %rax 
  jz __userPopException
  
- mov $trueVal, %rsi 
- call __print 
- call __throughError
- /* 
- mov %rbx, %rsi 
- add (varNameSize), %rbx
- mov %rbx, %rsi 
+ mov $lenBuf2, %rsi # type of the variable  
+ mov $buf2, %rdx 
+ mov $stringType, %rdi
+ mov $lenStringType, %rax 
+ call __set
+ call __compare 
+ jz __userPopVarStr
+
+ mov $lenBuf2, %rsi # type of the variable  
+ mov $buf2, %rdx 
+ mov $stackType, %rdi
+ mov $lenStackType, %rax 
+ call __set
+ call __compare 
+ jz __userPopVarStack 
  
- mov %rbx, %rax 
- mov %rbx, %r12 
- call __read  
+ # not string and not stack
+ pop %rbx # address of the variable 
+ pop %rcx # address of the value to pop
+ pop %rdx 
+ pop %rax 
+ 
+ inc %rcx # sep 
+ add (typeSize), %rcx 
+ add (varNameSize), %rbx   
  add (typeSize), %rbx 
 
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenStringType, %rax 
- mov $stringType, %rdi 
- call __set
- mov %rbx, %r12 
- call __compare
- mov %r12, %rbx 
- cmp $0, %rax 
- jnz __userPushVarStr
+ mov %rbx, %rsi 
+ call __clear 
+ 
+ __userPopNow:
+ mov (%rcx), %al 
+ cmp $0, %al 
+ jz __userPopNowEnd 
+ mov %al, (%rbx)
+ inc %rcx 
+ inc %rbx 
+ jmp __userPopNow 
+ __userPopNowEnd:
 
- mov $lenBuf2, %rsi 
- mov $buf2, %rdx 
- mov $lenStackType, %rax 
- mov $stackType, %rdi 
- call __set
- mov %rbx, %r12 
- call __compare
- mov %r12, %rbx 
- cmp $0, %rax 
- jnz __userPushVarStack*/
+ call __printHeap 
+ call __throughError
+ ret 
 
- # not string and not stack 
  __userPopVarStr:
  ret 
  __userPopVarStack:
- ret 
-
-
- call __throughError
- ret 
+ ret  
  __userPopException:
  mov $userPopError, %rsi 
  call __throughUserError
@@ -12806,22 +12810,6 @@ mov $varName50, %rax
 mov $varName52, %rbx 
 call __userPush
 
-mov $varName50, %rax 
-mov $varName52, %rbx 
-call __userPush
-
-mov $varName53, %rax 
-mov $varName52, %rbx 
-call __userPush
-
-mov $varName50, %rax 
-mov $varName51, %rbx 
-call __userPush
-
-mov $varName53, %rax 
-mov $varName52, %rbx 
-call __userPush
-
 
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -12835,18 +12823,6 @@ mov $lenVarName, %rsi
  call __set 
  call __defineVar
 
-mov $varName54, %rax 
-mov $varName52, %rbx 
-call __userPush
-mov $varName54, %rax 
-mov $varName52, %rbx 
-call __userPush
-mov $varName50, %rax 
-mov $varName52, %rbx 
-call __userPush
-mov $varName53, %rax 
-mov $varName52, %rbx 
-call __userPush
 
 mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -12860,7 +12836,7 @@ mov $lenVarName, %rsi
  call __set 
  call __defineVar
 
- mov $varName53, %rax
+ mov $varName50, %rax
  mov $varName55, %rbx 
  call __userPop  
 
