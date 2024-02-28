@@ -7594,7 +7594,8 @@ __shiftInternalStacks:
  pop %rcx # address of the value to pop
  pop %rdx 
  pop %rax 
- 
+ push %rcx 
+
  inc %rcx # sep 
  add (typeSize), %rcx 
  add (varNameSize), %rbx   
@@ -7612,6 +7613,17 @@ __shiftInternalStacks:
  inc %rbx 
  jmp __userPopNow 
  __userPopNowEnd:
+ movb $0, (%rbx)
+
+ pop %rcx 
+ add (stackValSize), %rcx 
+
+ xor %rax, %rax 
+ mov (%rcx), %al 
+ call __toStr 
+ mov $buf2, %rsi 
+ call __print 
+ call __throughError
 
  call __printHeap 
  call __throughError
