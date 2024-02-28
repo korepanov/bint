@@ -2234,6 +2234,9 @@ openFileError:
 readFromFileError:
 .ascii "could not read file"
 .space 1, 0
+userPopError:
+.ascii "could not pop from top of the stack: type mismatch error"
+.space 1, 0 
 
  t0: 
  .quad 0, 0, 0, 0, 0, 0, 0, 0 
@@ -4597,6 +4600,10 @@ varName54:
 .ascii "myStack3"
 .space 1, 0
 lenVarName54 = . - varName54 
+varName55:
+.ascii "popRes"
+.space 1, 0
+lenVarName55 = . - varName55 
 data153:
 .ascii "#main_res0"
 .space 1, 0
@@ -7455,6 +7462,163 @@ __shiftInternalStacks:
  jmp __shiftInternalStacksChangeAddrs
  __shiftInternalStacksChangeAddrsEnd:
  # адреса всех стеков внутри стеков, которые идут начиная с адреса %rcx, нужно увеличить на %rax  
+ ret 
+
+ __userPop:
+ # %rax - адрес имени стека 
+ # %rbx - адрес имени переменной, куда положить результат 
+ push %rax
+ push %rbx 
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov %rax, %rdi
+ mov $lenVarName, %rax 
+ call __set 
+ call __getVar
+
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov (userData), %rdi
+ mov $lenVarName, %rax 
+ call __set 
+ call __toNumber 
+
+ mov %rax, %rcx 
+ 
+ __userPopSetPointer:
+ xor %rax, %rax 
+ mov (%rcx), %al   
+ cmp $2, %al 
+ jz __userPopSetPointerEnd
+ add (stackValSize), %rcx
+ jmp __userPopSetPointer
+ __userPopSetPointerEnd:  
+ 
+ sub (stackValSize), %rcx # address of the value to pop  
+ push %rcx 
+
+ mov %rcx, %r12 
+ call __read  
+  
+ mov %r13, %rbx
+ __userPopLocal:
+ cmp %r15, %rbx
+ jg __userPopEnd
+
+ mov %rbx, %r12 
+ call __read 
+ cmp $1, (buf)
+ jz __userPopEnd 
+ 
+ add (varSize), %rbx 
+ jmp __userPopLocal 
+  __userPopEnd:
+ 
+ __userPopSearch:
+ sub (varSize), %rbx 
+ mov %rbx, %r12 
+ call __read 
+ cmp $1, (buf)
+ jz __throughError
+ 
+ pop %rcx 
+ pop %rdx 
+ pop %rax 
+ push %rax 
+ push %rdx 
+ push %rcx  
+
+ mov %rbx, %r12 
+ mov $lenBuf2, %rsi
+ mov %rdx, %rdi  
+ mov $buf2, %rdx 
+ mov $lenBuf2, %rax 
+
+ call __set
+
+ call __compare
+
+ mov %r12, %rbx 
+ cmp $0, %rax 
+ jz __userPopSearch
+ 
+ mov %rbx, %r12 
+ add (varNameSize), %r12 
+ call __read 
+  
+ push %rbx  
+
+ mov $lenBuf2, %rsi # type of the variable  
+ mov $buf2, %rdx 
+ mov $buf, %rdi
+ mov $lenBuf, %rax 
+ call __set
+
+ pop %rbx 
+ pop %rcx 
+ pop %rdx 
+ pop %rax 
+ 
+ push %rax 
+ push %rdx 
+ push %rcx
+ push %rbx  
+
+ mov %rcx, %r12 
+ call __read 
+
+ call __compare 
+ cmp $0, %rax 
+ jz __userPopException
+
+ call __throughError
+ /*
+
+ mov %rcx, 
+ mov %rbx, %rsi 
+ add (varNameSize), %rbx
+ mov %rbx, %rsi 
+ 
+ mov %rbx, %rax 
+ mov %rbx, %r12 
+ call __read  
+ add (typeSize), %rbx 
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenStringType, %rax 
+ mov $stringType, %rdi 
+ call __set
+ mov %rbx, %r12 
+ call __compare
+ mov %r12, %rbx 
+ cmp $0, %rax 
+ jnz __userPushVarStr
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $lenStackType, %rax 
+ mov $stackType, %rdi 
+ call __set
+ mov %rbx, %r12 
+ call __compare
+ mov %r12, %rbx 
+ cmp $0, %rax 
+ jnz __userPushVarStack*/
+
+ # not string and not stack 
+ __userPopVarStr:
+ ret 
+ __userPopVarStack:
+ ret 
+
+
+ call __throughError
+ ret 
+ __userPopException:
+ mov $userPopError, %rsi 
+ call __throughUserError
  ret 
 
  __userPush:
@@ -12682,6 +12846,22 @@ call __userPush
 mov $varName53, %rax 
 mov $varName52, %rbx 
 call __userPush
+
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName55, %rax 
+ mov $varName55, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenFloatType, %rax
+ mov $floatType, %rdi
+ call __set 
+ call __defineVar
+
+ mov $varName53, %rax
+ mov $varName55, %rbx 
+ call __userPop  
 
 call __printHeap 
 call __throughError
