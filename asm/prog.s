@@ -7566,16 +7566,17 @@ __shiftInternalStacks:
  push %rbx  
 
  mov %rcx, %r12 
- call __read 
+ inc %r12 # sep 
+ call __read  
 
- call __compare 
+ call __compare
  cmp $0, %rax 
  jz __userPopException
-
+ 
+ mov $trueVal, %rsi 
+ call __print 
  call __throughError
- /*
-
- mov %rcx, 
+ /* 
  mov %rbx, %rsi 
  add (varNameSize), %rbx
  mov %rbx, %rsi 
