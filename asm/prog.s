@@ -7616,14 +7616,54 @@ __shiftInternalStacks:
  movb $0, (%rbx)
 
  pop %rcx 
- add (stackValSize), %rcx 
+ mov (%rcx), %al   
 
- xor %rax, %rax 
- mov (%rcx), %al 
- call __toStr 
- mov $buf2, %rsi 
+ cmp $3, %al  
+ jnz __userPopNotEndStack
+ // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ mov $trueVal, %rsi 
  call __print 
  call __throughError
+ __userPopNotEndStack:
+ 
+ movb $2, (%rcx) 
+ inc %rcx 
+ push %rcx 
+ dec %rcx
+
+ __userPopClear:
+ inc %rcx 
+ mov (%rcx), %al 
+ cmp $2, %al 
+ jz __userPopClearEnd 
+ movb $1, (%rcx)
+ jmp __userPopClear 
+ __userPopClearEnd:
+ movb $1, (%rcx)
+ inc %rcx 
+
+ pop %rax 
+ push %rcx 
+
+ sub %rax, %rcx
+ mov %rcx, %rdi # size to shift 
+
+ pop %rcx
+ # %rax - old rcx
+ # %rcx - new rcx 
+ mov (stackMax), %rdx 
+
+ __userPopShift:
+ cmp %rcx, %rdx 
+ jl __userPopShiftEnd
+ mov (%rcx), %sil 
+ mov %sil, (%rax)
+ inc %rcx 
+ inc %rax 
+ jmp __userPopShift 
+ __userPopShiftEnd:
+
+
 
  call __printHeap 
  call __throughError
