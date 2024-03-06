@@ -12888,9 +12888,9 @@ mov $lenVarName, %rsi
  call __set 
  call __defineVar
 
- mov $varName50, %rax
+ /*mov $varName50, %rax
  mov $varName55, %rbx 
- call __userPop  
+ call __userPop*/  
 
 call __printHeap 
 call __throughError
