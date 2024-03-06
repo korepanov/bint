@@ -4620,6 +4620,19 @@ data156:
 .ascii "98.32"
 .space 1, 0
 lenData156 = . - data156 
+data157:
+.ascii "1"
+.space 1, 0
+lenData156 = . - data156 
+data158:
+.ascii "2"
+.space 1, 0
+lenData156 = . - data156
+data159:
+.ascii "3"
+.space 1, 0
+lenData156 = . - data156
+
 label50:
 // .quad .main_res0
 labelName50:
@@ -7595,6 +7608,7 @@ __shiftInternalStacks:
  pop %rdx 
  pop %rax 
  push %rcx 
+ push %rax 
 
  inc %rcx # sep 
  add (typeSize), %rcx 
@@ -7614,8 +7628,13 @@ __shiftInternalStacks:
  jmp __userPopNow 
  __userPopNowEnd:
  movb $0, (%rbx)
+ 
+ pop %rax
+ pop %rcx
 
- pop %rcx 
+ push %rcx 
+ push %rax 
+
  mov (%rcx), %al   
 
  cmp $3, %al  
@@ -7628,7 +7647,12 @@ __shiftInternalStacks:
  
  movb $2, (%rcx) 
  inc %rcx 
- push %rcx 
+ 
+ pop %rax 
+ pop %rcx 
+ push %rcx
+ push %rax 
+
  dec %rcx
 
  __userPopClear:
@@ -7641,10 +7665,11 @@ __shiftInternalStacks:
  __userPopClearEnd:
  movb $1, (%rcx)
  inc %rcx 
-
+ 
+ pop %rbx 
  pop %rax 
  push %rcx 
-
+ 
  sub %rax, %rcx
  mov %rcx, %rdi # size to shift 
 
@@ -7663,10 +7688,39 @@ __shiftInternalStacks:
  jmp __userPopShift 
  __userPopShiftEnd:
 
+ push %rdi 
 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov %rbx, %rdi
+ mov $lenVarName, %rax 
+ call __set 
+ call __getVar
+ 
+ mov $lenBuf, %rsi 
+ mov $buf, %rdx 
+ mov (userData), %rdi
+ mov $lenUserData, %rax 
+ call __set 
 
- call __printHeap 
+ call __toNumber 
+
+ mov %rax, %rbx
+ pop %rdi 
+ //sub (typeSize), %rbx
+ //sub (varNameSize), %rbx 
+ mov %rbx, %rsi 
+ call __print 
+ call __throughError 
+
+ //mov %rbx, %rsi 
+ //call __print 
+ /*mov %rbx, %rax 
+ call __toStr 
+ mov $buf2, %rsi 
+ call __print*/ 
  call __throughError
+
  ret 
 
  __userPopVarStr:
@@ -12888,9 +12942,39 @@ mov $lenVarName, %rsi
  call __set 
  call __defineVar
 
- /*mov $varName50, %rax
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName51, %rax 
+ mov $varName51, %rdi 
+call __set
+
+ mov $data157, %rax  
+ mov %rax, (userData)
+ xor %rax, %rax
+call __setVar
+
+mov $varName53, %rax 
+mov $varName51, %rbx 
+call __userPush
+
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName51, %rax 
+ mov $varName51, %rdi 
+call __set
+
+ mov $data158, %rax  
+ mov %rax, (userData)
+ xor %rax, %rax
+call __setVar
+
+mov $varName53, %rax 
+mov $varName51, %rbx 
+call __userPush
+
+ mov $varName50, %rax
  mov $varName55, %rbx 
- call __userPop*/  
+ call __userPop  
 
 call __printHeap 
 call __throughError
