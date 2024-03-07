@@ -7685,8 +7685,6 @@ __shiftInternalStacks:
  inc %rax 
  jmp __userPopShift 
  __userPopShiftEnd:
-  call __printHeap 
- call __throughError
  
  push %rdi 
 
@@ -13044,7 +13042,7 @@ call __userPush
 
  /*mov $varName53, %rax 
  mov $varName51, %rbx 
- call __userPop*/ 
+ call __userPop*/
 
 call __printHeap 
 call __throughError
