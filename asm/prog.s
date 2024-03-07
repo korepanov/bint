@@ -7700,7 +7700,16 @@ __shiftInternalStacks:
  pop %rdi 
 
  add (varSize), %rbx 
- mov %rbx, %rsi 
+ mov %rbx, %r12 
+ call __read 
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $stackType, %rdi
+ mov $lenStackType, %rax 
+ call __set 
+ 
+ mov $buf, %rsi 
  call __print 
  call __throughError 
 
