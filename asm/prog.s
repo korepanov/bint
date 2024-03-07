@@ -7674,6 +7674,8 @@ __shiftInternalStacks:
  # %rcx - new rcx 
  mov (stackMax), %rdx 
 
+ inc %rax  
+ inc %rcx 
  __userPopShift:
  cmp %rcx, %rdx 
  jl __userPopShiftEnd
@@ -7683,7 +7685,9 @@ __shiftInternalStacks:
  inc %rax 
  jmp __userPopShift 
  __userPopShiftEnd:
-
+  call __printHeap 
+ call __throughError
+ 
  push %rdi 
 
  mov $lenVarName, %rsi 
@@ -7702,7 +7706,6 @@ __shiftInternalStacks:
  push %rdi  
 
  __userPopChangeAddr:
- // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  pop %rdi
  pop %rbx 
 
@@ -13037,7 +13040,11 @@ call __userPush
 
  mov $varName50, %rax
  mov $varName55, %rbx 
- call __userPop  
+ call __userPop 
+
+ /*mov $varName53, %rax 
+ mov $varName51, %rbx 
+ call __userPop*/ 
 
 call __printHeap 
 call __throughError
