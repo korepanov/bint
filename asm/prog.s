@@ -7644,16 +7644,13 @@ __shiftInternalStacks:
  call __print 
  call __throughError
  __userPopNotEndStack:
- 
+
  movb $2, (%rcx) 
- inc %rcx 
  
  pop %rax 
  pop %rcx 
  push %rcx
  push %rax 
-
- dec %rcx
 
  __userPopClear:
  inc %rcx 
@@ -7664,7 +7661,6 @@ __shiftInternalStacks:
  jmp __userPopClear 
  __userPopClearEnd:
  movb $1, (%rcx)
- inc %rcx 
  
  pop %rbx 
  pop %rax 
@@ -7696,19 +7692,14 @@ __shiftInternalStacks:
  mov $lenVarName, %rax 
  call __set 
  call __getVar
+
+ mov (userData), %rbx
+ sub (typeSize), %rbx
  
- mov $lenBuf, %rsi 
- mov $buf, %rdx 
- mov (userData), %rdi
- mov $lenUserData, %rax 
- call __set 
-
- call __toNumber 
-
- mov %rax, %rbx
+ # after %rbx reduce all addresses of stacks for %rdi 
  pop %rdi 
- //sub (typeSize), %rbx
- //sub (varNameSize), %rbx 
+
+ add (varSize), %rbx 
  mov %rbx, %rsi 
  call __print 
  call __throughError 
@@ -7719,7 +7710,7 @@ __shiftInternalStacks:
  call __toStr 
  mov $buf2, %rsi 
  call __print*/ 
- call __throughError
+
 
  ret 
 
