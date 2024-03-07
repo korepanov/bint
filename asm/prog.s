@@ -7696,20 +7696,19 @@ __shiftInternalStacks:
  mov (userData), %rbx
  sub (typeSize), %rbx
  
- # after %rbx reduce all addresses of stacks for %rdi 
- push %rbx 
- 
+ # after %rbx reduce all addresses of stacks for %rdi
+ pop %rdi  
+ push %rbx
+ push %rdi  
+
  __userPopChangeAddr:
  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ pop %rdi
  pop %rbx 
 
- mov %rbx, %rsi 
- call __print 
- mov $enter, %rsi 
- call __print
-
  add (varSize), %rbx
- push %rbx 
+ push %rbx
+ push %rdi  
 
  cmp %rbx, %r15 
  jle __userPopChangeAddrEnd
@@ -7731,8 +7730,8 @@ __shiftInternalStacks:
 
  jnz __userPopChangeThisEnd
 
- pop %rbx 
  pop %rdi 
+ pop %rbx 
  push %rbx 
  push %rdi 
 
@@ -7743,11 +7742,21 @@ __shiftInternalStacks:
  call __toNumber 
 
  pop %rdi 
- sub %rdi, %rax
- call __toStr 
-
  pop %rbx 
  push %rbx 
+ push %rdi 
+
+ sub %rdi, %rax
+ call __toStr 
+ mov $buf2, %rsi 
+ call __print 
+ mov $enter, %rsi 
+ call __print 
+
+ pop %rdi 
+ pop %rbx 
+ push %rbx 
+ push %rdi 
  
  add (typeSize), %rbx
  mov %rbx, %rsi 
@@ -7764,13 +7773,16 @@ __shiftInternalStacks:
   jmp __userPopChangeAddrNow 
   __userPopChangeAddrNowEnd:
  movb $0, (%rbx)
-
+ 
+ 
  __userPopChangeThisEnd:
 
  jmp __userPopChangeAddr
 
  
  __userPopChangeAddrEnd:
+ pop %rdi 
+ pop %rbx 
 
  ret 
 
