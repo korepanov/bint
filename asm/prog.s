@@ -7697,10 +7697,10 @@ __shiftInternalStacks:
  sub (typeSize), %rbx
  
  # after %rbx reduce all addresses of stacks for %rdi 
- pop %rdi 
  push %rbx 
  
  __userPopChangeAddr:
+ // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  pop %rbx 
  add (varSize), %rbx
  push %rbx 
@@ -7723,26 +7723,47 @@ __shiftInternalStacks:
  call __compare
  cmp $1, %rax 
 
- jnz __changeThisEnd
- // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- mov $trueVal, %rsi 
- call __print 
- call __throughError
- __changeThisEnd:
+ jnz __userPopChangeThisEnd
+
+ pop %rbx 
+ pop %rdi 
+ push %rbx 
+ push %rdi 
+
+ add (typeSize), %rbx
+
+ mov %rbx, %r12
+ call __read  
+ call __toNumber 
+
+ pop %rdi 
+ sub %rdi, %rax
+ call __toStr 
+
+ pop %rbx 
+ push %rbx 
+ 
+ add (typeSize), %rbx
+ mov %rbx, %rsi 
+ call __clear 
+
+ mov $buf2, %rax 
+  __userPopChangeAddrNow:
+  mov (%rax), %sil 
+  cmp $0, %sil 
+  jz __userPopChangeAddrNowEnd
+  mov %sil, (%rbx)
+  inc %rax 
+  inc %rbx 
+  jmp __userPopChangeAddrNow 
+  __userPopChangeAddrNowEnd:
+ movb $0, (%rbx)
+
+ __userPopChangeThisEnd:
 
  jmp __userPopChangeAddr
 
  __userPopChangeAddrEnd:
-
- call __throughError 
-
- //mov %rbx, %rsi 
- //call __print 
- /*mov %rbx, %rax 
- call __toStr 
- mov $buf2, %rsi 
- call __print*/ 
-
 
  ret 
 
