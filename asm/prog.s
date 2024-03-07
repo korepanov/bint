@@ -7698,10 +7698,20 @@ __shiftInternalStacks:
  
  # after %rbx reduce all addresses of stacks for %rdi 
  pop %rdi 
+ push %rbx 
+ 
+ __userPopChangeAddr:
+ pop %rbx 
+ add (varSize), %rbx
+ push %rbx 
 
- add (varSize), %rbx 
+ cmp %rbx, %r15 
+ jle __userPopChangeAddrEnd
+
  mov %rbx, %r12 
  call __read 
+ cmp $1, (buf)
+ jz __userPopChangeAddrEnd
 
  mov $lenBuf2, %rsi 
  mov $buf2, %rdx 
@@ -7709,8 +7719,21 @@ __shiftInternalStacks:
  mov $lenStackType, %rax 
  call __set 
  
- mov $buf, %rsi 
+
+ call __compare
+ cmp $1, %rax 
+
+ jnz __changeThisEnd
+ // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ mov $trueVal, %rsi 
  call __print 
+ call __throughError
+ __changeThisEnd:
+
+ jmp __userPopChangeAddr
+
+ __userPopChangeAddrEnd:
+
  call __throughError 
 
  //mov %rbx, %rsi 
