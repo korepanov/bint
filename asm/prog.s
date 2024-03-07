@@ -7702,6 +7702,12 @@ __shiftInternalStacks:
  __userPopChangeAddr:
  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  pop %rbx 
+
+ mov %rbx, %rsi 
+ call __print 
+ mov $enter, %rsi 
+ call __print
+
  add (varSize), %rbx
  push %rbx 
 
@@ -7763,6 +7769,7 @@ __shiftInternalStacks:
 
  jmp __userPopChangeAddr
 
+ 
  __userPopChangeAddrEnd:
 
  ret 
