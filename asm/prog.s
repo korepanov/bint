@@ -7805,8 +7805,48 @@ __shiftInternalStacks:
  pop %rdx # name of the variable
  pop %rax # name of the stack 
  
- mov %rdx, %rsi 
+ push %rax 
+ push %rdx 
+ push %rcx 
+ push %rbx 
+
+ mov $lenVarName, %rsi 
+ mov $lenVarName, %rax 
+ mov %rdx, %rdi
+ mov $varName, %rdx 
+ call __set 
+ mov %rcx, %rax 
+ add (typeSize), %rax 
+ mov %rax, (userData)
+ xor %rax, %rax 
+ call __setVar 
+
+ pop %rbx 
+ pop %rcx 
+ pop %rdx 
+ pop %rax 
+ push %rax 
+ push %rdx 
+ push %rcx 
+ push %rbx 
+
+ 
+ mov $lenVarName, %rsi 
+ mov %rdx, %rdi
+ add (typeSize), %rdi 
+ mov $varName, %rdx 
+ mov $lenVarName, %rax 
+  
+ call __set 
+
+ mov $varName, %rsi 
  call __print 
+ call __throughError
+ call __getVar 
+
+ mov (userData), %rsi 
+ call __print 
+
  call __throughError
 
  mov $trueVal, %rsi 
