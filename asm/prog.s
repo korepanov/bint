@@ -8017,11 +8017,25 @@ __shiftInternalStacks:
 
  __userPushStrNow:
  mov (%rcx), %sil 
- cmp $2, %sil 
- jnz __userPushShiftEnd 
+ cmp $3, %sil 
+ jnz __userPushShiftEnd
+
+ pop %rdx 
+ push %rdx 
+
+ push %rbx 
+ push %rcx
+
+ mov %rdx, %rdi 
+ mov (stackValSize), %rax 
+ 
+ call __shiftInternalStacks 
+ 
+ call __printHeap
+ call __throughError
  // !!!!!!!!!!
- mov $trueVal, %rsi 
- call __print 
+ pop %rcx 
+ pop %rbx  
  __userPushShiftEnd:
  mov (%rbx), %sil 
  cmp $0, %sil 
