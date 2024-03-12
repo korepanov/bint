@@ -7785,6 +7785,9 @@ __shiftInternalStacks:
  ret 
 
  __userPopVarStr:
+ // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ mov $trueVal, %rsi 
+ call __print 
  ret 
  __userPopVarStack:
  ret  
@@ -13151,13 +13154,40 @@ mov $varName53, %rax
 mov $varName51, %rbx 
 call __userPush 
 
-call __printHeap 
-call __throughError
+mov $varName53, %rax
+mov $varName51, %rbx 
+call __userPop
 
- /*mov $varName50, %rax
- mov $varName55, %rbx 
- call __userPop 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName22, %rax 
+ mov $varName22, %rdi
+ call __set
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStringType, %rax
+ mov $stringType, %rdi
+ call __set 
+ call __defineVar
 
+
+mov $lenVarName, %rsi 
+ mov $varName, %rdx
+ mov $lenVarName23, %rax 
+ mov $varName23, %rdi
+ call __set
+mov $varName22, %rax
+mov %rax, (userData)
+ mov $1, %rax
+call __setVar
+
+mov $varName53, %rax
+mov $varName23, %rbx 
+call __userPop
+
+ call __printHeap 
+call __throughError 
+/*
  mov $varName53, %rax 
  mov $varName51, %rbx 
  call __userPop
