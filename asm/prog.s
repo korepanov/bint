@@ -7508,7 +7508,7 @@ __shiftInternalStacks:
  add (stackValSize), %rcx
  jmp __userPopSetPointer
  __userPopSetPointerEnd:  
- 
+
  sub (stackValSize), %rcx # address of the value to pop  
  push %rcx 
 
@@ -7557,10 +7557,11 @@ __shiftInternalStacks:
  cmp $0, %rax 
  jz __userPopSearch
  
+
  mov %rbx, %r12 
  add (varNameSize), %r12 
  call __read 
-  
+
  push %rbx  
 
  mov $lenBuf2, %rsi # type of the variable  
@@ -7579,19 +7580,33 @@ __shiftInternalStacks:
  push %rcx
  push %rbx  
 
+
  mov %rcx, %r12 
  inc %r12 # sep 
  call __read  
 
+ mov $buf, %rsi 
+ call __print 
+ mov $enter, %rsi 
+ call __print 
+ mov $buf2, %rsi 
+ call __print 
+ mov $enter, %rsi 
+ call __print 
+
  call __compare
  cmp $0, %rax 
  jz __userPopException
- 
+
+mov $trueVal, %rsi 
+ call __print
+
  mov $lenBuf2, %rsi # type of the variable  
  mov $buf2, %rdx 
  mov $stringType, %rdi
  mov $lenStringType, %rax 
  call __set
+
  call __compare 
  jz __userPopVarStr
 
@@ -13150,13 +13165,13 @@ mov $varName53, %rax
 mov $varName23, %rbx 
 call __userPush 
 
-mov $varName53, %rax 
+/*mov $varName53, %rax 
 mov $varName51, %rbx 
 call __userPush 
 
 mov $varName53, %rax
 mov $varName51, %rbx 
-call __userPop
+call __userPop*/
 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
