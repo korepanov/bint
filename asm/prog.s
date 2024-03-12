@@ -7749,10 +7749,6 @@ __shiftInternalStacks:
 
  sub %rdi, %rax
  call __toStr 
- mov $buf2, %rsi 
- call __print 
- mov $enter, %rsi 
- call __print 
 
  pop %rdi 
  pop %rbx 
