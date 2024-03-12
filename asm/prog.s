@@ -8073,8 +8073,6 @@ __shiftInternalStacks:
 
  movb $2, (%rcx)
 
- call __printHeap 
- call __throughError
  ret 
  __userPushVarStack:
  ret 
@@ -13148,6 +13146,12 @@ call __userPush
 mov $varName53, %rax 
 mov $varName23, %rbx 
 call __userPush 
+
+mov $varName54, %rax 
+mov $varName51, %rbx 
+call __userPush 
+
+call __printHeap 
 call __throughError
 
  /*mov $varName50, %rax
