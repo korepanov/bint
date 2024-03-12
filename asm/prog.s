@@ -7968,6 +7968,62 @@ __shiftInternalStacks:
  ret 
 
  __userPushVarStr:
+ pop %rcx  
+ pop %rbx 
+ pop %rax 
+ push %rax # адрес имени стека 
+ push %rbx # адрес имени переменной, которую нужно положить в стек 
+ push %rcx # с этого адреса записываем строку в стек
+
+ mov $stringType, %rdx 
+ __userPushStringType:
+ mov (%rdx), %dil 
+ cmp $0, %dil 
+ jz __userPushStringTypeOk 
+ mov %dil, (%rcx)
+ inc %rdx 
+ inc %rcx 
+ jmp __userPushStringType 
+ __userPushStringTypeOk:
+ movb $0, (%rcx)
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov %rbx, %rdi
+ mov $lenVarName, %rax 
+ call __set 
+ call __getVar
+
+ pop %rcx  
+ pop %rbx 
+ pop %rax
+ push %rax 
+ push %rbx 
+ push %rcx 
+
+ add (typeSize), %rcx 
+ mov (userData), %rbx
+
+ __userPushStrNow:
+ mov (%rcx), %sil 
+ cmp $2, %sil 
+ jnz __userPushShiftEnd 
+ // !!!!!!!!!!
+ mov $trueVal, %rsi 
+ call __print 
+ __userPushShiftEnd:
+ mov (%rbx), %sil 
+ cmp $0, %sil 
+ jz __userPushStrNowEnd
+ mov %sil, (%rcx)
+ inc %rbx 
+ inc %rcx 
+ jmp __userPushStrNow
+ __userPushStrNowEnd: 
+ movb $0, (%rcx)
+
+ call __printHeap 
+ call __throughError
  ret 
  __userPushVarStack:
  ret 
@@ -13032,7 +13088,12 @@ mov $varName53, %rax
 mov $varName51, %rbx 
 call __userPush
 
- mov $varName50, %rax
+mov $varName53, %rax 
+mov $varName23, %rbx 
+call __userPush 
+call __throughError
+
+ /*mov $varName50, %rax
  mov $varName55, %rbx 
  call __userPop 
 
@@ -13040,9 +13101,9 @@ call __userPush
  mov $varName51, %rbx 
  call __userPop
 
- /*mov $varName53, %rax 
+ mov $varName53, %rax 
  mov $varName51, %rbx 
- call __userPop*/
+ call __userPop*/ 
 
 call __printHeap 
 call __throughError
