@@ -7368,6 +7368,7 @@ __shiftInternalStacks:
  mov (stackMax), %rdx 
  cmp %rdx, %rbx
  jl __shiftInternalStacksNewMemOk
+ // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  mov $trueVal, %rsi 
  call __print 
  call __throughError 
@@ -7979,6 +7980,10 @@ __shiftInternalStacks:
  mov (stackValSize), %rax 
  call __shiftInternalStacks
 
+ mov (stackPointer), %rax 
+ add (stackValSize), %rax 
+ mov %rax, (stackPointer)
+ 
  pop %rcx  
  pop %rbx 
  pop %rax
@@ -8020,19 +8025,17 @@ __shiftInternalStacks:
  cmp $3, %sil 
  jnz __userPushShiftEnd
 
- pop %rdx 
- push %rdx 
-
  push %rbx 
  push %rcx
 
- mov %rdx, %rdi 
+ mov %rax, %rdi 
  mov (stackValSize), %rax 
- 
+
  call __shiftInternalStacks 
- 
+
  call __printHeap
  call __throughError
+
  // !!!!!!!!!!
  pop %rcx 
  pop %rbx  
