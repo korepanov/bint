@@ -7505,11 +7505,22 @@ __shiftInternalStacks:
  mov (%rcx), %al   
  cmp $2, %al 
  jz __userPopSetPointerEnd
- add (stackValSize), %rcx
+ inc %rcx 
+ #add (stackValSize), %rcx
  jmp __userPopSetPointer
  __userPopSetPointerEnd:  
 
- sub (stackValSize), %rcx # address of the value to pop  
+ __userPopSetPointer2:
+ xor %rax, %rax 
+ mov (%rcx), %al   
+ cmp $4, %al 
+ jz __userPopSetPointerEnd2
+ dec %rcx 
+ #add (stackValSize), %rcx
+ jmp __userPopSetPointer2
+ __userPopSetPointerEnd2:
+ # %rcx - address of the value to pop  
+
  push %rcx 
 
  mov %rcx, %r12 
@@ -7585,21 +7596,9 @@ __shiftInternalStacks:
  inc %r12 # sep 
  call __read  
 
- mov $buf, %rsi 
- call __print 
- mov $enter, %rsi 
- call __print 
- mov $buf2, %rsi 
- call __print 
- mov $enter, %rsi 
- call __print 
-
  call __compare
  cmp $0, %rax 
  jz __userPopException
-
-mov $trueVal, %rsi 
- call __print
 
  mov $lenBuf2, %rsi # type of the variable  
  mov $buf2, %rdx 
@@ -7801,6 +7800,11 @@ mov $trueVal, %rsi
 
  __userPopVarStr:
  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+ pop %rbx 
+ pop %rcx 
+ pop %rdx 
+ pop %rax 
+
  mov $trueVal, %rsi 
  call __print 
  ret 
