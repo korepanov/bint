@@ -4609,7 +4609,7 @@ data153:
 .space 1, 0
 lenData153 = . - data153
 data154:
-.ascii "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC"
+.ascii "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG"
 .space 1, 0
 lenData154 = . - data154
 data155:
@@ -8019,23 +8019,33 @@ __shiftInternalStacks:
 
  add (typeSize), %rcx 
  mov (userData), %rbx
+ 
+ xor %r8, %r8 # counter 
+ push %r8 
 
  __userPushStrNow:
  mov (%rcx), %sil 
  cmp $3, %sil 
  jnz __userPushShiftEnd
+ 
+ pop %r8 
+ inc %r8 
+ push %r8 
 
+ push %rax 
  push %rbx 
  push %rcx
 
  mov %rax, %rdi 
  mov (stackValSize), %rax 
+ 
 
  call __shiftInternalStacks 
 
  // !!!!!!!!!!
  pop %rcx 
  pop %rbx  
+ pop %rax 
  __userPushShiftEnd:
  mov (%rbx), %sil 
  cmp $0, %sil 
@@ -8043,10 +8053,12 @@ __shiftInternalStacks:
  mov %sil, (%rcx)
  inc %rbx 
  inc %rcx 
+ 
  jmp __userPushStrNow
  __userPushStrNowEnd: 
  movb $0, (%rcx)
 
+ pop %r8 
  pop %rcx  
  pop %rbx 
  pop %rax
