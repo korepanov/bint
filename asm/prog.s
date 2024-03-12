@@ -7800,10 +7800,14 @@ __shiftInternalStacks:
 
  __userPopVarStr:
  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
- pop %rbx 
- pop %rcx 
- pop %rdx 
- pop %rax 
+ pop %rbx # address of the variable name in the table
+ pop %rcx # address of the value to pop 
+ pop %rdx # name of the variable
+ pop %rax # name of the stack 
+ 
+ mov %rdx, %rsi 
+ call __print 
+ call __throughError
 
  mov $trueVal, %rsi 
  call __print 
