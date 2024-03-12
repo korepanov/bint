@@ -7983,7 +7983,7 @@ __shiftInternalStacks:
  mov (stackPointer), %rax 
  add (stackValSize), %rax 
  mov %rax, (stackPointer)
- 
+
  pop %rcx  
  pop %rbx 
  pop %rax
@@ -8032,9 +8032,6 @@ __shiftInternalStacks:
  mov (stackValSize), %rax 
 
  call __shiftInternalStacks 
-
- call __printHeap
- call __throughError
 
  // !!!!!!!!!!
  pop %rcx 
