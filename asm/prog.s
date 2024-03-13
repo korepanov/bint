@@ -7482,7 +7482,6 @@ __shiftInternalStacks:
  __compressStacks:
  # %rdi - адрес имени стека, после которого нужно сделать сдвиг влево 
  # %rcx - адрес, откуда свиднуть все стеки влево  
-
  mov %rcx, %rax 
  xor %rdx, %rdx # counter 
 
@@ -7496,6 +7495,12 @@ __shiftInternalStacks:
  __compressStacksFindSizeToShiftEnd:
  dec %rdx 
  inc %rax 
+ 
+ push %rdx 
+
+ mov (stackPointer), %rsi  
+ sub %rdx, %rsi 
+ mov %rsi, (stackPointer)
 
  mov (stackMax), %rdx 
 
@@ -7510,6 +7515,7 @@ __shiftInternalStacks:
  __compressStacksNowEnd:
  
  push %rdi 
+ 
 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -7520,17 +7526,18 @@ __shiftInternalStacks:
 
  mov (userData), %rbx
  sub (typeSize), %rbx
+ 
+ pop %rdi 
+ pop %rdx 
+ mov %rdx, %rdi 
+ push %rdi 
 
- mov %rbx, %rsi 
- call __print 
- call __throughError
-/* 
  # after %rbx reduce all addresses of stacks for %rdi
  pop %rdi  
  push %rbx
  push %rdi  
 
- __userPopChangeAddr:
+ __compressStackChangeAddr:
  pop %rdi
  pop %rbx 
 
@@ -7539,12 +7546,13 @@ __shiftInternalStacks:
  push %rdi  
 
  cmp %rbx, %r15 
- jle __userPopChangeAddrEnd
+ jle __compressStackChangeAddrEnd
 
  mov %rbx, %r12 
  call __read 
+
  cmp $1, (buf)
- jz __userPopChangeAddrEnd
+ jz __compressStackChangeAddrEnd
 
  mov $lenBuf2, %rsi 
  mov $buf2, %rdx 
@@ -7556,7 +7564,7 @@ __shiftInternalStacks:
  call __compare
  cmp $1, %rax 
 
- jnz __userPopChangeThisEnd
+ jnz __compressStackChangeThisEnd
 
  pop %rdi 
  pop %rbx 
@@ -7567,6 +7575,7 @@ __shiftInternalStacks:
 
  mov %rbx, %r12
  call __read  
+
  call __toNumber 
 
  pop %rdi 
@@ -7587,26 +7596,29 @@ __shiftInternalStacks:
  call __clear 
 
  mov $buf2, %rax 
-  __userPopChangeAddrNow:
+  __compressStackChangeAddrNow:
   mov (%rax), %sil 
   cmp $0, %sil 
-  jz __userPopChangeAddrNowEnd
+  jz __compressStackChangeAddrNowEnd
   mov %sil, (%rbx)
   inc %rax 
   inc %rbx 
-  jmp __userPopChangeAddrNow 
-  __userPopChangeAddrNowEnd:
+  jmp __compressStackChangeAddrNow 
+  __compressStackChangeAddrNowEnd:
  movb $0, (%rbx)
- 
- 
- __userPopChangeThisEnd:
 
- jmp __userPopChangeAddr
+ __compressStackChangeThisEnd:
+
+ jmp __compressStackChangeAddr
 
  
- __userPopChangeAddrEnd:*/
+ __compressStackChangeAddrEnd:
+ pop %rdi 
+ pop %rbx 
+ 
+ // изменить адреса стеков, которые находятся внутри других стеков
+ // !!!!!!!!!!!!!!!!!!!!!!!!!!!! 
 
- // изменить адреса стеков, которые находятся внутри других стеков 
  ret 
 
  __userPop:
