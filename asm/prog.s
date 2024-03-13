@@ -7765,6 +7765,10 @@ __shiftInternalStacks:
  jz __userPopVarStack 
  
  # not string and not stack
+ mov (stackPointer), %rsi  
+ sub (stackValSize), %rsi 
+ mov %rsi, (stackPointer)
+
  pop %rbx # address of the variable 
  pop %rcx # address of the value to pop
  pop %rdx 

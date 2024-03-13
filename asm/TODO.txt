@@ -20,5 +20,3 @@ userPush и userPop
 userPop должен менять stackPointer 
 25.
 проверить userPop на string
-26.
-после userPop неправильно дефайнится стек 
