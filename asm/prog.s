@@ -7495,38 +7495,36 @@ __shiftInternalStacks:
  jmp __compressStacksFindSizeToShift
  __compressStacksFindSizeToShiftEnd:
  dec %rdx 
+ inc %rax 
 
- mov %rdx, %rax 
- call __toStr 
- mov $buf2, %rsi 
- call __print 
- call __throughError
-
-/*
  mov (stackMax), %rdx 
 
- __userPopShift:
+ __compressStacksNow:
  cmp %rcx, %rdx 
- jl __userPopShiftEnd
+ jl __compressStacksNowEnd
  mov (%rcx), %sil 
  mov %sil, (%rax)
  inc %rcx 
  inc %rax 
- jmp __userPopShift 
- __userPopShiftEnd:
+ jmp __compressStacksNow 
+ __compressStacksNowEnd:
  
  push %rdi 
 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
- mov %rbx, %rdi
+ #mov %rbx, %rdi
  mov $lenVarName, %rax 
  call __set 
  call __getVar
 
  mov (userData), %rbx
  sub (typeSize), %rbx
- 
+
+ mov %rbx, %rsi 
+ call __print 
+ call __throughError
+/* 
  # after %rbx reduce all addresses of stacks for %rdi
  pop %rdi  
  push %rbx
@@ -7607,6 +7605,8 @@ __shiftInternalStacks:
 
  
  __userPopChangeAddrEnd:*/
+
+ // изменить адреса стеков, которые находятся внутри других стеков 
  ret 
 
  __userPop:
