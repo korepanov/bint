@@ -4609,7 +4609,7 @@ data153:
 .space 1, 0
 lenData153 = . - data153
 data154:
-.ascii "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE"
+.ascii "AAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 .space 1, 0
 lenData154 = . - data154
 data155:
@@ -7483,10 +7483,28 @@ __shiftInternalStacks:
  # %rdi - адрес имени стека, после которого нужно сделать сдвиг влево 
  # %rcx - адрес, откуда свиднуть все стеки влево  
 
- /*mov (stackMax), %rdx 
+ mov %rcx, %rax 
+ xor %rdx, %rdx # counter 
 
- inc %rax  
- inc %rcx 
+ __compressStacksFindSizeToShift:
+ mov (%rax), %sil 
+ cmp $2, %sil 
+ jz __compressStacksFindSizeToShiftEnd 
+ dec %rax
+ inc %rdx  
+ jmp __compressStacksFindSizeToShift
+ __compressStacksFindSizeToShiftEnd:
+ dec %rdx 
+
+ mov %rdx, %rax 
+ call __toStr 
+ mov $buf2, %rsi 
+ call __print 
+ call __throughError
+
+/*
+ mov (stackMax), %rdx 
+
  __userPopShift:
  cmp %rcx, %rdx 
  jl __userPopShiftEnd
@@ -7957,12 +7975,14 @@ __shiftInternalStacks:
  __userPopVarStrClearEnd:
  movb $1, (%rcx)
  inc %rcx 
+ mov %rcx, %rsi 
 
  pop %rbx 
  pop %rcx 
  pop %rdx 
  pop %rax
  
+ mov %rsi, %rcx 
  mov %rax, %rdi 
 
  call __compressStacks 
