@@ -4604,6 +4604,10 @@ varName55:
 .ascii "popRes"
 .space 1, 0
 lenVarName55 = . - varName55 
+varName56:
+.ascii "myStack4"
+.space 1, 0
+lenVarName56 = . - varName56 
 data153:
 .ascii "#main_res0"
 .space 1, 0
@@ -13356,9 +13360,9 @@ mov $varName51, %rbx
 call __userPush 
 
 
-mov $varName53, %rax 
+/*mov $varName53, %rax 
 mov $varName23, %rbx 
-call __userPush 
+call __userPush*/ 
 
 /*mov $varName53, %rax 
 mov $varName51, %rbx 
@@ -13391,17 +13395,33 @@ mov %rax, (userData)
  mov $1, %rax
 call __setVar
 
-mov $varName53, %rax
+/*mov $varName53, %rax
 mov $varName23, %rbx 
-call __userPop
+call __userPop*/
 
- call __printHeap 
-call __throughError 
-/*
+ 
+
  mov $varName53, %rax 
  mov $varName51, %rbx 
  call __userPop
 
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName56, %rax 
+ mov $varName56, %rdi
+ call __set 
+ mov $lenVarType, %rsi 
+ mov $varType, %rdx 
+ mov $lenStackType, %rax
+ mov $stackType, %rdi
+ call __set 
+ call __defineVar
+
+
+ /*mov $varName54, %rax 
+mov $varName51, %rbx 
+call __userPush*/ 
+/*
  mov $varName53, %rax 
  mov $varName51, %rbx 
  call __userPop*/ 
