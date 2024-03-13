@@ -7478,6 +7478,119 @@ __shiftInternalStacks:
  # адреса всех стеков внутри стеков, которые идут начиная с адреса %rcx, нужно увеличить на %rax  
  ret 
 
+
+ __compressStacks:
+ # %rdi - адрес имени стека, после которого нужно сделать сдвиг влево 
+ # %rcx - адрес, откуда свиднуть все стеки влево  
+
+ /*mov (stackMax), %rdx 
+
+ inc %rax  
+ inc %rcx 
+ __userPopShift:
+ cmp %rcx, %rdx 
+ jl __userPopShiftEnd
+ mov (%rcx), %sil 
+ mov %sil, (%rax)
+ inc %rcx 
+ inc %rax 
+ jmp __userPopShift 
+ __userPopShiftEnd:
+ 
+ push %rdi 
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov %rbx, %rdi
+ mov $lenVarName, %rax 
+ call __set 
+ call __getVar
+
+ mov (userData), %rbx
+ sub (typeSize), %rbx
+ 
+ # after %rbx reduce all addresses of stacks for %rdi
+ pop %rdi  
+ push %rbx
+ push %rdi  
+
+ __userPopChangeAddr:
+ pop %rdi
+ pop %rbx 
+
+ add (varSize), %rbx
+ push %rbx
+ push %rdi  
+
+ cmp %rbx, %r15 
+ jle __userPopChangeAddrEnd
+
+ mov %rbx, %r12 
+ call __read 
+ cmp $1, (buf)
+ jz __userPopChangeAddrEnd
+
+ mov $lenBuf2, %rsi 
+ mov $buf2, %rdx 
+ mov $stackType, %rdi
+ mov $lenStackType, %rax 
+ call __set 
+ 
+
+ call __compare
+ cmp $1, %rax 
+
+ jnz __userPopChangeThisEnd
+
+ pop %rdi 
+ pop %rbx 
+ push %rbx 
+ push %rdi 
+
+ add (typeSize), %rbx
+
+ mov %rbx, %r12
+ call __read  
+ call __toNumber 
+
+ pop %rdi 
+ pop %rbx 
+ push %rbx 
+ push %rdi 
+
+ sub %rdi, %rax
+ call __toStr 
+
+ pop %rdi 
+ pop %rbx 
+ push %rbx 
+ push %rdi 
+ 
+ add (typeSize), %rbx
+ mov %rbx, %rsi 
+ call __clear 
+
+ mov $buf2, %rax 
+  __userPopChangeAddrNow:
+  mov (%rax), %sil 
+  cmp $0, %sil 
+  jz __userPopChangeAddrNowEnd
+  mov %sil, (%rbx)
+  inc %rax 
+  inc %rbx 
+  jmp __userPopChangeAddrNow 
+  __userPopChangeAddrNowEnd:
+ movb $0, (%rbx)
+ 
+ 
+ __userPopChangeThisEnd:
+
+ jmp __userPopChangeAddr
+
+ 
+ __userPopChangeAddrEnd:*/
+ ret 
+
  __userPop:
  # %rax - адрес имени стека 
  # %rbx - адрес имени переменной, куда положить результат 
@@ -7821,6 +7934,7 @@ __shiftInternalStacks:
  xor %rax, %rax 
  call __setVar 
 
+
  pop %rbx 
  pop %rcx 
  pop %rdx 
@@ -7830,27 +7944,28 @@ __shiftInternalStacks:
  push %rcx 
  push %rbx 
 
+ movb $2, (%rcx)
+ inc %rcx 
+
+ __userPopVarStrClear:
+ mov (%rcx), %sil 
+ cmp $2, %sil 
+ jz __userPopVarStrClearEnd 
+ movb $1, (%rcx) 
+ inc %rcx 
+ jmp __userPopVarStrClear 
+ __userPopVarStrClearEnd:
+ movb $1, (%rcx)
+ inc %rcx 
+
+ pop %rbx 
+ pop %rcx 
+ pop %rdx 
+ pop %rax
  
- mov $lenVarName, %rsi 
- mov %rdx, %rdi
- add (typeSize), %rdi 
- mov $varName, %rdx 
- mov $lenVarName, %rax 
-  
- call __set 
+ mov %rax, %rdi 
 
- mov $varName, %rsi 
- call __print 
- call __throughError
- call __getVar 
-
- mov (userData), %rsi 
- call __print 
-
- call __throughError
-
- mov $trueVal, %rsi 
- call __print 
+ call __compressStacks 
  ret 
  __userPopVarStack:
  ret  
