@@ -13358,15 +13358,15 @@ mov $varName53, %rax
 mov $varName51, %rbx 
 call __userPush
 
-
 mov $varName54, %rax 
 mov $varName51, %rbx 
 call __userPush 
 
 
-/*mov $varName53, %rax 
+
+mov $varName53, %rax 
 mov $varName23, %rbx 
-call __userPush*/ 
+call __userPush
 
 /*mov $varName53, %rax 
 mov $varName51, %rbx 
@@ -13388,7 +13388,6 @@ call __userPop*/
  call __set 
  call __defineVar
 
-
 mov $lenVarName, %rsi 
  mov $varName, %rdx
  mov $lenVarName23, %rax 
@@ -13399,15 +13398,14 @@ mov %rax, (userData)
  mov $1, %rax
 call __setVar
 
-/*mov $varName53, %rax
+mov $varName53, %rax
 mov $varName23, %rbx 
-call __userPop*/
-
- 
-
+call __userPop
+/*
  mov $varName53, %rax 
  mov $varName51, %rbx 
  call __userPop
+*/
 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -13430,7 +13428,19 @@ call __userPush*/
  mov $varName51, %rbx 
  call __userPop*/ 
 
-call __printHeap 
+
+ mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName23, %rax 
+ mov $varName23, %rdi 
+call __set
+call __getVar 
+mov (userData), %rsi 
+call __print 
+
+
+
+//call __printHeap 
 call __throughError
 
 
