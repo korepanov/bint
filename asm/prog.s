@@ -4613,7 +4613,7 @@ data153:
 .space 1, 0
 lenData153 = . - data153
 data154:
-.ascii "AAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+.ascii "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD"
 .space 1, 0
 lenData154 = . - data154
 data155:
@@ -4636,7 +4636,10 @@ data159:
 .ascii "3"
 .space 1, 0
 lenData156 = . - data156
-
+data160:
+.ascii "Slava"
+.space 1, 0
+lenData160 = . - data160 
 label50:
 // .quad .main_res0
 labelName50:
@@ -13398,6 +13401,21 @@ mov %rax, (userData)
  mov $1, %rax
 call __setVar
 
+mov $lenVarName, %rsi 
+ mov $varName, %rdx 
+ mov $lenVarName21, %rax 
+ mov $varName21, %rdi
+ call __set
+ mov $data160, %rax
+ mov %rax, (userData)
+ mov $0, %rax
+call __setVar
+
+
+mov $varName53, %rax 
+mov $varName21, %rbx 
+call __userPush
+
 mov $varName53, %rax
 mov $varName23, %rbx 
 call __userPop
@@ -13419,7 +13437,6 @@ call __userPop
  call __set 
  call __defineVar
 
-
  /*mov $varName54, %rax 
 mov $varName51, %rbx 
 call __userPush*/ 
@@ -13427,7 +13444,13 @@ call __userPush*/
  mov $varName53, %rax 
  mov $varName51, %rbx 
  call __userPop*/ 
+ mov $varName53, %rax
+ mov $varName23, %rbx 
+ call __userPop
 
+ mov $varName53, %rax
+ mov $varName16, %rbx 
+ call __userPop
 
  mov $lenVarName, %rsi 
  mov $varName, %rdx 
@@ -13436,11 +13459,10 @@ call __userPush*/
 call __set
 call __getVar 
 mov (userData), %rsi 
-call __print 
+//call __print 
 
 
-
-//call __printHeap 
+call __printHeap 
 call __throughError
 
 
